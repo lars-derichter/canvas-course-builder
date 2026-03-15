@@ -15,7 +15,7 @@ Add the original Canvas Local project as a remote called `upstream`. You only
 need to do this once:
 
 ```bash
-git remote add upstream https://github.com/lars-vc/canvas-local.git
+git remote add upstream https://github.com/lars-derichter/canvas-local.git
 ```
 
 You can verify it was added:
