@@ -10,10 +10,15 @@ Create a git commit following the project's commit message conventions.
 ## Steps
 
 1. Run `git status` (never use `-uall`) and `git diff` to review all changes.
-2. **Before staging**, check for course files where `canvas_id` is the only
-   change. These are instance-specific sync artifacts and must NOT be staged or
-   committed. Run `git diff course/` and inspect each modified file — if the
-   diff only adds or changes a `canvas_id` frontmatter field, skip that file.
+2. **Before staging**, run `git remote get-url origin` to determine the mode:
+   - If the URL is `git@github.com:lars-derichter/canvas-local.git` →
+     **development mode**: check for course files where `canvas_id` is the only
+     change in frontmatter. These are instance-specific sync artifacts and must
+     NOT be staged or committed. Run `git diff course/` and inspect each
+     modified file — if the diff only adds or changes a `canvas_id` frontmatter
+     field, skip that file.
+   - Otherwise → **production mode**: stage `canvas_id` changes normally along
+     with all other changes.
 3. Stage the appropriate files by name. Prefer `git add <file>...` over
    `git add -A` or `git add .`.
 4. Write a commit message and commit. Pass the message via a HEREDOC:

@@ -13,17 +13,6 @@ These files should not have any real contents apart from the frontmatter.
 Push with --prune should remove Canvas items of all types (not only modules)
 that no longer exist locally.
 
-## Update Claude `/commit` Skill
-
-The Claude commit skill ignores changes to canvas_id changes in course
-materials. This is good when working in development mode, but not when working
-on real course materials.
-
-We need a way to check which mode we are in. I would suggest checking the URL of
-the git remote (origin). If it matches:
-`git@github.com:lars-derichter/canvas-local.git` we are in development mode,
-otherwise we are in production mode.
-
 ## Extra (VS Code) commands
 
 A command to merge two markdown files and renumber surrounding files. In
@@ -73,3 +62,14 @@ educators who aren't terminal-savvy.
 A tree view in the VS Code sidebar showing modules and items, with inline
 actions like push single item, open in Canvas, move, and rename. Would be much
 faster than the command palette for frequent operations.
+
+## Update Claude `/commit` Skill
+
+The Claude commit skill ignores changes to canvas_id changes in course
+materials. This is good when working in development mode, but not when working
+on real course materials.
+
+We need a way to check which mode we are in. I would suggest checking the URL of
+the git remote (origin). If it matches:
+`git@github.com:lars-derichter/canvas-local.git` we are in development mode,
+otherwise we are in production mode.
