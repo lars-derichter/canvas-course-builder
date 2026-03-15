@@ -22,6 +22,13 @@ Write course materials as markdown, preview via
 2. **Fork this repository** — click the **Fork** button at the top-right of
    this page to create your own copy
 
+   > [!TIP]
+   >
+   > You do not have to keep the name `canvas-local`. Consider renaming your
+   > fork to something like `course-web-development` or `course-databases` — it
+   > makes it much easier to find your materials on your computer, especially if
+   > you manage multiple courses (each as its own fork).
+
 3. **Clone your fork** to your computer
 
    ```bash
