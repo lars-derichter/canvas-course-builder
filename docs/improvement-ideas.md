@@ -12,11 +12,24 @@ files and right clicking or calling the command with the command palette.
 A command to split the file at the current cursor position. Should be called
 through the command palette.
 
-## Print / Export Support
+## PDF Export Support
 
-Add print media CSS for the Docusaurus site or a PDF export option. Educators
-often need printable versions of course materials for exams, handouts, or
-offline review.
+Add a PDF/docx export option. Educators often need printable versions of course
+materials for exams, handouts, or offline review.
+
+This should work in multiple ways:
+
+1. Export single item
+2. Export complete module
+3. Export full course
+4. Export selected items:
+   - In terminal mode do this in two steps with distinct commands:
+     1. A command that generates a TOC, user should delete unwanted items from
+        TOC-file
+     2. A command that exports items in TOC file (check if this exists
+   - In VS Code sidebar: export selected items to pdf
+
+These commands should be able to use some kind of template file.
 
 ## Content Templates
 
@@ -66,8 +79,8 @@ otherwise we are in production mode.
 ### Push with --prune deletes individual items as well as modules
 
 `push --prune` now detects and deletes individual Canvas items (pages,
-assignments, external URLs, files) that no longer exist locally, in addition
-to entire modules.
+assignments, external URLs, files) that no longer exist locally, in addition to
+entire modules.
 
 ### Course items of type URL show up as documents in Docusaurus preview
 
