@@ -2,11 +2,6 @@
 
 Feature ideas and bug fixes for future development.
 
-## Push with --prune should delete individual items as well as modules
-
-Push with --prune should remove Canvas items of all types (not only modules)
-that no longer exist locally.
-
 ## Extra (VS Code) commands
 
 A command to merge two markdown files and renumber surrounding files. In
@@ -67,6 +62,12 @@ We need a way to check which mode we are in. I would suggest checking the URL of
 the git remote (origin). If it matches:
 `git@github.com:lars-derichter/canvas-local.git` we are in development mode,
 otherwise we are in production mode.
+
+### Push with --prune deletes individual items as well as modules
+
+`push --prune` now detects and deletes individual Canvas items (pages,
+assignments, external URLs, files) that no longer exist locally, in addition
+to entire modules.
 
 ### Course items of type URL show up as documents in Docusaurus preview
 

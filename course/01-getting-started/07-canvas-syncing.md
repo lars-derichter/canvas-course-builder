@@ -36,7 +36,7 @@ After the first push, `canvas_id` is written back into each file's frontmatter s
 | --- | --- |
 | `--dry-run` | Preview what would happen without making any changes on Canvas |
 | `--module 01-getting-started` | Push only a single module instead of the entire course |
-| `--prune` | Delete Canvas modules that no longer exist locally |
+| `--prune` | Delete Canvas modules and items that no longer exist locally |
 
 ### Example Workflow
 

@@ -6,9 +6,9 @@ const { scanCourse } = require('../lib/convert/course-scanner');
 const { parseFrontmatter, updateFrontmatter } = require('../lib/convert/frontmatter');
 const { markdownToHtml } = require('../lib/convert/markdown-to-html');
 const { createModule, updateModule, createModuleItem, deleteModule: deleteCanvasModule, listModuleItems, deleteModuleItem } = require('../lib/canvas/modules');
-const { createPage, updatePage } = require('../lib/canvas/pages');
-const { createAssignment, updateAssignment } = require('../lib/canvas/assignments');
-const { uploadFile } = require('../lib/canvas/files');
+const { createPage, updatePage, deletePage } = require('../lib/canvas/pages');
+const { createAssignment, updateAssignment, deleteAssignment } = require('../lib/canvas/assignments');
+const { uploadFile, deleteFile } = require('../lib/canvas/files');
 const { ensureIcons, getIconUrls } = require('../lib/canvas/icons');
 const { buildLinkMap, resolveRelativeLink, extractFileReferences } = require('../lib/convert/link-resolver');
 const { SYNC_FILE, loadSyncFile, saveSyncFile } = require('./sync-utils');
@@ -140,9 +140,9 @@ async function push(options) {
     }
   }
 
-  // Prune: remove Canvas modules that no longer exist locally
-  if (prune && !moduleFilter) {
-    await pruneDeletedModules(courseId, syncData, modules, dryRun, errors);
+  // Prune: remove Canvas modules and items that no longer exist locally
+  if (prune) {
+    await pruneDeleted(courseId, syncData, modules, filteredModules, moduleFilter, dryRun, errors);
   }
 
   // Update last_sync timestamp
@@ -331,7 +331,7 @@ async function pushItem(courseId, moduleId, item, dryRun, iconUrls, folderName, 
   } else if (canvasType === 'external_url') {
     await pushExternalUrl(courseId, moduleId, { title, position, indent, frontmatter }, dryRun);
   } else if (canvasType === 'file') {
-    await pushFile(courseId, moduleId, { title, filePath, position, indent, folderName }, dryRun);
+    await pushFile(courseId, moduleId, { title, filePath, relativePath, position, indent, folderName }, dryRun, syncData);
   } else {
     log.warn(`  [push] Skipping unknown type "${canvasType}": ${title}`);
   }
@@ -519,7 +519,7 @@ async function pushExternalUrl(courseId, moduleId, { title, position, indent, fr
   }
 }
 
-async function pushFile(courseId, moduleId, { title, filePath, position, indent, folderName }, dryRun) {
+async function pushFile(courseId, moduleId, { title, filePath, relativePath, position, indent, folderName }, dryRun, syncData) {
   console.log(`  [push] Uploading file: ${title}`);
   if (!dryRun) {
     const result = await uploadFile(courseId, filePath, { parentFolderPath: folderName });
@@ -533,13 +533,21 @@ async function pushFile(courseId, moduleId, { title, filePath, position, indent,
       indent,
     });
     console.log(`    [push] Uploaded file id=${fileId}`);
+
+    // Track file item in sync state for pruning support
+    if (relativePath && syncData.modules[folderName]) {
+      syncData.modules[folderName].items[relativePath] = {
+        canvas_id: fileId,
+        canvas_type: 'file',
+      };
+    }
   }
 }
 
 /**
- * Detect modules in the sync file that no longer exist locally and delete them from Canvas.
+ * Collect modules in sync state that no longer exist locally.
  */
-async function pruneDeletedModules(courseId, syncData, localModules, dryRun, errors) {
+function collectDeletedModules(syncData, localModules) {
   const localFolders = new Set(localModules.map((m) => m.folderName));
   const syncModules = syncData.modules || {};
   const toDelete = [];
@@ -550,20 +558,116 @@ async function pruneDeletedModules(courseId, syncData, localModules, dryRun, err
     }
   }
 
-  if (toDelete.length === 0) {
-    console.log('\n[push] Prune: no deleted modules to remove from Canvas.');
+  return toDelete;
+}
+
+/**
+ * Collect items in sync state that no longer exist locally within each module.
+ */
+function collectDeletedItems(syncData, localModules) {
+  const toDelete = [];
+
+  for (const mod of localModules) {
+    const syncMod = syncData.modules[mod.folderName];
+    if (!syncMod || !syncMod.items) continue;
+
+    const localPaths = new Set(
+      flattenItems(mod.items)
+        .filter((i) => i.relativePath)
+        .map((i) => i.relativePath)
+    );
+
+    for (const [relPath, itemData] of Object.entries(syncMod.items)) {
+      if (!localPaths.has(relPath)) {
+        toDelete.push({
+          folderName: mod.folderName,
+          moduleId: syncMod.canvas_module_id,
+          relativePath: relPath,
+          canvasId: itemData.canvas_id,
+          canvasType: itemData.canvas_type,
+          pageUrl: itemData.page_url,
+        });
+      }
+    }
+  }
+
+  return toDelete;
+}
+
+/**
+ * Delete a single Canvas item by type.
+ * Returns true on success (including 404 = already gone), false on error.
+ */
+async function deleteCanvasItemByType(courseId, item, errors) {
+  try {
+    if (item.canvasType === 'page') {
+      await deletePage(courseId, item.pageUrl || item.canvasId);
+    } else if (item.canvasType === 'assignment') {
+      await deleteAssignment(courseId, item.canvasId);
+    } else if (item.canvasType === 'file') {
+      await deleteFile(item.canvasId);
+    } else if (item.canvasType === 'external_url') {
+      // External URLs are module items only — find and delete via module item list
+      const moduleItems = await listModuleItems(courseId, item.moduleId);
+      const match = moduleItems.find(
+        (mi) => mi.type === 'ExternalUrl' && mi.external_url === item.canvasId
+      );
+      if (match) {
+        await deleteModuleItem(courseId, item.moduleId, match.id);
+      } else {
+        console.warn(`    [push] External URL item not found on Canvas, may already be deleted: ${item.relativePath}`);
+      }
+    } else {
+      console.warn(`    [push] Unknown canvas_type "${item.canvasType}" for ${item.relativePath}, skipping`);
+      return false;
+    }
+    return true;
+  } catch (err) {
+    if (err.message.includes('404')) {
+      console.warn(`    [push] Item already deleted from Canvas: ${item.relativePath}`);
+      return true;
+    }
+    console.error(`    [push] Error deleting item "${item.relativePath}": ${err.message}`);
+    errors.push({ module: item.relativePath, error: err.message });
+    return false;
+  }
+}
+
+/**
+ * Unified prune: detect and delete Canvas modules and items that no longer exist locally.
+ */
+async function pruneDeleted(courseId, syncData, allModules, filteredModules, moduleFilter, dryRun, errors) {
+  // Collect modules to delete (skip when filtering by specific module)
+  const modulesToDelete = !moduleFilter ? collectDeletedModules(syncData, allModules) : [];
+
+  // Collect items to delete (within filtered modules)
+  const itemsToDelete = collectDeletedItems(syncData, filteredModules);
+
+  if (modulesToDelete.length === 0 && itemsToDelete.length === 0) {
+    console.log('\n[push] Prune: nothing to remove from Canvas.');
     return;
   }
 
-  console.log(`\n[push] Prune: ${toDelete.length} locally-deleted module(s) to remove from Canvas:`);
-  for (const { folder } of toDelete) {
-    console.log(`  - ${folder}`);
+  // Display what will be deleted
+  if (modulesToDelete.length > 0) {
+    console.log(`\n[push] Prune: ${modulesToDelete.length} locally-deleted module(s) to remove from Canvas:`);
+    for (const { folder } of modulesToDelete) {
+      console.log(`  - ${folder} (entire module)`);
+    }
   }
 
+  if (itemsToDelete.length > 0) {
+    console.log(`\n[push] Prune: ${itemsToDelete.length} locally-deleted item(s) to remove from Canvas:`);
+    for (const { relativePath, canvasType } of itemsToDelete) {
+      console.log(`  - ${relativePath} (${canvasType})`);
+    }
+  }
+
+  // Confirm with user (unless dry-run)
   if (!dryRun) {
     const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
     const answer = await new Promise((resolve) => {
-      rl.question('[push] Delete these modules from Canvas? (y/N) ', resolve);
+      rl.question('[push] Delete these from Canvas? (y/N) ', resolve);
     });
     rl.close();
 
@@ -573,7 +677,8 @@ async function pruneDeletedModules(courseId, syncData, localModules, dryRun, err
     }
   }
 
-  for (const { folder, canvasModuleId } of toDelete) {
+  // Delete modules
+  for (const { folder, canvasModuleId } of modulesToDelete) {
     console.log(`  [push] Pruning module: ${folder} (canvas_module_id: ${canvasModuleId})`);
     if (!dryRun) {
       try {
@@ -586,6 +691,22 @@ async function pruneDeletedModules(courseId, syncData, localModules, dryRun, err
       }
     }
   }
+
+  // Delete individual items
+  for (const item of itemsToDelete) {
+    console.log(`  [push] Pruning item: ${item.relativePath} (${item.canvasType})`);
+    if (!dryRun) {
+      const success = await deleteCanvasItemByType(courseId, item, errors);
+      if (success) {
+        delete syncData.modules[item.folderName].items[item.relativePath];
+        console.log(`    [push] Deleted from Canvas.`);
+      }
+    }
+  }
 }
 
 module.exports = push;
+// Exported for testing
+push._collectDeletedModules = collectDeletedModules;
+push._collectDeletedItems = collectDeletedItems;
+push._deleteCanvasItemByType = deleteCanvasItemByType;

@@ -35,7 +35,7 @@ Item commands auto-detect the current module when run from inside a module folde
 
 ### CLI flags
 
-- **push**: `--dry-run`, `--module <folder-name>`, `--prune` (delete Canvas modules removed locally)
+- **push**: `--dry-run`, `--module <folder-name>`, `--prune` (delete Canvas modules and items removed locally)
 - **pull**: `--force` (overwrite locally modified files without conflict check)
 - **status**: `--remote` (fetch and compare against live Canvas data)
 - **Global**: `--verbose` (show API request details), `--quiet` (errors only)
@@ -75,7 +75,7 @@ Three layers:
 - Push and pull recover from individual item/module errors and report a summary at the end
 - Push detects stale Canvas IDs (deleted modules, pages, or assignments) via 404 responses and automatically re-creates the resource
 - Pull detects locally modified files (mtime > last_sync) and skips them unless `--force` is used
-- Push with `--prune` removes Canvas modules that no longer exist locally
+- Push with `--prune` removes Canvas modules and individual items that no longer exist locally
 - File uploads use MIME type detection based on file extension (35+ types supported)
 
 ### Content types in markdown frontmatter

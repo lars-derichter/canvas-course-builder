@@ -83,7 +83,7 @@ Key properties:
    d. Save sync state after each module
 5. Second pass: re-push items with unresolved links
    (now resolvable because referenced pages exist)
-6. Prune: delete Canvas modules removed locally (if --prune)
+6. Prune: delete Canvas modules and items removed locally (if --prune)
 7. Update last_sync timestamp
 ```
 
