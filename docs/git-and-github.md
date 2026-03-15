@@ -38,7 +38,7 @@ git --version
 ```
 
 If you see a version number (e.g. `git version 2.43.0`), Git is already
-installed and you can skip to [Forking the project](#forking-the-project).
+installed and you can skip to [Creating your project](#creating-your-project).
 
 ### Windows
 
@@ -83,16 +83,18 @@ sudo dnf install git
 > git config --global user.email "your.email@example.com"
 > ```
 
-## Forking the project
+## Creating your project
 
-A **fork** is your own personal copy of a project on GitHub. You'll make changes
-in your fork without affecting the original.
+Canvas Local is a **template repository** — you create your own independent copy
+from it. Your project won't affect the original, and you can create as many
+copies as you need (one per course, for example).
 
 1. Make sure you're logged in to GitHub.
 2. Go to the Canvas Local project page.
-3. Click the **Fork** button in the top-right corner.
-4. GitHub creates a copy under your account (e.g.
-   `github.com/YOUR-USERNAME/canvas-local`).
+3. Click **Use this template** in the top-right corner, then select **Create a
+   new repository**.
+4. Choose a descriptive name (e.g. `course-web-development`), set the visibility
+   (public or private), and click **Create repository**.
 
 ## Keeping your project private
 
@@ -107,12 +109,12 @@ Educators are eligible for a **free GitHub Pro account**, which includes
 unlimited private repositories and other benefits. You can apply at
 [GitHub Education](https://education.github.com/discount_requests/application).
 
-## Cloning your fork
+## Cloning your project
 
-**Cloning** downloads your fork from GitHub to your computer so you can work on
-it locally.
+**Cloning** downloads your project from GitHub to your computer so you can work
+on it locally.
 
-1. On your fork's GitHub page, click the green **Code** button.
+1. On your project's GitHub page, click the green **Code** button.
 2. Copy the URL (it looks like
    `https://github.com/YOUR-USERNAME/your-project-name.git`).
 3. Open a terminal and navigate to where you want to store the project. For
@@ -134,7 +136,7 @@ it locally.
    cd your-project-name
    ```
 
-You now have a local copy of your fork, ready to go.
+You now have a local copy of your project, ready to go.
 
 ## Basic Git workflow
 

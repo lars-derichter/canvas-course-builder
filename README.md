@@ -19,20 +19,19 @@ Write course materials as markdown, preview via
    [Git & GitHub Guide](docs/git-and-github.md) if you need help with these
    steps
 
-2. **Fork this project** — click the **Fork** button at the top-right of this
-   page to create your own copy
+2. **Create your own copy** — click **Use this template** at the top-right of
+   this page, then select **Create a new repository**. Give it a name like
+   `course-web-development` or `course-databases` and choose whether it should
+   be public or private
 
 > [!TIP]
 >
-> You do not have to keep the name `canvas-local`. Consider renaming your fork
-> to something like `course-web-development` or `course-databases` — it makes it
-> much easier to find your materials on your computer, especially if you manage
-> multiple courses (each as its own fork).
+> Pick a descriptive name that reflects the course — it makes it much easier to
+> find your materials on your computer, especially if you manage multiple
+> courses (each as its own project).
 
-3. **Navigate to your fork** — after forking, GitHub may keep you on the
-   original project. Click your profile icon in the top-right corner, select
-   **Your repositories**, and open your forked project from the list. Verify
-   that the page header shows your own username
+3. **Navigate to your project** — after creating it, GitHub takes you to the new
+   repository. Verify that the page header shows your own username
    (`github.com/YOUR-USERNAME/YOUR-PROJECT-NAME`) before continuing
 
 > [!WARNING]
@@ -43,10 +42,10 @@ Write course materials as markdown, preview via
 > [Keeping your project private](docs/git-and-github.md#keeping-your-project-private)
 > for how to change this setting.
 
-4. **Clone your fork** to your computer — on your fork's GitHub page, click the
-   green **Code** button, then copy the HTTPS URL. Open a terminal (on macOS:
-   **Terminal**, on Windows: **Command Prompt** or **PowerShell**) and run the
-   following command, replacing the URL with the one you just copied:
+4. **Clone your project** to your computer — on your project's GitHub page,
+   click the green **Code** button, then copy the HTTPS URL. Open a terminal (on
+   macOS: **Terminal**, on Windows: **Command Prompt** or **PowerShell**) and
+   run the following command, replacing the URL with the one you just copied:
 
    ```bash
    # paste your URL after "git clone"
@@ -221,10 +220,10 @@ connection errors, push/pull issues, and sync state problems.
 See [Development Guide](docs/development.md) for advanced commands
 (`reset-sync-state`, `reset-canvas`) and Claude Code integration.
 
-## Updating Your Fork
+## Updating Your Project
 
-See [Updating Your Fork](docs/updating-your-fork.md) for how to pull in bug
-fixes and new features from the original Canvas Local project.
+See [Updating Your Project](docs/updating-your-project.md) for how to pull in
+bug fixes and new features from the original Canvas Local project.
 
 ## Contributing
 

@@ -41,9 +41,8 @@ but describe:
 
 If you'd like to contribute a fix or improvement yourself, follow these steps:
 
-1. **Fork** the original Canvas Local project (see
-   [Forking the project](git-and-github.md#forking-the-project) if you need
-   help).
+1. **Fork** the original Canvas Local project — on the project page, click the
+   **Fork** button in the top-right corner to create a copy under your account.
 
 2. **Create a branch** for your change:
 
