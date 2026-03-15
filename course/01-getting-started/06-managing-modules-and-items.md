@@ -5,7 +5,7 @@ canvas_type: page
 
 # Managing Modules and Items
 
-The CLI provides interactive commands for creating, moving, renaming, and deleting both modules and items. All commands handle renumbering automatically, so you never have to manually rename files to fix gaps or reorder content.
+As your course grows, you will need to add new content, reorganise things, and sometimes clean up. The CLI has interactive commands for all of this, and they handle renumbering automatically — you never have to manually rename files to fix gaps or reorder content.
 
 ## Working with Modules
 
@@ -89,6 +89,26 @@ npx course delete-item
 ```
 
 Removes the file and renumbers the remaining items to close the gap.
+
+### Merging Two Items
+
+Sometimes you realise that two separate pages would work better as one. Instead of copying and pasting manually:
+
+```bash
+npx course merge-items
+```
+
+Pick a **source** and a **target** item. The source content is appended to the target, and the source file is removed. Remaining items are renumbered automatically.
+
+### Splitting an Item
+
+The opposite situation — a page has grown too long and you want to break it up:
+
+```bash
+npx course split-item
+```
+
+Choose the file, the line number where you want to split, and a title for the new item. The command creates a new file from that point onward and trims the original.
 
 > [!TIP]
 > All item commands auto-detect which module you are in when you run them from inside a module folder. You only need to pick the module manually if you run the command from the project root.

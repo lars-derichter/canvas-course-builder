@@ -14,41 +14,33 @@ Write course materials as markdown, preview via
 
 ## Getting Started
 
-1. **Fork this repository** — forking gives you full git versioning for your
-   course content while letting you pull upstream tooling updates.
+1. **Fork this repository** and **install [Node.js 20+](https://nodejs.org/)**
 
-2. **Install Node.js 20+** — download the LTS version from
-   [nodejs.org](https://nodejs.org/).
-
-3. **Install dependencies**
+2. **Install dependencies and start the preview**
 
    ```bash
    npm install
+   npm start
    ```
 
-4. **Connect to Canvas** — run the interactive setup to configure your Canvas
-   API credentials:
+   This opens a local Docusaurus site in your browser. The included
+   **Getting Started** module walks you through writing markdown, organising
+   content, syncing with Canvas, and using the VS Code extension.
+
+3. **Connect to Canvas** — when you are ready to publish, run the interactive
+   setup to configure your Canvas API credentials:
 
    ```bash
    npx course init
    ```
 
-   Or copy `.env.example` to `.env` and fill in the values manually. See the
-   [Canvas Setup Guide](docs/canvas-setup.md) for detailed instructions on
-   obtaining your API URL, token, and course ID.
+   See the [Canvas Setup Guide](docs/canvas-setup.md) for detailed instructions
+   on obtaining your API URL, token, and course ID.
 
-   | Variable           | Description                                                  |
-   | ------------------ | ------------------------------------------------------------ |
-   | `CANVAS_API_URL`   | Canvas instance URL (e.g., `https://school.instructure.com`) |
-   | `CANVAS_API_TOKEN` | Canvas API access token                                      |
-   | `CANVAS_COURSE_ID` | Target course ID                                             |
-
-5. **Start writing** — delete the example content in `course/`, create your
-   first module, and preview it locally:
+4. **Start writing** — replace the example content in `course/` with your own:
 
    ```bash
    npx course new-module    # create a module (asks for name and position)
-   npm start                # start the Docusaurus dev server
    ```
 
 ## Course Structure

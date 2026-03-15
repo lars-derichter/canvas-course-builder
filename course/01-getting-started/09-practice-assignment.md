@@ -8,29 +8,34 @@ submission_types:
 
 # Practice Assignment
 
-Now that you have seen how course content is structured, try creating your own.
+You have made it through the Getting Started module — well done! Now it is time to try things out for yourself.
 
 ## Instructions
 
-1. Create a new markdown file in this module using the CLI:
+1. **Create a new page** in this module. You can use the terminal:
    ```bash
    npx course new-item
    ```
-2. Choose **page** as the item type.
-3. Add a title and write a short paragraph using at least:
-   - A heading
-   - Bold and italic text
-   - A list
+   Or right-click this module in the VS Code sidebar and choose **New Item**.
+
+2. Choose **page** as the item type and give it a name.
+
+3. Write a short piece of content using at least:
+   - A heading (`##`)
+   - **Bold** and _italic_ text
+   - A list (numbered or bulleted)
    - One admonition (e.g., `> [!TIP]`)
-4. Preview your page locally:
-   ```bash
-   npm start
-   ```
-5. When you are satisfied, push your changes to Canvas:
+
+4. **Preview your page** locally by running `npm start` or clicking the Preview button in the VS Code sidebar. Check that everything looks the way you want.
+
+5. When you are happy with it, **push your changes** to Canvas:
    ```bash
    npx course push --module 01-getting-started
    ```
 
+> [!TIP]
+> Not sure about the markdown syntax? Check out the [Markdown Basics](01-markdown-basics.md) and [Admonitions](03-admonitions.md) pages in this module for a quick refresher.
+
 ## Submission
 
-Paste the title of the page you created and describe which formatting features you used.
+Paste the title of the page you created and briefly describe which formatting features you used.

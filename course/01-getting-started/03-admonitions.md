@@ -5,7 +5,7 @@ canvas_type: page
 
 # Admonitions
 
-Admonitions are colored callout boxes that draw attention to important information. This project supports GitHub-style blockquote alerts, which work in both Docusaurus and Canvas.
+Admonitions are colored callout boxes that help important information stand out on the page. They are a great way to highlight tips, warnings, or key details for your students. This project supports six types of admonitions, and they work in both the local preview and on Canvas.
 
 ## Syntax
 

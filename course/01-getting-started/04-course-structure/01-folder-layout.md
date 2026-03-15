@@ -5,7 +5,7 @@ canvas_type: page
 
 # Folder Layout
 
-Course content lives in the `course/` directory. The folder structure directly maps to how content appears in both Docusaurus and Canvas.
+All your course content lives in the `course/` folder. The way you organise files and folders here directly controls how content appears in both the local preview and on Canvas — no configuration needed.
 
 ## Module Folders
 

@@ -5,9 +5,10 @@ canvas_type: page
 
 # Markdown Basics
 
-All course content is written in **Markdown**, a lightweight markup language
-that is easy to read and write. This page demonstrates the most common
-formatting options.
+All course content is written in **Markdown** — a simple way to format text
+that is easy to read and write. You do not need any technical background to use
+it. This page walks you through the most common formatting options so you can
+start writing right away.
 
 ## Text Formatting
 

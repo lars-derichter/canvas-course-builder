@@ -15,10 +15,30 @@ Before syncing, you need to configure your Canvas credentials:
 npx course init
 ```
 
-This interactive command asks for your Canvas instance URL, an API access token, and the course ID. It stores these in a `.env` file.
+This interactive command asks for your Canvas instance URL, an API access token, and the course ID. It stores these in a `.env` file. See the Canvas Setup Guide in the `docs/` folder for detailed instructions on where to find these values.
 
 > [!IMPORTANT]
 > Keep your `.env` file secure. It contains your Canvas API token, which grants full access to your Canvas account. Never commit it to version control.
+
+## Reviewing Changes Before You Push
+
+Before pushing, it is a good idea to check what has changed:
+
+```bash
+npx course diff
+```
+
+This shows you exactly what changed locally since the last sync — new files, modified content, and deleted items — so there are no surprises.
+
+## Validating Your Content
+
+You can also check your content for common errors before pushing:
+
+```bash
+npx course validate
+```
+
+This catches issues like missing frontmatter fields, broken internal links, or invalid assignment settings — much easier to fix locally than after pushing to Canvas.
 
 ## Pushing to Canvas
 
@@ -36,7 +56,7 @@ After the first push, `canvas_id` is written back into each file's frontmatter s
 | --- | --- |
 | `--dry-run` | Preview what would happen without making any changes on Canvas |
 | `--module 01-getting-started` | Push only a single module instead of the entire course |
-| `--prune` | Delete Canvas modules and items that no longer exist locally |
+| `--prune` | Delete Canvas modules and individual items that no longer exist locally |
 
 ### Example Workflow
 
@@ -47,8 +67,8 @@ npx course push --dry-run
 # Push only the module you are working on
 npx course push --module 01-getting-started
 
-# Push everything
-npx course push
+# Push everything and clean up deleted items on Canvas
+npx course push --prune
 ```
 
 ## Pulling from Canvas
