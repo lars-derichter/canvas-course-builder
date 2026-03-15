@@ -135,7 +135,11 @@ evaluations/
 Reference materials, inspiration, and notes. Not served by Docusaurus or synced
 to Canvas. See [Sources Guide](docs/sources.md) for conventions.
 
-## Markdown
+## Markdown Files
+
+Markdown is a simple way to format text using plain characters — for example,
+`**bold**` for **bold** and `# Heading` for a heading. Your course materials are
+written as markdown files, which are just regular text files that end in `.md`.
 
 See [Markdown Guide](docs/markdown.md) for supported syntax and custom alerts.
 
