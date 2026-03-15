@@ -22,20 +22,20 @@ Write course materials as markdown, preview via
 2. **Fork this repository** — click the **Fork** button at the top-right of
    this page to create your own copy
 
-   > [!TIP]
-   >
-   > You do not have to keep the name `canvas-local`. Consider renaming your
-   > fork to something like `course-web-development` or `course-databases` — it
-   > makes it much easier to find your materials on your computer, especially if
-   > you manage multiple courses (each as its own fork).
+> [!TIP]
+>
+> You do not have to keep the name `canvas-local`. Consider renaming your
+> fork to something like `course-web-development` or `course-databases` — it
+> makes it much easier to find your materials on your computer, especially if
+> you manage multiple courses (each as its own fork).
 
-   > [!WARNING]
-   >
-   > If you plan to store evaluation materials (exams, tests) in the
-   > `evaluations/` folder, make sure your repository is **private** — otherwise
-   > students can find your materials on GitHub. Educators can get a
-   > [free GitHub Pro account](https://education.github.com/benefits) which
-   > includes unlimited private repositories.
+> [!WARNING]
+>
+> If you plan to store evaluation materials (exams, tests) in the
+> `evaluations/` folder, make sure your repository is **private** — otherwise
+> students can find your materials on GitHub. Educators can get a
+> [free GitHub Pro account](https://education.github.com/benefits) which
+> includes unlimited private repositories.
 
 3. **Clone your fork** to your computer
 
