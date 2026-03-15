@@ -25,8 +25,8 @@ async function moveModule() {
   let sourceModule;
   while (true) {
     const sourceStr = await prompt(rl, 'Module to move (number)');
-    const sourceModule.prefix = parseInt(sourceStr, 10);
-    sourceModule = modules.find((m) => m.prefix === sourceModule.prefix);
+    const prefix = parseInt(sourceStr, 10);
+    sourceModule = modules.find((m) => m.prefix === prefix);
     if (sourceModule) break;
     console.log(`  No module found with number ${sourceStr}. Please try again.`);
   }
