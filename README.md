@@ -217,6 +217,11 @@ connection errors, push/pull issues, and sync state problems.
 See [Development Guide](docs/development.md) for advanced commands
 (`reset-sync-state`, `reset-canvas`) and Claude Code integration.
 
+## Updating Your Fork
+
+See [Updating Your Fork](docs/updating-your-fork.md) for how to pull in bug
+fixes and new features from the original Canvas Local project.
+
 ## Theme
 
 The Docusaurus preview uses Thomas More-inspired styling (orange `#fa6432`
