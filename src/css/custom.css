@@ -466,3 +466,32 @@ article {
 ::selection {
   background: rgba(250, 100, 50, 0.2);
 }
+
+/* ---------------------------------------------------------------------------
+   External URL card (remark-external-url plugin)
+   --------------------------------------------------------------------------- */
+
+.external-url-card {
+  border: 1px solid var(--tm-color-border);
+  border-left: 4px solid #fa6432;
+  border-radius: var(--ifm-global-radius);
+  padding: 1.5rem 2rem;
+  margin: 1rem 0;
+}
+
+.external-url-label {
+  font-weight: 600;
+  color: #fa6432;
+  margin-bottom: 0.25rem;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.external-url-link {
+  margin-bottom: 0;
+}
+
+.external-url-link a {
+  word-break: break-all;
+}

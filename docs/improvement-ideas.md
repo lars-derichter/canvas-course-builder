@@ -2,12 +2,6 @@
 
 Feature ideas and bug fixes for future development.
 
-## Course items of type URL show up as documents in docusaur preview
-
-These items are rendered like any other markdown document. Instead they should
-render as a document showing the link from the external_link frontmatter field.
-These files should not have any real contents apart from the frontmatter.
-
 ## Push with --prune should delete individual items as well as modules
 
 Push with --prune should remove Canvas items of all types (not only modules)
@@ -63,7 +57,7 @@ A tree view in the VS Code sidebar showing modules and items, with inline
 actions like push single item, open in Canvas, move, and rename. Would be much
 faster than the command palette for frequent operations.
 
-## Update Claude `/commit` Skill
+### Update Claude `/commit` Skill
 
 The Claude commit skill ignores changes to canvas_id changes in course
 materials. This is good when working in development mode, but not when working
@@ -73,3 +67,9 @@ We need a way to check which mode we are in. I would suggest checking the URL of
 the git remote (origin). If it matches:
 `git@github.com:lars-derichter/canvas-local.git` we are in development mode,
 otherwise we are in production mode.
+
+### Course items of type URL show up as documents in Docusaurus preview
+
+Fixed with a remark plugin (`src/plugins/remark-external-url.js`) that replaces
+the document body with a styled link card showing the `external_url` from
+frontmatter.
