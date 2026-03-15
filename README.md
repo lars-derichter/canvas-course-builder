@@ -14,9 +14,24 @@ Write course materials as markdown, preview via
 
 ## Getting Started
 
-1. **Fork this repository** and **install [Node.js 20+](https://nodejs.org/)**
+1. **Create a [GitHub](https://github.com/) account** if you don't have one
+   yet, and **install [Git](https://git-scm.com/downloads)** — see the
+   [Git & GitHub Guide](docs/git-and-github.md) if you need help with these
+   steps
 
-2. **Install dependencies and start the preview**
+2. **Fork this repository** — click the **Fork** button at the top-right of
+   this page to create your own copy
+
+3. **Clone your fork** to your computer
+
+   ```bash
+   git clone https://github.com/YOUR-USERNAME/canvas-local.git
+   cd canvas-local
+   ```
+
+4. **Install [Node.js 20+](https://nodejs.org/)**
+
+5. **Install dependencies and start the preview**
 
    ```bash
    npm install
@@ -27,7 +42,7 @@ Write course materials as markdown, preview via
    **Getting Started** module walks you through writing markdown, organising
    content, syncing with Canvas, and using the VS Code extension.
 
-3. **Connect to Canvas** — when you are ready to publish, run the interactive
+6. **Connect to Canvas** — when you are ready to publish, run the interactive
    setup to configure your Canvas API credentials:
 
    ```bash
@@ -37,7 +52,7 @@ Write course materials as markdown, preview via
    See the [Canvas Setup Guide](docs/canvas-setup.md) for detailed instructions
    on obtaining your API URL, token, and course ID.
 
-4. **Start writing** — replace the example content in `course/` with your own:
+7. **Start writing** — replace the example content in `course/` with your own:
 
    ```bash
    npx course new-module    # create a module (asks for name and position)
