@@ -24,7 +24,7 @@ You have made it through the Getting Started module — well done! Now it is tim
    - A heading (`##`)
    - **Bold** and _italic_ text
    - A list (numbered or bulleted)
-   - One admonition (e.g., `> [!TIP]`)
+   - One alert (e.g., `> [!TIP]`)
 
 4. **Preview your page** locally by running `npm start` or clicking the Preview button in the VS Code sidebar. Check that everything looks the way you want.
 
@@ -34,7 +34,7 @@ You have made it through the Getting Started module — well done! Now it is tim
    ```
 
 > [!TIP]
-> Not sure about the markdown syntax? Check out the [Markdown Basics](01-markdown-basics.md) and [Admonitions](03-admonitions.md) pages in this module for a quick refresher.
+> Not sure about the markdown syntax? Check out the [Markdown Basics](01-markdown-basics.md) and [Alerts](03-alerts.md) pages in this module for a quick refresher.
 
 ## Submission
 

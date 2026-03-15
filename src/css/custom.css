@@ -269,10 +269,10 @@ article {
 }
 
 /* ---------------------------------------------------------------------------
-   Admonitions / Callout boxes
+   Alerts / Callout boxes
    --------------------------------------------------------------------------- */
 
-/* Shared admonition base */
+/* Shared alert base */
 .alert {
   border: none;
   border-left: 5px solid;
@@ -298,7 +298,7 @@ article {
   color: #fa6432;
 }
 
-/* Use more stable selectors for admonition headings */
+/* Use more stable selectors for alert headings */
 .alert--warning [class*='admonitionHeading'],
 .alert--danger [class*='admonitionHeading'],
 .alert--tip [class*='admonitionHeading'] {

@@ -1,6 +1,6 @@
 const { describe, it } = require('node:test');
 const assert = require('node:assert/strict');
-const { markdownToHtml, ADMONITION_CONFIG } = require('../../lib/convert/markdown-to-html');
+const { markdownToHtml, ALERT_CONFIG } = require('../../lib/convert/markdown-to-html');
 
 describe('markdownToHtml', () => {
   it('converts basic markdown to HTML', () => {
@@ -40,8 +40,8 @@ describe('markdownToHtml', () => {
   });
 });
 
-describe('markdownToHtml admonitions', () => {
-  it('converts NOTE admonition to styled div', () => {
+describe('markdownToHtml alerts', () => {
+  it('converts NOTE alert to styled div', () => {
     const md = '> [!NOTE]\n> This is a note.';
     const html = markdownToHtml(md);
     assert.match(html, /markdown-alert-note/);
@@ -49,35 +49,35 @@ describe('markdownToHtml admonitions', () => {
     assert.match(html, /This is a note\./);
   });
 
-  it('converts TIP admonition', () => {
+  it('converts TIP alert', () => {
     const md = '> [!TIP]\n> A helpful tip.';
     const html = markdownToHtml(md);
     assert.match(html, /markdown-alert-tip/);
     assert.match(html, /Tip<\/p>/);
   });
 
-  it('converts IMPORTANT admonition', () => {
+  it('converts IMPORTANT alert', () => {
     const md = '> [!IMPORTANT]\n> Very important.';
     const html = markdownToHtml(md);
     assert.match(html, /markdown-alert-important/);
     assert.match(html, /Belangrijk<\/p>/);
   });
 
-  it('converts WARNING admonition', () => {
+  it('converts WARNING alert', () => {
     const md = '> [!WARNING]\n> Be careful.';
     const html = markdownToHtml(md);
     assert.match(html, /markdown-alert-warning/);
     assert.match(html, /Waarschuwing<\/p>/);
   });
 
-  it('converts ATTENTION admonition (mapped to caution)', () => {
+  it('converts ATTENTION alert (mapped to caution)', () => {
     const md = '> [!ATTENTION]\n> Watch out!';
     const html = markdownToHtml(md);
     assert.match(html, /markdown-alert-caution/);
     assert.match(html, /Opgelet<\/p>/);
   });
 
-  it('converts CHECK admonition', () => {
+  it('converts CHECK alert', () => {
     const md = '> [!CHECK]\n> All good.';
     const html = markdownToHtml(md);
     assert.match(html, /markdown-alert-check/);
@@ -92,7 +92,7 @@ describe('markdownToHtml admonitions', () => {
     assert.match(html, /<img.*info\.svg/);
   });
 
-  it('adds spacer paragraph after admonition', () => {
+  it('adds spacer paragraph after alert', () => {
     const md = '> [!TIP]\n> Tip content.';
     const html = markdownToHtml(md);
     assert.match(html, /<p>&nbsp;<\/p>/);
@@ -151,14 +151,14 @@ describe('markdownToHtml link/file resolvers', () => {
   });
 });
 
-describe('ADMONITION_CONFIG', () => {
+describe('ALERT_CONFIG', () => {
   it('has entries for all supported types', () => {
     const expectedTypes = ['note', 'tip', 'important', 'warning', 'caution', 'check'];
     for (const type of expectedTypes) {
-      assert.ok(ADMONITION_CONFIG[type], `Missing config for type: ${type}`);
-      assert.ok(ADMONITION_CONFIG[type].color, `Missing color for type: ${type}`);
-      assert.ok(ADMONITION_CONFIG[type].icon, `Missing icon for type: ${type}`);
-      assert.ok(ADMONITION_CONFIG[type].title, `Missing title for type: ${type}`);
+      assert.ok(ALERT_CONFIG[type], `Missing config for type: ${type}`);
+      assert.ok(ALERT_CONFIG[type].color, `Missing color for type: ${type}`);
+      assert.ok(ALERT_CONFIG[type].icon, `Missing icon for type: ${type}`);
+      assert.ok(ALERT_CONFIG[type].title, `Missing title for type: ${type}`);
     }
   });
 });

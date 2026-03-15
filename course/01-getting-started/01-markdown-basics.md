@@ -49,15 +49,15 @@ You can link to other course pages using relative paths. These links work in
 both the Docusaurus preview and Canvas — during push, they are automatically
 converted to Canvas internal URLs.
 
-- Same folder: `[Admonitions](03-admonitions.md)`
+- Same folder: `[Alerts](03-alerts.md)`
 - Subfolder: `[Folder Layout](04-course-structure/01-folder-layout.md)`
-- With heading anchor: `[Available Types](03-admonitions.md#available-types)`
+- With heading anchor: `[Available Types](03-alerts.md#available-types)`
 
 Try them here:
 
-- [Admonitions](03-admonitions.md)
+- [Alerts](03-alerts.md)
 - [Folder Layout](04-course-structure/01-folder-layout.md)
-- [Available Types](03-admonitions.md#available-types)
+- [Available Types](03-alerts.md#available-types)
 
 ## Images
 

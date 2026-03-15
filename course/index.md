@@ -14,6 +14,6 @@ This course is built and maintained with **Canvas Local**, a tool that lets you 
 2. **Preview** locally by running `npm start` — you are looking at this preview right now
 3. **Push** to Canvas with `npx course push` to publish your content to students
 
-All formatting, admonitions, images, and file uploads are handled automatically. Changes you make on Canvas can be pulled back with `npx course pull`.
+All formatting, alerts, images, and file uploads are handled automatically. Changes you make on Canvas can be pulled back with `npx course pull`.
 
 Head into the **Getting Started** module to learn the basics.

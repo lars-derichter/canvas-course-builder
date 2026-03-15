@@ -1,15 +1,15 @@
 ---
-title: Admonitions
+title: Alerts
 canvas_type: page
 ---
 
-# Admonitions
+# Alerts
 
-Admonitions are colored callout boxes that help important information stand out on the page. They are a great way to highlight tips, warnings, or key details for your students. This project supports six types of admonitions, and they work in both the local preview and on Canvas.
+Alerts are colored callout boxes that help important information stand out on the page. They are a great way to highlight tips, warnings, or key details for your students. This project supports six types of alerts, and they work in both the local preview and on Canvas.
 
 ## Syntax
 
-Admonitions use the blockquote alert syntax:
+Alerts use the blockquote alert syntax:
 
 ```markdown
 > [!NOTE]
@@ -36,9 +36,9 @@ Admonitions use the blockquote alert syntax:
 > [!CHECK]
 > Use **CHECK** to highlight verification steps or success criteria. Useful for checklists and validation points.
 
-## Tips for Using Admonitions
+## Tips for Using Alerts
 
-- Use admonitions sparingly. Too many callout boxes make content harder to scan.
+- Use alerts sparingly. Too many callout boxes make content harder to scan.
 - Pick the type that matches the intent, not the color you prefer.
 - Keep the text inside concise. If it needs multiple paragraphs, consider making it regular content instead.
-- Admonitions are converted to styled HTML when pushed to Canvas, with icons hosted on your Canvas instance.
+- Alerts are converted to styled HTML when pushed to Canvas, with icons hosted on your Canvas instance.

@@ -47,7 +47,7 @@ async function push(options) {
   console.log(`[push] Found ${filteredModules.length} module(s) to push.`);
   if (dryRun) console.log('[push] DRY RUN - no changes will be made.\n');
 
-  // Ensure admonition icons are uploaded to Canvas
+  // Ensure alert icons are uploaded to Canvas
   if (!dryRun) {
     await ensureIcons(courseId, syncData);
     saveSyncFile(syncData);

@@ -59,7 +59,7 @@ resources:
 Key properties:
 - **modules** — keyed by folder name, contains `canvas_module_id` and
   per-item sync data.
-- **icons** — admonition SVG icon file IDs on Canvas.
+- **icons** — alert SVG icon file IDs on Canvas.
 - **files** — embedded file (images, PDFs) Canvas URLs and IDs.
 - **last_sync** — timestamp of last push or pull. Used to detect
   locally modified files.
@@ -68,7 +68,7 @@ Key properties:
 
 ```
 1. Scan course/ directory (course-scanner.js)
-2. Ensure admonition icons are uploaded (icons.js)
+2. Ensure alert icons are uploaded (icons.js)
 3. Build link map from sync state (link-resolver.js)
 4. For each module:
    a. Create or update the Canvas module
@@ -134,15 +134,15 @@ unchanged.
 - Strips YAML frontmatter
 - Uses `marked` with GFM extensions
 - `marked-alert` handles `> [!NOTE]` etc.
-- Custom renderer produces inline-styled admonition HTML with
+- Custom renderer produces inline-styled alert HTML with
   Canvas-hosted SVG icons
 - Custom link/image renderers resolve internal references
 
 **HTML to Markdown** (`html-to-markdown.js`):
 - Uses `turndown` with atx headings and fenced code blocks
-- Custom rules convert admonition divs back to GFM alert syntax
+- Custom rules convert alert divs back to GFM alert syntax
 - Custom rules resolve Canvas internal links and file URLs
-- Strips `&nbsp;` spacer paragraphs after admonitions
+- Strips `&nbsp;` spacer paragraphs after alerts
 
 ## Error Recovery
 

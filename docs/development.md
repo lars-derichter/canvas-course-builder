@@ -89,8 +89,8 @@ test/
 │   └── files.test.js          # MIME type detection
 └── convert/
     ├── frontmatter.test.js    # YAML frontmatter parsing and serialization
-    ├── markdown-to-html.test.js  # Markdown → Canvas HTML conversion and admonitions
-    ├── html-to-markdown.test.js  # Canvas HTML → markdown conversion and admonitions
+    ├── markdown-to-html.test.js  # Markdown → Canvas HTML conversion and alerts
+    ├── html-to-markdown.test.js  # Canvas HTML → markdown conversion and alerts
     ├── link-resolver.test.js     # Bidirectional link and file map resolution
     └── course-scanner.test.js    # Course directory scanning, position extraction, title derivation
 ```

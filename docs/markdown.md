@@ -9,7 +9,7 @@ is supported.
 Use standard relative markdown links to reference other course pages:
 
 ```md
-[Admonitions](03-admonitions.md)
+[Alerts](03-alerts.md)
 [Folder Layout](04-course-structure/01-folder-layout.md)
 [Section heading](../02-other-module/01-page.md#section)
 ```
@@ -18,7 +18,7 @@ These links work across all three layers:
 
 - **Docusaurus** — resolved natively as relative links.
 - **Push to Canvas** — automatically converted to Canvas internal URLs (e.g.
-  `/courses/ID/pages/admonitions`). On the first push, pages are created first,
+  `/courses/ID/pages/alerts`). On the first push, pages are created first,
   then any items with forward references are updated in a second pass so all
   links resolve in one go.
 - **Pull from Canvas** — Canvas internal URLs are converted back to relative
@@ -66,7 +66,7 @@ convention. Examples:
 - `_category_.json` — Docusaurus sidebar configuration
 - `_draft-notes.md` — any file you want to keep local-only
 
-## Custom Alerts / Callouts / Admonitions
+## Custom Alerts
 
 Use GitHub-style blockquote alerts for callout boxes. These render with
 appropriate styling in both the Docusaurus preview and Canvas.
@@ -98,6 +98,6 @@ appropriate styling in both the Docusaurus preview and Canvas.
 ```
 
 Each type displays with a distinct colour, icon, and Dutch title in Canvas
-(Info, Tip, Belangrijk, Waarschuwing, Opgelet, Check). Admonition icons are
+(Info, Tip, Belangrijk, Waarschuwing, Opgelet, Check). Alert icons are
 automatically uploaded to Canvas on first push and tracked in
 `.canvas-sync.json`.

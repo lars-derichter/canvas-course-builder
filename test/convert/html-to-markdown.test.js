@@ -50,36 +50,36 @@ describe('htmlToMarkdown', () => {
   });
 });
 
-describe('htmlToMarkdown admonitions', () => {
-  const admonitionHtml = (type, title, body) =>
+describe('htmlToMarkdown alerts', () => {
+  const alertHtml = (type, title, body) =>
     `<div class="markdown-alert markdown-alert-${type}" style="border-left: .25em solid #ccc; padding-left: 1em;">
       <p class="markdown-alert-title" style="font-size: 1.2em;">${title}</p>
       <p>${body}</p>
     </div><p>\u00a0</p>`;
 
-  it('converts NOTE admonition back to GFM syntax', () => {
-    const md = htmlToMarkdown(admonitionHtml('note', 'Info', 'This is a note.'));
+  it('converts NOTE alert back to GFM syntax', () => {
+    const md = htmlToMarkdown(alertHtml('note', 'Info', 'This is a note.'));
     assert.match(md, /\[!NOTE\]/);
     assert.match(md, /This is a note\./);
   });
 
   it('converts CAUTION back to ATTENTION', () => {
-    const md = htmlToMarkdown(admonitionHtml('caution', 'Opgelet', 'Watch out!'));
+    const md = htmlToMarkdown(alertHtml('caution', 'Opgelet', 'Watch out!'));
     assert.match(md, /\[!ATTENTION\]/);
     assert.match(md, /Watch out!/);
   });
 
-  it('converts TIP admonition', () => {
-    const md = htmlToMarkdown(admonitionHtml('tip', 'Tip', 'A tip.'));
+  it('converts TIP alert', () => {
+    const md = htmlToMarkdown(alertHtml('tip', 'Tip', 'A tip.'));
     assert.match(md, /\[!TIP\]/);
   });
 
-  it('converts CHECK admonition', () => {
-    const md = htmlToMarkdown(admonitionHtml('check', 'Check', 'All good.'));
+  it('converts CHECK alert', () => {
+    const md = htmlToMarkdown(alertHtml('check', 'Check', 'All good.'));
     assert.match(md, /\[!CHECK\]/);
   });
 
-  it('preserves plain text nodes inside admonitions', () => {
+  it('preserves plain text nodes inside alerts', () => {
     const html = `<div class="markdown-alert markdown-alert-note" style="border-left: .25em solid #ccc; padding-left: 1em;">
       <p class="markdown-alert-title" style="font-size: 1.2em;">Info</p>
       Some plain text without a wrapper element.
@@ -89,8 +89,8 @@ describe('htmlToMarkdown admonitions', () => {
     assert.match(md, /Some plain text without a wrapper element\./);
   });
 
-  it('strips spacer paragraphs after admonitions', () => {
-    const html = admonitionHtml('note', 'Info', 'Content.');
+  it('strips spacer paragraphs after alerts', () => {
+    const html = alertHtml('note', 'Info', 'Content.');
     const md = htmlToMarkdown(html);
     assert.doesNotMatch(md, /\u00a0/);
   });
