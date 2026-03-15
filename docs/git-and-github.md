@@ -38,7 +38,7 @@ git --version
 ```
 
 If you see a version number (e.g. `git version 2.43.0`), Git is already
-installed and you can skip to [Forking the repository](#forking-the-repository).
+installed and you can skip to [Forking the project](#forking-the-project).
 
 ### Windows
 
@@ -83,16 +83,29 @@ sudo dnf install git
 > git config --global user.email "your.email@example.com"
 > ```
 
-## Forking the repository
+## Forking the project
 
 A **fork** is your own personal copy of a project on GitHub. You'll make changes
 in your fork without affecting the original.
 
 1. Make sure you're logged in to GitHub.
-2. Go to the Canvas Local repository page.
+2. Go to the Canvas Local project page.
 3. Click the **Fork** button in the top-right corner.
 4. GitHub creates a copy under your account (e.g.
    `github.com/YOUR-USERNAME/canvas-local`).
+
+## Keeping your project private
+
+If you plan to store evaluation materials (exams, tests) in the `evaluations/`
+folder, make sure your project is **private** — otherwise students can find
+your materials on GitHub.
+
+You can change your project's visibility in GitHub under **Settings >
+General > Danger Zone > Change repository visibility**.
+
+Educators are eligible for a **free GitHub Pro account**, which includes
+unlimited private repositories and other benefits. You can apply at
+[GitHub Education](https://education.github.com/discount_requests/application).
 
 ## Cloning your fork
 
@@ -101,7 +114,7 @@ it locally.
 
 1. On your fork's GitHub page, click the green **Code** button.
 2. Copy the URL (it looks like
-   `https://github.com/YOUR-USERNAME/canvas-local.git`).
+   `https://github.com/YOUR-USERNAME/your-project-name.git`).
 3. Open a terminal and navigate to where you want to store the project. For
    example:
 
@@ -112,13 +125,13 @@ it locally.
 4. Run the clone command with the URL you copied:
 
    ```bash
-   git clone https://github.com/YOUR-USERNAME/canvas-local.git
+   git clone https://github.com/YOUR-USERNAME/your-project-name.git
    ```
 
-5. Move into the project folder:
+5. Move into the project folder (use the name of your project):
 
    ```bash
-   cd canvas-local
+   cd your-project-name
    ```
 
 You now have a local copy of your fork, ready to go.

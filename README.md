@@ -14,50 +14,66 @@ Write course materials as markdown, preview via
 
 ## Getting Started
 
-1. **Create a [GitHub](https://github.com/) account** if you don't have one
-   yet, and **install [Git](https://git-scm.com/downloads)** — see the
+1. **Create a [GitHub](https://github.com/) account** if you don't have one yet,
+   and **install [Git](https://git-scm.com/downloads)** — see the
    [Git & GitHub Guide](docs/git-and-github.md) if you need help with these
    steps
 
-2. **Fork this repository** — click the **Fork** button at the top-right of
-   this page to create your own copy
+2. **Fork this project** — click the **Fork** button at the top-right of this
+   page to create your own copy
 
 > [!TIP]
 >
-> You do not have to keep the name `canvas-local`. Consider renaming your
-> fork to something like `course-web-development` or `course-databases` — it
-> makes it much easier to find your materials on your computer, especially if
-> you manage multiple courses (each as its own fork).
+> You do not have to keep the name `canvas-local`. Consider renaming your fork
+> to something like `course-web-development` or `course-databases` — it makes it
+> much easier to find your materials on your computer, especially if you manage
+> multiple courses (each as its own fork).
+
+3. **Navigate to your fork** — after forking, GitHub may keep you on the
+   original project. Click your profile icon in the top-right corner, select
+   **Your repositories**, and open your forked project from the list. Verify
+   that the page header shows your own username
+   (`github.com/YOUR-USERNAME/YOUR-PROJECT-NAME`) before continuing
 
 > [!WARNING]
 >
-> If you plan to store evaluation materials (exams, tests) in the
-> `evaluations/` folder, make sure your repository is **private** — otherwise
-> students can find your materials on GitHub. Educators can get a
-> [free GitHub Pro account](https://education.github.com/benefits) which
-> includes unlimited private repositories.
+> If you plan to store evaluation materials (exams, tests) in the `evaluations/`
+> folder, make sure your project is **private** — otherwise students can find
+> your materials on GitHub. See
+> [Keeping your project private](docs/git-and-github.md#keeping-your-project-private)
+> for how to change this setting.
 
-3. **Clone your fork** to your computer
+4. **Clone your fork** to your computer — on your fork's GitHub page, click the
+   green **Code** button, then copy the HTTPS URL. Open a terminal (on macOS:
+   **Terminal**, on Windows: **Command Prompt** or **PowerShell**) and run the
+   following command, replacing the URL with the one you just copied:
 
    ```bash
-   git clone https://github.com/YOUR-USERNAME/canvas-local.git
-   cd canvas-local
+   # paste your URL after "git clone"
+   git clone https://github.com/YOUR-USERNAME/your-project-name.git
    ```
 
-4. **Install [Node.js 20+](https://nodejs.org/)**
+   Then move into the project folder (use the name of your project):
 
-5. **Install dependencies and start the preview**
+   ```bash
+   cd your-project-name
+   ```
+
+5. **Install [Node.js 20+](https://nodejs.org/)** — download the installer from
+   the link, run it, and accept the default settings
+
+6. **Install dependencies and start the preview** — run these two commands to
+   download the required packages and open a local preview in your browser:
 
    ```bash
    npm install
    npm start
    ```
 
-   This opens a local Docusaurus site in your browser. The included
-   **Getting Started** module walks you through writing markdown, organising
-   content, syncing with Canvas, and using the VS Code extension.
+   The included **Getting Started** module walks you through writing markdown,
+   organising content, syncing with Canvas, and using the VS Code extension.
 
-6. **Connect to Canvas** — when you are ready to publish, run the interactive
+7. **Connect to Canvas** — when you are ready to publish, run the interactive
    setup to configure your Canvas API credentials:
 
    ```bash
@@ -67,7 +83,8 @@ Write course materials as markdown, preview via
    See the [Canvas Setup Guide](docs/canvas-setup.md) for detailed instructions
    on obtaining your API URL, token, and course ID.
 
-7. **Start writing** — replace the example content in `course/` with your own:
+8. **Start writing** — add your own content to `course/` alongside or in place
+   of the example module:
 
    ```bash
    npx course new-module    # create a module (asks for name and position)
@@ -86,7 +103,7 @@ course/
     01-page-name.md          # Canvas Page
     02-assignment-name.md    # Canvas Assignment
     03-link-name.md          # Canvas ExternalUrl
-    subfolder-name/          # Canvas Text Header
+    04-subfolder-name/       # Canvas Text Header
       01-nested-page.md      # Indented module item
 ```
 
@@ -98,8 +115,8 @@ course/
   `due_at`
 - External URL frontmatter requires: `external_url`
 - Images and files in `_files/` are referenced from markdown
-  (`![Alt](./_files/image.png)`) and automatically uploaded to Canvas during
-  push — they are embedded in page content, not added as module items
+  (`![Alt](_files/image.png)`) and automatically uploaded to Canvas during push
+  — they are embedded in page content, not added as module items
 - Non-markdown files outside `_files/` are synced as Canvas File items
 
 ### Evaluations (private)
@@ -173,11 +190,6 @@ npx course status                # compare local vs Canvas state
 npx course status --remote       # also fetch and compare against Canvas
 ```
 
-#### New Academic Year
-
-See the [New Academic Year Guide](docs/new-academic-year.md) for switching your
-materials to a new Canvas course at the start of a new academic year.
-
 #### Global flags
 
 ```bash
@@ -185,16 +197,16 @@ npx course --verbose <command>   # show API request details
 npx course --quiet <command>     # only show errors
 ```
 
+#### New Academic Year
+
+See the [New Academic Year Guide](docs/new-academic-year.md) for switching your
+materials to a new Canvas course at the start of a new academic year.
+
 ## VS Code Integration
 
 All course commands are available through a visual sidebar and the VS Code
-command palette. See the [VS Code Guide](docs/vscode.md) for setup and the
-full command list.
-
-## Theme
-
-The Docusaurus preview uses Thomas More-inspired styling (orange `#fa6432`
-accent, Nunito font, light weights). Customise in `src/css/custom.css`.
+command palette. See the [VS Code Guide](docs/vscode.md) for setup and the full
+command list.
 
 ## Troubleshooting
 
@@ -206,7 +218,12 @@ connection errors, push/pull issues, and sync state problems.
 See [Development Guide](docs/development.md) for advanced commands
 (`reset-sync-state`, `reset-canvas`) and Claude Code integration.
 
+## Theme
+
+The Docusaurus preview uses Thomas More-inspired styling (orange `#fa6432`
+accent, Nunito font, light weights). Customise in `src/css/custom.css`.
+
 ## Ideas
 
 See [Improvement Ideas](docs/improvement-ideas.md) for feature ideas under
-consideration, like a ~~VS Code sidebar~~, PDF export, and content templates.
+consideration, like PDF export and content templates.
