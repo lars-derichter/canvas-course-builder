@@ -2,16 +2,6 @@
 
 Feature ideas and bug fixes for future development.
 
-## Extra (VS Code) commands
-
-A command to merge two markdown files and renumber surrounding files. In
-terminal mode the numbers of the module/subfolder (if not inside a folder) and
-files should be asked. In the VS Code sidebar this should work by selecting two
-files and right clicking or calling the command with the command palette.
-
-A command to split the file at the current cursor position. Should be called
-through the command palette.
-
 ## PDF Export Support
 
 Add a PDF/docx export option. Educators often need printable versions of course
@@ -81,6 +71,14 @@ otherwise we are in production mode.
 `push --prune` now detects and deletes individual Canvas items (pages,
 assignments, external URLs, files) that no longer exist locally, in addition to
 entire modules.
+
+### Merge Items and Split Item commands
+
+`npx course merge-items` merges two markdown files into one (target keeps
+frontmatter, source body is appended). `npx course split-item` splits a file at
+a given line into two files. Both commands handle renumbering automatically. In
+VS Code, merge uses a two-step context menu ("Set as Source" then "Merge with
+Source") and split uses the command palette with cursor position.
 
 ### Course items of type URL show up as documents in Docusaurus preview
 

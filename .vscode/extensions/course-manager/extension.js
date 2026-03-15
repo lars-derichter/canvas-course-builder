@@ -18,6 +18,7 @@ const commands = {
   'course.moveItemToModule': 'npx course movetomodule-item',
   'course.renameItem': 'npx course rename-item',
   'course.deleteItem': 'npx course delete-item',
+  'course.mergeItems': 'npx course merge-items',
   'course.diff': 'npx course diff',
   'course.validate': 'npx course validate',
 };
@@ -211,6 +212,56 @@ function activate(context) {
       })
     );
   }
+
+  // Merge: Set as Source (two-step context menu)
+  let mergeSource = null;
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand('course.mergeSetSource', (treeItem) => {
+      if (!treeItem?.filePath) return;
+      mergeSource = treeItem;
+      vscode.commands.executeCommand('setContext', 'course.mergeSourceSet', true);
+      vscode.window.showInformationMessage(
+        `Canvas Local: Merge source set to "${path.basename(treeItem.filePath)}". Now right-click the target item.`
+      );
+    })
+  );
+
+  // Merge with Source (second step)
+  context.subscriptions.push(
+    vscode.commands.registerCommand('course.mergeWithSource', (treeItem) => {
+      if (!mergeSource?.filePath || !treeItem?.filePath) return;
+      if (!validateWorkspace()) return;
+
+      const sourcePath = mergeSource.filePath;
+      const targetPath = treeItem.filePath;
+      mergeSource = null;
+      vscode.commands.executeCommand('setContext', 'course.mergeSourceSet', false);
+
+      runInTerminal(
+        `npx course merge-items --source "${sourcePath}" --target "${targetPath}"`,
+        workspaceRoot
+      );
+    })
+  );
+
+  // Split Item at Cursor (command palette)
+  context.subscriptions.push(
+    vscode.commands.registerCommand('course.splitItem', () => {
+      if (!validateWorkspace()) return;
+      const editor = vscode.window.activeTextEditor;
+      if (editor && editor.document.fileName.endsWith('.md')) {
+        const filePath = editor.document.uri.fsPath;
+        const line = editor.selection.active.line + 1; // VS Code is 0-based
+        runInTerminal(
+          `npx course split-item --file "${filePath}" --line ${line}`,
+          workspaceRoot
+        );
+      } else {
+        runInTerminal('npx course split-item');
+      }
+    })
+  );
 
   // Push module (with quick-pick)
   context.subscriptions.push(

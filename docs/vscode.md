@@ -46,6 +46,8 @@ Right-click a module or item to access management commands:
 - **Rename / Move** — rename or reorder items and modules
 - **Move Item to Module** — move an item to a different module
 - **Delete** — delete an item or module
+- **Merge: Set as Source / Merge with Source** — two-step merge: right-click the
+  source item first, then right-click the target item to merge them
 
 These commands run the same CLI operations as the command palette equivalents.
 
@@ -111,7 +113,9 @@ for quick access to sync commands.
 | Course: Move Item           | Reorder an item within its module                         |
 | Course: Move Item to Module | Move an item to a different module                        |
 | Course: Rename Item         | Rename an item                                            |
-| Course: Delete Item         | Delete an item and renumber remaining                     |
+| Course: Delete Item           | Delete an item and renumber remaining                     |
+| Course: Merge Items           | Merge two items into one                                  |
+| Course: Split Item at Cursor  | Split the active file at the cursor into two files        |
 
 ## How It Works
 

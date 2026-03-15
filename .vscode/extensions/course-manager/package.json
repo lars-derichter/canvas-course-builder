@@ -48,6 +48,10 @@
       { "command": "course.moveItemToModule", "title": "Course: Move Item to Module" },
       { "command": "course.renameItem", "title": "Course: Rename Item" },
       { "command": "course.deleteItem", "title": "Course: Delete Item" },
+      { "command": "course.mergeSetSource", "title": "Merge: Set as Source" },
+      { "command": "course.mergeWithSource", "title": "Merge with Source" },
+      { "command": "course.mergeItems", "title": "Course: Merge Items" },
+      { "command": "course.splitItem", "title": "Course: Split Item at Cursor" },
       { "command": "course.diff", "title": "Course: Diff (Changes Since Last Sync)" },
       { "command": "course.validate", "title": "Course: Validate" },
       { "command": "course.preview", "title": "Course: Preview", "icon": "$(open-preview)" },
@@ -76,6 +80,8 @@
         { "command": "course.moveItemToModule", "when": "view == courseTree && viewItem =~ /^(page|assignment|external_url|file)$/", "group": "1_edit" },
         { "command": "course.renameModule", "when": "view == courseTree && viewItem == module", "group": "1_edit" },
         { "command": "course.moveModule", "when": "view == courseTree && viewItem == module", "group": "1_edit" },
+        { "command": "course.mergeSetSource", "when": "view == courseTree && viewItem =~ /^(page|assignment)$/", "group": "1_edit" },
+        { "command": "course.mergeWithSource", "when": "view == courseTree && viewItem =~ /^(page|assignment)$/ && course.mergeSourceSet", "group": "1_edit" },
         { "command": "course.deleteItem", "when": "view == courseTree && viewItem =~ /^(page|assignment|external_url|file|subheader)$/", "group": "2_danger" },
         { "command": "course.deleteModule", "when": "view == courseTree && viewItem == module", "group": "2_danger" }
       ]

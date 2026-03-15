@@ -90,6 +90,21 @@ program
   .action(require('./delete-item'));
 
 program
+  .command('merge-items')
+  .description('Merge two items in a module into one')
+  .option('-s, --source <path>', 'Path to source file (appended, then deleted)')
+  .option('-t, --target <path>', 'Path to target file (keeps frontmatter)')
+  .action(require('./merge-items'));
+
+program
+  .command('split-item')
+  .description('Split an item at a given line into two files')
+  .option('-f, --file <path>', 'Path to the file to split')
+  .option('-l, --line <number>', 'Line number to split at')
+  .option('--title <name>', 'Title for the new second file')
+  .action(require('./split-item'));
+
+program
   .command('diff')
   .description('Show what changed locally since the last sync')
   .action(require('./diff'));

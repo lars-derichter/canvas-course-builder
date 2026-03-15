@@ -1,0 +1,168 @@
+const fs = require('fs');
+const path = require('path');
+const matter = require('gray-matter');
+const { prompt, createRL, COURSE_DIR } = require('./module-utils');
+const { getItems, printItems, selectModule, selectTargetDir } = require('./item-utils');
+const { renumberSequential } = require('./renumber');
+const { loadSyncFile, saveSyncFile } = require('./sync-utils');
+
+/**
+ * Core merge logic: append source body into target, delete source, renumber.
+ * Exported as _mergeFiles for testing.
+ *
+ * @param {string} targetPath - Absolute path to the target file (keeps frontmatter).
+ * @param {string} sourcePath - Absolute path to the source file (appended, then deleted).
+ * @param {string} targetDir  - Directory containing both files.
+ * @param {string} folderName - Module folder name (for sync state lookup).
+ */
+function _mergeFiles(targetPath, sourcePath, targetDir, folderName) {
+  const targetRaw = fs.readFileSync(targetPath, 'utf8');
+  const sourceRaw = fs.readFileSync(sourcePath, 'utf8');
+
+  const targetParsed = matter(targetRaw);
+  const sourceParsed = matter(sourceRaw);
+
+  // Combine bodies: target content + blank line + source content
+  const targetContent = targetParsed.content.replace(/\n+$/, '');
+  const sourceContent = sourceParsed.content.replace(/^\n+/, '');
+  const merged = targetContent + '\n\n' + sourceContent;
+
+  // Write merged content back to target (keeps target's frontmatter)
+  const result = matter.stringify(merged, targetParsed.data);
+  fs.writeFileSync(targetPath, result, 'utf8');
+  console.log(`[merge-items] Merged content into ${path.basename(targetPath)}`);
+
+  // Delete source file
+  fs.unlinkSync(sourcePath);
+  console.log(`[merge-items] Deleted ${path.basename(sourcePath)}`);
+
+  // Remove source from sync state
+  const syncData = loadSyncFile({ allowNull: true });
+  if (syncData && syncData.modules && syncData.modules[folderName]) {
+    const syncModule = syncData.modules[folderName];
+    if (syncModule.items) {
+      const relativePath = path.relative(COURSE_DIR, sourcePath);
+      if (syncModule.items[relativePath]) {
+        delete syncModule.items[relativePath];
+        saveSyncFile(syncData);
+        console.log(`[merge-items] Removed ${relativePath} from sync state.`);
+      }
+    }
+  }
+
+  // Renumber remaining items
+  const renames = renumberSequential(targetDir, getItems);
+  if (renames.length > 0) {
+    console.log('[merge-items] Renumbered remaining items:');
+    for (const r of renames) {
+      console.log(`  ${r.from} -> ${r.to}`);
+    }
+  }
+}
+
+async function mergeItems(options) {
+  const opts = options || {};
+
+  // Non-interactive mode (VS Code): --source and --target provided
+  if (opts.source && opts.target) {
+    const sourcePath = path.resolve(opts.source);
+    const targetPath = path.resolve(opts.target);
+
+    if (!fs.existsSync(sourcePath)) {
+      console.error(`[merge-items] Error: Source file not found: ${sourcePath}`);
+      process.exit(1);
+    }
+    if (!fs.existsSync(targetPath)) {
+      console.error(`[merge-items] Error: Target file not found: ${targetPath}`);
+      process.exit(1);
+    }
+    if (sourcePath === targetPath) {
+      console.error('[merge-items] Error: Source and target must be different files.');
+      process.exit(1);
+    }
+    if (path.extname(sourcePath) !== '.md' || path.extname(targetPath) !== '.md') {
+      console.error('[merge-items] Error: Both files must be markdown (.md) files.');
+      process.exit(1);
+    }
+
+    const targetDir = path.dirname(targetPath);
+    // Derive module folder name from path relative to course dir
+    const relativeToSource = path.relative(COURSE_DIR, sourcePath);
+    const folderName = relativeToSource.split(path.sep)[0];
+
+    _mergeFiles(targetPath, sourcePath, targetDir, folderName);
+    return;
+  }
+
+  // Interactive mode
+  const rl = createRL();
+
+  console.log('[merge-items] Merge two items in a module\n');
+
+  const { modulePath, folderName } = await selectModule(rl);
+  const targetDir = await selectTargetDir(rl, modulePath);
+  const items = getItems(targetDir);
+
+  if (items.length < 2) {
+    rl.close();
+    console.log('[merge-items] Need at least two items to merge.');
+    return;
+  }
+
+  printItems(items);
+
+  const targetStr = await prompt(rl, 'Target item (keeps frontmatter, receives content) (number)');
+  const targetPrefix = parseInt(targetStr, 10);
+  const targetItem = items.find((i) => i.prefix === targetPrefix);
+
+  if (!targetItem) {
+    rl.close();
+    console.error(`[merge-items] Error: No item found with number ${targetStr}.`);
+    process.exit(1);
+  }
+  if (targetItem.isDirectory || path.extname(targetItem.name) !== '.md') {
+    rl.close();
+    console.error('[merge-items] Error: Target must be a markdown (.md) file.');
+    process.exit(1);
+  }
+
+  const sourceStr = await prompt(rl, 'Source item (content appended, then deleted) (number)');
+  const sourcePrefix = parseInt(sourceStr, 10);
+  const sourceItem = items.find((i) => i.prefix === sourcePrefix);
+
+  if (!sourceItem) {
+    rl.close();
+    console.error(`[merge-items] Error: No item found with number ${sourceStr}.`);
+    process.exit(1);
+  }
+  if (sourceItem.isDirectory || path.extname(sourceItem.name) !== '.md') {
+    rl.close();
+    console.error('[merge-items] Error: Source must be a markdown (.md) file.');
+    process.exit(1);
+  }
+  if (sourcePrefix === targetPrefix) {
+    rl.close();
+    console.error('[merge-items] Error: Source and target must be different items.');
+    process.exit(1);
+  }
+
+  const confirm = await prompt(
+    rl,
+    `Merge ${sourceItem.name} into ${targetItem.name}? (y/N)`,
+    'N'
+  );
+  rl.close();
+
+  if (confirm.toLowerCase() !== 'y') {
+    console.log('[merge-items] Cancelled.');
+    return;
+  }
+
+  const targetPath = path.join(targetDir, targetItem.name);
+  const sourcePath = path.join(targetDir, sourceItem.name);
+
+  _mergeFiles(targetPath, sourcePath, targetDir, folderName);
+}
+
+module.exports = mergeItems;
+module.exports._mergeFiles = _mergeFiles;

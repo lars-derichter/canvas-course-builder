@@ -25,6 +25,8 @@ npx course move-item      # Move an item to a new position within its module
 npx course movetomodule-item  # Move an item to a different module
 npx course rename-item    # Rename an item
 npx course delete-item    # Delete an item and renumber remaining
+npx course merge-items    # Merge two items into one
+npx course split-item     # Split an item into two files at a given line
 npx course diff           # Show what changed locally since last sync
 npx course validate       # Check course content for errors before pushing
 npx course reset-sync-state  # Remove all canvas_id fields and delete .canvas-sync.json
@@ -38,6 +40,8 @@ Item commands auto-detect the current module when run from inside a module folde
 - **push**: `--dry-run`, `--module <folder-name>`, `--prune` (delete Canvas modules and items removed locally)
 - **pull**: `--force` (overwrite locally modified files without conflict check)
 - **status**: `--remote` (fetch and compare against live Canvas data)
+- **merge-items**: `--source <path>`, `--target <path>` (non-interactive mode for VS Code)
+- **split-item**: `--file <path>`, `--line <number>`, `--title <name>` (non-interactive mode for VS Code)
 - **Global**: `--verbose` (show API request details), `--quiet` (errors only)
 
 ## VS Code Extension

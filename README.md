@@ -124,6 +124,8 @@ npx course move-item          # reorder an item within its module
 npx course movetomodule-item  # move an item to a different module
 npx course rename-item        # rename an item
 npx course delete-item        # delete an item and renumber remaining
+npx course merge-items        # merge two items into one
+npx course split-item         # split an item into two files at a given line
 ```
 
 Item commands auto-detect the current module when run from inside a module
