@@ -222,6 +222,11 @@ See [Development Guide](docs/development.md) for advanced commands
 See [Updating Your Fork](docs/updating-your-fork.md) for how to pull in bug
 fixes and new features from the original Canvas Local project.
 
+## Contributing
+
+See [Contributing](docs/contributing.md) for how to report issues, suggest
+improvements, and submit pull requests.
+
 ## Theme
 
 The Docusaurus preview uses Thomas More-inspired styling (orange `#fa6432`
