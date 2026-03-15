@@ -215,10 +215,15 @@ command list.
 See [Troubleshooting](docs/troubleshooting.md) for solutions to common
 connection errors, push/pull issues, and sync state problems.
 
-## Development & Tooling
+## Advanced Commands
 
-See [Development Guide](docs/development.md) for advanced commands
-(`reset-sync-state`, `reset-canvas`) and Claude Code integration.
+See [Advanced Commands](docs/advanced-commands.md) for destructive operations
+like `reset-sync-state` and `reset-canvas`.
+
+## Claude Code
+
+See [Claude Code](docs/claude-code.md) for how to use Claude Code as an AI
+assistant for writing course content, managing modules, and more.
 
 ## Updating Your Project
 

@@ -59,7 +59,8 @@ If you'd like to contribute a fix or improvement yourself, follow these steps:
    git commit -m "Fix push failing when module folder contains spaces"
    ```
 
-4. **Test your changes** before submitting:
+4. **Test your changes** before submitting — see [Tests](tests.md) for details
+   on the test setup and how to write new tests:
 
    ```bash
    npm start        # check the Docusaurus preview
@@ -90,3 +91,8 @@ If you'd like to contribute a fix or improvement yourself, follow these steps:
 > Not sure if your idea is worth a pull request? Open an issue first to discuss
 > it. That way you won't spend time on something that might not fit the project
 > direction.
+
+## Understanding the codebase
+
+See [Architecture](architecture.md) for a technical overview of the three-layer
+design, sync state format, push/pull algorithms, and link resolution.
