@@ -59,6 +59,7 @@
       "view/title": [
         { "command": "course.preview", "when": "view == courseTree", "group": "navigation" },
         { "command": "course.refreshTree", "when": "view == courseTree", "group": "navigation" },
+        { "command": "course.preview", "when": "view == courseTree" },
         { "command": "course.push", "when": "view == courseTree" },
         { "command": "course.pull", "when": "view == courseTree" },
         { "command": "course.status", "when": "view == courseTree" },
