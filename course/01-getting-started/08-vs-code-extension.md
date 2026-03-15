@@ -1,13 +1,39 @@
 ---
-title: VS Code Extension
+title: VS Code
 canvas_type: page
 ---
 
-# VS Code Extension
+# VS Code
 
-If you use Visual Studio Code, you can manage your entire course without ever opening a terminal. The project includes a VS Code extension with a visual sidebar, toolbar buttons, and access to every command through the command palette.
+Visual Studio Code (VS Code) is a free code editor that works beautifully with this project. You do not need it — any text editor and a terminal will do — but it makes the experience a lot smoother.
 
-## Installation
+## Why VS Code?
+
+VS Code is a great match for Canvas Local because it brings together everything you need in one window:
+
+- **Markdown support** — syntax highlighting, live preview, and formatting shortcuts for the markdown files you write your course in
+- **Built-in terminal** — run CLI commands like `npx course push` without leaving the editor
+- **Git integration** — the Source Control panel lets you stage, commit, and push changes visually (see [Git Workflow](09-git-workflow.md) for a walkthrough)
+- **Course Manager extension** — this project includes a custom VS Code extension that puts all course commands in the sidebar and command palette, so you can manage your course without typing commands at all
+
+It is free, open-source, and runs on Windows, macOS, and Linux.
+
+## Installing VS Code
+
+1. Go to [code.visualstudio.com](https://code.visualstudio.com/) and download the installer for your operating system.
+
+2. Install it:
+   - **Windows** — run the downloaded installer and follow the prompts. Check the option to add VS Code to your PATH if offered.
+   - **macOS** — open the downloaded `.zip` file and drag **Visual Studio Code** into your **Applications** folder.
+   - **Linux** — follow the instructions on the download page for your distribution, or install the `.deb` or `.rpm` package directly.
+
+3. Open VS Code and use **File > Open Folder** (or **Cmd+O** / **Ctrl+K Ctrl+O**) to open your `canvas-local` project folder.
+
+> [!TIP]
+>
+> If you installed VS Code with the PATH option (Windows) or ran **Shell Command: Install 'code' command in PATH** from the command palette (macOS), you can open your project from the terminal: `code canvas-local`
+
+## Installing the Course Manager Extension
 
 From the project root, run:
 
