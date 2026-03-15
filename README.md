@@ -187,8 +187,9 @@ npx course --quiet <command>     # only show errors
 
 ## VS Code Integration
 
-All course commands are available in the VS Code command palette. See the
-[VS Code Guide](docs/vscode.md) for setup and the full command list.
+All course commands are available through a visual sidebar and the VS Code
+command palette. See the [VS Code Guide](docs/vscode.md) for setup and the
+full command list.
 
 ## Theme
 
