@@ -38,6 +38,19 @@ function toFileName(title, position) {
   return `${prefix}-${slug}.md`;
 }
 
+/**
+ * Create a numbered file name for a non-markdown file item, preserving the original extension.
+ * "diagram.svg" at position 3 -> "03-diagram.svg"
+ */
+function toFileItemName(title, position) {
+  const prefix = String(position).padStart(2, '0');
+  const slug = title
+    .toLowerCase()
+    .replace(/[^a-z0-9.]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+  return `${prefix}-${slug}`;
+}
+
 async function pull(options) {
   const courseId = process.env.CANVAS_COURSE_ID;
   if (!courseId) {
@@ -111,6 +124,44 @@ async function pullModule(courseId, mod, syncData, force, canvasToRelative, canv
 
   console.log(`[pull] Module: ${mod.name} -> ${folderName}/`);
 
+  // Check if this module exists under a different folder name (position/name changed on Canvas)
+  if (!syncData.modules[folderName]) {
+    for (const [oldFolder, oldData] of Object.entries(syncData.modules)) {
+      if (oldData.canvas_module_id === mod.id && oldFolder !== folderName) {
+        const oldDir = path.join(COURSE_DIR, oldFolder);
+        if (fs.existsSync(oldDir)) {
+          log.verbose(`Module folder renamed: ${oldFolder}/ -> ${folderName}/`);
+          fs.renameSync(oldDir, moduleDir);
+        }
+        // Migrate sync state from old key to new key
+        syncData.modules[folderName] = oldData;
+        delete syncData.modules[oldFolder];
+
+        // Update file-level sync keys (e.g. "old-folder/01-page.md" -> "new-folder/01-page.md")
+        if (oldData.items) {
+          const migratedItems = {};
+          for (const [relPath, itemData] of Object.entries(oldData.items)) {
+            const newRelPath = folderName + relPath.slice(oldFolder.length);
+            migratedItems[newRelPath] = itemData;
+          }
+          syncData.modules[folderName].items = migratedItems;
+        }
+
+        // Update file tracking keys
+        if (syncData.files) {
+          for (const [filePath, fileData] of Object.entries(syncData.files)) {
+            if (filePath.startsWith(oldFolder + '/')) {
+              const newFilePath = folderName + filePath.slice(oldFolder.length);
+              syncData.files[newFilePath] = fileData;
+              delete syncData.files[filePath];
+            }
+          }
+        }
+        break;
+      }
+    }
+  }
+
   if (!fs.existsSync(moduleDir)) {
     fs.mkdirSync(moduleDir, { recursive: true });
   }
@@ -181,22 +232,15 @@ async function pullModule(courseId, mod, syncData, force, canvasToRelative, canv
       subfolderName = null;
     }
 
-    if (item.type === 'File') {
-      planned.push({
-        kind: 'file',
-        item,
-        position: pos,
-        targetDir,
-        subfolderName,
-        index: ii,
-      });
-      continue;
-    }
+    const targetFileName = item.type === 'File'
+      ? toFileItemName(item.title || 'untitled', pos)
+      : toFileName(item.title || 'Untitled', pos);
 
     planned.push({
       kind: 'content',
       item,
-      targetFileName: toFileName(item.title || 'Untitled', pos),
+      canvasItemType: item.type,
+      targetFileName,
       targetDir,
       position: pos,
       subfolderName,
@@ -234,13 +278,17 @@ async function pullModule(courseId, mod, syncData, force, canvasToRelative, canv
       continue;
     }
 
-    if (p.kind === 'file') {
-      log.warn(`  [pull] Skipping unsupported item type "File": ${p.item.title}`);
+    if (p.canvasItemType === 'File') {
+      try {
+        await pullFileItem(courseId, p.item, p.targetDir, p.targetFileName, syncData, force, folderName);
+      } catch (err) {
+        console.error(`  [pull] Error pulling file "${p.item.title || 'unknown'}": ${err.message}`);
+      }
       continue;
     }
 
     try {
-      await pullItem(courseId, p.item, p.targetDir, p.position, syncData, force, folderName, canvasToRelative, canvasToLocal);
+      await pullItem(courseId, p.item, p.targetDir, p.targetFileName, syncData, force, folderName, canvasToRelative, canvasToLocal);
     } catch (err) {
       console.error(`  [pull] Error pulling item "${p.item.title || 'unknown'}": ${err.message}`);
     }
@@ -286,6 +334,32 @@ function reconcileExistingFiles(planned, moduleItems, moduleDir, folderName) {
 
   const tempPrefix = '__pull_temp_';
 
+  // Clean up leftover temp files/folders from previous failed runs
+  try {
+    for (const entry of fs.readdirSync(moduleDir)) {
+      if (entry.startsWith(tempPrefix)) {
+        const finalName = entry.slice(tempPrefix.length);
+        const tempPath = path.join(moduleDir, entry);
+        const finalPath = path.join(moduleDir, finalName);
+        if (!fs.existsSync(finalPath)) {
+          fs.renameSync(tempPath, finalPath);
+          log.verbose(`Recovered temp file: ${entry} -> ${finalName}`);
+        } else {
+          // Final name already exists; remove the leftover temp
+          const stat = fs.statSync(tempPath);
+          if (stat.isDirectory()) {
+            fs.rmSync(tempPath, { recursive: true });
+          } else {
+            fs.unlinkSync(tempPath);
+          }
+          log.verbose(`Removed leftover temp: ${entry}`);
+        }
+      }
+    }
+  } catch (err) {
+    log.warn(`[pull] Warning: could not clean up temp files in ${moduleDir}: ${err.message}`);
+  }
+
   // ---- Subfolder renames ----
   const subfolderRenames = [];
   for (const p of planned) {
@@ -315,29 +389,43 @@ function reconcileExistingFiles(planned, moduleItems, moduleDir, folderName) {
 
   // Execute subfolder renames (two-pass)
   if (subfolderRenames.length > 0) {
-    for (const sr of subfolderRenames) {
-      sr._tempName = tempPrefix + sr.newName;
-      fs.renameSync(path.join(moduleDir, sr.oldName), path.join(moduleDir, sr._tempName));
-    }
-    for (const sr of subfolderRenames) {
-      fs.renameSync(path.join(moduleDir, sr._tempName), path.join(moduleDir, sr.newName));
-      log.verbose(`Renamed subfolder: ${sr.oldName}/ -> ${sr.newName}/`);
+    try {
+      for (const sr of subfolderRenames) {
+        sr._tempName = tempPrefix + sr.newName;
+        fs.renameSync(path.join(moduleDir, sr.oldName), path.join(moduleDir, sr._tempName));
+      }
+      for (const sr of subfolderRenames) {
+        fs.renameSync(path.join(moduleDir, sr._tempName), path.join(moduleDir, sr.newName));
+        log.verbose(`Renamed subfolder: ${sr.oldName}/ -> ${sr.newName}/`);
 
-      // Update sync keys and identifier map values
-      const oldPrefix = folderName + '/' + sr.oldName + '/';
-      const newPrefix = folderName + '/' + sr.newName + '/';
-      for (const key of Object.keys(moduleItems)) {
-        if (key.startsWith(oldPrefix)) {
-          const newKey = newPrefix + key.slice(oldPrefix.length);
-          moduleItems[newKey] = moduleItems[key];
-          delete moduleItems[key];
+        // Update sync keys and identifier map values
+        const oldPrefix = folderName + '/' + sr.oldName + '/';
+        const newPrefix = folderName + '/' + sr.newName + '/';
+        for (const key of Object.keys(moduleItems)) {
+          if (key.startsWith(oldPrefix)) {
+            const newKey = newPrefix + key.slice(oldPrefix.length);
+            moduleItems[newKey] = moduleItems[key];
+            delete moduleItems[key];
+          }
+        }
+        for (const [id, relPath] of identifierMap) {
+          if (relPath.startsWith(oldPrefix)) {
+            identifierMap.set(id, newPrefix + relPath.slice(oldPrefix.length));
+          }
         }
       }
-      for (const [id, relPath] of identifierMap) {
-        if (relPath.startsWith(oldPrefix)) {
-          identifierMap.set(id, newPrefix + relPath.slice(oldPrefix.length));
+    } catch (err) {
+      // Attempt to recover temp folders
+      for (const sr of subfolderRenames) {
+        if (sr._tempName && fs.existsSync(path.join(moduleDir, sr._tempName))) {
+          try {
+            fs.renameSync(path.join(moduleDir, sr._tempName), path.join(moduleDir, sr.newName));
+          } catch (_) {
+            // Leave temp folder for next run's cleanup
+          }
         }
       }
+      throw err;
     }
   }
 
@@ -346,21 +434,9 @@ function reconcileExistingFiles(planned, moduleItems, moduleDir, folderName) {
   for (const p of planned) {
     if (p.kind === 'subfolder') continue;
 
-    let targetRelPath;
-    if (p.kind === 'file') {
-      // For File items, derive target name from old filename (preserve extension)
-      const oldRelPath = findOldSyncPath(p.item, identifierMap);
-      if (!oldRelPath) continue;
-      const oldBasename = path.basename(oldRelPath);
-      const newBasename = oldBasename.replace(/^\d+/, String(p.position).padStart(2, '0'));
-      targetRelPath = p.subfolderName
-        ? path.posix.join(folderName, p.subfolderName, newBasename)
-        : path.posix.join(folderName, newBasename);
-    } else {
-      targetRelPath = p.subfolderName
-        ? path.posix.join(folderName, p.subfolderName, p.targetFileName)
-        : path.posix.join(folderName, p.targetFileName);
-    }
+    const targetRelPath = p.subfolderName
+      ? path.posix.join(folderName, p.subfolderName, p.targetFileName)
+      : path.posix.join(folderName, p.targetFileName);
 
     const oldRelPath = findOldSyncPath(p.item, identifierMap);
     if (!oldRelPath || oldRelPath === targetRelPath) continue;
@@ -373,23 +449,37 @@ function reconcileExistingFiles(planned, moduleItems, moduleDir, folderName) {
   }
 
   if (fileRenames.length > 0) {
-    // Pass 1: rename to temp names
-    for (const r of fileRenames) {
-      const dir = path.dirname(r.newAbsPath);
-      if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-      r._tempPath = path.join(dir, tempPrefix + path.basename(r.newAbsPath));
-      fs.renameSync(r.oldAbsPath, r._tempPath);
-    }
-    // Pass 2: rename to final names
-    for (const r of fileRenames) {
-      fs.renameSync(r._tempPath, r.newAbsPath);
-      log.verbose(`Renamed: ${path.basename(r.oldRelPath)} -> ${path.basename(r.newRelPath)}`);
-
-      // Update sync key
-      if (moduleItems[r.oldRelPath]) {
-        moduleItems[r.newRelPath] = moduleItems[r.oldRelPath];
-        delete moduleItems[r.oldRelPath];
+    try {
+      // Pass 1: rename to temp names
+      for (const r of fileRenames) {
+        const dir = path.dirname(r.newAbsPath);
+        if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+        r._tempPath = path.join(dir, tempPrefix + path.basename(r.newAbsPath));
+        fs.renameSync(r.oldAbsPath, r._tempPath);
       }
+      // Pass 2: rename to final names
+      for (const r of fileRenames) {
+        fs.renameSync(r._tempPath, r.newAbsPath);
+        log.verbose(`Renamed: ${path.basename(r.oldRelPath)} -> ${path.basename(r.newRelPath)}`);
+
+        // Update sync key
+        if (moduleItems[r.oldRelPath]) {
+          moduleItems[r.newRelPath] = moduleItems[r.oldRelPath];
+          delete moduleItems[r.oldRelPath];
+        }
+      }
+    } catch (err) {
+      // Attempt to recover: rename temp files to their final names
+      for (const r of fileRenames) {
+        if (r._tempPath && fs.existsSync(r._tempPath)) {
+          try {
+            fs.renameSync(r._tempPath, r.newAbsPath);
+          } catch (_) {
+            // Leave temp file for next run's cleanup
+          }
+        }
+      }
+      throw err;
     }
   }
 
@@ -409,7 +499,37 @@ function isLocallyModified(filePath, syncData) {
   return stat.mtime > lastSync;
 }
 
-async function pullItem(courseId, item, moduleDir, position, syncData, force, folderName, canvasToRelative, canvasToLocal) {
+/**
+ * Pull a File item from Canvas (download the binary file).
+ */
+async function pullFileItem(courseId, item, targetDir, targetFileName, syncData, force, folderName) {
+  const title = item.title || 'Untitled';
+  const contentId = item.content_id;
+  if (!contentId) {
+    console.log(`  [pull] Skipping file "${title}": no content_id`);
+    return;
+  }
+
+  const filePath = path.join(targetDir, targetFileName);
+
+  if (!force && isLocallyModified(filePath, syncData)) {
+    console.log(`    [pull] SKIPPED ${targetFileName} (locally modified since last sync, use --force to overwrite)`);
+    return;
+  }
+
+  log.verbose(`Downloading file: ${title}`);
+  await downloadFile(contentId, filePath);
+  log.verbose(`Wrote ${targetFileName}`);
+
+  // Update sync state
+  const relativePath = path.posix.join(folderName, path.relative(path.join(COURSE_DIR, folderName), filePath).split(path.sep).join('/'));
+  syncData.modules[folderName].items[relativePath] = {
+    canvas_id: contentId,
+    canvas_type: 'file',
+  };
+}
+
+async function pullItem(courseId, item, moduleDir, targetFileName, syncData, force, folderName, canvasToRelative, canvasToLocal) {
   const itemType = item.type;
   const title = item.title || 'Untitled';
 
@@ -420,22 +540,21 @@ async function pullItem(courseId, item, moduleDir, position, syncData, force, fo
       return;
     }
 
-    const fileName = toFileName(title, position);
-    const filePath = path.join(moduleDir, fileName);
+    const filePath = path.join(moduleDir, targetFileName);
 
     if (!force && isLocallyModified(filePath, syncData)) {
-      console.log(`    [pull] SKIPPED ${fileName} (locally modified since last sync, use --force to overwrite)`);
+      console.log(`    [pull] SKIPPED ${targetFileName} (locally modified since last sync, use --force to overwrite)`);
       return;
     }
 
     log.verbose(`Fetching page: ${title}`);
     const page = await getPage(courseId, pageUrl);
-    const relativePath = path.posix.join(folderName, path.relative(path.join(COURSE_DIR, folderName), path.join(moduleDir, fileName)).split(path.sep).join('/'));
+    const relativePath = path.posix.join(folderName, path.relative(path.join(COURSE_DIR, folderName), filePath).split(path.sep).join('/'));
     const linkResolver = (href) => resolveCanvasLink(href, relativePath, canvasToRelative);
     const fileResolver = await buildPullFileResolver(courseId, page.body || '', relativePath, folderName, syncData, canvasToLocal);
     const markdown = canvasItemToMarkdown(page, 'page', { linkResolver, fileResolver });
     fs.writeFileSync(filePath, markdown, 'utf8');
-    log.verbose(`Wrote ${fileName}`);
+    log.verbose(`Wrote ${targetFileName}`);
 
     // Update sync state so push knows this item exists
     syncData.modules[folderName].items[relativePath] = {
@@ -453,22 +572,21 @@ async function pullItem(courseId, item, moduleDir, position, syncData, force, fo
       return;
     }
 
-    const fileName = toFileName(title, position);
-    const filePath = path.join(moduleDir, fileName);
+    const filePath = path.join(moduleDir, targetFileName);
 
     if (!force && isLocallyModified(filePath, syncData)) {
-      console.log(`    [pull] SKIPPED ${fileName} (locally modified since last sync, use --force to overwrite)`);
+      console.log(`    [pull] SKIPPED ${targetFileName} (locally modified since last sync, use --force to overwrite)`);
       return;
     }
 
     log.verbose(`Fetching assignment: ${title}`);
     const assignment = await getAssignment(courseId, contentId);
-    const relativePath = path.posix.join(folderName, path.relative(path.join(COURSE_DIR, folderName), path.join(moduleDir, fileName)).split(path.sep).join('/'));
+    const relativePath = path.posix.join(folderName, path.relative(path.join(COURSE_DIR, folderName), filePath).split(path.sep).join('/'));
     const linkResolver = (href) => resolveCanvasLink(href, relativePath, canvasToRelative);
     const fileResolver = await buildPullFileResolver(courseId, assignment.description || '', relativePath, folderName, syncData, canvasToLocal);
     const markdown = canvasItemToMarkdown(assignment, 'assignment', { linkResolver, fileResolver });
     fs.writeFileSync(filePath, markdown, 'utf8');
-    log.verbose(`Wrote ${fileName}`);
+    log.verbose(`Wrote ${targetFileName}`);
 
     // Update sync state so push knows this item exists
     syncData.modules[folderName].items[relativePath] = {
@@ -479,11 +597,10 @@ async function pullItem(courseId, item, moduleDir, position, syncData, force, fo
   }
 
   if (itemType === 'ExternalUrl') {
-    const fileName = toFileName(title, position);
-    const filePath = path.join(moduleDir, fileName);
+    const filePath = path.join(moduleDir, targetFileName);
 
     if (!force && isLocallyModified(filePath, syncData)) {
-      console.log(`    [pull] SKIPPED ${fileName} (locally modified since last sync, use --force to overwrite)`);
+      console.log(`    [pull] SKIPPED ${targetFileName} (locally modified since last sync, use --force to overwrite)`);
       return;
     }
 
@@ -493,7 +610,7 @@ async function pullItem(courseId, item, moduleDir, position, syncData, force, fo
       'external_url'
     );
     fs.writeFileSync(filePath, markdown, 'utf8');
-    log.verbose(`Wrote ${fileName}`);
+    log.verbose(`Wrote ${targetFileName}`);
 
     // Update sync state so push knows this item exists
     const relativePath = path.posix.join(folderName, path.relative(path.join(COURSE_DIR, folderName), filePath).split(path.sep).join('/'));
@@ -505,7 +622,7 @@ async function pullItem(courseId, item, moduleDir, position, syncData, force, fo
     return;
   }
 
-  // File, Discussion, Quiz, ExternalTool, etc.
+  // Discussion, Quiz, ExternalTool, etc.
   log.warn(`  [pull] Skipping unsupported item type "${itemType}": ${title}`);
 }
 

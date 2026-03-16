@@ -344,7 +344,7 @@ async function pushItem(courseId, moduleId, item, dryRun, iconUrls, folderName, 
   } else if (canvasType === 'assignment') {
     await pushAssignment(courseId, moduleId, { title, filePath, relativePath, canvasId, position, indent, frontmatter }, dryRun, iconUrls, relativeToCanvas, unresolvedItems, syncData);
   } else if (canvasType === 'external_url') {
-    await pushExternalUrl(courseId, moduleId, { title, position, indent, frontmatter }, dryRun);
+    await pushExternalUrl(courseId, moduleId, { title, filePath, position, indent, frontmatter }, dryRun);
   } else if (canvasType === 'file') {
     await pushFile(courseId, moduleId, { title, filePath, relativePath, position, indent, folderName }, dryRun, syncData);
   } else {
@@ -514,7 +514,7 @@ function buildFileResolver(currentFilePath, syncData) {
   };
 }
 
-async function pushExternalUrl(courseId, moduleId, { title, position, indent, frontmatter }, dryRun) {
+async function pushExternalUrl(courseId, moduleId, { title, filePath, position, indent, frontmatter }, dryRun) {
   const url = frontmatter.external_url;
   if (!url) {
     console.warn(`  [push] WARNING: Skipping "${title}" — canvas_type is external_url but external_url field is missing in frontmatter`);
@@ -523,7 +523,7 @@ async function pushExternalUrl(courseId, moduleId, { title, position, indent, fr
 
   console.log(`  [push] Creating external URL module item: ${title} -> ${url}`);
   if (!dryRun) {
-    await createModuleItem(courseId, moduleId, {
+    const result = await createModuleItem(courseId, moduleId, {
       title,
       type: 'ExternalUrl',
       externalUrl: url,
@@ -531,6 +531,13 @@ async function pushExternalUrl(courseId, moduleId, { title, position, indent, fr
       indent,
       newTab: frontmatter.new_tab !== false,
     });
+
+    // Write canvas_id back to frontmatter so sync tracking picks up this item
+    if (result && result.id) {
+      updateFrontmatter(filePath, { canvas_id: result.id });
+      frontmatter.canvas_id = result.id;
+      log.verbose(`Wrote canvas_id=${result.id} to external URL item`);
+    }
   }
 }
 

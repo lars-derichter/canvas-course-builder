@@ -100,25 +100,34 @@ all pages exist, a second pass updates their HTML with correct links.
 2. Build reverse link map (Canvas URLs -> relative paths)
 3. Build reverse file map (Canvas file URLs -> local paths)
 4. For each module:
-   a. Create local folder if it doesn't exist
-   b. Phase 1 — Compute target state:
+   a. Detect module folder renames (position/name changed on Canvas)
+      - Match by canvas_module_id in sync state
+      - Rename old folder, migrate sync state keys
+   b. Create local folder if it doesn't exist
+   c. Phase 1 — Compute target state:
       - Walk Canvas items to assign local positions
         (separate counters for module-level and subfolder items)
       - Determine target filenames/folders for each item
-   c. Phase 2 — Reconcile existing files:
+        (all types: pages, assignments, external URLs, files)
+      - File items preserve their original extension
+   d. Phase 2 — Reconcile existing files:
+      - Clean up leftover temp files from previous failed runs
       - Match Canvas items to existing local files via sync state
-        (page_url for pages, canvas_id for assignments/others)
+        (page_url for pages, content_id for assignments/files,
+         external_url for links, canvas_id as fallback)
       - Rename files/folders whose positions changed
-        (two-pass via temp names to avoid collisions)
+        (two-pass via temp names to avoid collisions,
+         with try/catch recovery on failure)
       - Update sync state keys to reflect new paths
-   d. Phase 3 — Write content:
+   e. Phase 3 — Write content:
       - Skip locally modified files (mtime > last_sync)
-      - Fetch page/assignment content from Canvas
-      - Convert HTML to markdown (html-to-markdown.js)
-      - Resolve Canvas URLs back to relative paths
-      - Download embedded files to _files/
-      - Write markdown file with frontmatter
-   e. Save sync state after each module
+      - Pages/assignments: fetch HTML, convert to markdown,
+        resolve Canvas URLs back to relative paths,
+        download embedded files to _files/
+      - External URLs: write frontmatter-only markdown
+      - File items: download binary file from Canvas
+      - SubHeaders: create subfolder with _category_.json
+   f. Save sync state after each module
 5. Update last_sync timestamp
 ```
 
