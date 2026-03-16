@@ -72,15 +72,17 @@ Key properties:
 3. Build link map from sync state (link-resolver.js)
 4. For each module:
    a. Create or update the Canvas module
-   b. Upload embedded files from _files/ directories
-   c. For each item:
+   b. Clear existing module items (prevents duplicates on re-push;
+      module items are links — deleting them keeps the content)
+   c. Upload embedded files from _files/ directories
+   d. For each item:
       - Convert markdown to HTML (markdown-to-html.js)
       - Resolve internal .md links to Canvas URLs
       - Resolve file references to Canvas file URLs
       - Create or update the Canvas page/assignment
       - Write canvas_id back to frontmatter
       - Track items with unresolved links
-   d. Save sync state after each module
+   e. Save sync state after each module
 5. Second pass: re-push items with unresolved links
    (now resolvable because referenced pages exist)
 6. Prune: delete Canvas modules and items removed locally (if --prune)
@@ -99,14 +101,24 @@ all pages exist, a second pass updates their HTML with correct links.
 3. Build reverse file map (Canvas file URLs -> local paths)
 4. For each module:
    a. Create local folder if it doesn't exist
-   b. For each item:
+   b. Phase 1 — Compute target state:
+      - Walk Canvas items to assign local positions
+        (separate counters for module-level and subfolder items)
+      - Determine target filenames/folders for each item
+   c. Phase 2 — Reconcile existing files:
+      - Match Canvas items to existing local files via sync state
+        (page_url for pages, canvas_id for assignments/others)
+      - Rename files/folders whose positions changed
+        (two-pass via temp names to avoid collisions)
+      - Update sync state keys to reflect new paths
+   d. Phase 3 — Write content:
       - Skip locally modified files (mtime > last_sync)
       - Fetch page/assignment content from Canvas
       - Convert HTML to markdown (html-to-markdown.js)
       - Resolve Canvas URLs back to relative paths
       - Download embedded files to _files/
       - Write markdown file with frontmatter
-   c. Save sync state after each module
+   e. Save sync state after each module
 5. Update last_sync timestamp
 ```
 

@@ -208,6 +208,17 @@ async function pushModule(courseId, mod, syncData, dryRun, iconUrls, relativeToC
     syncData.modules[mod.folderName].items = syncData.modules[mod.folderName].items || {};
   }
 
+  // Clear existing module items to prevent duplicates on re-push.
+  // Module items are links within a module — deleting them does not delete
+  // the underlying pages, assignments, or files.
+  if (!dryRun && canvasModuleId) {
+    log.verbose('Clearing existing module items before re-push');
+    const existingItems = await listModuleItems(courseId, moduleId);
+    for (const mi of existingItems) {
+      await deleteModuleItem(courseId, moduleId, mi.id);
+    }
+  }
+
   // Upload embedded files (images, etc.) referenced from markdown content
   const flatItems = flattenItems(mod.items);
   const referencedFiles = new Set();
@@ -264,6 +275,10 @@ async function pushModule(courseId, mod, syncData, dryRun, iconUrls, relativeToC
         // Store page slug for link resolution (pages use slugs in URLs, not numeric IDs)
         if (item._pageUrl) {
           itemSync.page_url = item._pageUrl;
+        }
+        // Store external_url as stable identifier for ExternalUrl items
+        if (item.canvasType === 'external_url' && item.frontmatter.external_url) {
+          itemSync.external_url = item.frontmatter.external_url;
         }
         syncData.modules[mod.folderName].items[item.relativePath] = itemSync;
       }

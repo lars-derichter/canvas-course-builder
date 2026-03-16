@@ -118,6 +118,9 @@ async function pullModule(courseId, mod, syncData, force, canvasToRelative, canv
   // Track module in sync data
   syncData.modules[folderName] = syncData.modules[folderName] || {};
   syncData.modules[folderName].canvas_module_id = mod.id;
+  if (!syncData.modules[folderName].items) {
+    syncData.modules[folderName].items = {};
+  }
 
   // Write _category_.json for the module folder
   const categoryData = {
@@ -138,56 +141,259 @@ async function pullModule(courseId, mod, syncData, force, canvasToRelative, canv
   }
 
   const totalItems = items.length;
-  let itemPosition = 0;
-  let currentSubfolder = null; // Track active subfolder for indented items
+
+  // ---- Phase 1: Compute target state ----
+  // Walk items to determine what filenames/folders each item should have,
+  // without writing anything yet.
+  const planned = [];
+  let modulePosition = 0;
+  let subfolderPosition = 0;
+  let currentSubfolderName = null;
 
   for (let ii = 0; ii < items.length; ii++) {
     const item = items[ii];
-    itemPosition++;
-    log.verbose(`Item ${ii + 1}/${totalItems}: ${item.title || item.type}`);
 
     if (item.type === 'SubHeader') {
-      // Create a subfolder for this SubHeader
-      const subfolderName = toFolderName(item.title, itemPosition);
-      const subfolderDir = path.join(moduleDir, subfolderName);
-
-      log.verbose(`SubHeader: ${item.title} -> ${subfolderName}/`);
-
-      if (!fs.existsSync(subfolderDir)) {
-        fs.mkdirSync(subfolderDir, { recursive: true });
-      }
-
-      // Write _category_.json for the subfolder
-      const categoryData = {
-        label: item.title,
-        position: itemPosition,
-      };
-      fs.writeFileSync(
-        path.join(subfolderDir, '_category_.json'),
-        JSON.stringify(categoryData, null, 2) + '\n',
-        'utf8'
-      );
-
-      currentSubfolder = subfolderDir;
+      modulePosition++;
+      subfolderPosition = 0;
+      currentSubfolderName = toFolderName(item.title, modulePosition);
+      planned.push({
+        kind: 'subfolder',
+        item,
+        targetFolderName: currentSubfolderName,
+        position: modulePosition,
+        index: ii,
+      });
       continue;
     }
 
-    // Items with indent > 0 go into the current subfolder
-    const targetDir = (item.indent > 0 && currentSubfolder)
-      ? currentSubfolder
-      : moduleDir;
+    let pos, targetDir, subfolderName;
+    if (item.indent > 0 && currentSubfolderName) {
+      subfolderPosition++;
+      pos = subfolderPosition;
+      targetDir = path.join(moduleDir, currentSubfolderName);
+      subfolderName = currentSubfolderName;
+    } else {
+      currentSubfolderName = null;
+      modulePosition++;
+      pos = modulePosition;
+      targetDir = moduleDir;
+      subfolderName = null;
+    }
 
-    // If indent is 0, we're no longer inside a subfolder
-    if (item.indent === 0) {
-      currentSubfolder = null;
+    if (item.type === 'File') {
+      planned.push({
+        kind: 'file',
+        item,
+        position: pos,
+        targetDir,
+        subfolderName,
+        index: ii,
+      });
+      continue;
+    }
+
+    planned.push({
+      kind: 'content',
+      item,
+      targetFileName: toFileName(item.title || 'Untitled', pos),
+      targetDir,
+      position: pos,
+      subfolderName,
+      index: ii,
+    });
+  }
+
+  // ---- Phase 2: Rename existing files to match new Canvas positions ----
+  const moduleItems = syncData.modules[folderName].items;
+  const renamed = reconcileExistingFiles(planned, moduleItems, moduleDir, folderName);
+
+  // Rebuild link maps if files were renamed so link resolution uses updated paths
+  if (renamed) {
+    const { canvasToRelative: newLinkMap } = buildLinkMap(syncData);
+    canvasToRelative.clear();
+    for (const [k, v] of newLinkMap) canvasToRelative.set(k, v);
+  }
+
+  // ---- Phase 3: Write content ----
+  for (const p of planned) {
+    log.verbose(`Item ${p.index + 1}/${totalItems}: ${p.item.title || p.item.type}`);
+
+    if (p.kind === 'subfolder') {
+      const subfolderDir = path.join(moduleDir, p.targetFolderName);
+      if (!fs.existsSync(subfolderDir)) {
+        fs.mkdirSync(subfolderDir, { recursive: true });
+      }
+      log.verbose(`SubHeader: ${p.item.title} -> ${p.targetFolderName}/`);
+      const catData = { label: p.item.title, position: p.position };
+      fs.writeFileSync(
+        path.join(subfolderDir, '_category_.json'),
+        JSON.stringify(catData, null, 2) + '\n',
+        'utf8'
+      );
+      continue;
+    }
+
+    if (p.kind === 'file') {
+      log.warn(`  [pull] Skipping unsupported item type "File": ${p.item.title}`);
+      continue;
     }
 
     try {
-      await pullItem(courseId, item, targetDir, itemPosition, syncData, force, folderName, canvasToRelative, canvasToLocal);
+      await pullItem(courseId, p.item, p.targetDir, p.position, syncData, force, folderName, canvasToRelative, canvasToLocal);
     } catch (err) {
-      console.error(`  [pull] Error pulling item "${item.title || 'unknown'}": ${err.message}`);
+      console.error(`  [pull] Error pulling item "${p.item.title || 'unknown'}": ${err.message}`);
     }
   }
+}
+
+/**
+ * Find the old sync-state relative path for a Canvas item by matching identifiers.
+ */
+function findOldSyncPath(item, identifierMap) {
+  if (item.page_url) {
+    const found = identifierMap.get('page:' + item.page_url);
+    if (found) return found;
+  }
+  if (item.external_url) {
+    const found = identifierMap.get('url:' + item.external_url);
+    if (found) return found;
+  }
+  if (item.content_id) {
+    const found = identifierMap.get('id:' + item.content_id);
+    if (found) return found;
+  }
+  if (item.id) {
+    const found = identifierMap.get('id:' + item.id);
+    if (found) return found;
+  }
+  return null;
+}
+
+/**
+ * Rename existing local files/folders to match new Canvas positions.
+ * Uses a two-pass temp-name approach to avoid collisions.
+ * Returns true if any renames were performed.
+ */
+function reconcileExistingFiles(planned, moduleItems, moduleDir, folderName) {
+  // Build reverse lookup: identifier -> old relative path
+  const identifierMap = new Map();
+  for (const [relPath, data] of Object.entries(moduleItems)) {
+    if (data.page_url) identifierMap.set('page:' + data.page_url, relPath);
+    if (data.external_url) identifierMap.set('url:' + data.external_url, relPath);
+    if (data.canvas_id != null) identifierMap.set('id:' + data.canvas_id, relPath);
+  }
+
+  const tempPrefix = '__pull_temp_';
+
+  // ---- Subfolder renames ----
+  const subfolderRenames = [];
+  for (const p of planned) {
+    if (p.kind !== 'subfolder') continue;
+
+    // Find old subfolder name by checking sync paths of children
+    const children = planned.filter(
+      c => c.kind !== 'subfolder' && c.subfolderName === p.targetFolderName
+    );
+    for (const child of children) {
+      const oldRelPath = findOldSyncPath(child.item, identifierMap);
+      if (!oldRelPath) continue;
+
+      // Extract subfolder from "01-mod/04-sub/01-file.md" -> "04-sub"
+      const relToModule = oldRelPath.slice(folderName.length + 1);
+      const slashIdx = relToModule.indexOf('/');
+      if (slashIdx > 0) {
+        const oldSubName = relToModule.slice(0, slashIdx);
+        if (oldSubName !== p.targetFolderName &&
+            fs.existsSync(path.join(moduleDir, oldSubName))) {
+          subfolderRenames.push({ oldName: oldSubName, newName: p.targetFolderName });
+        }
+      }
+      break; // only need one child to identify the old subfolder
+    }
+  }
+
+  // Execute subfolder renames (two-pass)
+  if (subfolderRenames.length > 0) {
+    for (const sr of subfolderRenames) {
+      sr._tempName = tempPrefix + sr.newName;
+      fs.renameSync(path.join(moduleDir, sr.oldName), path.join(moduleDir, sr._tempName));
+    }
+    for (const sr of subfolderRenames) {
+      fs.renameSync(path.join(moduleDir, sr._tempName), path.join(moduleDir, sr.newName));
+      log.verbose(`Renamed subfolder: ${sr.oldName}/ -> ${sr.newName}/`);
+
+      // Update sync keys and identifier map values
+      const oldPrefix = folderName + '/' + sr.oldName + '/';
+      const newPrefix = folderName + '/' + sr.newName + '/';
+      for (const key of Object.keys(moduleItems)) {
+        if (key.startsWith(oldPrefix)) {
+          const newKey = newPrefix + key.slice(oldPrefix.length);
+          moduleItems[newKey] = moduleItems[key];
+          delete moduleItems[key];
+        }
+      }
+      for (const [id, relPath] of identifierMap) {
+        if (relPath.startsWith(oldPrefix)) {
+          identifierMap.set(id, newPrefix + relPath.slice(oldPrefix.length));
+        }
+      }
+    }
+  }
+
+  // ---- File renames ----
+  const fileRenames = [];
+  for (const p of planned) {
+    if (p.kind === 'subfolder') continue;
+
+    let targetRelPath;
+    if (p.kind === 'file') {
+      // For File items, derive target name from old filename (preserve extension)
+      const oldRelPath = findOldSyncPath(p.item, identifierMap);
+      if (!oldRelPath) continue;
+      const oldBasename = path.basename(oldRelPath);
+      const newBasename = oldBasename.replace(/^\d+/, String(p.position).padStart(2, '0'));
+      targetRelPath = p.subfolderName
+        ? path.posix.join(folderName, p.subfolderName, newBasename)
+        : path.posix.join(folderName, newBasename);
+    } else {
+      targetRelPath = p.subfolderName
+        ? path.posix.join(folderName, p.subfolderName, p.targetFileName)
+        : path.posix.join(folderName, p.targetFileName);
+    }
+
+    const oldRelPath = findOldSyncPath(p.item, identifierMap);
+    if (!oldRelPath || oldRelPath === targetRelPath) continue;
+
+    const oldAbsPath = path.resolve(COURSE_DIR, oldRelPath);
+    const newAbsPath = path.resolve(COURSE_DIR, targetRelPath);
+    if (!fs.existsSync(oldAbsPath)) continue;
+
+    fileRenames.push({ oldAbsPath, newAbsPath, oldRelPath, newRelPath: targetRelPath });
+  }
+
+  if (fileRenames.length > 0) {
+    // Pass 1: rename to temp names
+    for (const r of fileRenames) {
+      const dir = path.dirname(r.newAbsPath);
+      if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+      r._tempPath = path.join(dir, tempPrefix + path.basename(r.newAbsPath));
+      fs.renameSync(r.oldAbsPath, r._tempPath);
+    }
+    // Pass 2: rename to final names
+    for (const r of fileRenames) {
+      fs.renameSync(r._tempPath, r.newAbsPath);
+      log.verbose(`Renamed: ${path.basename(r.oldRelPath)} -> ${path.basename(r.newRelPath)}`);
+
+      // Update sync key
+      if (moduleItems[r.oldRelPath]) {
+        moduleItems[r.newRelPath] = moduleItems[r.oldRelPath];
+        delete moduleItems[r.oldRelPath];
+      }
+    }
+  }
+
+  return subfolderRenames.length > 0 || fileRenames.length > 0;
 }
 
 /**
@@ -230,6 +436,13 @@ async function pullItem(courseId, item, moduleDir, position, syncData, force, fo
     const markdown = canvasItemToMarkdown(page, 'page', { linkResolver, fileResolver });
     fs.writeFileSync(filePath, markdown, 'utf8');
     log.verbose(`Wrote ${fileName}`);
+
+    // Update sync state so push knows this item exists
+    syncData.modules[folderName].items[relativePath] = {
+      canvas_id: page.page_id || page.url,
+      canvas_type: 'page',
+      page_url: pageUrl,
+    };
     return;
   }
 
@@ -256,6 +469,12 @@ async function pullItem(courseId, item, moduleDir, position, syncData, force, fo
     const markdown = canvasItemToMarkdown(assignment, 'assignment', { linkResolver, fileResolver });
     fs.writeFileSync(filePath, markdown, 'utf8');
     log.verbose(`Wrote ${fileName}`);
+
+    // Update sync state so push knows this item exists
+    syncData.modules[folderName].items[relativePath] = {
+      canvas_id: contentId,
+      canvas_type: 'assignment',
+    };
     return;
   }
 
@@ -275,6 +494,14 @@ async function pullItem(courseId, item, moduleDir, position, syncData, force, fo
     );
     fs.writeFileSync(filePath, markdown, 'utf8');
     log.verbose(`Wrote ${fileName}`);
+
+    // Update sync state so push knows this item exists
+    const relativePath = path.posix.join(folderName, path.relative(path.join(COURSE_DIR, folderName), filePath).split(path.sep).join('/'));
+    syncData.modules[folderName].items[relativePath] = {
+      canvas_id: item.id,
+      canvas_type: 'external_url',
+      external_url: item.external_url,
+    };
     return;
   }
 
@@ -292,6 +519,13 @@ async function buildPullFileResolver(courseId, html, currentFilePath, folderName
   let match;
   while ((match = filePattern.exec(html)) !== null) {
     fileIds.add(match[1]);
+  }
+
+  // Exclude alert icon file IDs — these are handled by html-to-markdown conversion
+  if (syncData.icons) {
+    for (const icon of Object.values(syncData.icons)) {
+      fileIds.delete(String(icon.canvas_file_id));
+    }
   }
 
   if (fileIds.size === 0) return null;
