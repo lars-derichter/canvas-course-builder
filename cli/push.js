@@ -3,7 +3,7 @@ const path = require('path');
 const readline = require('readline');
 
 const { scanCourse } = require('../lib/convert/course-scanner');
-const { parseFrontmatter, updateFrontmatter } = require('../lib/convert/frontmatter');
+const { updateFrontmatter } = require('../lib/convert/frontmatter');
 const { markdownToHtml } = require('../lib/convert/markdown-to-html');
 const { createModule, updateModule, createModuleItem, deleteModule: deleteCanvasModule, listModuleItems, deleteModuleItem } = require('../lib/canvas/modules');
 const { createPage, updatePage, deletePage } = require('../lib/canvas/pages');
@@ -12,14 +12,13 @@ const { uploadFile, deleteFile } = require('../lib/canvas/files');
 const { ensureIcons, getIconUrls } = require('../lib/canvas/icons');
 const { buildLinkMap, resolveRelativeLink, extractFileReferences } = require('../lib/convert/link-resolver');
 const { SYNC_FILE, loadSyncFile, saveSyncFile } = require('./sync-utils');
+const { COURSE_DIR } = require('./module-utils');
 const log = require('./logger');
-
-const COURSE_DIR = path.resolve(process.cwd(), 'course');
 
 async function push(options) {
   const courseId = process.env.CANVAS_COURSE_ID;
   if (!courseId) {
-    console.error('[push] Error: CANVAS_COURSE_ID is not set. Run "npx course init" first.');
+    log.error('[push] Error: CANVAS_COURSE_ID is not set. Run "npx course init" first.');
     process.exit(1);
   }
 
@@ -31,7 +30,7 @@ async function push(options) {
   const modules = scanCourse(COURSE_DIR);
 
   if (modules.length === 0) {
-    console.log('[push] No modules found in course/ directory.');
+    log.info('[push] No modules found in course/ directory.');
     return;
   }
 
@@ -40,12 +39,12 @@ async function push(options) {
     : modules;
 
   if (moduleFilter && filteredModules.length === 0) {
-    console.error(`[push] Error: Module "${moduleFilter}" not found in course/ directory.`);
+    log.error(`[push] Error: Module "${moduleFilter}" not found in course/ directory.`);
     process.exit(1);
   }
 
-  console.log(`[push] Found ${filteredModules.length} module(s) to push.`);
-  if (dryRun) console.log('[push] DRY RUN - no changes will be made.\n');
+  log.info(`[push] Found ${filteredModules.length} module(s) to push.`);
+  if (dryRun) log.info('[push] DRY RUN - no changes will be made.\n');
 
   // Ensure alert icons are uploaded to Canvas
   if (!dryRun) {
@@ -91,11 +90,11 @@ async function push(options) {
 
   for (let mi = 0; mi < filteredModules.length; mi++) {
     const mod = filteredModules[mi];
-    console.log(`\n[push] Module ${mi + 1}/${totalModules}: ${mod.moduleName}`);
+    log.info(`\n[push] Module ${mi + 1}/${totalModules}: ${mod.moduleName}`);
     try {
       await pushModule(courseId, mod, syncData, dryRun, iconUrls, relativeToCanvas, unresolvedItems);
     } catch (err) {
-      console.error(`[push] Error pushing module "${mod.moduleName}": ${err.message}`);
+      log.error(`[push] Error pushing module "${mod.moduleName}": ${err.message}`);
       errors.push({ module: mod.moduleName, error: err.message });
     }
     // Save sync state after each module so progress is preserved on failure
@@ -106,15 +105,15 @@ async function push(options) {
 
   // Report unresolved links in dry-run mode
   if (unresolvedItems.length > 0 && dryRun) {
-    console.log(`\n[push] ${unresolvedItems.length} item(s) have unresolved internal links (will be resolved in a second pass during actual push):`);
+    log.info(`\n[push] ${unresolvedItems.length} item(s) have unresolved internal links (will be resolved in a second pass during actual push):`);
     for (const { relativePath } of unresolvedItems) {
-      console.log(`  - ${relativePath}`);
+      log.info(`  - ${relativePath}`);
     }
   }
 
   // Second pass: re-push items that had unresolved internal links
   if (unresolvedItems.length > 0 && !dryRun) {
-    console.log(`\n[push] Resolving internal links for ${unresolvedItems.length} item(s) that referenced newly-created pages...`);
+    log.info(`\n[push] Resolving internal links for ${unresolvedItems.length} item(s) that referenced newly-created pages...`);
     ({ relativeToCanvas } = buildLinkMap(syncData));
 
     for (const { courseId: cId, relativePath, filePath, canvasId, canvasType, iconUrls: iu } of unresolvedItems) {
@@ -132,9 +131,9 @@ async function push(options) {
         } else if (canvasType === 'assignment') {
           await updateAssignment(cId, canvasId, { description: html });
         }
-        console.log(`  [push] Updated links in: ${relativePath}`);
+        log.info(`  [push] Updated links in: ${relativePath}`);
       } catch (err) {
-        console.error(`  [push] Error updating links in "${relativePath}": ${err.message}`);
+        log.error(`  [push] Error updating links in "${relativePath}": ${err.message}`);
         errors.push({ module: relativePath, error: err.message });
       }
     }
@@ -150,16 +149,16 @@ async function push(options) {
 
   if (!dryRun) {
     saveSyncFile(syncData);
-    console.log(`\n[push] Sync file updated: ${SYNC_FILE}`);
+    log.info(`\n[push] Sync file updated: ${SYNC_FILE}`);
   }
 
   if (errors.length > 0) {
-    console.log(`\n[push] Completed with ${errors.length} error(s):`);
+    log.info(`\n[push] Completed with ${errors.length} error(s):`);
     for (const e of errors) {
-      console.log(`  - ${e.module}: ${e.error}`);
+      log.info(`  - ${e.module}: ${e.error}`);
     }
   } else {
-    console.log('[push] Done.');
+    log.info('[push] Done.');
   }
 }
 
@@ -170,7 +169,7 @@ async function pushModule(courseId, mod, syncData, dryRun, iconUrls, relativeToC
   let moduleId;
 
   if (canvasModuleId) {
-    console.log(`[push] Updating module: ${mod.moduleName} (id: ${canvasModuleId})`);
+    log.info(`[push] Updating module: ${mod.moduleName} (id: ${canvasModuleId})`);
     if (!dryRun) {
       try {
         const result = await updateModule(courseId, canvasModuleId, {
@@ -180,7 +179,7 @@ async function pushModule(courseId, mod, syncData, dryRun, iconUrls, relativeToC
         moduleId = result.id;
       } catch (err) {
         if (err.message.includes('404')) {
-          console.warn(`[push] Module ${canvasModuleId} not found on Canvas, creating new`);
+          log.warn(`[push] Module ${canvasModuleId} not found on Canvas, creating new`);
         } else {
           throw err;
         }
@@ -191,7 +190,7 @@ async function pushModule(courseId, mod, syncData, dryRun, iconUrls, relativeToC
   }
 
   if (!moduleId && !dryRun) {
-    console.log(`[push] Creating module: ${mod.moduleName}`);
+    log.info(`[push] Creating module: ${mod.moduleName}`);
     const result = await createModule(courseId, {
       name: mod.moduleName,
       position: mod.position,
@@ -239,7 +238,7 @@ async function pushModule(courseId, mod, syncData, dryRun, iconUrls, relativeToC
     for (const ref of referencedFiles) {
       const localPath = path.resolve(COURSE_DIR, ref);
       if (!fs.existsSync(localPath)) {
-        console.warn(`  [push] WARNING: Referenced file not found: ${ref}`);
+        log.warn(`  [push] WARNING: Referenced file not found: ${ref}`);
         continue;
       }
       if (syncData.files[ref]) continue; // Already uploaded
@@ -252,7 +251,7 @@ async function pushModule(courseId, mod, syncData, dryRun, iconUrls, relativeToC
           canvas_url: `/courses/${courseId}/files/${result.id}/preview`,
         };
       } catch (err) {
-        console.error(`  [push] Error uploading file "${ref}": ${err.message}`);
+        log.error(`  [push] Error uploading file "${ref}": ${err.message}`);
       }
     }
   }
@@ -283,7 +282,7 @@ async function pushModule(courseId, mod, syncData, dryRun, iconUrls, relativeToC
         syncData.modules[mod.folderName].items[item.relativePath] = itemSync;
       }
     } catch (err) {
-      console.error(`  [push] Error pushing item "${itemTitle}": ${err.message}`);
+      log.error(`  [push] Error pushing item "${itemTitle}": ${err.message}`);
     }
   }
 }
@@ -339,10 +338,10 @@ async function pushItem(courseId, moduleId, item, dryRun, iconUrls, folderName, 
   const canvasId = frontmatter.canvas_id || null;
 
   if (canvasType === 'page') {
-    const pageUrl = await pushPage(courseId, moduleId, { title, filePath, relativePath, canvasId, position, indent, frontmatter }, dryRun, iconUrls, relativeToCanvas, unresolvedItems, syncData);
+    const pageUrl = await pushContentItem(courseId, moduleId, { title, filePath, relativePath, canvasId, position, indent, frontmatter }, dryRun, iconUrls, relativeToCanvas, unresolvedItems, syncData, pageStrategy);
     if (pageUrl) item._pageUrl = pageUrl;
   } else if (canvasType === 'assignment') {
-    await pushAssignment(courseId, moduleId, { title, filePath, relativePath, canvasId, position, indent, frontmatter }, dryRun, iconUrls, relativeToCanvas, unresolvedItems, syncData);
+    await pushContentItem(courseId, moduleId, { title, filePath, relativePath, canvasId, position, indent, frontmatter }, dryRun, iconUrls, relativeToCanvas, unresolvedItems, syncData, assignmentStrategy);
   } else if (canvasType === 'external_url') {
     await pushExternalUrl(courseId, moduleId, { title, filePath, position, indent, frontmatter }, dryRun);
   } else if (canvasType === 'file') {
@@ -352,35 +351,37 @@ async function pushItem(courseId, moduleId, item, dryRun, iconUrls, folderName, 
   }
 }
 
-async function pushPage(courseId, moduleId, { title, filePath, relativePath, canvasId, position, indent, frontmatter }, dryRun, iconUrls, relativeToCanvas, unresolvedItems, syncData) {
+/**
+ * Push a content item (page or assignment) to Canvas.
+ * Handles create-or-update, module item creation, and unresolved link tracking.
+ * Returns the page slug (for pages) or null.
+ */
+async function pushContentItem(courseId, moduleId, { title, filePath, relativePath, canvasId, position, indent, frontmatter }, dryRun, iconUrls, relativeToCanvas, unresolvedItems, syncData, strategy) {
   const raw = fs.readFileSync(filePath, 'utf8');
 
-  // Create link resolver that tracks unresolved internal links
   let hasUnresolved = false;
   const linkResolver = (href) => {
     const { resolved, wasInternal } = resolveRelativeLink(href, relativePath, relativeToCanvas, courseId);
     if (wasInternal) hasUnresolved = true;
     return resolved;
   };
-
-  // Create file resolver for images and non-.md file references
   const fileResolver = buildFileResolver(relativePath, syncData);
-
   const html = markdownToHtml(raw, { iconUrls, linkResolver, fileResolver });
 
-  let pageId = canvasId;
-  let pageSlug = null;
+  const opts = strategy.buildOpts(title, html, frontmatter);
+  let itemId = canvasId;
+  let slug = null;
 
   if (canvasId) {
-    log.verbose(`Updating page: ${title} (id: ${canvasId})`);
+    log.verbose(`Updating ${strategy.canvasType}: ${title} (id: ${canvasId})`);
     if (!dryRun) {
       try {
-        const result = await updatePage(courseId, canvasId, { title, body: html });
-        pageId = result.page_id || result.url;
-        pageSlug = result.url;
+        const result = await strategy.update(courseId, canvasId, opts);
+        itemId = strategy.extractId(result);
+        slug = strategy.extractSlug ? strategy.extractSlug(result) : null;
       } catch (err) {
         if (err.message.includes('404')) {
-          console.warn(`    [push] Page ${canvasId} not found on Canvas, creating new`);
+          log.warn(`    [push] ${strategy.label} ${canvasId} not found on Canvas, creating new`);
           canvasId = null;
         } else {
           throw err;
@@ -390,110 +391,62 @@ async function pushPage(courseId, moduleId, { title, filePath, relativePath, can
   }
 
   if (!canvasId) {
-    log.verbose(`Creating page: ${title}`);
+    log.verbose(`Creating ${strategy.canvasType}: ${title}`);
     if (!dryRun) {
-      const result = await createPage(courseId, { title, body: html });
-      pageId = result.page_id || result.url;
-      pageSlug = result.url;
-      // Write canvas_id back to frontmatter
-      updateFrontmatter(filePath, { canvas_id: pageId });
-      frontmatter.canvas_id = pageId;
-      log.verbose(`Wrote canvas_id=${pageId} to ${relativePath}`);
+      const result = await strategy.create(courseId, opts);
+      itemId = strategy.extractId(result);
+      slug = strategy.extractSlug ? strategy.extractSlug(result) : null;
+      updateFrontmatter(filePath, { canvas_id: itemId });
+      frontmatter.canvas_id = itemId;
+      log.verbose(`Wrote canvas_id=${itemId} to ${relativePath}`);
     }
   }
 
-  // Create module item linking to the page (Canvas requires page_url for Page type)
-  if (!dryRun && pageSlug) {
-    await createModuleItem(courseId, moduleId, {
-      title,
-      type: 'Page',
-      pageUrl: pageSlug,
-      position,
-      indent,
-    });
+  if (!dryRun && (slug || itemId)) {
+    await createModuleItem(courseId, moduleId, strategy.buildModuleItem(title, slug || itemId, position, indent));
   }
 
-  // Track for second pass if there were unresolved internal links
-  if (hasUnresolved && !dryRun && pageId) {
-    unresolvedItems.push({ courseId, relativePath, filePath, canvasId: pageId, canvasType: 'page', iconUrls });
+  if (hasUnresolved && !dryRun && itemId) {
+    unresolvedItems.push({ courseId, relativePath, filePath, canvasId: itemId, canvasType: strategy.canvasType, iconUrls });
   }
 
-  return pageSlug || null;
+  return slug || null;
 }
 
-async function pushAssignment(courseId, moduleId, { title, filePath, relativePath, canvasId, position, indent, frontmatter }, dryRun, iconUrls, relativeToCanvas, unresolvedItems, syncData) {
-  const raw = fs.readFileSync(filePath, 'utf8');
+/** Strategy for pushing pages. */
+const pageStrategy = {
+  canvasType: 'page',
+  label: 'Page',
+  buildOpts: (title, html) => ({ title, body: html }),
+  create: createPage,
+  update: updatePage,
+  extractId: (result) => result.page_id || result.url,
+  extractSlug: (result) => result.url,
+  buildModuleItem: (title, slug, position, indent) => ({
+    title, type: 'Page', pageUrl: slug, position, indent,
+  }),
+};
 
-  // Create link resolver that tracks unresolved internal links
-  let hasUnresolved = false;
-  const linkResolver = (href) => {
-    const { resolved, wasInternal } = resolveRelativeLink(href, relativePath, relativeToCanvas, courseId);
-    if (wasInternal) hasUnresolved = true;
-    return resolved;
-  };
-
-  // Create file resolver for images and non-.md file references
-  const fileResolver = buildFileResolver(relativePath, syncData);
-
-  const html = markdownToHtml(raw, { iconUrls, linkResolver, fileResolver });
-
-  const assignmentOpts = {
-    name: title,
-    description: html,
-  };
-
-  // Map frontmatter fields to assignment options
-  if (frontmatter.points_possible != null) assignmentOpts.pointsPossible = frontmatter.points_possible;
-  if (frontmatter.submission_types) assignmentOpts.submissionTypes = frontmatter.submission_types;
-  if (frontmatter.due_at) assignmentOpts.dueAt = frontmatter.due_at;
-  if (frontmatter.published != null) assignmentOpts.published = frontmatter.published;
-
-  let assignmentId = canvasId;
-
-  if (canvasId) {
-    log.verbose(`Updating assignment: ${title} (id: ${canvasId})`);
-    if (!dryRun) {
-      try {
-        const result = await updateAssignment(courseId, canvasId, assignmentOpts);
-        assignmentId = result.id;
-      } catch (err) {
-        if (err.message.includes('404')) {
-          console.warn(`    [push] Assignment ${canvasId} not found on Canvas, creating new`);
-          canvasId = null;
-        } else {
-          throw err;
-        }
-      }
-    }
-  }
-
-  if (!canvasId) {
-    log.verbose(`Creating assignment: ${title}`);
-    if (!dryRun) {
-      const result = await createAssignment(courseId, assignmentOpts);
-      assignmentId = result.id;
-      updateFrontmatter(filePath, { canvas_id: assignmentId });
-      frontmatter.canvas_id = assignmentId;
-      log.verbose(`Wrote canvas_id=${assignmentId} to ${relativePath}`);
-    }
-  }
-
-  // Create module item linking to the assignment
-  if (!dryRun && assignmentId) {
-    await createModuleItem(courseId, moduleId, {
-      title,
-      type: 'Assignment',
-      contentId: assignmentId,
-      position,
-      indent,
-    });
-  }
-
-  // Track for second pass if there were unresolved internal links
-  if (hasUnresolved && !dryRun && assignmentId) {
-    unresolvedItems.push({ courseId, relativePath, filePath, canvasId: assignmentId, canvasType: 'assignment', iconUrls });
-  }
-}
+/** Strategy for pushing assignments. */
+const assignmentStrategy = {
+  canvasType: 'assignment',
+  label: 'Assignment',
+  buildOpts: (title, html, frontmatter) => {
+    const opts = { name: title, description: html };
+    if (frontmatter.points_possible != null) opts.pointsPossible = frontmatter.points_possible;
+    if (frontmatter.submission_types) opts.submissionTypes = frontmatter.submission_types;
+    if (frontmatter.due_at) opts.dueAt = frontmatter.due_at;
+    if (frontmatter.published != null) opts.published = frontmatter.published;
+    return opts;
+  },
+  create: createAssignment,
+  update: updateAssignment,
+  extractId: (result) => result.id,
+  extractSlug: null,
+  buildModuleItem: (title, contentId, position, indent) => ({
+    title, type: 'Assignment', contentId, position, indent,
+  }),
+};
 
 /**
  * Build a file resolver callback for a given markdown file.
@@ -517,11 +470,11 @@ function buildFileResolver(currentFilePath, syncData) {
 async function pushExternalUrl(courseId, moduleId, { title, filePath, position, indent, frontmatter }, dryRun) {
   const url = frontmatter.external_url;
   if (!url) {
-    console.warn(`  [push] WARNING: Skipping "${title}" — canvas_type is external_url but external_url field is missing in frontmatter`);
+    log.warn(`  [push] WARNING: Skipping "${title}" — canvas_type is external_url but external_url field is missing in frontmatter`);
     return;
   }
 
-  console.log(`  [push] Creating external URL module item: ${title} -> ${url}`);
+  log.info(`  [push] Creating external URL module item: ${title} -> ${url}`);
   if (!dryRun) {
     const result = await createModuleItem(courseId, moduleId, {
       title,
@@ -542,7 +495,7 @@ async function pushExternalUrl(courseId, moduleId, { title, filePath, position, 
 }
 
 async function pushFile(courseId, moduleId, { title, filePath, relativePath, position, indent, folderName }, dryRun, syncData) {
-  console.log(`  [push] Uploading file: ${title}`);
+  log.info(`  [push] Uploading file: ${title}`);
   if (!dryRun) {
     const result = await uploadFile(courseId, filePath, { parentFolderPath: folderName });
     const fileId = result.id;
@@ -554,7 +507,7 @@ async function pushFile(courseId, moduleId, { title, filePath, relativePath, pos
       position,
       indent,
     });
-    console.log(`    [push] Uploaded file id=${fileId}`);
+    log.info(`    [push] Uploaded file id=${fileId}`);
 
     // Track file item in sync state for pruning support
     if (relativePath && syncData.modules[folderName]) {
@@ -637,19 +590,19 @@ async function deleteCanvasItemByType(courseId, item, errors) {
       if (match) {
         await deleteModuleItem(courseId, item.moduleId, match.id);
       } else {
-        console.warn(`    [push] External URL item not found on Canvas, may already be deleted: ${item.relativePath}`);
+        log.warn(`    [push] External URL item not found on Canvas, may already be deleted: ${item.relativePath}`);
       }
     } else {
-      console.warn(`    [push] Unknown canvas_type "${item.canvasType}" for ${item.relativePath}, skipping`);
+      log.warn(`    [push] Unknown canvas_type "${item.canvasType}" for ${item.relativePath}, skipping`);
       return false;
     }
     return true;
   } catch (err) {
     if (err.message.includes('404')) {
-      console.warn(`    [push] Item already deleted from Canvas: ${item.relativePath}`);
+      log.warn(`    [push] Item already deleted from Canvas: ${item.relativePath}`);
       return true;
     }
-    console.error(`    [push] Error deleting item "${item.relativePath}": ${err.message}`);
+    log.error(`    [push] Error deleting item "${item.relativePath}": ${err.message}`);
     errors.push({ module: item.relativePath, error: err.message });
     return false;
   }
@@ -666,22 +619,22 @@ async function pruneDeleted(courseId, syncData, allModules, filteredModules, mod
   const itemsToDelete = collectDeletedItems(syncData, filteredModules);
 
   if (modulesToDelete.length === 0 && itemsToDelete.length === 0) {
-    console.log('\n[push] Prune: nothing to remove from Canvas.');
+    log.info('\n[push] Prune: nothing to remove from Canvas.');
     return;
   }
 
   // Display what will be deleted
   if (modulesToDelete.length > 0) {
-    console.log(`\n[push] Prune: ${modulesToDelete.length} locally-deleted module(s) to remove from Canvas:`);
+    log.info(`\n[push] Prune: ${modulesToDelete.length} locally-deleted module(s) to remove from Canvas:`);
     for (const { folder } of modulesToDelete) {
-      console.log(`  - ${folder} (entire module)`);
+      log.info(`  - ${folder} (entire module)`);
     }
   }
 
   if (itemsToDelete.length > 0) {
-    console.log(`\n[push] Prune: ${itemsToDelete.length} locally-deleted item(s) to remove from Canvas:`);
+    log.info(`\n[push] Prune: ${itemsToDelete.length} locally-deleted item(s) to remove from Canvas:`);
     for (const { relativePath, canvasType } of itemsToDelete) {
-      console.log(`  - ${relativePath} (${canvasType})`);
+      log.info(`  - ${relativePath} (${canvasType})`);
     }
   }
 
@@ -694,21 +647,21 @@ async function pruneDeleted(courseId, syncData, allModules, filteredModules, mod
     rl.close();
 
     if (answer.toLowerCase() !== 'y') {
-      console.log('[push] Prune cancelled.');
+      log.info('[push] Prune cancelled.');
       return;
     }
   }
 
   // Delete modules
   for (const { folder, canvasModuleId } of modulesToDelete) {
-    console.log(`  [push] Pruning module: ${folder} (canvas_module_id: ${canvasModuleId})`);
+    log.info(`  [push] Pruning module: ${folder} (canvas_module_id: ${canvasModuleId})`);
     if (!dryRun) {
       try {
         await deleteCanvasModule(courseId, canvasModuleId);
         delete syncData.modules[folder];
-        console.log(`    [push] Deleted from Canvas.`);
+        log.info(`    [push] Deleted from Canvas.`);
       } catch (err) {
-        console.error(`    [push] Error deleting module "${folder}": ${err.message}`);
+        log.error(`    [push] Error deleting module "${folder}": ${err.message}`);
         errors.push({ module: folder, error: err.message });
       }
     }
@@ -716,12 +669,12 @@ async function pruneDeleted(courseId, syncData, allModules, filteredModules, mod
 
   // Delete individual items
   for (const item of itemsToDelete) {
-    console.log(`  [push] Pruning item: ${item.relativePath} (${item.canvasType})`);
+    log.info(`  [push] Pruning item: ${item.relativePath} (${item.canvasType})`);
     if (!dryRun) {
       const success = await deleteCanvasItemByType(courseId, item, errors);
       if (success) {
         delete syncData.modules[item.folderName].items[item.relativePath];
-        console.log(`    [push] Deleted from Canvas.`);
+        log.info(`    [push] Deleted from Canvas.`);
       }
     }
   }
@@ -732,3 +685,6 @@ module.exports = push;
 push._collectDeletedModules = collectDeletedModules;
 push._collectDeletedItems = collectDeletedItems;
 push._deleteCanvasItemByType = deleteCanvasItemByType;
+push._buildFileResolver = buildFileResolver;
+push._pageStrategy = pageStrategy;
+push._assignmentStrategy = assignmentStrategy;

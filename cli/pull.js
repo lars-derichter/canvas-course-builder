@@ -4,72 +4,34 @@ const path = require('path');
 const { listModules, listModuleItems } = require('../lib/canvas/modules');
 const { listPages, getPage } = require('../lib/canvas/pages');
 const { getAssignment } = require('../lib/canvas/assignments');
+const { get } = require('../lib/canvas/client');
 const { canvasItemToMarkdown } = require('../lib/convert/html-to-markdown');
 const { buildLinkMap, resolveCanvasLink, buildFileMap } = require('../lib/convert/link-resolver');
 const { downloadFile } = require('../lib/canvas/files');
 const { SYNC_FILE, loadSyncFile, saveSyncFile } = require('./sync-utils');
+const { COURSE_DIR } = require('./module-utils');
+const { toFolderName, toFileName, toFileItemName, computeRelativePath } = require('./naming');
 const log = require('./logger');
-
-const COURSE_DIR = path.resolve(process.cwd(), 'course');
-
-/**
- * Create a numbered folder name from a module name and position.
- * "Introduction" at position 1 -> "01-introduction"
- */
-function toFolderName(name, position) {
-  const slug = name
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-  const prefix = String(position).padStart(2, '0');
-  return `${prefix}-${slug}`;
-}
-
-/**
- * Create a numbered file name from an item title and position.
- * "Welcome" at position 1 -> "01-welcome.md"
- */
-function toFileName(title, position) {
-  const slug = title
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-  const prefix = String(position).padStart(2, '0');
-  return `${prefix}-${slug}.md`;
-}
-
-/**
- * Create a numbered file name for a non-markdown file item, preserving the original extension.
- * "diagram.svg" at position 3 -> "03-diagram.svg"
- */
-function toFileItemName(title, position) {
-  const prefix = String(position).padStart(2, '0');
-  const slug = title
-    .toLowerCase()
-    .replace(/[^a-z0-9.]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-  return `${prefix}-${slug}`;
-}
 
 async function pull(options) {
   const courseId = process.env.CANVAS_COURSE_ID;
   if (!courseId) {
-    console.error('[pull] Error: CANVAS_COURSE_ID is not set. Run "npx course init" first.');
+    log.error('[pull] Error: CANVAS_COURSE_ID is not set. Run "npx course init" first.');
     process.exit(1);
   }
 
   const force = options && options.force;
   const syncData = loadSyncFile();
 
-  console.log(`[pull] Fetching modules for course ${courseId}...`);
+  log.info(`[pull] Fetching modules for course ${courseId}...`);
   const modules = await listModules(courseId);
 
   if (!modules || modules.length === 0) {
-    console.log('[pull] No modules found in Canvas course.');
+    log.info('[pull] No modules found in Canvas course.');
     return;
   }
 
-  console.log(`[pull] Found ${modules.length} module(s).\n`);
+  log.info(`[pull] Found ${modules.length} module(s).\n`);
 
   // Initialize file tracking
   if (!syncData.files) syncData.files = {};
@@ -104,11 +66,11 @@ async function pull(options) {
 
   for (let mi = 0; mi < modules.length; mi++) {
     const mod = modules[mi];
-    console.log(`[pull] Module ${mi + 1}/${totalModules}: ${mod.name}`);
+    log.info(`[pull] Module ${mi + 1}/${totalModules}: ${mod.name}`);
     try {
       await pullModule(courseId, mod, syncData, force, canvasToRelative, canvasToLocal, pageUrlToPageId);
     } catch (err) {
-      console.error(`[pull] Error pulling module "${mod.name}": ${err.message}`);
+      log.error(`[pull] Error pulling module "${mod.name}": ${err.message}`);
       errors.push({ module: mod.name, error: err.message });
     }
     // Save sync state after each module so progress is preserved on failure
@@ -119,15 +81,15 @@ async function pull(options) {
   syncData.last_sync = new Date().toISOString();
   saveSyncFile(syncData);
 
-  console.log(`\n[pull] Sync file updated: ${SYNC_FILE}`);
+  log.info(`\n[pull] Sync file updated: ${SYNC_FILE}`);
 
   if (errors.length > 0) {
-    console.log(`\n[pull] Completed with ${errors.length} error(s):`);
+    log.info(`\n[pull] Completed with ${errors.length} error(s):`);
     for (const e of errors) {
-      console.log(`  - ${e.module}: ${e.error}`);
+      log.info(`  - ${e.module}: ${e.error}`);
     }
   } else {
-    console.log('[pull] Done.');
+    log.info('[pull] Done.');
   }
 }
 
@@ -136,7 +98,7 @@ async function pullModule(courseId, mod, syncData, force, canvasToRelative, canv
   const folderName = toFolderName(mod.name, position);
   const moduleDir = path.join(COURSE_DIR, folderName);
 
-  console.log(`[pull] Module: ${mod.name} -> ${folderName}/`);
+  log.info(`[pull] Module: ${mod.name} -> ${folderName}/`);
 
   // Check if this module exists under a different folder name (position/name changed on Canvas)
   if (!syncData.modules[folderName]) {
@@ -201,7 +163,7 @@ async function pullModule(courseId, mod, syncData, force, canvasToRelative, canv
   // Fetch module items
   const items = await listModuleItems(courseId, mod.id);
   if (!items || items.length === 0) {
-    console.log('  [pull] No items in this module.');
+    log.info('  [pull] No items in this module.');
     return;
   }
 
@@ -305,9 +267,9 @@ async function pullModule(courseId, mod, syncData, force, canvasToRelative, canv
 
     if (p.canvasItemType === 'File') {
       try {
-        await pullFileItem(courseId, p.item, p.targetDir, p.targetFileName, syncData, force, folderName);
+        await pullFileItem(p.item, p.targetDir, p.targetFileName, syncData, force, folderName);
       } catch (err) {
-        console.error(`  [pull] Error pulling file "${p.item.title || 'unknown'}": ${err.message}`);
+        log.error(`  [pull] Error pulling file "${p.item.title || 'unknown'}": ${err.message}`);
       }
       continue;
     }
@@ -315,7 +277,7 @@ async function pullModule(courseId, mod, syncData, force, canvasToRelative, canv
     try {
       await pullItem(courseId, p.item, p.targetDir, p.targetFileName, syncData, force, folderName, canvasToRelative, canvasToLocal);
     } catch (err) {
-      console.error(`  [pull] Error pulling item "${p.item.title || 'unknown'}": ${err.message}`);
+      log.error(`  [pull] Error pulling item "${p.item.title || 'unknown'}": ${err.message}`);
     }
   }
 }
@@ -349,53 +311,55 @@ function findOldSyncPath(item, identifierMap) {
 }
 
 /**
- * Rename existing local files/folders to match new Canvas positions.
- * Uses a two-pass temp-name approach to avoid collisions.
- * Returns true if any renames were performed.
+ * Build a reverse lookup map: identifier -> old relative path.
  */
-function reconcileExistingFiles(planned, moduleItems, moduleDir, folderName) {
-  // Build reverse lookup: identifier -> old relative path
-  const identifierMap = new Map();
+function buildIdentifierMap(moduleItems) {
+  const map = new Map();
   for (const [relPath, data] of Object.entries(moduleItems)) {
-    if (data.page_url) identifierMap.set('page:' + data.page_url, relPath);
-    if (data.external_url) identifierMap.set('url:' + data.external_url, relPath);
-    if (data.canvas_id != null) identifierMap.set('id:' + data.canvas_id, relPath);
+    if (data.page_url) map.set('page:' + data.page_url, relPath);
+    if (data.external_url) map.set('url:' + data.external_url, relPath);
+    if (data.canvas_id != null) map.set('id:' + data.canvas_id, relPath);
   }
+  return map;
+}
 
-  const tempPrefix = '__pull_temp_';
-
-  // Clean up leftover temp files/folders from previous failed runs
+/**
+ * Recover leftover temp files/folders from a previously failed rename operation.
+ */
+function cleanupTempFiles(moduleDir, tempPrefix) {
   try {
     for (const entry of fs.readdirSync(moduleDir)) {
-      if (entry.startsWith(tempPrefix)) {
-        const finalName = entry.slice(tempPrefix.length);
-        const tempPath = path.join(moduleDir, entry);
-        const finalPath = path.join(moduleDir, finalName);
-        if (!fs.existsSync(finalPath)) {
-          fs.renameSync(tempPath, finalPath);
-          log.verbose(`Recovered temp file: ${entry} -> ${finalName}`);
+      if (!entry.startsWith(tempPrefix)) continue;
+      const finalName = entry.slice(tempPrefix.length);
+      const tempPath = path.join(moduleDir, entry);
+      const finalPath = path.join(moduleDir, finalName);
+      if (!fs.existsSync(finalPath)) {
+        fs.renameSync(tempPath, finalPath);
+        log.verbose(`Recovered temp file: ${entry} -> ${finalName}`);
+      } else {
+        const stat = fs.statSync(tempPath);
+        if (stat.isDirectory()) {
+          fs.rmSync(tempPath, { recursive: true });
         } else {
-          // Final name already exists; remove the leftover temp
-          const stat = fs.statSync(tempPath);
-          if (stat.isDirectory()) {
-            fs.rmSync(tempPath, { recursive: true });
-          } else {
-            fs.unlinkSync(tempPath);
-          }
-          log.verbose(`Removed leftover temp: ${entry}`);
+          fs.unlinkSync(tempPath);
         }
+        log.verbose(`Removed leftover temp: ${entry}`);
       }
     }
   } catch (err) {
     log.warn(`[pull] Warning: could not clean up temp files in ${moduleDir}: ${err.message}`);
   }
+}
 
-  // ---- Subfolder renames ----
-  const subfolderRenames = [];
+/**
+ * Detect and execute subfolder renames using a two-pass temp-name approach.
+ * Returns true if any renames were performed.
+ */
+function reconcileSubfolders(planned, identifierMap, moduleDir, folderName, moduleItems, tempPrefix) {
+  const renames = [];
   for (const p of planned) {
     if (p.kind !== 'subfolder') continue;
 
-    // Find old subfolder name by checking sync paths of children
     const children = planned.filter(
       c => c.kind !== 'subfolder' && c.subfolderName === p.targetFolderName
     );
@@ -403,64 +367,67 @@ function reconcileExistingFiles(planned, moduleItems, moduleDir, folderName) {
       const oldRelPath = findOldSyncPath(child.item, identifierMap);
       if (!oldRelPath) continue;
 
-      // Extract subfolder from "01-mod/04-sub/01-file.md" -> "04-sub"
       const relToModule = oldRelPath.slice(folderName.length + 1);
       const slashIdx = relToModule.indexOf('/');
       if (slashIdx > 0) {
         const oldSubName = relToModule.slice(0, slashIdx);
         if (oldSubName !== p.targetFolderName &&
             fs.existsSync(path.join(moduleDir, oldSubName))) {
-          subfolderRenames.push({ oldName: oldSubName, newName: p.targetFolderName });
+          renames.push({ oldName: oldSubName, newName: p.targetFolderName });
         }
       }
-      break; // only need one child to identify the old subfolder
+      break;
     }
   }
 
-  // Execute subfolder renames (two-pass)
-  if (subfolderRenames.length > 0) {
-    try {
-      for (const sr of subfolderRenames) {
-        sr._tempName = tempPrefix + sr.newName;
-        fs.renameSync(path.join(moduleDir, sr.oldName), path.join(moduleDir, sr._tempName));
-      }
-      for (const sr of subfolderRenames) {
-        fs.renameSync(path.join(moduleDir, sr._tempName), path.join(moduleDir, sr.newName));
-        log.verbose(`Renamed subfolder: ${sr.oldName}/ -> ${sr.newName}/`);
+  if (renames.length === 0) return false;
 
-        // Update sync keys and identifier map values
-        const oldPrefix = folderName + '/' + sr.oldName + '/';
-        const newPrefix = folderName + '/' + sr.newName + '/';
-        for (const key of Object.keys(moduleItems)) {
-          if (key.startsWith(oldPrefix)) {
-            const newKey = newPrefix + key.slice(oldPrefix.length);
-            moduleItems[newKey] = moduleItems[key];
-            delete moduleItems[key];
-          }
-        }
-        for (const [id, relPath] of identifierMap) {
-          if (relPath.startsWith(oldPrefix)) {
-            identifierMap.set(id, newPrefix + relPath.slice(oldPrefix.length));
-          }
-        }
-      }
-    } catch (err) {
-      // Attempt to recover temp folders
-      for (const sr of subfolderRenames) {
-        if (sr._tempName && fs.existsSync(path.join(moduleDir, sr._tempName))) {
-          try {
-            fs.renameSync(path.join(moduleDir, sr._tempName), path.join(moduleDir, sr.newName));
-          } catch (_) {
-            // Leave temp folder for next run's cleanup
-          }
-        }
-      }
-      throw err;
+  try {
+    // Pass 1: rename to temp names
+    for (const sr of renames) {
+      sr._tempName = tempPrefix + sr.newName;
+      fs.renameSync(path.join(moduleDir, sr.oldName), path.join(moduleDir, sr._tempName));
     }
+    // Pass 2: rename to final names and update sync state
+    for (const sr of renames) {
+      fs.renameSync(path.join(moduleDir, sr._tempName), path.join(moduleDir, sr.newName));
+      log.verbose(`Renamed subfolder: ${sr.oldName}/ -> ${sr.newName}/`);
+
+      const oldPrefix = folderName + '/' + sr.oldName + '/';
+      const newPrefix = folderName + '/' + sr.newName + '/';
+      for (const key of Object.keys(moduleItems)) {
+        if (key.startsWith(oldPrefix)) {
+          const newKey = newPrefix + key.slice(oldPrefix.length);
+          moduleItems[newKey] = moduleItems[key];
+          delete moduleItems[key];
+        }
+      }
+      for (const [id, relPath] of identifierMap) {
+        if (relPath.startsWith(oldPrefix)) {
+          identifierMap.set(id, newPrefix + relPath.slice(oldPrefix.length));
+        }
+      }
+    }
+  } catch (err) {
+    for (const sr of renames) {
+      if (sr._tempName && fs.existsSync(path.join(moduleDir, sr._tempName))) {
+        try {
+          fs.renameSync(path.join(moduleDir, sr._tempName), path.join(moduleDir, sr.newName));
+        } catch (_) { /* Leave temp folder for next run's cleanup */ }
+      }
+    }
+    throw err;
   }
 
-  // ---- File renames ----
-  const fileRenames = [];
+  return true;
+}
+
+/**
+ * Detect and execute file renames using a two-pass temp-name approach.
+ * Returns true if any renames were performed.
+ */
+function reconcileFileRenames(planned, identifierMap, folderName, moduleItems, tempPrefix) {
+  const renames = [];
   for (const p of planned) {
     if (p.kind === 'subfolder') continue;
 
@@ -475,45 +442,56 @@ function reconcileExistingFiles(planned, moduleItems, moduleDir, folderName) {
     const newAbsPath = path.resolve(COURSE_DIR, targetRelPath);
     if (!fs.existsSync(oldAbsPath)) continue;
 
-    fileRenames.push({ oldAbsPath, newAbsPath, oldRelPath, newRelPath: targetRelPath });
+    renames.push({ oldAbsPath, newAbsPath, oldRelPath, newRelPath: targetRelPath });
   }
 
-  if (fileRenames.length > 0) {
-    try {
-      // Pass 1: rename to temp names
-      for (const r of fileRenames) {
-        const dir = path.dirname(r.newAbsPath);
-        if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-        r._tempPath = path.join(dir, tempPrefix + path.basename(r.newAbsPath));
-        fs.renameSync(r.oldAbsPath, r._tempPath);
-      }
-      // Pass 2: rename to final names
-      for (const r of fileRenames) {
-        fs.renameSync(r._tempPath, r.newAbsPath);
-        log.verbose(`Renamed: ${path.basename(r.oldRelPath)} -> ${path.basename(r.newRelPath)}`);
+  if (renames.length === 0) return false;
 
-        // Update sync key
-        if (moduleItems[r.oldRelPath]) {
-          moduleItems[r.newRelPath] = moduleItems[r.oldRelPath];
-          delete moduleItems[r.oldRelPath];
-        }
-      }
-    } catch (err) {
-      // Attempt to recover: rename temp files to their final names
-      for (const r of fileRenames) {
-        if (r._tempPath && fs.existsSync(r._tempPath)) {
-          try {
-            fs.renameSync(r._tempPath, r.newAbsPath);
-          } catch (_) {
-            // Leave temp file for next run's cleanup
-          }
-        }
-      }
-      throw err;
+  try {
+    // Pass 1: rename to temp names
+    for (const r of renames) {
+      const dir = path.dirname(r.newAbsPath);
+      if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
+      r._tempPath = path.join(dir, tempPrefix + path.basename(r.newAbsPath));
+      fs.renameSync(r.oldAbsPath, r._tempPath);
     }
+    // Pass 2: rename to final names and update sync state
+    for (const r of renames) {
+      fs.renameSync(r._tempPath, r.newAbsPath);
+      log.verbose(`Renamed: ${path.basename(r.oldRelPath)} -> ${path.basename(r.newRelPath)}`);
+
+      if (moduleItems[r.oldRelPath]) {
+        moduleItems[r.newRelPath] = moduleItems[r.oldRelPath];
+        delete moduleItems[r.oldRelPath];
+      }
+    }
+  } catch (err) {
+    for (const r of renames) {
+      if (r._tempPath && fs.existsSync(r._tempPath)) {
+        try {
+          fs.renameSync(r._tempPath, r.newAbsPath);
+        } catch (_) { /* Leave temp file for next run's cleanup */ }
+      }
+    }
+    throw err;
   }
 
-  return subfolderRenames.length > 0 || fileRenames.length > 0;
+  return true;
+}
+
+/**
+ * Rename existing local files/folders to match new Canvas positions.
+ * Returns true if any renames were performed.
+ */
+function reconcileExistingFiles(planned, moduleItems, moduleDir, folderName) {
+  const identifierMap = buildIdentifierMap(moduleItems);
+  const tempPrefix = '__pull_temp_';
+
+  cleanupTempFiles(moduleDir, tempPrefix);
+  const subfoldersRenamed = reconcileSubfolders(planned, identifierMap, moduleDir, folderName, moduleItems, tempPrefix);
+  const filesRenamed = reconcileFileRenames(planned, identifierMap, folderName, moduleItems, tempPrefix);
+
+  return subfoldersRenamed || filesRenamed;
 }
 
 /**
@@ -532,18 +510,18 @@ function isLocallyModified(filePath, syncData) {
 /**
  * Pull a File item from Canvas (download the binary file).
  */
-async function pullFileItem(courseId, item, targetDir, targetFileName, syncData, force, folderName) {
+async function pullFileItem(item, targetDir, targetFileName, syncData, force, folderName) {
   const title = item.title || 'Untitled';
   const contentId = item.content_id;
   if (!contentId) {
-    console.log(`  [pull] Skipping file "${title}": no content_id`);
+    log.info(`  [pull] Skipping file "${title}": no content_id`);
     return;
   }
 
   const filePath = path.join(targetDir, targetFileName);
 
   if (!force && isLocallyModified(filePath, syncData)) {
-    console.log(`    [pull] SKIPPED ${targetFileName} (locally modified since last sync, use --force to overwrite)`);
+    log.info(`    [pull] SKIPPED ${targetFileName} (locally modified since last sync, use --force to overwrite)`);
     return;
   }
 
@@ -552,115 +530,110 @@ async function pullFileItem(courseId, item, targetDir, targetFileName, syncData,
   log.verbose(`Wrote ${targetFileName}`);
 
   // Update sync state
-  const relativePath = path.posix.join(folderName, path.relative(path.join(COURSE_DIR, folderName), filePath).split(path.sep).join('/'));
+  const relativePath = computeRelativePath(folderName, filePath, COURSE_DIR);
   syncData.modules[folderName].items[relativePath] = {
     canvas_id: contentId,
     canvas_type: 'file',
   };
 }
 
-async function pullItem(courseId, item, moduleDir, targetFileName, syncData, force, folderName, canvasToRelative, canvasToLocal) {
-  const itemType = item.type;
-  const title = item.title || 'Untitled';
-
-  if (itemType === 'Page') {
-    const pageUrl = item.page_url;
-    if (!pageUrl) {
-      console.log(`  [pull] Skipping page "${title}": no page_url`);
-      return;
-    }
-
-    const filePath = path.join(moduleDir, targetFileName);
-
-    if (!force && isLocallyModified(filePath, syncData)) {
-      console.log(`    [pull] SKIPPED ${targetFileName} (locally modified since last sync, use --force to overwrite)`);
-      return;
-    }
-
-    log.verbose(`Fetching page: ${title}`);
-    const page = await getPage(courseId, pageUrl);
-    const relativePath = path.posix.join(folderName, path.relative(path.join(COURSE_DIR, folderName), filePath).split(path.sep).join('/'));
-    const linkResolver = (href) => resolveCanvasLink(href, relativePath, canvasToRelative);
-    const fileResolver = await buildPullFileResolver(courseId, page.body || '', relativePath, folderName, syncData, canvasToLocal);
-    const markdown = canvasItemToMarkdown(page, 'page', { linkResolver, fileResolver });
-    fs.writeFileSync(filePath, markdown, 'utf8');
-    log.verbose(`Wrote ${targetFileName}`);
-
-    // Update sync state so push knows this item exists
-    syncData.modules[folderName].items[relativePath] = {
-      canvas_id: page.page_id || page.url,
+/**
+ * Strategy definitions for each pullable Canvas item type.
+ * Each strategy defines how to extract the identifier, fetch content,
+ * get the HTML body, and build the sync state entry.
+ */
+const pullStrategies = {
+  Page: {
+    getId: (item) => item.page_url,
+    idLabel: 'page_url',
+    fetch: (courseId, id) => getPage(courseId, id),
+    getBody: (result) => result.body || '',
+    canvasType: 'page',
+    buildSyncEntry: (item, result) => ({
+      canvas_id: result.page_id || result.url,
       canvas_type: 'page',
-      page_url: pageUrl,
-    };
-    return;
-  }
-
-  if (itemType === 'Assignment') {
-    const contentId = item.content_id;
-    if (!contentId) {
-      console.log(`  [pull] Skipping assignment "${title}": no content_id`);
-      return;
-    }
-
-    const filePath = path.join(moduleDir, targetFileName);
-
-    if (!force && isLocallyModified(filePath, syncData)) {
-      console.log(`    [pull] SKIPPED ${targetFileName} (locally modified since last sync, use --force to overwrite)`);
-      return;
-    }
-
-    log.verbose(`Fetching assignment: ${title}`);
-    const assignment = await getAssignment(courseId, contentId);
-    const relativePath = path.posix.join(folderName, path.relative(path.join(COURSE_DIR, folderName), filePath).split(path.sep).join('/'));
-    const linkResolver = (href) => resolveCanvasLink(href, relativePath, canvasToRelative);
-    const fileResolver = await buildPullFileResolver(courseId, assignment.description || '', relativePath, folderName, syncData, canvasToLocal);
-    const markdown = canvasItemToMarkdown(assignment, 'assignment', { linkResolver, fileResolver });
-    fs.writeFileSync(filePath, markdown, 'utf8');
-    log.verbose(`Wrote ${targetFileName}`);
-
-    // Update sync state so push knows this item exists
-    syncData.modules[folderName].items[relativePath] = {
-      canvas_id: contentId,
+      page_url: item.page_url,
+    }),
+  },
+  Assignment: {
+    getId: (item) => item.content_id,
+    idLabel: 'content_id',
+    fetch: (courseId, id) => getAssignment(courseId, id),
+    getBody: (result) => result.description || '',
+    canvasType: 'assignment',
+    buildSyncEntry: (item) => ({
+      canvas_id: item.content_id,
       canvas_type: 'assignment',
-    };
-    return;
-  }
-
-  if (itemType === 'ExternalUrl') {
-    const filePath = path.join(moduleDir, targetFileName);
-
-    if (!force && isLocallyModified(filePath, syncData)) {
-      console.log(`    [pull] SKIPPED ${targetFileName} (locally modified since last sync, use --force to overwrite)`);
-      return;
-    }
-
-    log.verbose(`Fetching external URL: ${title}`);
-    const markdown = canvasItemToMarkdown(
-      { title, external_url: item.external_url, id: item.id },
-      'external_url'
-    );
-    fs.writeFileSync(filePath, markdown, 'utf8');
-    log.verbose(`Wrote ${targetFileName}`);
-
-    // Update sync state so push knows this item exists
-    const relativePath = path.posix.join(folderName, path.relative(path.join(COURSE_DIR, folderName), filePath).split(path.sep).join('/'));
-    syncData.modules[folderName].items[relativePath] = {
+    }),
+  },
+  ExternalUrl: {
+    getId: (item) => item.id,
+    idLabel: null, // always present, no precondition check
+    fetch: null,   // no API fetch needed
+    getBody: null,
+    canvasType: 'external_url',
+    buildSyncEntry: (item) => ({
       canvas_id: item.id,
       canvas_type: 'external_url',
       external_url: item.external_url,
-    };
+    }),
+  },
+};
+
+async function pullItem(courseId, item, moduleDir, targetFileName, syncData, force, folderName, canvasToRelative, canvasToLocal) {
+  const title = item.title || 'Untitled';
+  const strategy = pullStrategies[item.type];
+
+  if (!strategy) {
+    log.warn(`  [pull] Skipping unsupported item type "${item.type}": ${title}`);
     return;
   }
 
-  // Discussion, Quiz, ExternalTool, etc.
-  log.warn(`  [pull] Skipping unsupported item type "${itemType}": ${title}`);
+  // Check precondition (e.g. page_url or content_id must be present)
+  const itemId = strategy.getId(item);
+  if (strategy.idLabel && !itemId) {
+    log.info(`  [pull] Skipping ${item.type.toLowerCase()} "${title}": no ${strategy.idLabel}`);
+    return;
+  }
+
+  const filePath = path.join(moduleDir, targetFileName);
+
+  if (!force && isLocallyModified(filePath, syncData)) {
+    log.info(`    [pull] SKIPPED ${targetFileName} (locally modified since last sync, use --force to overwrite)`);
+    return;
+  }
+
+  const relativePath = computeRelativePath(folderName, filePath, COURSE_DIR);
+  let markdown;
+  let fetchResult = null;
+
+  if (strategy.fetch) {
+    log.verbose(`Fetching ${strategy.canvasType}: ${title}`);
+    fetchResult = await strategy.fetch(courseId, itemId);
+    const body = strategy.getBody(fetchResult);
+    const linkResolver = (href) => resolveCanvasLink(href, relativePath, canvasToRelative);
+    await downloadReferencedFiles(courseId, body, folderName, syncData, canvasToLocal);
+    const fileResolver = createPullFileResolver(courseId, relativePath, canvasToLocal);
+    markdown = canvasItemToMarkdown(fetchResult, strategy.canvasType, { linkResolver, fileResolver });
+  } else {
+    log.verbose(`Fetching ${strategy.canvasType}: ${title}`);
+    markdown = canvasItemToMarkdown(
+      { title, external_url: item.external_url, id: item.id },
+      strategy.canvasType
+    );
+  }
+
+  fs.writeFileSync(filePath, markdown, 'utf8');
+  log.verbose(`Wrote ${targetFileName}`);
+
+  syncData.modules[folderName].items[relativePath] = strategy.buildSyncEntry(item, fetchResult);
 }
 
 /**
- * Scan HTML for Canvas file URLs, download files locally, and return a resolver callback.
+ * Scan HTML for Canvas file URLs and download any files not already tracked locally.
+ * Updates syncData.files and canvasToLocal map as files are downloaded.
  */
-async function buildPullFileResolver(courseId, html, currentFilePath, folderName, syncData, canvasToLocal) {
-  // Find all Canvas file references in the HTML
+async function downloadReferencedFiles(courseId, html, folderName, syncData, canvasToLocal) {
   const filePattern = /\/courses\/\d+\/files\/(\d+)/g;
   const fileIds = new Set();
   let match;
@@ -675,12 +648,7 @@ async function buildPullFileResolver(courseId, html, currentFilePath, folderName
     }
   }
 
-  if (fileIds.size === 0) return null;
-
-  // Download files that aren't already tracked locally
-  const filesDir = path.join(COURSE_DIR, folderName, '_files');
   for (const fileId of fileIds) {
-    // Check if already in canvasToLocal map
     const canvasUrlPattern = `/courses/${courseId}/files/${fileId}/preview`;
     if (canvasToLocal.has(canvasUrlPattern)) {
       const localPath = canvasToLocal.get(canvasUrlPattern);
@@ -688,35 +656,33 @@ async function buildPullFileResolver(courseId, html, currentFilePath, folderName
     }
 
     try {
-      // Get file metadata to determine filename
-      const { get } = require('../lib/canvas/client');
       const fileMeta = await get(`/api/v1/files/${fileId}`);
       const fileName = fileMeta.display_name || `file-${fileId}`;
       const localRelPath = path.posix.join(folderName, '_files', fileName);
       const destPath = path.resolve(COURSE_DIR, localRelPath);
 
-      // Download the file
-      console.log(`    [pull] Downloading file: ${fileName}`);
+      log.info(`    [pull] Downloading file: ${fileName}`);
       await downloadFile(fileId, destPath);
 
-      // Track in sync data
       syncData.files[localRelPath] = {
         canvas_file_id: Number(fileId),
         canvas_url: canvasUrlPattern,
       };
-
-      // Update the canvasToLocal map for immediate use
       canvasToLocal.set(canvasUrlPattern, localRelPath);
     } catch (err) {
-      console.error(`    [pull] Error downloading file ${fileId}: ${err.message}`);
+      log.error(`    [pull] Error downloading file ${fileId}: ${err.message}`);
     }
   }
+}
 
-  // Return a resolver that converts Canvas file URLs to relative paths
+/**
+ * Create a resolver that converts Canvas file URLs to relative paths
+ * from the perspective of the given markdown file.
+ */
+function createPullFileResolver(courseId, currentFilePath, canvasToLocal) {
   return (href) => {
     if (!href) return null;
 
-    // Strip domain if present
     let urlPath = href;
     try {
       const url = new URL(href, 'https://placeholder.com');
@@ -725,7 +691,6 @@ async function buildPullFileResolver(courseId, html, currentFilePath, folderName
       // Already a path
     }
 
-    // Try to match against known file URLs
     const fileMatch = urlPath.match(/\/courses\/\d+\/files\/(\d+)/);
     if (!fileMatch) return null;
 
@@ -734,7 +699,6 @@ async function buildPullFileResolver(courseId, html, currentFilePath, folderName
     const localPath = canvasToLocal.get(pattern);
     if (!localPath) return null;
 
-    // Compute relative path from current file
     const currentDir = path.posix.dirname(currentFilePath);
     let relative = path.posix.relative(currentDir, localPath);
     if (!relative.startsWith('.') && !relative.startsWith('/')) {
@@ -745,3 +709,9 @@ async function buildPullFileResolver(courseId, html, currentFilePath, folderName
 }
 
 module.exports = pull;
+// Exported for testing
+pull._buildIdentifierMap = buildIdentifierMap;
+pull._findOldSyncPath = findOldSyncPath;
+pull._isLocallyModified = isLocallyModified;
+pull._createPullFileResolver = createPullFileResolver;
+pull._pullStrategies = pullStrategies;
