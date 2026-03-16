@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 
 const { listModules, listModuleItems } = require('../lib/canvas/modules');
-const { getPage } = require('../lib/canvas/pages');
+const { listPages, getPage } = require('../lib/canvas/pages');
 const { getAssignment } = require('../lib/canvas/assignments');
 const { canvasItemToMarkdown } = require('../lib/convert/html-to-markdown');
 const { buildLinkMap, resolveCanvasLink, buildFileMap } = require('../lib/convert/link-resolver');
@@ -80,6 +80,20 @@ async function pull(options) {
   // Build reverse file map for resolving Canvas file URLs back to local paths
   const { canvasToLocal } = buildFileMap(syncData);
 
+  // Fetch all pages to resolve page_url -> page_id for rename detection.
+  // Canvas module items for Pages only include page_url (slug), not the numeric
+  // page_id. When a page is renamed, the slug changes but the page_id (stored
+  // as canvas_id in sync state) stays stable. This map lets us match renamed pages.
+  const pageUrlToPageId = new Map();
+  try {
+    const allPages = await listPages(courseId);
+    for (const p of allPages) {
+      if (p.url && p.page_id) pageUrlToPageId.set(p.url, p.page_id);
+    }
+  } catch (err) {
+    log.warn(`[pull] Could not fetch pages for rename detection: ${err.message}`);
+  }
+
   // Ensure course directory exists
   if (!fs.existsSync(COURSE_DIR)) {
     fs.mkdirSync(COURSE_DIR, { recursive: true });
@@ -92,7 +106,7 @@ async function pull(options) {
     const mod = modules[mi];
     console.log(`[pull] Module ${mi + 1}/${totalModules}: ${mod.name}`);
     try {
-      await pullModule(courseId, mod, syncData, force, canvasToRelative, canvasToLocal);
+      await pullModule(courseId, mod, syncData, force, canvasToRelative, canvasToLocal, pageUrlToPageId);
     } catch (err) {
       console.error(`[pull] Error pulling module "${mod.name}": ${err.message}`);
       errors.push({ module: mod.name, error: err.message });
@@ -117,7 +131,7 @@ async function pull(options) {
   }
 }
 
-async function pullModule(courseId, mod, syncData, force, canvasToRelative, canvasToLocal) {
+async function pullModule(courseId, mod, syncData, force, canvasToRelative, canvasToLocal, pageUrlToPageId) {
   const position = mod.position || 0;
   const folderName = toFolderName(mod.name, position);
   const moduleDir = path.join(COURSE_DIR, folderName);
@@ -248,6 +262,17 @@ async function pullModule(courseId, mod, syncData, force, canvasToRelative, canv
     });
   }
 
+  // Augment Page items with resolved page_id so reconciliation can match
+  // renamed pages by canvas_id (page_url changes on rename, page_id doesn't)
+  for (const p of planned) {
+    if (p.item && p.item.type === 'Page' && p.item.page_url) {
+      const pageId = pageUrlToPageId.get(p.item.page_url);
+      if (pageId != null) {
+        p.item._resolvedPageId = pageId;
+      }
+    }
+  }
+
   // ---- Phase 2: Rename existing files to match new Canvas positions ----
   const moduleItems = syncData.modules[folderName].items;
   const renamed = reconcileExistingFiles(planned, moduleItems, moduleDir, folderName);
@@ -305,6 +330,11 @@ function findOldSyncPath(item, identifierMap) {
   }
   if (item.external_url) {
     const found = identifierMap.get('url:' + item.external_url);
+    if (found) return found;
+  }
+  // Match by resolved page_id (stable across renames, unlike page_url)
+  if (item._resolvedPageId) {
+    const found = identifierMap.get('id:' + item._resolvedPageId);
     if (found) return found;
   }
   if (item.content_id) {
