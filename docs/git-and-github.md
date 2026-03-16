@@ -173,5 +173,5 @@ changes:
 
 ## Next steps
 
-With Git and GitHub set up, head back to the [Getting Started](../README.md#getting-started)
+With Git and GitHub set up, head back to the [Getting Started](user-guide.md#getting-started)
 section to continue with installing Node.js and setting up the project.

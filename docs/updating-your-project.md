@@ -41,7 +41,8 @@ The script:
 2. Squash-merges them into a **single commit** on your branch — upstream's full
    history is not imported.
 3. Automatically resolves conflicts: your content (`course/`, `evaluations/`,
-   `sources/`) is always kept, while tooling files accept the upstream version.
+   `sources/`) and `README.md` are always kept, while tooling files accept the
+   upstream version.
 4. Tags the merge point so you can see which upstream version you're on.
 
 After running the script, install any updated dependencies:
@@ -110,8 +111,8 @@ If you prefer to run the steps yourself instead of using the script:
    directories and accept upstream for tooling:
 
    ```bash
-   # Keep your content
-   git checkout --ours -- course/ evaluations/ sources/
+   # Keep your content and README
+   git checkout --ours -- course/ evaluations/ sources/ README.md
 
    # Accept upstream for remaining conflicted files
    git checkout --theirs -- path/to/conflicted-file

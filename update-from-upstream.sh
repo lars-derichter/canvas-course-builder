@@ -3,9 +3,10 @@ set -euo pipefail
 
 # Update project from the upstream canvas-local template repository.
 # Uses a squash merge so only one commit is added to your history.
-# Content directories (course/, evaluations/, sources/) are always preserved.
+# Content directories (course/, evaluations/, sources/) and README.md are always preserved.
 
 CONTENT_DIRS=(course evaluations sources)
+CONTENT_FILES=(README.md)
 UPSTREAM_REMOTE="upstream"
 UPSTREAM_BRANCH="main"
 
@@ -43,6 +44,14 @@ else
     if [ -d "$dir" ]; then
       git checkout --ours -- "$dir/" 2>/dev/null || true
       echo "  Kept local version: $dir/"
+    fi
+  done
+
+  # Keep ours for content files
+  for file in "${CONTENT_FILES[@]}"; do
+    if [ -f "$file" ]; then
+      git checkout --ours -- "$file" 2>/dev/null || true
+      echo "  Kept local version: $file"
     fi
   done
 
