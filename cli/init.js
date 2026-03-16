@@ -37,7 +37,7 @@ async function init() {
     if (courseMatch) existingCourseId = courseMatch[1].trim();
   }
 
-  const canvasUrl = await prompt(rl, 'Canvas API URL (e.g. https://school.instructure.com)', existingUrl);
+  const canvasUrl = await prompt(rl, 'Canvas URL (e.g. https://school.instructure.com)', existingUrl);
   const apiToken = await prompt(rl, 'Canvas API token', existingToken);
   const courseId = await prompt(rl, 'Canvas course ID', existingCourseId);
 
@@ -48,9 +48,9 @@ async function init() {
     process.exit(1);
   }
 
-  // Normalize the URL: ensure it ends with /api/v1 for CANVAS_API_URL
-  const baseUrl = canvasUrl.replace(/\/+$/, '');
-  const apiUrl = baseUrl.endsWith('/api/v1') ? baseUrl : `${baseUrl}/api/v1`;
+  // Normalize the URL: strip trailing slashes and any /api/v1 suffix
+  // (API paths already include /api/v1, so CANVAS_API_URL should be the base URL only)
+  const apiUrl = canvasUrl.replace(/\/+$/, '').replace(/\/api\/v1$/, '');
 
   // Write .env file
   const envContent = [
@@ -66,7 +66,7 @@ async function init() {
   // Create .canvas-sync.json
   const syncData = {
     schema_version: 2,
-    canvas_base_url: baseUrl.replace(/\/api\/v1$/, ''),
+    canvas_base_url: apiUrl,
     course_id: Number(courseId),
     modules: {},
     last_sync: null,
