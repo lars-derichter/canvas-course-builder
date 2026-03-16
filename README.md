@@ -20,15 +20,11 @@ Write course materials as markdown, preview via
    steps
 
 2. **Create your own copy** — click **Use this template** at the top-right of
-   this page, then select **Create a new repository**. Give it a name like
-   `course-web-development` or `course-databases` and choose whether it should
-   be public or private
-
-> [!TIP]
->
-> Pick a descriptive name that reflects the course — it makes it much easier to
-> find your materials on your computer, especially if you manage multiple
-> courses (each as its own project).
+   this page, then select **Create a new repository**. Pick a descriptive name
+   that reflects the course, like `course-web-development` or `course-databases`
+   — this makes it much easier to find your materials, especially if you manage
+   multiple courses (each as its own project). Choose whether it should be
+   public or private
 
 3. **Navigate to your project** — after creating it, GitHub takes you to the new
    repository. Verify that the page header shows your own username
