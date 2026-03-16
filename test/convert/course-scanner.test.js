@@ -86,6 +86,12 @@ describe('scanCourse', () => {
 
     // Module 2 with a non-markdown file
     fs.writeFileSync(path.join(mod2, '02-data.csv'), 'a,b,c');
+
+    // Module 2 with a markdown file wrapper for a file item
+    fs.writeFileSync(
+      path.join(mod2, '03-diagram.md'),
+      '---\ntitle: Diagram\ncanvas_type: file\ncanvas_id: 999\nfile_ref: _files/diagram.svg\n---\n'
+    );
   });
 
   after(() => {
@@ -159,6 +165,16 @@ describe('scanCourse', () => {
 
     assert.ok(csvItem);
     assert.equal(csvItem.canvasType, 'file');
+  });
+
+  it('treats markdown wrappers with canvas_type file as file items', () => {
+    const modules = scanCourse(tmpDir);
+    const advItems = modules[1].items;
+    const fileWrapper = advItems.find((i) => i.file === '03-diagram.md' && i.canvasType === 'file');
+
+    assert.ok(fileWrapper);
+    assert.equal(fileWrapper.canvasType, 'file');
+    assert.equal(fileWrapper.frontmatter.file_ref, '_files/diagram.svg');
   });
 
   it('builds correct relative paths', () => {

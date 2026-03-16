@@ -16,8 +16,7 @@ Write course materials as markdown, preview via
 
 1. **Create a [GitHub](https://github.com/) account** if you don't have one yet,
    and **install [Git](https://git-scm.com/downloads)** — see the
-   [Git & GitHub Guide](git-and-github.md) if you need help with these
-   steps
+   [Git & GitHub Guide](git-and-github.md) if you need help with these steps
 
 2. **Create your own copy** — click **Use this template** at the top-right of
    this page, then select **Create a new repository**. Pick a descriptive name
@@ -75,8 +74,8 @@ Write course materials as markdown, preview via
    npx course init
    ```
 
-   See the [Canvas Setup Guide](canvas-setup.md) for detailed instructions
-   on obtaining your API URL, token, and course ID.
+   See the [Canvas Setup Guide](canvas-setup.md) for detailed instructions on
+   obtaining your API URL, token, and course ID.
 
 8. **Start writing** — add your own content to `course/` alongside or in place
    of the example module:
@@ -93,12 +92,14 @@ Write course materials as markdown, preview via
 course/
   01-module-name/
     _category_.json          # Docusaurus sidebar label/order
-    _files/                  # Embedded assets (images, PDFs)
+    _files/                  # Embedded assets and file item binaries
       diagram.png
+      report.pdf
     01-page-name.md          # Canvas Page
     02-assignment-name.md    # Canvas Assignment
     03-link-name.md          # Canvas ExternalUrl
-    04-subfolder-name/       # Canvas Text Header
+    04-report.md            # Canvas File (wrapper, points to _files/)
+    05-subfolder-name/       # Canvas Text Header
       01-nested-page.md      # Indented module item
 ```
 
@@ -109,10 +110,12 @@ course/
 - Assignment frontmatter supports: `points_possible`, `submission_types`,
   `due_at`
 - External URL frontmatter requires: `external_url`
-- Images and files in `_files/` are referenced from markdown
-  (`![Alt](_files/image.png)`) and automatically uploaded to Canvas during push
-  — they are embedded in page content, not added as module items
-- Non-markdown files outside `_files/` are synced as Canvas File items
+- File item frontmatter requires: `file_ref` pointing to the binary in `_files/`
+  (e.g. `file_ref: _files/report.pdf`). The binary is uploaded to Canvas as a
+  module item. In Docusaurus, a styled file card with a download link is shown
+- Images and files in `_files/` can also be referenced from markdown content
+  (`![Alt](_files/image.png)`) — these are embedded in page content, not added
+  as separate module items
 
 ### Evaluations (private)
 
@@ -208,23 +211,23 @@ command list.
 
 ## Troubleshooting
 
-See [Troubleshooting](troubleshooting.md) for solutions to common
-connection errors, push/pull issues, and sync state problems.
+See [Troubleshooting](troubleshooting.md) for solutions to common connection
+errors, push/pull issues, and sync state problems.
 
 ## Advanced Commands
 
-See [Advanced Commands](advanced-commands.md) for destructive operations
-like `reset-sync-state` and `reset-canvas`.
+See [Advanced Commands](advanced-commands.md) for destructive operations like
+`reset-sync-state` and `reset-canvas`.
 
 ## Claude Code
 
-See [Claude Code](claude-code.md) for how to use Claude Code as an AI
-assistant for writing course content, managing modules, and more.
+See [Claude Code](claude-code.md) for how to use Claude Code as an AI assistant
+for writing course content, managing modules, and more.
 
 ## Updating Your Project
 
-See [Updating Your Project](updating-your-project.md) for how to pull in
-bug fixes and new features from the original Canvas Local project.
+See [Updating Your Project](updating-your-project.md) for how to pull in bug
+fixes and new features from the original Canvas Local project.
 
 ## Contributing
 

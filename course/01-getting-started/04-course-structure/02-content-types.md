@@ -60,13 +60,24 @@ The link opens in a new tab by default.
 
 ## File
 
-Any non-markdown file (images, PDFs, ZIPs, etc.) is automatically treated as a file item. No frontmatter is needed. Just place the file in the module folder:
+Uploads a binary file (PDF, SVG, ZIP, etc.) to Canvas as a module item. The actual file lives in `_files/` and the markdown wrapper points to it with `file_ref`.
+
+```yaml
+---
+title: Workflow Diagram
+canvas_type: file
+file_ref: _files/workflow-diagram.svg
+---
+```
+
+Place the binary in the module's `_files/` directory and create a `.md` wrapper next to your other items:
 
 ```
 course/01-module/
-  05-diagram.svg        -> File: "Diagram"
-  06-dataset.csv        -> File: "Dataset"
+  _files/
+    workflow-diagram.svg
+  05-workflow-diagram.md   -> File: "Workflow Diagram"
 ```
 
 > [!NOTE]
-> Over 35 file types are supported, including PDF, PNG, JPG, SVG, MP4, DOCX, and many more.
+> Over 35 file types are supported, including PDF, PNG, JPG, SVG, MP4, DOCX, and many more. When you pull a course from Canvas, file items are automatically converted to this wrapper format.

@@ -345,7 +345,12 @@ async function pushItem(courseId, moduleId, item, dryRun, iconUrls, folderName, 
   } else if (canvasType === 'external_url') {
     await pushExternalUrl(courseId, moduleId, { title, filePath, position, indent, frontmatter }, dryRun);
   } else if (canvasType === 'file') {
-    await pushFile(courseId, moduleId, { title, filePath, relativePath, position, indent, folderName }, dryRun, syncData);
+    // Resolve file_ref from markdown wrapper to actual binary path
+    let binaryPath = filePath;
+    if (filePath.endsWith('.md') && frontmatter.file_ref) {
+      binaryPath = path.resolve(path.dirname(filePath), frontmatter.file_ref);
+    }
+    await pushFile(courseId, moduleId, { title, filePath: binaryPath, relativePath, position, indent, folderName }, dryRun, syncData);
   } else {
     log.warn(`  [push] Skipping unknown type "${canvasType}": ${title}`);
   }

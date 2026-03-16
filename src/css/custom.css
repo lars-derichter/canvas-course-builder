@@ -495,3 +495,28 @@ article {
 .external-url-link a {
   word-break: break-all;
 }
+
+/* ---------------------------------------------------------------------------
+   File item card (remark-file-item plugin)
+   --------------------------------------------------------------------------- */
+
+.file-item-card {
+  border: 1px solid var(--tm-color-border);
+  border-left: 4px solid #00283c;
+  border-radius: var(--ifm-global-radius);
+  padding: 1.5rem 2rem;
+  margin: 1rem 0;
+}
+
+.file-item-label {
+  font-weight: 600;
+  color: #00283c;
+  margin-bottom: 0.25rem;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.file-item-link {
+  margin-bottom: 0;
+}

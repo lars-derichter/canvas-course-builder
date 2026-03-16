@@ -10,7 +10,7 @@ const { buildLinkMap, resolveCanvasLink, buildFileMap } = require('../lib/conver
 const { downloadFile } = require('../lib/canvas/files');
 const { SYNC_FILE, loadSyncFile, saveSyncFile } = require('./sync-utils');
 const { COURSE_DIR } = require('./module-utils');
-const { toFolderName, toFileName, toFileItemName, computeRelativePath } = require('./naming');
+const { toFolderName, toFileName, computeRelativePath } = require('./naming');
 const log = require('./logger');
 
 async function pull(options) {
@@ -208,9 +208,7 @@ async function pullModule(courseId, mod, syncData, force, canvasToRelative, canv
       subfolderName = null;
     }
 
-    const targetFileName = item.type === 'File'
-      ? toFileItemName(item.title || 'untitled', pos)
-      : toFileName(item.title || 'Untitled', pos);
+    const targetFileName = toFileName(item.title || 'Untitled', pos);
 
     planned.push({
       kind: 'content',
@@ -508,7 +506,8 @@ function isLocallyModified(filePath, syncData) {
 }
 
 /**
- * Pull a File item from Canvas (download the binary file).
+ * Pull a File item from Canvas — download the binary to _files/ and create
+ * a markdown wrapper so the item appears in the Docusaurus sidebar.
  */
 async function pullFileItem(item, targetDir, targetFileName, syncData, force, folderName) {
   const title = item.title || 'Untitled';
@@ -518,19 +517,41 @@ async function pullFileItem(item, targetDir, targetFileName, syncData, force, fo
     return;
   }
 
-  const filePath = path.join(targetDir, targetFileName);
+  const wrapperPath = path.join(targetDir, targetFileName);
 
-  if (!force && isLocallyModified(filePath, syncData)) {
+  if (!force && isLocallyModified(wrapperPath, syncData)) {
     log.info(`    [pull] SKIPPED ${targetFileName} (locally modified since last sync, use --force to overwrite)`);
     return;
   }
 
+  // Download binary to _files/ directory
+  const originalName = title.toLowerCase().replace(/[^a-z0-9.]+/g, '-').replace(/^-+|-+$/g, '');
+  const filesDir = path.join(targetDir, '_files');
+  if (!fs.existsSync(filesDir)) {
+    fs.mkdirSync(filesDir, { recursive: true });
+  }
+  const binaryPath = path.join(filesDir, originalName);
+
   log.verbose(`Downloading file: ${title}`);
-  await downloadFile(contentId, filePath);
+  await downloadFile(contentId, binaryPath);
+  log.verbose(`Wrote _files/${originalName}`);
+
+  // Create markdown wrapper
+  const fileRef = `_files/${originalName}`;
+  const frontmatter = [
+    '---',
+    `title: "${title.replace(/"/g, '\\"')}"`,
+    'canvas_type: file',
+    `canvas_id: ${contentId}`,
+    `file_ref: ${fileRef}`,
+    '---',
+    '',
+  ].join('\n');
+  fs.writeFileSync(wrapperPath, frontmatter, 'utf8');
   log.verbose(`Wrote ${targetFileName}`);
 
   // Update sync state
-  const relativePath = computeRelativePath(folderName, filePath, COURSE_DIR);
+  const relativePath = computeRelativePath(folderName, wrapperPath, COURSE_DIR);
   syncData.modules[folderName].items[relativePath] = {
     canvas_id: contentId,
     canvas_type: 'file',

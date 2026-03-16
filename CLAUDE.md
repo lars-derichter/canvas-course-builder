@@ -58,7 +58,7 @@ Three layers:
 
 ### Key directories
 
-- `course/` — Course materials (replaces default Docusaurus `docs/`). One folder per module, numbered 00-99 for ordering. Subfolders become Canvas "Text Header" items. Each module may have a `_files/` subdirectory for embedded assets (images, PDFs) that are uploaded to Canvas but not added as module items.
+- `course/` — Course materials (replaces default Docusaurus `docs/`). One folder per module, numbered 00-99 for ordering. Subfolders become Canvas "Text Header" items. Each module may have a `_files/` subdirectory for embedded assets (images, PDFs) and file item binaries referenced by markdown wrappers.
 - `evaluations/` — Exam/test materials organized by academic year (e.g., `2526/`). Each test has `instructions.md`, optional `start/` and `solution/` folders. Not served by Docusaurus.
 - `sources/` — Reference materials, inspiration, and notes. Not served by Docusaurus or synced to Canvas. See `sources/README.md` for conventions.
 - `lib/canvas/` — Canvas REST API client (`client.js`) and resource-specific modules (`modules.js`, `pages.js`, `assignments.js`, `files.js`, `icons.js`)
@@ -89,7 +89,7 @@ Every markdown file in `course/` uses frontmatter to define its Canvas type:
 - `canvas_type: page` — synced as Canvas Page (default if omitted)
 - `canvas_type: assignment` — synced as Canvas Assignment (supports `points_possible`, `submission_types`, `due_at`)
 - `canvas_type: external_url` — synced as Canvas ExternalUrl (requires `external_url` field)
-- Non-markdown files — synced as Canvas File items
+- `canvas_type: file` — markdown wrapper for a Canvas File item (requires `file_ref` pointing to the binary in `_files/`)
 
 `canvas_id` is written back to frontmatter after first push to track sync state.
 
