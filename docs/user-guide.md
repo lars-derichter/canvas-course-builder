@@ -190,6 +190,8 @@ npx course pull                  # import existing Canvas course
 npx course pull --force           # overwrite locally modified files
 npx course status                # compare local vs Canvas state
 npx course status --remote       # also fetch and compare against Canvas
+npx course diff                  # show what changed locally since the last sync
+npx course validate              # check course content for errors before pushing
 ```
 
 #### Global flags
@@ -217,8 +219,13 @@ errors, push/pull issues, and sync state problems.
 
 ## Advanced Commands
 
-See [Advanced Commands](advanced-commands.md) for destructive operations like
-`reset-sync-state` and `reset-canvas`.
+```bash
+npx course reset-sync-state      # remove canvas_id fields and delete .canvas-sync.json
+npx course reset-canvas          # delete all modules, pages, assignments, and files from Canvas
+```
+
+See [Advanced Commands](advanced-commands.md) for details on these destructive
+operations.
 
 ## Claude Code
 
