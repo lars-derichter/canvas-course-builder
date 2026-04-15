@@ -19,9 +19,10 @@ Write course materials as markdown, preview via
    [Git & GitHub Guide](git-and-github.md) if you need help with these steps
 
 2. **Create your own copy** — click **Use this template** at the top-right of
-   this page, then select **Create a new repository**. Pick a descriptive name
-   that reflects the course, like `course-web-development` or `course-databases`
-   — this makes it much easier to find your materials, especially if you manage
+   [this project’s homepage,](https://github.com/lars-derichter/canvas-local)
+   then select **Create a new repository**. Pick a descriptive name that
+   reflects the course, like `course-web-development` or `course-databases` —
+   this makes it much easier to find your materials, especially if you manage
    multiple courses (each as its own project). Choose whether it should be
    public or private
 
