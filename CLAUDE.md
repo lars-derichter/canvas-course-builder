@@ -6,6 +6,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Course development system that lets you write course materials as markdown, serve them via Docusaurus, and sync with Canvas LMS via its REST API. All tooling is JavaScript/Node.js (CommonJS).
 
+## Writing course materials
+
+**Always read [`docs/style.md`](docs/style.md) before drafting or editing any file under `course/` or `evaluations/`.** The style guide defines the language, tone, structure, headings, callouts, punctuation, and AI-tell patterns for this project's student-facing content. Apply it from the first draft — do not write course prose, assignment instructions, or exam text without consulting it first in the current session.
+
+If the user asks you to change how you write, offer to run `/update-style` so the new preference is folded into `style.md` as a durable rule.
+
 ## Commands
 
 ```bash
