@@ -58,3 +58,5 @@ dist/
 
 ### Claude Code ###
 .claude/worktrees/
+# Local per-user Claude Code settings (permissions, env); not shared with team
+.claude/settings.json
