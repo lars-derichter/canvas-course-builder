@@ -95,7 +95,7 @@ Every markdown file in `course/` uses frontmatter to define its Canvas type:
 
 ### Alerts
 
-GitHub-style blockquote alerts (`> [!NOTE]`, `> [!TIP]`, `> [!IMPORTANT]`, `> [!WARNING]`, `> [!ATTENTION]`, `> [!CHECK]`) are supported bidirectionally:
+Six GitHub-style blockquote alerts (see `docs/style.md` for types and usage) are supported bidirectionally:
 
 - **Push** (`markdown-to-html.js`): `marked-alert` extension parses GFM alerts; custom renderer produces inline-styled HTML with Canvas-hosted SVG icons. `[!ATTENTION]` is mapped to the `caution` type internally.
 - **Pull** (`html-to-markdown.js`): Turndown rules detect `div.markdown-alert` elements and convert back to GFM blockquote syntax.
@@ -136,3 +136,4 @@ Thomas More-inspired styling in `src/css/custom.css` with color mode config in `
 
 - Node.js 20+ required (built-in test runner stable from v20)
 - Docusaurus `_category_.json` files control sidebar labels/ordering and are skipped by the course scanner
+- Writing style for course materials: [`docs/style.md`](docs/style.md)
