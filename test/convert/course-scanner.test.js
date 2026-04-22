@@ -92,6 +92,12 @@ describe('scanCourse', () => {
       path.join(mod2, '03-diagram.md'),
       '---\ntitle: Diagram\ncanvas_type: file\ncanvas_id: 999\nfile_ref: _files/diagram.svg\n---\n'
     );
+
+    // Module 2: frontmatter title that differs from the filename-derived title
+    fs.writeFileSync(
+      path.join(mod2, '04-api.md'),
+      '---\ntitle: REST API Reference\n---\n\nAPI docs.'
+    );
   });
 
   after(() => {
@@ -175,6 +181,15 @@ describe('scanCourse', () => {
     assert.ok(fileWrapper);
     assert.equal(fileWrapper.canvasType, 'file');
     assert.equal(fileWrapper.frontmatter.file_ref, '_files/diagram.svg');
+  });
+
+  it('prefers the frontmatter title over the filename-derived title', () => {
+    const modules = scanCourse(tmpDir);
+    const advItems = modules[1].items;
+    const api = advItems.find((i) => i.file === '04-api.md');
+
+    assert.ok(api);
+    assert.equal(api.title, 'REST API Reference');
   });
 
   it('builds correct relative paths', () => {
