@@ -5,8 +5,8 @@ set -euo pipefail
 # Uses a squash merge so only one commit is added to your history.
 # Content directories (course/, evaluations/, sources/) and README.md are always preserved.
 
-CONTENT_DIRS=(course evaluations sources)
-CONTENT_FILES=(README.md)
+PROTECTED_DIRS=(course evaluations sources)
+PROTECTED_FILES=(README.md)
 UPSTREAM_REMOTE="upstream"
 UPSTREAM_BRANCH="main"
 
@@ -34,42 +34,58 @@ UPSTREAM_HASH=$(git rev-parse --short "$UPSTREAM_REF")
 # --- Squash merge ---
 
 echo "Merging $UPSTREAM_REF ($UPSTREAM_HASH) with --squash..."
-if git merge "$UPSTREAM_REF" --allow-unrelated-histories --squash 2>/dev/null; then
-  echo "Merge completed without conflicts."
-else
-  echo "Conflicts detected. Resolving automatically..."
+# Conflicts are expected and handled below; don't let `set -e` abort the script.
+git merge "$UPSTREAM_REF" --allow-unrelated-histories --squash || true
 
-  # Keep ours for content directories
-  for dir in "${CONTENT_DIRS[@]}"; do
-    if [ -d "$dir" ]; then
-      git checkout --ours -- "$dir/" 2>/dev/null || true
-      echo "  Kept local version: $dir/"
-    fi
-  done
+# --- Protect local content unconditionally ---
+#
+# `git merge --squash` only flags conflicts when both sides modify the same
+# tracked file. Files that exist upstream but not locally (or vice versa) are
+# staged silently with no conflict. So restoring protected paths only inside a
+# conflict branch is not enough — we always restore them from HEAD.
 
-  # Keep ours for content files
-  for file in "${CONTENT_FILES[@]}"; do
-    if [ -f "$file" ]; then
-      git checkout --ours -- "$file" 2>/dev/null || true
-      echo "  Kept local version: $file"
-    fi
-  done
+echo "Protecting local content: ${PROTECTED_DIRS[*]} ${PROTECTED_FILES[*]}"
 
-  # Accept theirs for all remaining conflicts
-  CONFLICTED=$(git diff --name-only --diff-filter=U)
-  if [ -n "$CONFLICTED" ]; then
-    echo "  Accepting upstream version for:"
-    echo "$CONFLICTED" | while read -r file; do
-      echo "    $file"
-      git checkout --theirs -- "$file"
-    done
+for dir in "${PROTECTED_DIRS[@]}"; do
+  if git cat-file -e "HEAD:$dir" 2>/dev/null; then
+    git checkout HEAD -- "$dir"
   fi
+  # Drop any upstream-only files left under this directory. The clean-tree
+  # precondition above means anything still here came from the merge.
+  if [ -d "$dir" ]; then
+    git clean -fd -- "$dir" >/dev/null
+  fi
+done
 
-  git add -A
-  echo "All conflicts resolved."
+for file in "${PROTECTED_FILES[@]}"; do
+  if git cat-file -e "HEAD:$file" 2>/dev/null; then
+    git checkout HEAD -- "$file"
+  elif [ -f "$file" ]; then
+    git rm -f --cached --ignore-unmatch -- "$file" >/dev/null
+    rm -f -- "$file"
+  fi
+done
+
+# --- Resolve any remaining (non-protected) conflicts by accepting upstream ---
+
+CONFLICTED=$(git diff --name-only --diff-filter=U)
+if [ -n "$CONFLICTED" ]; then
+  echo "Accepting upstream version for:"
+  echo "$CONFLICTED" | while read -r file; do
+    echo "  $file"
+    git checkout --theirs -- "$file"
+  done
 fi
 
-# --- Commit ---
+git add -A
+
+# --- Commit (skip if nothing changed) ---
+
+if git diff --cached --quiet; then
+  echo "Nothing to update — already at upstream $UPSTREAM_HASH."
+  git tag -f last-upstream-merge "$UPSTREAM_REF" >/dev/null
+  exit 0
+fi
 
 git commit -m "Import upstream updates from canvas-local ($UPSTREAM_HASH)"
 

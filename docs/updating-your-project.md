@@ -107,12 +107,15 @@ If you prefer to run the steps yourself instead of using the script:
    git merge upstream/main --allow-unrelated-histories --squash
    ```
 
-3. **Resolve conflicts** if any appear. Keep your version for content
-   directories and accept upstream for tooling:
+3. **Restore your content from HEAD**, then resolve any remaining conflicts.
+   A squash merge only flags conflicts when both sides modify the same file —
+   files that exist upstream but not locally are added silently. So always
+   restore your content paths from HEAD, even when no conflicts are reported:
 
    ```bash
-   # Keep your content and README
-   git checkout --ours -- course/ evaluations/ sources/ README.md
+   # Always keep your content and README, regardless of conflicts
+   git checkout HEAD -- course/ evaluations/ sources/ README.md 2>/dev/null || true
+   git clean -fd -- course/ evaluations/ sources/
 
    # Accept upstream for remaining conflicted files
    git checkout --theirs -- path/to/conflicted-file
