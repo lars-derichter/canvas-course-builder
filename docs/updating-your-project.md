@@ -109,12 +109,19 @@ If you prefer to run the steps yourself instead of using the script:
 
 3. **Restore your content from HEAD**, then resolve any remaining conflicts.
    A squash merge only flags conflicts when both sides modify the same file —
-   files that exist upstream but not locally are added silently. So always
-   restore your content paths from HEAD, even when no conflicts are reported:
+   files that exist upstream but not locally are added silently as staged
+   additions. `git checkout HEAD --` will not unstage them (they are absent
+   from HEAD), so first reset the index for those paths, then check out from
+   HEAD, then clean the working tree:
 
    ```bash
-   # Always keep your content and README, regardless of conflicts
+   # Unstage upstream-only additions in your content paths
+   git reset HEAD -- course/ evaluations/ sources/ 2>/dev/null || true
+
+   # Restore your content and README from HEAD
    git checkout HEAD -- course/ evaluations/ sources/ README.md 2>/dev/null || true
+
+   # Drop the now-untracked upstream-only files
    git clean -fd -- course/ evaluations/ sources/
 
    # Accept upstream for remaining conflicted files

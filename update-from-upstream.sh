@@ -47,11 +47,14 @@ git merge "$UPSTREAM_REF" --allow-unrelated-histories --squash || true
 echo "Protecting local content: ${PROTECTED_DIRS[*]} ${PROTECTED_FILES[*]}"
 
 for dir in "${PROTECTED_DIRS[@]}"; do
+  # Reset index entries under this path back to HEAD. `git checkout HEAD --`
+  # alone would leave upstream-only files staged because the squash merge
+  # silently added them and they are absent from HEAD's tree.
+  git reset HEAD -- "$dir" >/dev/null 2>&1 || true
   if git cat-file -e "HEAD:$dir" 2>/dev/null; then
     git checkout HEAD -- "$dir"
   fi
-  # Drop any upstream-only files left under this directory. The clean-tree
-  # precondition above means anything still here came from the merge.
+  # Drop the upstream-only files that are now untracked in the working tree.
   if [ -d "$dir" ]; then
     git clean -fd -- "$dir" >/dev/null
   fi
