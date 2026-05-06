@@ -68,17 +68,36 @@ describe('scanCourse', () => {
     fs.mkdirSync(path.join(mod1, '_files'));
     fs.writeFileSync(path.join(mod1, '_files', 'image.png'), 'fake-image');
 
-    // Module 2 with an assignment and a subfolder
+    // Module 1 subfolder without _category_.json — exercises the
+    // subheader fallback to displayTitle(folderName).
+    const introSub = path.join(mod1, '03-recap');
+    fs.mkdirSync(introSub);
+    fs.writeFileSync(
+      path.join(introSub, '01-summary.md'),
+      '---\ntitle: Summary\n---\n\nRecap.'
+    );
+
+    // Module 2 with an assignment and a subfolder.
+    // Has a _category_.json with a custom label that should win over the
+    // folder-name-derived title.
     const mod2 = path.join(tmpDir, '02-advanced');
     fs.mkdirSync(mod2);
+    fs.writeFileSync(
+      path.join(mod2, '_category_.json'),
+      JSON.stringify({ label: 'Advanced Topics', position: 2 }) + '\n'
+    );
     fs.writeFileSync(
       path.join(mod2, '01-homework.md'),
       '---\ntitle: Homework\ncanvas_type: assignment\npoints_possible: 10\n---\n\nDo it.'
     );
 
-    // Subfolder inside module 2
+    // Subfolder inside module 2 with a custom _category_.json label.
     const sub = path.join(mod2, '01-exercises');
     fs.mkdirSync(sub);
+    fs.writeFileSync(
+      path.join(sub, '_category_.json'),
+      JSON.stringify({ label: 'Hands-on Practice', position: 1 }) + '\n'
+    );
     fs.writeFileSync(
       path.join(sub, '01-exercise-a.md'),
       '---\ntitle: Exercise A\n---\n\nFirst exercise.'
@@ -111,10 +130,14 @@ describe('scanCourse', () => {
     assert.equal(modules[1].folderName, '02-advanced');
   });
 
-  it('derives module names from folder names', () => {
+  it('derives module names from folder names when no _category_.json is present', () => {
     const modules = scanCourse(tmpDir);
     assert.equal(modules[0].moduleName, 'Intro');
-    assert.equal(modules[1].moduleName, 'Advanced');
+  });
+
+  it('prefers the _category_.json label over the folder-name-derived module name', () => {
+    const modules = scanCourse(tmpDir);
+    assert.equal(modules[1].moduleName, 'Advanced Topics');
   });
 
   it('assigns correct positions', () => {
@@ -125,13 +148,13 @@ describe('scanCourse', () => {
 
   it('scans markdown items with frontmatter', () => {
     const modules = scanCourse(tmpDir);
-    const introItems = modules[0].items;
+    const fileItems = modules[0].items.filter((i) => i.type === 'item');
 
-    assert.equal(introItems.length, 2);
-    assert.equal(introItems[0].title, 'Welcome');
-    assert.equal(introItems[0].canvasType, 'page');
-    assert.equal(introItems[1].title, 'Setup');
-    assert.equal(introItems[1].canvasType, 'page'); // defaults to page
+    assert.equal(fileItems.length, 2);
+    assert.equal(fileItems[0].title, 'Welcome');
+    assert.equal(fileItems[0].canvasType, 'page');
+    assert.equal(fileItems[1].title, 'Setup');
+    assert.equal(fileItems[1].canvasType, 'page'); // defaults to page
   });
 
   it('skips underscore-prefixed entries', () => {
@@ -158,10 +181,23 @@ describe('scanCourse', () => {
     const subheader = advItems.find((i) => i.type === 'subheader');
 
     assert.ok(subheader);
-    assert.equal(subheader.title, 'Exercises');
     assert.equal(subheader.items.length, 1);
     assert.equal(subheader.items[0].title, 'Exercise A');
     assert.equal(subheader.items[0].indent, 1);
+  });
+
+  it('prefers the _category_.json label over the folder-name-derived subheader title', () => {
+    const modules = scanCourse(tmpDir);
+    const subheader = modules[1].items.find((i) => i.type === 'subheader');
+    assert.ok(subheader);
+    assert.equal(subheader.title, 'Hands-on Practice');
+  });
+
+  it('falls back to the folder-name-derived subheader title when no _category_.json is present', () => {
+    const modules = scanCourse(tmpDir);
+    const subheader = modules[0].items.find((i) => i.type === 'subheader');
+    assert.ok(subheader);
+    assert.equal(subheader.title, 'Recap');
   });
 
   it('treats non-markdown files as canvas_type file', () => {
