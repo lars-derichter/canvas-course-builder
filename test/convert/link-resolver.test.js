@@ -257,6 +257,38 @@ describe('extractFileReferences', () => {
     const refs = extractFileReferences('Just plain text.', '01-intro/01-welcome.md');
     assert.deepEqual(refs, []);
   });
+
+  it('ignores link syntax inside inline code spans', () => {
+    const md = 'Links look like `[text](url)` in markdown.';
+    const refs = extractFileReferences(md, '01-intro/01-welcome.md');
+    assert.deepEqual(refs, []);
+  });
+
+  it('ignores link syntax inside multi-backtick inline code', () => {
+    const md = 'Code: `` `[text](url)` `` here.';
+    const refs = extractFileReferences(md, '01-intro/01-welcome.md');
+    assert.deepEqual(refs, []);
+  });
+
+  it('ignores references inside fenced code blocks', () => {
+    const md = '```markdown\n![Alt](./_files/example.svg)\n```';
+    const refs = extractFileReferences(md, '01-intro/01-welcome.md');
+    assert.deepEqual(refs, []);
+  });
+
+  it('still extracts real references alongside code examples', () => {
+    const md = [
+      'Example syntax: `[text](url)`',
+      '',
+      '```markdown',
+      '![ignored](./_files/ignored.png)',
+      '```',
+      '',
+      '![Real](./_files/real.png)',
+    ].join('\n');
+    const refs = extractFileReferences(md, '01-intro/01-welcome.md');
+    assert.deepEqual(refs, ['01-intro/_files/real.png']);
+  });
 });
 
 // --- buildFileMap ---
