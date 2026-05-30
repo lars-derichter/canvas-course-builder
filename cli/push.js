@@ -9,6 +9,7 @@ const { createModule, updateModule, createModuleItem, deleteModule: deleteCanvas
 const { createPage, updatePage, deletePage } = require('../lib/canvas/pages');
 const { createAssignment, updateAssignment, deleteAssignment } = require('../lib/canvas/assignments');
 const { uploadFile, deleteFile } = require('../lib/canvas/files');
+const { get } = require('../lib/canvas/client');
 const { ensureIcons, getIconUrls } = require('../lib/canvas/icons');
 const { buildLinkMap, resolveRelativeLink, extractFileReferences } = require('../lib/convert/link-resolver');
 const { SYNC_FILE, loadSyncFile, saveSyncFile } = require('./sync-utils');
@@ -502,6 +503,26 @@ async function pushExternalUrl(courseId, moduleId, { title, filePath, position, 
 async function pushFile(courseId, moduleId, { title, filePath, relativePath, position, indent, folderName }, dryRun, syncData) {
   log.info(`  [push] Uploading file: ${title}`);
   if (!dryRun) {
+    // Look up the Canvas file from the previous sync so we can detect a rename.
+    // Canvas uploads with on_duplicate=overwrite key on the filename, so a
+    // renamed binary lands as a NEW Canvas file, orphaning the old one. We
+    // compare the old file's display_name (not its id) against the name we're
+    // about to upload so we never delete a file that overwrite replaced in place.
+    const prevId = syncData.modules[folderName] &&
+      syncData.modules[folderName].items[relativePath] &&
+      syncData.modules[folderName].items[relativePath].canvas_id;
+    const newName = path.basename(filePath);
+    let prevName = null;
+    if (prevId) {
+      try {
+        const prevMeta = await get(`/api/v1/files/${prevId}`);
+        prevName = prevMeta && prevMeta.display_name;
+      } catch (err) {
+        // Old file already gone (e.g. deleted manually) — nothing to clean up.
+        log.verbose(`Could not fetch previous file ${prevId}: ${err.message}`);
+      }
+    }
+
     const result = await uploadFile(courseId, filePath, { parentFolderPath: folderName });
     const fileId = result.id;
 
@@ -513,6 +534,17 @@ async function pushFile(courseId, moduleId, { title, filePath, relativePath, pos
       indent,
     });
     log.info(`    [push] Uploaded file id=${fileId}`);
+
+    // The binary was renamed since the last sync: the upload above created a
+    // fresh Canvas file, so delete the now-orphaned previous one.
+    if (prevId && prevName && prevName !== newName) {
+      try {
+        await deleteFile(prevId);
+        log.verbose(`Deleted orphaned file ${prevId} ("${prevName}")`);
+      } catch (err) {
+        log.warn(`    [push] Could not delete orphaned file ${prevId} ("${prevName}"): ${err.message}`);
+      }
+    }
 
     // Track file item in sync state for pruning support
     if (relativePath && syncData.modules[folderName]) {
