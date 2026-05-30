@@ -179,6 +179,9 @@ npm start          # start Docusaurus dev server
 npm run build      # production build
 ```
 
+You can also publish the preview as a free public website on GitHub Pages — a
+handy fallback when Canvas is unavailable. See the [Hosting Guide](hosting.md).
+
 ### Canvas Sync
 
 ```bash

@@ -109,6 +109,10 @@ Educators are eligible for a **free GitHub Pro account**, which includes
 unlimited private repositories and other benefits. You can apply at
 [GitHub Education](https://education.github.com/discount_requests/application).
 
+You can keep your repository private and still publish a public website with
+your course materials (without exposing `evaluations/`). See the
+[Hosting Guide](hosting.md).
+
 ## Cloning your project
 
 **Cloning** downloads your project from GitHub to your computer so you can work

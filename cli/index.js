@@ -25,6 +25,12 @@ program
   .action(require('./init'));
 
 program
+  .command('setup-pages')
+  .description('Configure GitHub Pages hosting (Docusaurus config + deploy workflow)')
+  .option('--domain <domain>', 'Use a custom domain instead of the github.io subpath')
+  .action(require('./setup-pages'));
+
+program
   .command('push')
   .description('Push local course content to Canvas')
   .option('-m, --module <name>', 'Only push a specific module folder name')
