@@ -134,9 +134,11 @@ done
 # --- Resolve any remaining (non-protected) conflicts interactively ---
 #
 # Each conflicted file exists on both sides with differing content. For each one,
-# prompt: keep local, keep upstream, or open the conflict-marked file in the
-# editor to merge by hand. The default is whichever side was committed most
-# recently. With no terminal available, the default is applied automatically.
+# prompt: keep local, keep upstream, open the conflict-marked file in the editor
+# to merge by hand, or always keep local (which also adds the file to
+# protected_files so it stops conflicting on future updates). The default is
+# whichever side was committed most recently. With no terminal available, the
+# default is applied automatically.
 
 apply_choice() {
   local file="$1" side="$2"
@@ -145,6 +147,29 @@ apply_choice() {
     upstream) git checkout --theirs -- "$file";  echo "  used upstream: $file" ;;
   esac
   git add -- "$file"
+}
+
+add_to_protected_files() {
+  local file="$1" line tmp added=0 p
+  # Defensive: protected files don't reach the resolver, so this should be a
+  # no-op, but guard against double-adding anyway. The `[@]+"[@]"` form is the
+  # set -u-safe way to iterate a possibly-empty array on bash 3.2 (macOS).
+  for p in ${PROTECTED_FILES[@]+"${PROTECTED_FILES[@]}"}; do
+    [ "$p" = "$file" ] && return
+  done
+  PROTECTED_FILES+=("$file")
+
+  tmp=$(mktemp)
+  while IFS= read -r line || [ -n "$line" ]; do
+    if [ "$added" -eq 0 ] && [[ "$line" =~ ^[[:space:]]*protected_files[[:space:]]*= ]]; then
+      printf '%s %s\n' "${line%"${line##*[![:space:]]}"}" "$file"   # trim trailing ws, append
+      added=1
+    else
+      printf '%s\n' "$line"
+    fi
+  done < "$CONFIG_FILE" > "$tmp"
+  [ "$added" -eq 0 ] && printf 'protected_files = %s\n' "$file" >> "$tmp"
+  mv "$tmp" "$CONFIG_FILE"
 }
 
 resolve_conflict() {
@@ -169,11 +194,16 @@ resolve_conflict() {
     printf '\nConflict: %s\n' "$file"
     printf '  local last commit:    %s\n' "$local_date"
     printf '  upstream last commit: %s\n' "$upstream_date"
-    printf '  [l]ocal  [u]pstream  [m]erge in editor   (default: %s = most recent)\n> ' "$default"
+    printf '  [l]ocal  [u]pstream  [m]erge in editor  [a]lways keep local   (default: %s = most recent)\n> ' "$default"
     read -r answer < /dev/tty || answer=""
     case "${answer:-}" in
       l|L) apply_choice "$file" local;    return ;;
       u|U) apply_choice "$file" upstream; return ;;
+      a|A)
+        apply_choice "$file" local
+        add_to_protected_files "$file"
+        echo "  added to protected_files in config: $file"
+        return ;;
       "")  apply_choice "$file" "$default"; return ;;
       m|M)
         # The working-tree file still has conflict markers from the squash merge.
@@ -186,7 +216,7 @@ resolve_conflict() {
         git add -- "$file"
         echo "  merged:       $file"
         return ;;
-      *) echo "  Please answer l, u, m, or press Enter for the default." ;;
+      *) echo "  Please answer l, u, m, a, or press Enter for the default." ;;
     esac
   done
 }
