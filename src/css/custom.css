@@ -223,9 +223,11 @@ nav.menu {
 
 /* Override the default 75% col cap — content + TOC side by side */
 @media (min-width: 997px) {
+  /* Cap the reading width, but keep the column growable (default flex-basis 0)
+     so content + TOC always pack onto one line and the TOC never wraps below
+     the content on narrower desktop viewports. */
   [class*='docItemCol'] {
     max-width: 48rem !important;
-    flex: 0 0 48rem !important;
     padding: 0 2rem;
   }
 
