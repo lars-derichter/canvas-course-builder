@@ -4,8 +4,8 @@ set -euo pipefail
 # Update project from the upstream canvas-local template repository.
 # Uses a squash merge so only one commit is added to your history.
 # Content directories (course/, evaluations/, sources/) and the protected files
-# (README.md, CLAUDE.md, docs/style.md) are always preserved. Remaining
-# conflicts accept the upstream version.
+# (README.md, CLAUDE.md, docs/style.md) are always preserved. Conflicts in other
+# files are resolved interactively (keep local / upstream / merge in the editor).
 
 # --- Load configuration ---
 #
@@ -131,15 +131,73 @@ for file in "${PROTECTED_FILES[@]}"; do
   fi
 done
 
-# --- Resolve any remaining (non-protected) conflicts by accepting upstream ---
+# --- Resolve any remaining (non-protected) conflicts interactively ---
+#
+# Each conflicted file exists on both sides with differing content. For each one,
+# prompt: keep local, keep upstream, or open the conflict-marked file in the
+# editor to merge by hand. The default is whichever side was committed most
+# recently. With no terminal available, the default is applied automatically.
+
+apply_choice() {
+  local file="$1" side="$2"
+  case "$side" in
+    local)    git checkout HEAD -- "$file";      echo "  kept local:   $file" ;;
+    upstream) git checkout --theirs -- "$file";  echo "  used upstream: $file" ;;
+  esac
+  git add -- "$file"
+}
+
+resolve_conflict() {
+  local file="$1" local_ts upstream_ts local_date upstream_date default answer
+  local_ts=$(git log -1 --format=%ct HEAD -- "$file" 2>/dev/null || echo 0)
+  upstream_ts=$(git log -1 --format=%ct "$UPSTREAM_REF" -- "$file" 2>/dev/null || echo 0)
+  local_date=$(git log -1 --format=%cs HEAD -- "$file" 2>/dev/null || echo "unknown")
+  upstream_date=$(git log -1 --format=%cs "$UPSTREAM_REF" -- "$file" 2>/dev/null || echo "unknown")
+  if [ "${local_ts:-0}" -gt "${upstream_ts:-0}" ]; then
+    default="local"
+  else
+    default="upstream"   # ties go to upstream: pulling upstream is the point
+  fi
+
+  if [ ! -r /dev/tty ]; then
+    echo "  $file -> $default (no terminal; using default)"
+    apply_choice "$file" "$default"
+    return
+  fi
+
+  while true; do
+    printf '\nConflict: %s\n' "$file"
+    printf '  local last commit:    %s\n' "$local_date"
+    printf '  upstream last commit: %s\n' "$upstream_date"
+    printf '  [l]ocal  [u]pstream  [m]erge in editor   (default: %s = most recent)\n> ' "$default"
+    read -r answer < /dev/tty || answer=""
+    case "${answer:-}" in
+      l|L) apply_choice "$file" local;    return ;;
+      u|U) apply_choice "$file" upstream; return ;;
+      "")  apply_choice "$file" "$default"; return ;;
+      m|M)
+        # The working-tree file still has conflict markers from the squash merge.
+        # Hand it to the editor git would use (code --wait here) and wait.
+        eval "$editor_cmd \"\$file\"" < /dev/tty || true
+        if grep -qE '^(<{7}|={7}|>{7})' "$file"; then
+          echo "  Conflict markers remain in $file — choose again."
+          continue
+        fi
+        git add -- "$file"
+        echo "  merged:       $file"
+        return ;;
+      *) echo "  Please answer l, u, m, or press Enter for the default." ;;
+    esac
+  done
+}
 
 CONFLICTED=$(git diff --name-only --diff-filter=U)
 if [ -n "$CONFLICTED" ]; then
-  echo "Accepting upstream version for:"
-  echo "$CONFLICTED" | while read -r file; do
-    echo "  $file"
-    git checkout --theirs -- "$file"
-  done
+  echo "Resolving conflicts in non-protected files present on both sides..."
+  editor_cmd=$(git var GIT_EDITOR)   # resolves to 'code --wait' here
+  while read -r file; do
+    [ -n "$file" ] && resolve_conflict "$file"
+  done <<< "$CONFLICTED"
 fi
 
 git add -A
