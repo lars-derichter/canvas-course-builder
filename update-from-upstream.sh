@@ -3,12 +3,74 @@ set -euo pipefail
 
 # Update project from the upstream canvas-local template repository.
 # Uses a squash merge so only one commit is added to your history.
-# Content directories (course/, evaluations/, sources/) and README.md are always preserved.
+# Content directories (course/, evaluations/, sources/) and the protected files
+# (README.md, CLAUDE.md, docs/style.md) are always preserved. Remaining
+# conflicts accept the upstream version.
 
-PROTECTED_DIRS=(course evaluations sources)
-PROTECTED_FILES=(README.md)
-UPSTREAM_REMOTE="upstream"
-UPSTREAM_BRANCH="main"
+# --- Load configuration ---
+#
+# Settings live in an external file so per-repo customizations survive upstream
+# updates (the file lists itself under protected_files). Format is `key = value`
+# with space-separated lists; '#' begins a comment.
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+CONFIG_FILE="$SCRIPT_DIR/update-from-upstream.conf"
+
+if [ ! -f "$CONFIG_FILE" ]; then
+  cat > "$CONFIG_FILE" <<'EOF'
+# Configuration for update-from-upstream.sh
+# Lists are space-separated. Lines starting with # are comments.
+
+# Directories whose local content is always kept (never overwritten by upstream).
+protected_dirs = course evaluations sources
+
+# Individual files always kept. Includes this config file itself so your
+# customizations here survive future upstream updates.
+protected_files = README.md CLAUDE.md docs/style.md update-from-upstream.conf
+
+# Upstream git remote and branch to merge from.
+upstream_remote = upstream
+upstream_branch = main
+EOF
+  echo "Created default config at $CONFIG_FILE."
+  echo "Review it, commit it, then run this script again."
+  exit 0
+fi
+
+PROTECTED_DIRS=()
+PROTECTED_FILES=()
+UPSTREAM_REMOTE=""
+UPSTREAM_BRANCH=""
+
+while IFS= read -r line || [ -n "$line" ]; do
+  line="${line%%#*}"                                   # strip comments
+  [[ "$line" =~ ^[[:space:]]*$ ]] && continue          # skip blanks
+  if [[ ! "$line" =~ ^[[:space:]]*([a-z_]+)[[:space:]]*=[[:space:]]*(.*)$ ]]; then
+    echo "Warning: ignoring malformed config line: $line" >&2
+    continue
+  fi
+  key="${BASH_REMATCH[1]}"
+  value="${BASH_REMATCH[2]}"
+  value="${value%"${value##*[![:space:]]}"}"           # trim trailing whitespace
+  case "$key" in
+    protected_dirs)  read -r -a PROTECTED_DIRS  <<< "$value" ;;
+    protected_files) read -r -a PROTECTED_FILES <<< "$value" ;;
+    upstream_remote) UPSTREAM_REMOTE="$value" ;;
+    upstream_branch) UPSTREAM_BRANCH="$value" ;;
+    *) echo "Warning: unknown config key '$key' in $CONFIG_FILE" >&2 ;;
+  esac
+done < "$CONFIG_FILE"
+
+if [ -z "$UPSTREAM_REMOTE" ] || [ -z "$UPSTREAM_BRANCH" ]; then
+  echo "Error: $CONFIG_FILE must set upstream_remote and upstream_branch."
+  exit 1
+fi
+
+# Soft safeguard: warn if the config file isn't protecting itself.
+case " ${PROTECTED_FILES[*]} " in
+  *" $(basename "$CONFIG_FILE") "*) : ;;
+  *) echo "Warning: $(basename "$CONFIG_FILE") is not in protected_files; upstream could overwrite it." >&2 ;;
+esac
 
 # --- Preflight checks ---
 
