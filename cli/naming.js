@@ -21,17 +21,15 @@ function toFileName(title, position) {
 }
 
 /**
- * Create a numbered file name for a non-markdown file item, preserving the original extension.
- * "diagram.svg" at position 3 -> "03-diagram.svg"
+ * Slugify a filename while preserving its extension.
+ * Unlike toSlug, dots are kept so the extension survives.
+ * "diagram.svg" -> "diagram.svg", "My File.PDF" -> "my-file.pdf"
  */
-function toFileItemName(title, position) {
-  const prefix = String(position).padStart(2, '0');
-  // Preserve dots in file extensions (unlike toSlug which strips them)
-  const slug = title
+function toFileSlug(name) {
+  return name
     .toLowerCase()
     .replace(/[^a-z0-9.]+/g, '-')
     .replace(/^-+|-+$/g, '');
-  return `${prefix}-${slug}`;
 }
 
 /**
@@ -45,4 +43,4 @@ function computeRelativePath(folderName, filePath, courseDir) {
   );
 }
 
-module.exports = { toFolderName, toFileName, toFileItemName, computeRelativePath };
+module.exports = { toFolderName, toFileName, toFileSlug, computeRelativePath };

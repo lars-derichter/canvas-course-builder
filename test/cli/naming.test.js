@@ -2,7 +2,7 @@ const { describe, it } = require('node:test');
 const assert = require('node:assert/strict');
 const path = require('path');
 
-const { toFolderName, toFileName, toFileItemName, computeRelativePath } = require('../../cli/naming');
+const { toFolderName, toFileName, toFileSlug, computeRelativePath } = require('../../cli/naming');
 
 describe('toFolderName', () => {
   it('creates a numbered folder name from name and position', () => {
@@ -40,21 +40,21 @@ describe('toFileName', () => {
   });
 });
 
-describe('toFileItemName', () => {
+describe('toFileSlug', () => {
   it('preserves file extension', () => {
-    assert.equal(toFileItemName('diagram.svg', 3), '03-diagram.svg');
+    assert.equal(toFileSlug('diagram.svg'), 'diagram.svg');
   });
 
   it('lowercases the entire name', () => {
-    assert.equal(toFileItemName('Photo.JPEG', 1), '01-photo.jpeg');
+    assert.equal(toFileSlug('Photo.JPEG'), 'photo.jpeg');
   });
 
   it('preserves multiple dots in name', () => {
-    assert.equal(toFileItemName('archive.tar.gz', 2), '02-archive.tar.gz');
+    assert.equal(toFileSlug('archive.tar.gz'), 'archive.tar.gz');
   });
 
   it('handles spaces in filenames', () => {
-    assert.equal(toFileItemName('my file.pdf', 4), '04-my-file.pdf');
+    assert.equal(toFileSlug('my file.pdf'), 'my-file.pdf');
   });
 });
 

@@ -10,7 +10,7 @@ const { buildLinkMap, resolveCanvasLink, buildFileMap } = require('../lib/conver
 const { downloadFile } = require('../lib/canvas/files');
 const { SYNC_FILE, loadSyncFile, saveSyncFile } = require('./sync-utils');
 const { COURSE_DIR } = require('./module-utils');
-const { toFolderName, toFileName, computeRelativePath } = require('./naming');
+const { toFolderName, toFileName, toFileSlug, computeRelativePath } = require('./naming');
 const log = require('./logger');
 
 async function pull(options) {
@@ -524,8 +524,21 @@ async function pullFileItem(item, targetDir, targetFileName, syncData, force, fo
     return;
   }
 
+  // Derive the binary filename from the Canvas File's display_name, which
+  // carries the real extension. The module item title is only a display label
+  // (e.g. "Workflow Diagram") and loses the extension, so fall back to it only
+  // when the metadata fetch fails. Slugify so pulled files follow the repo's
+  // lowercase-hyphenated naming convention.
+  let displayName = null;
+  try {
+    const fileMeta = await get(`/api/v1/files/${contentId}`);
+    displayName = fileMeta && fileMeta.display_name;
+  } catch (err) {
+    log.warn(`    [pull] Could not fetch file metadata for "${title}": ${err.message}`);
+  }
+  const originalName = toFileSlug(displayName || title);
+
   // Download binary to _files/ directory
-  const originalName = title.toLowerCase().replace(/[^a-z0-9.]+/g, '-').replace(/^-+|-+$/g, '');
   const filesDir = path.join(targetDir, '_files');
   if (!fs.existsSync(filesDir)) {
     fs.mkdirSync(filesDir, { recursive: true });
