@@ -27,6 +27,12 @@ git remote -v
 You should see both `origin` (your project) and `upstream` (the original
 project).
 
+The first time you run the script it creates a configuration file,
+`update-from-upstream.conf`, and exits without merging anything. Review the
+file, commit it, then run the script again. See
+[Configuring what's protected](#configuring-whats-protected) for what the
+settings mean.
+
 ## Pulling updates
 
 The easiest way to update is with the included script:
@@ -40,10 +46,14 @@ The script:
 1. Fetches the latest changes from upstream.
 2. Squash-merges them into a **single commit** on your branch — upstream's full
    history is not imported.
-3. Automatically resolves conflicts: your content (`course/`, `evaluations/`,
-   `sources/`) and `README.md` are always kept, while tooling files accept the
-   upstream version.
-4. Tags the merge point so you can see which upstream version you're on.
+3. Always keeps your protected paths. The content directories (`course/`,
+   `evaluations/`, `sources/`) and the protected files (`README.md`,
+   `CLAUDE.md`, `docs/style.md`, and the config file itself) are restored from
+   your version, never overwritten by upstream.
+4. Prompts you for any **other** file that changed on both sides. For each
+   conflict you choose what to do (see
+   [Resolving conflicts](#resolving-conflicts) below).
+5. Tags the merge point so you can see which upstream version you're on.
 
 After running the script, install any updated dependencies:
 
@@ -57,11 +67,67 @@ Then push your updated branch to GitHub:
 git push
 ```
 
+## Configuring what's protected
+
+The script reads its settings from `update-from-upstream.conf`. The file uses a
+simple `key = value` format with space-separated lists; lines starting with `#`
+are comments.
+
+```ini
+# Directories whose local content is always kept (never overwritten by upstream).
+protected_dirs = course evaluations sources
+
+# Individual files always kept. Includes this config file itself so your
+# customizations here survive future upstream updates.
+protected_files = README.md CLAUDE.md docs/style.md update-from-upstream.conf
+
+# Upstream git remote and branch to merge from.
+upstream_remote = upstream
+upstream_branch = main
+```
+
+- **`protected_dirs`** — directories whose local content is always kept.
+  Anything upstream adds inside them is dropped.
+- **`protected_files`** — individual files always kept. The config file lists
+  itself here, so your edits to it survive future updates. Add any tooling file
+  you've customized and don't want upstream to touch.
+- **`upstream_remote`** / **`upstream_branch`** — where to merge from.
+
+Because the config file is itself protected, edits you make here are never
+overwritten. Commit the file after changing it.
+
+## Resolving conflicts
+
+A conflict only happens when a file outside your protected paths was changed
+**both** locally and upstream. For each such file the script shows when each
+side was last committed and prompts:
+
+```
+Conflict: docusaurus.config.js
+  local last commit:    2026-05-20
+  upstream last commit: 2026-05-28
+  [l]ocal  [u]pstream  [m]erge in editor  [a]lways keep local   (default: upstream = most recent)
+```
+
+| Choice | What it does |
+| --- | --- |
+| `l` | Keep your version of the file. |
+| `u` | Take the upstream version. |
+| `m` | Open the conflict-marked file in your editor so you can merge by hand. The script waits, then checks that no conflict markers remain. |
+| `a` | Keep your version **and** add the file to `protected_files` in the config, so it stops conflicting on future updates. |
+| Enter | Apply the default — whichever side was committed most recently (ties go to upstream). |
+
+If the script runs without a terminal (e.g. from another script), it applies
+the default automatically for every conflict.
+
+The `a` option is the clean way to "pin" a tooling file you've customized: the
+next update restores it from your version before the resolver ever runs, so you
+won't be asked again.
+
 ## Recovering local changes to tooling files
 
-If you modified a tooling file that was also changed upstream (e.g.
-`docusaurus.config.js`), the script accepts the upstream version and prints a
-warning. You have several options to recover your changes:
+If you took the upstream version (`u`, or the default) of a file you'd actually
+customized, you can recover your version afterwards.
 
 **Before pushing** — restore your version from the previous commit:
 
@@ -85,8 +151,8 @@ git checkout HEAD~1 -- path/to/file
 
 > [!TIP]
 >
-> If you need to customize tooling files, consider keeping your changes in a
-> separate commit so they are easy to re-apply after an update.
+> To stop being asked about a file you always want to keep, choose `a`
+> (always keep local) at the prompt, or add it to `protected_files` yourself.
 
 ## Manual workflow
 
@@ -118,18 +184,24 @@ If you prefer to run the steps yourself instead of using the script:
    # Unstage upstream-only additions in your content paths
    git reset HEAD -- course/ evaluations/ sources/ 2>/dev/null || true
 
-   # Restore your content and README from HEAD
-   git checkout HEAD -- course/ evaluations/ sources/ README.md 2>/dev/null || true
+   # Restore your content and protected files from HEAD
+   git checkout HEAD -- course/ evaluations/ sources/ \
+     README.md CLAUDE.md docs/style.md update-from-upstream.conf 2>/dev/null || true
 
    # Drop the now-untracked upstream-only files
    git clean -fd -- course/ evaluations/ sources/
 
-   # Accept upstream for remaining conflicted files
+   # For each remaining conflicted file, keep your version...
+   git checkout HEAD -- path/to/conflicted-file
+   # ...or take upstream's:
    git checkout --theirs -- path/to/conflicted-file
 
    # Stage everything
    git add -A
    ```
+
+   The protected paths above mirror the defaults in `update-from-upstream.conf`;
+   adjust the list to match your own config.
 
 4. **Commit** the result:
 
