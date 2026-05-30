@@ -5,40 +5,56 @@ canvas_type: page
 
 # Alerts
 
-Alerts are colored callout boxes that help important information stand out on the page. They are a great way to highlight tips, warnings, or key details for your students. This project supports six types of alerts, and they work in both the local preview and on Canvas.
+Alerts are colored callout boxes that help important information stand out on
+the page. They are a great way to highlight tips, warnings, or key details for
+your students. This project supports six types of alerts, and they work in both
+the local preview and on Canvas.
 
 ## Syntax
 
 Alerts use the blockquote alert syntax:
 
 ```markdown
-> [!NOTE]
-> This is a note.
+> [!NOTE] This is a note.
 ```
 
 ## Available Types
 
 > [!NOTE]
-> Use **NOTE** for supplementary information that adds context. The reader can skip this without missing essential content.
+>
+> Use **NOTE** for supplementary information that adds context. The reader can
+> skip this without missing essential content.
 
 > [!TIP]
-> Use **TIP** for practical advice and best practices. These help the reader work more efficiently.
+>
+> Use **TIP** for practical advice and best practices. These help the reader
+> work more efficiently.
 
 > [!IMPORTANT]
-> Use **IMPORTANT** for key information the reader must know to succeed. Do not skip these.
+>
+> Use **IMPORTANT** for key information the reader must know to succeed. Do not
+> skip these.
 
 > [!WARNING]
-> Use **WARNING** when something could go wrong. Warns about potential pitfalls or common mistakes.
+>
+> Use **WARNING** when something could go wrong. Warns about potential pitfalls
+> or common mistakes.
 
 > [!ATTENTION]
-> Use **ATTENTION** for critical alerts. This type signals that ignoring the message could lead to serious problems.
+>
+> Use **ATTENTION** for critical alerts. This type signals that ignoring the
+> message could lead to serious problems.
 
 > [!CHECK]
-> Use **CHECK** to highlight verification steps or success criteria. Useful for checklists and validation points.
+>
+> Use **CHECK** to highlight verification steps or success criteria. Useful for
+> checklists and validation points.
 
 ## Tips for Using Alerts
 
 - Use alerts sparingly. Too many callout boxes make content harder to scan.
 - Pick the type that matches the intent, not the color you prefer.
-- Keep the text inside concise. If it needs multiple paragraphs, consider making it regular content instead.
-- Alerts are converted to styled HTML when pushed to Canvas, with icons hosted on your Canvas instance.
+- Keep the text inside concise. If it needs multiple paragraphs, consider making
+  it regular content instead.
+- Alerts are converted to styled HTML when pushed to Canvas, with icons hosted
+  on your Canvas instance.

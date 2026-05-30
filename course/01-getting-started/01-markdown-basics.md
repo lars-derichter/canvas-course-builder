@@ -1,18 +1,18 @@
 ---
-title: Markdown Basics
+title: ✅ Markdown Basics
 canvas_type: page
 ---
 
 # Markdown Basics
 
-All course content is written in **Markdown** — a simple way to format text
-that is easy to read and write. You do not need any technical background to use
-it. This page walks you through the most common formatting options so you can
-start writing right away.
+All course content is written in **Markdown** — a simple way to format text that
+is easy to read and write. You do not need any technical background to use it.
+This page walks you through the most common formatting options so you can start
+writing right away.
 
 ## Text Formatting
 
-You can make text **bold**, _italic_, or **_both_**. Use ~~strikethrough~~ for
+You can make text **bold**, _italic_, or **_both_**. Use strikethrough for
 deleted text and `inline code` for code references.
 
 ## Headings
@@ -32,9 +32,9 @@ Unordered lists use dashes:
 
 Ordered lists use numbers:
 
-1. First step
-2. Second step
-3. Third step
+1.  First step
+2.  Second step
+3.  Third step
 
 ## Links
 
@@ -55,14 +55,14 @@ converted to Canvas internal URLs.
 
 Try them here:
 
-- [Alerts](03-alerts.md)
-- [Folder Layout](04-course-structure/01-folder-layout.md)
-- [Available Types](03-alerts.md#available-types)
+- [Alerts](https://thomasmore.instructure.com/courses/45083/pages/alerts-11)
+- [Folder Layout](https://thomasmore.instructure.com/courses/45083/pages/folder-layout-24)
+- [Available Types](https://thomasmore.instructure.com/courses/45083/pages/alerts-11#available-types)
 
 ## Images
 
-Images use the same syntax as links, prefixed with `!`. Store image files in
-the `_files/` subdirectory of your module:
+Images use the same syntax as links, prefixed with `!`. Store image files in the
+`_files/` subdirectory of your module:
 
 ```markdown
 ![Alt text](./_files/example-image.svg)
@@ -93,12 +93,35 @@ def greet(name):
 
 Tables use pipes and dashes:
 
-| Feature | Syntax        | Example       |
-| ------- | ------------- | ------------- |
-| Bold    | `**text**`    | **bold text** |
-| Italic  | `*text*`      | _italic text_ |
-| Code    | `` `code` ``  | `code`        |
-| Link    | `[text](url)` | [a link](#)   |
+Feature
+
+Syntax
+
+Example
+
+Bold
+
+`**text**`
+
+**bold text**
+
+Italic
+
+`*text*`
+
+_italic text_
+
+Code
+
+`` `code` ``
+
+`code`
+
+Link
+
+`[text](url)`
+
+[a link](#)
 
 ## Blockquotes
 

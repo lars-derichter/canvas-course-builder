@@ -5,7 +5,9 @@ canvas_type: page
 
 # Folder Layout
 
-All your course content lives in the `course/` folder. The way you organise files and folders here directly controls how content appears in both the local preview and on Canvas — no configuration needed.
+All your course content lives in the `course/` folder. The way you organise
+files and folders here directly controls how content appears in both the local
+preview and on Canvas — no configuration needed.
 
 ## Module Folders
 
@@ -18,7 +20,8 @@ course/
   03-javascript/          -> Module: "Javascript"
 ```
 
-The two-digit prefix (`01`, `02`, ...) controls the order. It is stripped when generating the display title, so `01-getting-started` becomes "Getting Started".
+The two-digit prefix (`01`, `02`, ...) controls the order. It is stripped when
+generating the display title, so `01-getting-started` becomes "Getting Started".
 
 ## Items Inside a Module
 
@@ -32,11 +35,13 @@ course/01-getting-started/
   03-first-project.md     -> Assignment: "First Project"
 ```
 
-The same numbering convention applies: prefix controls order, and is stripped from the title.
+The same numbering convention applies: prefix controls order, and is stripped
+from the title.
 
 ## Subsections (Subfolders)
 
-A subfolder inside a module becomes a **SubHeader** in Canvas, which groups related items under a heading:
+A subfolder inside a module becomes a **SubHeader** in Canvas, which groups
+related items under a heading:
 
 ```
 course/01-getting-started/
@@ -51,7 +56,9 @@ course/01-getting-started/
 Items inside a subsection appear indented under the SubHeader in Canvas.
 
 > [!TIP]
-> Every subfolder needs a `_category_.json` file with at least a `label` and `position` field, just like module folders.
+>
+> Every subfolder needs a `_category_.json` file with at least a `label` and
+> `position` field, just like module folders.
 
 ## The `_category_.json` File
 

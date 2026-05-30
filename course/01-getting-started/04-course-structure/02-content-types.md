@@ -5,7 +5,9 @@ canvas_type: page
 
 # Content Types
 
-Every item in a module has a type that determines how it appears on Canvas. You set the type by adding a `canvas_type` field at the top of your markdown file (in the frontmatter). Here are the four types you can use.
+Every item in a module has a type that determines how it appears on Canvas. You
+set the type by adding a `canvas_type` field at the top of your markdown file
+(in the frontmatter). Here are the four types you can use.
 
 ## Page (default)
 
@@ -38,11 +40,21 @@ due_at: "2026-03-20T23:59:00Z"
 
 Supported fields:
 
-| Field              | Description                              |
-| ------------------ | ---------------------------------------- |
-| `points_possible`  | Maximum score                            |
-| `submission_types` | How students submit (upload, text, url)  |
-| `due_at`           | Deadline in ISO 8601 format              |
+Field
+
+Description
+
+`points_possible`
+
+Maximum score
+
+`submission_types`
+
+How students submit (upload, text, url)
+
+`due_at`
+
+Deadline in ISO 8601 format
 
 ## External URL
 
@@ -60,7 +72,9 @@ The link opens in a new tab by default.
 
 ## File
 
-Uploads a binary file (PDF, SVG, ZIP, etc.) to Canvas as a module item. The actual file lives in `_files/` and the markdown wrapper points to it with `file_ref`.
+Uploads a binary file (PDF, SVG, ZIP, etc.) to Canvas as a module item. The
+actual file lives in `_files/` and the markdown wrapper points to it with
+`file_ref`.
 
 ```yaml
 ---
@@ -70,7 +84,8 @@ file_ref: _files/workflow-diagram.svg
 ---
 ```
 
-Place the binary in the module's `_files/` directory and create a `.md` wrapper next to your other items:
+Place the binary in the module's `_files/` directory and create a `.md` wrapper
+next to your other items:
 
 ```
 course/01-module/
@@ -80,4 +95,7 @@ course/01-module/
 ```
 
 > [!NOTE]
-> Over 35 file types are supported, including PDF, PNG, JPG, SVG, MP4, DOCX, and many more. When you pull a course from Canvas, file items are automatically converted to this wrapper format.
+>
+> Over 35 file types are supported, including PDF, PNG, JPG, SVG, MP4, DOCX, and
+> many more. When you pull a course from Canvas, file items are automatically
+> converted to this wrapper format.

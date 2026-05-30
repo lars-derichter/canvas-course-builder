@@ -92,9 +92,9 @@ Staged files move to a **Staged Changes** section at the top of the panel.
 
 Once your files are staged:
 
-1. Type a short commit message in the text box at the top of the Source Control
-   panel (e.g. `Add lab instructions for week 3`)
-2. Click the **Commit** button (or press **Ctrl+Enter** / **Cmd+Enter**)
+1.  Type a short commit message in the text box at the top of the Source Control
+    panel (e.g. `Add lab instructions for week 3`)
+2.  Click the **Commit** button (or press **Ctrl+Enter** / **Cmd+Enter**)
 
 Your changes are now saved locally in Git.
 
@@ -129,30 +129,30 @@ commit is a snapshot of your entire project that you can go back to at any time.
 
 The easiest way to explore your project's history is on GitHub:
 
-1. Go to your repository on GitHub (e.g.
-   `github.com/YOUR-USERNAME/canvas-local`)
-2. Click on the **commits** link near the top of the page — you will see a list
-   of all your commits, newest first
-3. Click on any commit to see exactly what changed in that commit
+1.  Go to your repository on GitHub (e.g.
+    `github.com/YOUR-USERNAME/canvas-local`)
+2.  Click on the **commits** link near the top of the page — you will see a list
+    of all your commits, newest first
+3.  Click on any commit to see exactly what changed in that commit
 
 ### Viewing an Older Version of a File
 
 If you want to see what a file looked like at an earlier point in time:
 
-1. Navigate to the file on GitHub
-2. Click the **History** button in the top-right corner to see all commits that
-   touched that file
-3. Click on a commit, then click **View file** to see the complete file as it
-   was at that moment
+1.  Navigate to the file on GitHub
+2.  Click the **History** button in the top-right corner to see all commits that
+    touched that file
+3.  Click on a commit, then click **View file** to see the complete file as it
+    was at that moment
 
 ### Restoring a Previous Version
 
 If you made a mistake and want to get back an older version of a file:
 
-1. Find the version you want on GitHub (using the steps above)
-2. Click the **Raw** button to see the plain text
-3. Copy the content and paste it into your local file
-4. Stage, commit, and push the restored version
+1.  Find the version you want on GitHub (using the steps above)
+2.  Click the **Raw** button to see the plain text
+3.  Copy the content and paste it into your local file
+4.  Stage, commit, and push the restored version
 
 From the terminal, you can also restore a specific file from a previous commit:
 

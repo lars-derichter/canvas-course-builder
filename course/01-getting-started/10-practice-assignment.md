@@ -4,38 +4,47 @@ canvas_type: assignment
 points_possible: 10
 submission_types:
   - online_text_entry
+published: false
 ---
 
 # Practice Assignment
 
-You have made it through the Getting Started module — well done! Now it is time to try things out for yourself.
+You have made it through the Getting Started module — well done! Now it is time
+to try things out for yourself.
 
 ## Instructions
 
-1. **Create a new page** in this module. You can use the terminal:
-   ```bash
-   npx course new-item
-   ```
-   Or right-click this module in the VS Code sidebar and choose **New Item**.
+1.  **Create a new page** in this module. You can use the terminal:
 
-2. Choose **page** as the item type and give it a name.
+    ```bash
+    npx course new-item
+    ```
 
-3. Write a short piece of content using at least:
-   - A heading (`##`)
-   - **Bold** and _italic_ text
-   - A list (numbered or bulleted)
-   - One alert (e.g., `> [!TIP]`)
+    Or right-click this module in the VS Code sidebar and choose **New Item**.
 
-4. **Preview your page** locally by running `npm start` or clicking the Preview button in the VS Code sidebar. Check that everything looks the way you want.
+2.  Choose **page** as the item type and give it a name.
+3.  Write a short piece of content using at least:
+    - A heading (`##`)
+    - **Bold** and _italic_ text
+    - A list (numbered or bulleted)
+    - One alert (e.g., `> [!TIP]`)
 
-5. When you are happy with it, **push your changes** to Canvas:
-   ```bash
-   npx course push --module 01-getting-started
-   ```
+4.  **Preview your page** locally by running `npm start` or clicking the Preview
+    button in the VS Code sidebar. Check that everything looks the way you want.
+5.  When you are happy with it, **push your changes** to Canvas:
+
+    ```bash
+    npx course push --module 01-getting-started
+    ```
 
 > [!TIP]
-> Not sure about the markdown syntax? Check out the [Markdown Basics](01-markdown-basics.md) and [Alerts](03-alerts.md) pages in this module for a quick refresher.
+>
+> Not sure about the markdown syntax? Check out the
+> [Markdown Basics](https://thomasmore.instructure.com/courses/45083/pages/markdown-basics-24)
+> and [Alerts](https://thomasmore.instructure.com/courses/45083/pages/alerts-11)
+> pages in this module for a quick refresher.
 
 ## Submission
 
-Paste the title of the page you created and briefly describe which formatting features you used.
+Paste the title of the page you created and briefly describe which formatting
+features you used.
