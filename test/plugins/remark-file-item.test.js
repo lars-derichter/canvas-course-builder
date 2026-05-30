@@ -58,7 +58,7 @@ describe('remarkFileItem', () => {
     assert.equal(label.children[0].value, 'Bestand');
   });
 
-  it('renders a link with file_ref as href and filename as text', () => {
+  it('renders an mdast link node with file_ref as url and filename as text', () => {
     const fileRef = '_files/workflow-diagram.svg';
     const tree = makeTree([]);
     transform(tree, {
@@ -72,21 +72,31 @@ describe('remarkFileItem', () => {
     const linkPClass = linkP.attributes.find((a) => a.name === 'className');
     assert.equal(linkPClass.value, 'file-item-link');
 
+    // A plain mdast link node (not a JSX <a>) so Docusaurus's transformLinks
+    // plugin rewrites it into a webpack asset require() at build time and adds
+    // target="_blank" itself.
     const link = linkP.children[0];
-    assert.equal(link.type, 'mdxJsxTextElement');
-    assert.equal(link.name, 'a');
-
-    const href = link.attributes.find((a) => a.name === 'href');
-    assert.equal(href.value, fileRef);
-
-    const target = link.attributes.find((a) => a.name === 'target');
-    assert.equal(target.value, '_blank');
-
-    const rel = link.attributes.find((a) => a.name === 'rel');
-    assert.equal(rel.value, 'noopener noreferrer');
+    assert.equal(link.type, 'link');
+    assert.equal(link.url, fileRef);
 
     // Link text shows just the filename, not the full path
     assert.equal(link.children[0].value, 'workflow-diagram.svg');
+  });
+
+  it('emits a @site/-aliased url when siteDir and vfile.path are available', () => {
+    const tree = makeTree([]);
+    const plugin = remarkFileItem({ siteDir: '/site' });
+    plugin(tree, {
+      path: '/site/course/01-getting-started/05-workflow-diagram.md',
+      data: { frontMatter: { canvas_type: 'file', file_ref: '_files/example.html' } },
+    });
+
+    const link = tree.children[0].children[1].children[0];
+    assert.equal(link.type, 'link');
+    // @site/ aliasing makes transformLinks bundle the asset regardless of
+    // extension (.html, .md, extension-less), bypassing its extension heuristic.
+    assert.equal(link.url, '@site/course/01-getting-started/_files/example.html');
+    assert.equal(link.children[0].value, 'example.html');
   });
 
   it('leaves non-file pages unchanged', () => {
