@@ -21,11 +21,12 @@ function parseCommandsObject(source) {
   return entries;
 }
 
-// Extract extra commands registered individually via registerCommand outside the loop.
+// Extract extra commands registered individually outside the loop, either
+// directly via registerCommand('course.x', ...) or through the local
+// register('course.x', ...) helper.
 function parseExtraRegisteredCommands(source) {
   const ids = [];
-  // Match registerCommand('course.xyz' but skip the loop-based registration
-  const re = /registerCommand\(\s*'(course\.\w+)'/g;
+  const re = /register(?:Command)?\(\s*'(course\.\w+)'/g;
   let m;
   while ((m = re.exec(source)) !== null) {
     ids.push(m[1]);
@@ -112,20 +113,55 @@ describe('VS Code extension: commands map', () => {
   it('contains status command', () => {
     assert.equal(commandsMap['course.status'], 'npx course status');
   });
+});
 
-  it('contains all module management commands', () => {
-    assert.equal(commandsMap['course.newModule'], 'npx course new-module');
-    assert.equal(commandsMap['course.moveModule'], 'npx course move-module');
-    assert.equal(commandsMap['course.renameModule'], 'npx course rename-module');
-    assert.equal(commandsMap['course.deleteModule'], 'npx course delete-module');
+describe('VS Code extension: context-aware commands', () => {
+  it('registers all module management commands individually', () => {
+    for (const id of ['course.newModule', 'course.moveModule', 'course.renameModule', 'course.deleteModule']) {
+      assert.ok(extraRegistered.includes(id), `${id} should be registered via registerCommand`);
+    }
   });
 
-  it('contains all item management commands', () => {
-    assert.equal(commandsMap['course.newItem'], 'npx course new-item');
-    assert.equal(commandsMap['course.moveItem'], 'npx course move-item');
-    assert.equal(commandsMap['course.moveItemToModule'], 'npx course movetomodule-item');
-    assert.equal(commandsMap['course.renameItem'], 'npx course rename-item');
-    assert.equal(commandsMap['course.deleteItem'], 'npx course delete-item');
+  it('registers all item management commands individually', () => {
+    for (const id of ['course.newItem', 'course.moveItem', 'course.moveItemToModule', 'course.renameItem', 'course.deleteItem']) {
+      assert.ok(extraRegistered.includes(id), `${id} should be registered via registerCommand`);
+    }
+  });
+
+  it('structural commands run through the silent CLI runner with flags', () => {
+    assert.match(extensionSource, /'rename-item',\s*'--path'/);
+    assert.match(extensionSource, /'move-item',\s*'--path'/);
+    assert.match(extensionSource, /'movetomodule-item',\s*'--path'/);
+    assert.match(extensionSource, /'delete-item',\s*'--path'/);
+    assert.match(extensionSource, /'delete-module',\s*'--module'/);
+    assert.match(extensionSource, /'rename-module',\s*'--module'/);
+  });
+
+  it('deletes require explicit confirmation dialogs', () => {
+    assert.match(extensionSource, new RegExp('showWarningMessage\\([\\s\\S]{0,200}modal: true[\\s\\S]{0,100}\'Delete\''));
+  });
+});
+
+describe('VS Code extension: drag and drop', () => {
+  const providerSource = fs.readFileSync(path.join(extDir, 'CourseTreeProvider.js'), 'utf-8');
+
+  it('routes module reordering through the CLI', () => {
+    assert.match(providerSource, /'move-module',\s*'--module'/);
+  });
+
+  it('routes item moves through the CLI', () => {
+    assert.match(providerSource, /'movetomodule-item',\s*'--path'/);
+    assert.match(providerSource, /'move-item',\s*'--path'/);
+  });
+
+  it('routes external file drops through new-item --type file', () => {
+    assert.match(providerSource, /'new-item',\s*'--module',[^\]]*'--type',\s*'file'/);
+  });
+
+  it('no longer renames files directly during drops', () => {
+    const dropSection = providerSource.slice(providerSource.indexOf('handleDrop'));
+    assert.ok(!dropSection.includes('renameSync'), 'drag-and-drop must not bypass the CLI with fs.renameSync');
+    assert.ok(!dropSection.includes('copyFileSync'), 'drag-and-drop must not bypass the CLI with fs.copyFileSync');
   });
 });
 
@@ -174,13 +210,14 @@ describe('VS Code extension: workspace validation', () => {
   });
 });
 
-describe('VS Code extension: getWorkingDir', () => {
-  it('defines getWorkingDir function', () => {
-    assert.match(extensionSource, /function getWorkingDir\(\)/);
+describe('VS Code extension: CLI runner', () => {
+  it('defines a silent runCli helper using execFile', () => {
+    assert.match(extensionSource, /function runCli\(/);
+    assert.match(extensionSource, /cp\.execFile\(/);
   });
 
-  it('detects active file inside course/ directory', () => {
-    // Verifies the logic checks if the dir starts with workspaceRoot/course
-    assert.match(extensionSource, /dir\.startsWith\(path\.join\(workspaceRoot,\s*'course'\)\)/);
+  it('reuses a single shared terminal for streaming commands', () => {
+    assert.match(extensionSource, /function getSharedTerminal\(\)/);
+    assert.match(extensionSource, new RegExp("terminals\\.find\\(\\(t\\) => t\\.name === 'Canvas Local'\\)"));
   });
 });

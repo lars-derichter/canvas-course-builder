@@ -1,38 +1,29 @@
 const vscode = require('vscode');
 const path = require('path');
 const fs = require('fs');
-const { CourseTreeProvider, getCanvasId } = require('./CourseTreeProvider');
+const cp = require('child_process');
+const http = require('http');
+const { CourseTreeProvider, getCanvasId, readFrontmatter, displayTitle } = require('./CourseTreeProvider');
 
+// Long-running / streaming commands run in a shared terminal. Structural
+// commands (new/rename/move/delete) run silently via runCli and report
+// through notifications + the output channel.
 const commands = {
   'course.init': 'npx course init',
   'course.push': 'npx course push',
   'course.pushDryRun': 'npx course push --dry-run',
   'course.pull': 'npx course pull',
   'course.status': 'npx course status',
-  'course.newModule': 'npx course new-module',
-  'course.moveModule': 'npx course move-module',
-  'course.renameModule': 'npx course rename-module',
-  'course.deleteModule': 'npx course delete-module',
-  'course.newItem': 'npx course new-item',
-  'course.moveItem': 'npx course move-item',
-  'course.moveItemToModule': 'npx course movetomodule-item',
-  'course.renameItem': 'npx course rename-item',
-  'course.deleteItem': 'npx course delete-item',
-  'course.mergeItems': 'npx course merge-items',
   'course.diff': 'npx course diff',
   'course.validate': 'npx course validate',
 };
 
-function getWorkingDir() {
-  const workspaceRoot = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
-  const activeFile = vscode.window.activeTextEditor?.document.uri.fsPath;
-  if (activeFile && workspaceRoot) {
-    const dir = path.dirname(activeFile);
-    if (dir.startsWith(path.join(workspaceRoot, 'course'))) {
-      return dir;
-    }
-  }
-  return workspaceRoot;
+let outputChannel;
+let workspaceRoot;
+let courseTreeProvider;
+
+function getWorkspaceRoot() {
+  return vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
 }
 
 /**
@@ -40,55 +31,176 @@ function getWorkingDir() {
  * Shows an error message if not found.
  */
 function validateWorkspace() {
-  const workspaceRoot = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
-  if (!workspaceRoot) {
+  const root = getWorkspaceRoot();
+  if (!root) {
     vscode.window.showErrorMessage('Canvas Local: No workspace folder open.');
     return null;
   }
 
-  const courseDir = path.join(workspaceRoot, 'course');
+  const courseDir = path.join(root, 'course');
   if (!fs.existsSync(courseDir)) {
     vscode.window.showWarningMessage(
-      'Canvas Local: No course/ directory found. Run "Canvas Local: Init" first.'
+      'Canvas Local: No course/ directory found. Run "Course: Init" first.'
     );
   }
 
-  return workspaceRoot;
+  return root;
 }
 
-function runInTerminal(commandStr, cwd) {
-  const terminal = vscode.window.createTerminal({
-    name: 'Canvas Local',
-    cwd: cwd || getWorkingDir(),
-  });
+// --- Terminal runner (for streaming commands like push/pull) ---
+
+function getSharedTerminal() {
+  let terminal = vscode.window.terminals.find((t) => t.name === 'Canvas Local');
+  if (!terminal) {
+    terminal = vscode.window.createTerminal({ name: 'Canvas Local', cwd: workspaceRoot });
+  }
+  return terminal;
+}
+
+function runInTerminal(commandStr) {
+  const terminal = getSharedTerminal();
   terminal.show();
   terminal.sendText(commandStr);
-  vscode.window.showInformationMessage(`Canvas Local: Running "${commandStr.replace('npx course ', '')}"`);
 }
 
+// --- Silent CLI runner (for structural commands) ---
+
 /**
- * Read .env file and return CANVAS_API_URL and CANVAS_COURSE_ID.
+ * Run `npx course <args>` without a terminal. Output goes to the
+ * "Canvas Local" output channel; failures surface as error notifications.
+ * Returns a promise resolving to true on success.
  */
-function readEnvConfig(workspaceRoot) {
-  const envPath = path.join(workspaceRoot, '.env');
+function runCli(args) {
+  return new Promise((resolve) => {
+    const cliPath = path.join(workspaceRoot, 'cli', 'index.js');
+    const useNode = fs.existsSync(cliPath);
+    const cmd = useNode ? process.execPath : 'npx';
+    const cmdArgs = useNode ? [cliPath, ...args] : ['course', ...args];
+
+    outputChannel.appendLine(`$ course ${args.join(' ')}`);
+    cp.execFile(cmd, cmdArgs, { cwd: workspaceRoot }, (err, stdout, stderr) => {
+      if (stdout) outputChannel.appendLine(stdout.trimEnd());
+      if (stderr) outputChannel.appendLine(stderr.trimEnd());
+      if (err) {
+        const firstError = (stderr || stdout || err.message).trim().split('\n')[0];
+        vscode.window.showErrorMessage(`Canvas Local: ${firstError}`, 'Show Log').then((choice) => {
+          if (choice === 'Show Log') outputChannel.show();
+        });
+        resolve(false);
+      } else {
+        const lastLine = stdout.trim().split('\n').filter(Boolean).pop();
+        if (lastLine) vscode.window.setStatusBarMessage(`Canvas Local: ${lastLine.replace(/^\[[^\]]+\]\s*/, '')}`, 5000);
+        courseTreeProvider.refresh();
+        resolve(true);
+      }
+    });
+  });
+}
+
+// --- Pickers (used when a command runs from the palette without a tree item) ---
+
+function listModuleFolders() {
+  const courseDir = path.join(workspaceRoot, 'course');
+  if (!fs.existsSync(courseDir)) return [];
+  return fs.readdirSync(courseDir, { withFileTypes: true })
+    .filter((e) => e.isDirectory() && !e.name.startsWith('_'))
+    .map((e) => e.name)
+    .sort();
+}
+
+async function pickModuleFolder(placeHolder) {
+  const folders = listModuleFolders();
+  if (folders.length === 0) {
+    vscode.window.showErrorMessage('Canvas Local: No modules found in course/.');
+    return null;
+  }
+  const items = folders.map((f) => {
+    const label = readCategoryLabel(path.join(workspaceRoot, 'course', f)) || displayTitle(f);
+    return { label, description: f, folder: f };
+  });
+  const picked = await vscode.window.showQuickPick(items, { placeHolder });
+  return picked ? picked.folder : null;
+}
+
+function readCategoryLabel(folderPath) {
   try {
-    const content = fs.readFileSync(envPath, 'utf8');
-    const vars = {};
-    for (const line of content.split('\n')) {
-      const match = line.match(/^(\w+)\s*=\s*(.+)$/);
-      if (match) vars[match[1]] = match[2].trim();
-    }
-    return vars;
+    const cat = JSON.parse(fs.readFileSync(path.join(folderPath, '_category_.json'), 'utf8'));
+    return typeof cat.label === 'string' && cat.label.length > 0 ? cat.label : null;
   } catch {
-    return {};
+    return null;
   }
 }
 
+function listEntries(dir, { filesOnly = false } = {}) {
+  if (!fs.existsSync(dir)) return [];
+  return fs.readdirSync(dir, { withFileTypes: true })
+    .filter((e) => !e.name.startsWith('_') && /^\d+/.test(e.name))
+    .filter((e) => (filesOnly ? e.isFile() : true))
+    .map((e) => ({ name: e.name, isDirectory: e.isDirectory() }))
+    .sort((a, b) => a.name.localeCompare(b.name));
+}
+
+/**
+ * Quick-pick an item (file or subsection) inside a module, descending into
+ * subsections. Returns an absolute path or null.
+ */
+async function pickItemPath(placeHolder) {
+  const folder = await pickModuleFolder('Select module');
+  if (!folder) return null;
+  const moduleDir = path.join(workspaceRoot, 'course', folder);
+
+  const entries = listEntries(moduleDir);
+  if (entries.length === 0) {
+    vscode.window.showErrorMessage('Canvas Local: No items in this module.');
+    return null;
+  }
+  const picked = await vscode.window.showQuickPick(
+    entries.map((e) => ({ label: e.name, description: e.isDirectory ? 'subsection' : '', entry: e })),
+    { placeHolder }
+  );
+  if (!picked) return null;
+
+  if (picked.entry.isDirectory) {
+    const subDir = path.join(moduleDir, picked.entry.name);
+    const subEntries = listEntries(subDir, { filesOnly: true });
+    const sub = await vscode.window.showQuickPick(
+      [{ label: `(the subsection ${picked.entry.name} itself)`, entry: null }]
+        .concat(subEntries.map((e) => ({ label: e.name, entry: e }))),
+      { placeHolder }
+    );
+    if (!sub) return null;
+    return sub.entry ? path.join(subDir, sub.entry.name) : subDir;
+  }
+  return path.join(moduleDir, picked.entry.name);
+}
+
+/**
+ * Resolve the target path from a context-menu tree item, or fall back to a
+ * quick pick when invoked from the command palette.
+ */
+async function resolveItemPath(treeItem, placeHolder) {
+  if (treeItem && (treeItem.filePath || treeItem.folderPath)) {
+    return treeItem.filePath || treeItem.folderPath;
+  }
+  return pickItemPath(placeHolder);
+}
+
+async function resolveModuleFolder(treeItem, placeHolder) {
+  if (treeItem && treeItem.contextValue === 'module' && treeItem.moduleFolderName) {
+    return treeItem.moduleFolderName;
+  }
+  return pickModuleFolder(placeHolder);
+}
+
+// --- Activation ---
+
 function activate(context) {
-  const workspaceRoot = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+  workspaceRoot = getWorkspaceRoot();
+  outputChannel = vscode.window.createOutputChannel('Canvas Local');
+  context.subscriptions.push(outputChannel);
 
   // --- Tree view ---
-  const courseTreeProvider = new CourseTreeProvider(workspaceRoot);
+  courseTreeProvider = new CourseTreeProvider(workspaceRoot, { runCli });
   const treeView = vscode.window.createTreeView('courseTree', {
     treeDataProvider: courseTreeProvider,
     dragAndDropController: courseTreeProvider,
@@ -96,12 +208,11 @@ function activate(context) {
   });
   context.subscriptions.push(treeView);
 
-  // Refresh command
-  context.subscriptions.push(
-    vscode.commands.registerCommand('course.refreshTree', () => {
-      courseTreeProvider.refresh();
-    })
-  );
+  const register = (id, handler) => {
+    context.subscriptions.push(vscode.commands.registerCommand(id, handler));
+  };
+
+  register('course.refreshTree', () => courseTreeProvider.refresh());
 
   // File watcher for auto-refresh
   if (workspaceRoot) {
@@ -121,179 +232,387 @@ function activate(context) {
     context.subscriptions.push(watcher);
   }
 
-  // Push item (pushes the whole module)
-  context.subscriptions.push(
-    vscode.commands.registerCommand('course.pushItem', (treeItem) => {
-      const moduleName = treeItem?.moduleFolderName;
-      if (!moduleName) return;
-      if (!validateWorkspace()) return;
-      runInTerminal(`npx course push --module ${moduleName}`, workspaceRoot);
-    })
-  );
-
-  // Open in Canvas
-  context.subscriptions.push(
-    vscode.commands.registerCommand('course.openInCanvas', (treeItem) => {
-      if (!workspaceRoot) return;
-      const env = readEnvConfig(workspaceRoot);
-      const apiUrl = env.CANVAS_API_URL;
-      const courseId = env.CANVAS_COURSE_ID;
-
-      if (!apiUrl || !courseId) {
-        vscode.window.showWarningMessage(
-          'Canvas Local: No Canvas API configuration found. Run "Course: Init" first.'
-        );
-        return;
-      }
-
-      // Strip /api/v1 suffix if present to get the base URL
-      const baseUrl = apiUrl.replace(/\/api\/v1\/?$/, '');
-
-      if (treeItem?.contextValue === 'module') {
-        vscode.env.openExternal(
-          vscode.Uri.parse(`${baseUrl}/courses/${courseId}/modules`)
-        );
-        return;
-      }
-
-      if (!treeItem?.filePath) return;
-
-      const canvasId = getCanvasId(treeItem.filePath);
-      if (!canvasId) {
-        vscode.window.showInformationMessage(
-          'Canvas Local: This item has not been pushed to Canvas yet.'
-        );
-        return;
-      }
-
-      const canvasType = treeItem.contextValue;
-      let url;
-      if (canvasType === 'assignment') {
-        url = `${baseUrl}/courses/${courseId}/assignments/${canvasId}`;
-      } else {
-        // Pages and other types — canvas_id is the page slug for pages
-        url = `${baseUrl}/courses/${courseId}/pages/${canvasId}`;
-      }
-
-      vscode.env.openExternal(vscode.Uri.parse(url));
-    })
-  );
-
-  // Preview (Docusaurus dev server)
-  context.subscriptions.push(
-    vscode.commands.registerCommand('course.preview', () => {
-      if (!validateWorkspace()) return;
-      let previewTerminal = vscode.window.terminals.find(
-        (t) => t.name === 'Canvas Local: Preview'
-      );
-      if (!previewTerminal) {
-        previewTerminal = vscode.window.createTerminal({
-          name: 'Canvas Local: Preview',
-          cwd: workspaceRoot,
-        });
-        previewTerminal.sendText('npm start');
-      }
-      setTimeout(() => {
-        vscode.env.openExternal(vscode.Uri.parse('http://localhost:3000'));
-      }, 2000);
-    })
-  );
-
-  // --- Standard CLI commands ---
+  // --- Terminal-based commands (streaming output) ---
   const noValidationCommands = new Set(['course.init']);
-
   for (const [id, cmd] of Object.entries(commands)) {
-    context.subscriptions.push(
-      vscode.commands.registerCommand(id, () => {
-        if (!noValidationCommands.has(id)) {
-          if (!validateWorkspace()) return;
-        }
-        runInTerminal(cmd);
-      })
-    );
+    register(id, () => {
+      if (!noValidationCommands.has(id) && !validateWorkspace()) return;
+      runInTerminal(cmd);
+    });
   }
 
-  // Merge: Set as Source (two-step context menu)
+  // Push a single module (from the inline tree button or the palette)
+  register('course.pushItem', (treeItem) => {
+    const moduleName = treeItem?.moduleFolderName;
+    if (!moduleName) return;
+    if (!validateWorkspace()) return;
+    runInTerminal(`npx course push --module ${moduleName}`);
+  });
+
+  register('course.pushModule', async () => {
+    if (!validateWorkspace()) return;
+    const picked = await pickModuleFolder('Select module to push');
+    if (picked) {
+      runInTerminal(`npx course push --module ${picked}`);
+    }
+  });
+
+  // --- Module commands (context-aware) ---
+
+  register('course.newModule', async () => {
+    if (!validateWorkspace()) return;
+    const name = await vscode.window.showInputBox({
+      prompt: 'Name for the new module',
+      validateInput: (v) => (v.trim() ? null : 'Name is required'),
+    });
+    if (!name) return;
+    await runCli(['new-module', '--name', name.trim()]);
+  });
+
+  register('course.renameModule', async (treeItem) => {
+    if (!validateWorkspace()) return;
+    const folder = await resolveModuleFolder(treeItem, 'Select module to rename');
+    if (!folder) return;
+    const currentLabel = readCategoryLabel(path.join(workspaceRoot, 'course', folder)) || displayTitle(folder);
+    const name = await vscode.window.showInputBox({
+      prompt: `New name for "${currentLabel}"`,
+      value: currentLabel,
+      validateInput: (v) => (v.trim() ? null : 'Name is required'),
+    });
+    if (!name) return;
+    await runCli(['rename-module', '--module', folder, '--name', name.trim()]);
+  });
+
+  register('course.moveModule', async (treeItem) => {
+    if (!validateWorkspace()) return;
+    const folder = await resolveModuleFolder(treeItem, 'Select module to move');
+    if (!folder) return;
+    const count = listModuleFolders().length;
+    const positions = Array.from({ length: count }, (_, i) => String(i + 1));
+    const position = await vscode.window.showQuickPick(positions, {
+      placeHolder: `New position for ${folder} (1-${count})`,
+    });
+    if (!position) return;
+    await runCli(['move-module', '--module', folder, '--position', position]);
+  });
+
+  register('course.deleteModule', async (treeItem) => {
+    if (!validateWorkspace()) return;
+    const folder = await resolveModuleFolder(treeItem, 'Select module to delete');
+    if (!folder) return;
+    const choice = await vscode.window.showWarningMessage(
+      `Delete module "${folder}" and all its contents?`,
+      { modal: true },
+      'Delete'
+    );
+    if (choice !== 'Delete') return;
+    await runCli(['delete-module', '--module', folder, '--yes']);
+  });
+
+  // --- Item commands (context-aware) ---
+
+  register('course.newItem', async (treeItem) => {
+    if (!validateWorkspace()) return;
+
+    let moduleFolder = treeItem?.moduleFolderName;
+    let subsection = treeItem?.contextValue === 'subheader' ? path.basename(treeItem.folderPath) : null;
+    if (!moduleFolder) {
+      moduleFolder = await pickModuleFolder('Select module for the new item');
+      if (!moduleFolder) return;
+    }
+
+    const type = await vscode.window.showQuickPick(
+      [
+        { label: 'Page', type: 'page' },
+        { label: 'Assignment', type: 'assignment' },
+        { label: 'External URL', type: 'url' },
+        { label: 'Subsection', type: 'subsection', description: 'module root only' },
+        { label: 'File', type: 'file' },
+      ],
+      { placeHolder: 'Type of the new item' }
+    );
+    if (!type) return;
+
+    if (type.type === 'subsection' && subsection) {
+      vscode.window.showErrorMessage('Canvas Local: Subsections can only be created at module root level.');
+      return;
+    }
+
+    const args = ['new-item', '--module', moduleFolder, '--type', type.type];
+    if (subsection) args.push('--subsection', subsection);
+
+    if (type.type === 'file') {
+      const picked = await vscode.window.showOpenDialog({ canSelectMany: false, openLabel: 'Add file' });
+      if (!picked || picked.length === 0) return;
+      args.push('--file', picked[0].fsPath);
+    } else {
+      const name = await vscode.window.showInputBox({
+        prompt: `Name for the new ${type.label.toLowerCase()}`,
+        validateInput: (v) => (v.trim() ? null : 'Name is required'),
+      });
+      if (!name) return;
+      args.push('--name', name.trim());
+
+      if (type.type === 'url') {
+        const url = await vscode.window.showInputBox({
+          prompt: 'URL',
+          validateInput: (v) => {
+            try { new URL(v); return null; } catch { return 'Enter a valid URL'; }
+          },
+        });
+        if (!url) return;
+        args.push('--url', url);
+      } else if (type.type === 'assignment') {
+        const points = await vscode.window.showInputBox({ prompt: 'Points possible', value: '100' });
+        if (points === undefined) return;
+        args.push('--points', points || '100');
+      }
+    }
+
+    await runCli(args);
+  });
+
+  register('course.renameItem', async (treeItem) => {
+    if (!validateWorkspace()) return;
+    const itemPath = await resolveItemPath(treeItem, 'Select item to rename');
+    if (!itemPath) return;
+    const currentLabel = typeof treeItem?.label === 'string' ? treeItem.label : path.basename(itemPath);
+    const name = await vscode.window.showInputBox({
+      prompt: `New name for "${currentLabel}"`,
+      value: currentLabel,
+      validateInput: (v) => (v.trim() ? null : 'Name is required'),
+    });
+    if (!name) return;
+    await runCli(['rename-item', '--path', itemPath, '--name', name.trim()]);
+  });
+
+  register('course.moveItem', async (treeItem) => {
+    if (!validateWorkspace()) return;
+    const itemPath = await resolveItemPath(treeItem, 'Select item to move');
+    if (!itemPath) return;
+    const count = listEntries(path.dirname(itemPath)).length;
+    const positions = Array.from({ length: count }, (_, i) => String(i + 1));
+    const position = await vscode.window.showQuickPick(positions, {
+      placeHolder: `New position for ${path.basename(itemPath)} (1-${count})`,
+    });
+    if (!position) return;
+    await runCli(['move-item', '--path', itemPath, '--position', position]);
+  });
+
+  register('course.moveItemToModule', async (treeItem) => {
+    if (!validateWorkspace()) return;
+    const itemPath = await resolveItemPath(treeItem, 'Select item to move');
+    if (!itemPath) return;
+    const destModule = await pickModuleFolder('Move to which module?');
+    if (!destModule) return;
+
+    const args = ['movetomodule-item', '--path', itemPath, '--to-module', destModule];
+
+    // Offer subsections of the destination module, when there are any
+    const destDir = path.join(workspaceRoot, 'course', destModule);
+    const subsections = listEntries(destDir).filter((e) => e.isDirectory);
+    if (subsections.length > 0) {
+      const sub = await vscode.window.showQuickPick(
+        [{ label: '(module root)', name: null }].concat(subsections.map((s) => ({ label: s.name, name: s.name }))),
+        { placeHolder: 'Where in the module?' }
+      );
+      if (!sub) return;
+      if (sub.name) args.push('--to-subsection', sub.name);
+    }
+
+    await runCli(args);
+  });
+
+  register('course.deleteItem', async (treeItem) => {
+    if (!validateWorkspace()) return;
+    const itemPath = await resolveItemPath(treeItem, 'Select item to delete');
+    if (!itemPath) return;
+    const isDir = fs.existsSync(itemPath) && fs.statSync(itemPath).isDirectory();
+    const label = path.basename(itemPath) + (isDir ? '/ and all its contents' : '');
+    const choice = await vscode.window.showWarningMessage(
+      `Delete ${label}?`,
+      { modal: true },
+      'Delete'
+    );
+    if (choice !== 'Delete') return;
+    await runCli(['delete-item', '--path', itemPath, '--yes']);
+  });
+
+  // --- Merge (two-step context menu) ---
   let mergeSource = null;
 
-  context.subscriptions.push(
-    vscode.commands.registerCommand('course.mergeSetSource', (treeItem) => {
-      if (!treeItem?.filePath) return;
-      mergeSource = treeItem;
-      vscode.commands.executeCommand('setContext', 'course.mergeSourceSet', true);
+  register('course.mergeSetSource', (treeItem) => {
+    if (!treeItem?.filePath) return;
+    mergeSource = treeItem;
+    vscode.commands.executeCommand('setContext', 'course.mergeSourceSet', true);
+    vscode.window.showInformationMessage(
+      `Canvas Local: Merge source set to "${path.basename(treeItem.filePath)}". Now right-click the target item.`
+    );
+  });
+
+  register('course.mergeWithSource', async (treeItem) => {
+    if (!mergeSource?.filePath || !treeItem?.filePath) return;
+    if (!validateWorkspace()) return;
+
+    const sourcePath = mergeSource.filePath;
+    const targetPath = treeItem.filePath;
+    mergeSource = null;
+    vscode.commands.executeCommand('setContext', 'course.mergeSourceSet', false);
+
+    await runCli(['merge-items', '--source', sourcePath, '--target', targetPath]);
+  });
+
+  register('course.mergeItems', async () => {
+    if (!validateWorkspace()) return;
+    const sourcePath = await pickItemPath('Source item (appended, then deleted)');
+    if (!sourcePath) return;
+    const targetPath = await pickItemPath('Target item (keeps frontmatter, receives content)');
+    if (!targetPath) return;
+    await runCli(['merge-items', '--source', sourcePath, '--target', targetPath]);
+  });
+
+  // --- Split at cursor ---
+  register('course.splitItem', async () => {
+    if (!validateWorkspace()) return;
+    const editor = vscode.window.activeTextEditor;
+    if (!editor || !editor.document.fileName.endsWith('.md')) {
+      vscode.window.showErrorMessage('Canvas Local: Open a markdown file and place the cursor on the split line.');
+      return;
+    }
+    if (editor.document.isDirty) {
+      await editor.document.save();
+    }
+    const filePath = editor.document.uri.fsPath;
+    const line = editor.selection.active.line + 1; // VS Code is 0-based
+    await runCli(['split-item', '--file', filePath, '--line', String(line)]);
+  });
+
+  // --- Open in Canvas ---
+  register('course.openInCanvas', (treeItem) => {
+    if (!workspaceRoot) return;
+    const env = readEnvConfig(workspaceRoot);
+    const apiUrl = env.CANVAS_API_URL;
+    const courseId = env.CANVAS_COURSE_ID;
+
+    if (!apiUrl || !courseId) {
+      vscode.window.showWarningMessage(
+        'Canvas Local: No Canvas API configuration found. Run "Course: Init" first.'
+      );
+      return;
+    }
+
+    // Strip /api/v1 suffix if present to get the base URL
+    const baseUrl = apiUrl.replace(/\/api\/v1\/?$/, '');
+
+    if (treeItem?.contextValue === 'module') {
+      vscode.env.openExternal(
+        vscode.Uri.parse(`${baseUrl}/courses/${courseId}/modules`)
+      );
+      return;
+    }
+
+    if (!treeItem?.filePath) return;
+
+    // External URL items: open the URL itself
+    if (treeItem.contextValue === 'external_url') {
+      const fm = readFrontmatter(treeItem.filePath);
+      if (fm.externalUrl) {
+        vscode.env.openExternal(vscode.Uri.parse(fm.externalUrl));
+        return;
+      }
+    }
+
+    const canvasId = getCanvasId(treeItem.filePath);
+    if (!canvasId) {
       vscode.window.showInformationMessage(
-        `Canvas Local: Merge source set to "${path.basename(treeItem.filePath)}". Now right-click the target item.`
+        'Canvas Local: This item has not been pushed to Canvas yet.'
       );
-    })
-  );
+      return;
+    }
 
-  // Merge with Source (second step)
-  context.subscriptions.push(
-    vscode.commands.registerCommand('course.mergeWithSource', (treeItem) => {
-      if (!mergeSource?.filePath || !treeItem?.filePath) return;
-      if (!validateWorkspace()) return;
+    const canvasType = treeItem.contextValue;
+    let url;
+    if (canvasType === 'assignment') {
+      url = `${baseUrl}/courses/${courseId}/assignments/${canvasId}`;
+    } else if (canvasType === 'file') {
+      url = `${baseUrl}/courses/${courseId}/files/${canvasId}`;
+    } else {
+      // Pages — canvas_id is the page slug or numeric id; Canvas accepts both
+      url = `${baseUrl}/courses/${courseId}/pages/${canvasId}`;
+    }
 
-      const sourcePath = mergeSource.filePath;
-      const targetPath = treeItem.filePath;
-      mergeSource = null;
-      vscode.commands.executeCommand('setContext', 'course.mergeSourceSet', false);
+    vscode.env.openExternal(vscode.Uri.parse(url));
+  });
 
-      runInTerminal(
-        `npx course merge-items --source "${sourcePath}" --target "${targetPath}"`,
-        workspaceRoot
-      );
-    })
-  );
+  // --- Preview (Docusaurus dev server) ---
+  register('course.preview', async () => {
+    if (!validateWorkspace()) return;
 
-  // Split Item at Cursor (command palette)
-  context.subscriptions.push(
-    vscode.commands.registerCommand('course.splitItem', () => {
-      if (!validateWorkspace()) return;
-      const editor = vscode.window.activeTextEditor;
-      if (editor && editor.document.fileName.endsWith('.md')) {
-        const filePath = editor.document.uri.fsPath;
-        const line = editor.selection.active.line + 1; // VS Code is 0-based
-        runInTerminal(
-          `npx course split-item --file "${filePath}" --line ${line}`,
-          workspaceRoot
-        );
-      } else {
-        runInTerminal('npx course split-item');
-      }
-    })
-  );
+    const url = 'http://localhost:3000';
+    if (await isServerUp(url)) {
+      vscode.env.openExternal(vscode.Uri.parse(url));
+      return;
+    }
 
-  // Push module (with quick-pick)
-  context.subscriptions.push(
-    vscode.commands.registerCommand('course.pushModule', async () => {
-      const wsRoot = validateWorkspace();
-      if (!wsRoot) return;
-
-      const courseDir = path.join(wsRoot, 'course');
-      if (!fs.existsSync(courseDir)) {
-        vscode.window.showErrorMessage('No course/ directory found.');
-        return;
-      }
-
-      const entries = fs.readdirSync(courseDir, { withFileTypes: true });
-      const folders = entries
-        .filter((e) => e.isDirectory())
-        .map((e) => e.name)
-        .sort();
-
-      if (folders.length === 0) {
-        vscode.window.showErrorMessage('No modules found in course/.');
-        return;
-      }
-
-      const picked = await vscode.window.showQuickPick(folders, {
-        placeHolder: 'Select module to push',
+    let previewTerminal = vscode.window.terminals.find(
+      (t) => t.name === 'Canvas Local: Preview'
+    );
+    if (!previewTerminal) {
+      previewTerminal = vscode.window.createTerminal({
+        name: 'Canvas Local: Preview',
+        cwd: workspaceRoot,
       });
-      if (picked) {
-        runInTerminal(`npx course push --module ${picked}`, wsRoot);
+    }
+    previewTerminal.show();
+    previewTerminal.sendText('npm start');
+
+    // Poll until the dev server answers (cold starts take a while), then open
+    vscode.window.withProgress(
+      { location: vscode.ProgressLocation.Window, title: 'Canvas Local: starting preview…' },
+      async () => {
+        for (let i = 0; i < 60; i++) {
+          await new Promise((r) => setTimeout(r, 2000));
+          if (await isServerUp(url)) {
+            vscode.env.openExternal(vscode.Uri.parse(url));
+            return;
+          }
+        }
+        vscode.window.showWarningMessage('Canvas Local: Preview server did not start within 2 minutes. Check the Preview terminal.');
       }
-    })
-  );
+    );
+  });
+}
+
+function isServerUp(url) {
+  return new Promise((resolve) => {
+    const req = http.get(url, (res) => {
+      res.resume();
+      resolve(true);
+    });
+    req.on('error', () => resolve(false));
+    req.setTimeout(1000, () => {
+      req.destroy();
+      resolve(false);
+    });
+  });
+}
+
+/**
+ * Read .env file and return CANVAS_API_URL and CANVAS_COURSE_ID.
+ */
+function readEnvConfig(root) {
+  const envPath = path.join(root, '.env');
+  try {
+    const content = fs.readFileSync(envPath, 'utf8');
+    const vars = {};
+    for (const line of content.split('\n')) {
+      const match = line.match(/^(\w+)\s*=\s*(.+)$/);
+      if (match) vars[match[1]] = match[2].trim();
+    }
+    return vars;
+  } catch {
+    return {};
+  }
 }
 
 function deactivate() {}

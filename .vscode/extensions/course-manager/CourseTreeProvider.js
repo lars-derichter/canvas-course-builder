@@ -15,10 +15,6 @@ function displayTitle(name) {
   return spaced.replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
-function pad(n) {
-  return String(n).padStart(2, '0');
-}
-
 function safeReadJSON(filePath, fallback = {}) {
   try {
     return JSON.parse(fs.readFileSync(filePath, 'utf8'));
@@ -28,37 +24,40 @@ function safeReadJSON(filePath, fallback = {}) {
 }
 
 /**
- * Extract canvas_type from markdown frontmatter without gray-matter dependency.
+ * Read frontmatter fields from a markdown file without a YAML dependency.
+ * Returns { canvasType, title, canvasId, externalUrl }.
  */
-function getCanvasType(filePath) {
+function readFrontmatter(filePath) {
+  const result = { canvasType: 'page', title: null, canvasId: null, externalUrl: null };
   try {
     const content = fs.readFileSync(filePath, 'utf8');
-    if (!content.startsWith('---')) return 'page';
-    const endIndex = content.indexOf('---', 3);
-    if (endIndex === -1) return 'page';
+    if (!content.startsWith('---')) return result;
+    const endIndex = content.indexOf('\n---', 3);
+    if (endIndex === -1) return result;
     const frontmatter = content.substring(3, endIndex);
-    const match = frontmatter.match(/^canvas_type:\s*(.+)$/m);
-    return match ? match[1].trim() : 'page';
+
+    const typeMatch = frontmatter.match(/^canvas_type:\s*(.+)$/m);
+    if (typeMatch) result.canvasType = typeMatch[1].trim();
+
+    const titleMatch = frontmatter.match(/^title:\s*(.+)$/m);
+    if (titleMatch) {
+      // Strip surrounding quotes gray-matter may have added
+      result.title = titleMatch[1].trim().replace(/^["'](.*)["']$/, '$1');
+    }
+
+    const idMatch = frontmatter.match(/^canvas_id:\s*(.+)$/m);
+    if (idMatch) result.canvasId = idMatch[1].trim();
+
+    const urlMatch = frontmatter.match(/^external_url:\s*(.+)$/m);
+    if (urlMatch) result.externalUrl = urlMatch[1].trim().replace(/^["'](.*)["']$/, '$1');
   } catch {
-    return 'page';
+    // Defaults
   }
+  return result;
 }
 
-/**
- * Read canvas_id from markdown frontmatter.
- */
 function getCanvasId(filePath) {
-  try {
-    const content = fs.readFileSync(filePath, 'utf8');
-    if (!content.startsWith('---')) return null;
-    const endIndex = content.indexOf('---', 3);
-    if (endIndex === -1) return null;
-    const frontmatter = content.substring(3, endIndex);
-    const match = frontmatter.match(/^canvas_id:\s*(.+)$/m);
-    return match ? match[1].trim() : null;
-  } catch {
-    return null;
-  }
+  return readFrontmatter(filePath).canvasId;
 }
 
 // --- Icon map ---
@@ -82,6 +81,7 @@ class CourseTreeItem extends vscode.TreeItem {
     this.filePath = opts.filePath || null;
     this.moduleFolderName = opts.moduleFolderName || null;
     this.folderPath = opts.folderPath || null;
+    this.externalUrl = opts.externalUrl || null;
 
     if (opts.filePath && collapsibleState === vscode.TreeItemCollapsibleState.None) {
       this.command = {
@@ -102,8 +102,17 @@ class CourseTreeItem extends vscode.TreeItem {
 const TREE_MIME = 'application/vnd.code.tree.coursetree';
 
 class CourseTreeProvider {
-  constructor(workspaceRoot) {
+  /**
+   * @param {string} workspaceRoot
+   * @param {object} [actions] - Callbacks for drag-and-drop operations.
+   *   Each receives CLI-style arguments and is expected to run the
+   *   corresponding `npx course` command (single source of truth for
+   *   renumbering and sync-state handling).
+   * @param {Function} [actions.runCli] - (argsArray) => Promise
+   */
+  constructor(workspaceRoot, actions = {}) {
     this._workspaceRoot = workspaceRoot;
+    this._actions = actions;
     this._onDidChangeTreeData = new vscode.EventEmitter();
     this.onDidChangeTreeData = this._onDidChangeTreeData.event;
 
@@ -155,7 +164,7 @@ class CourseTreeProvider {
         }
       );
       item._position = position;
-      item.description = pad(position);
+      item.description = String(position).padStart(2, '0');
       modules.push(item);
     }
 
@@ -208,7 +217,7 @@ class CourseTreeProvider {
       if (!entry.isFile()) continue;
 
       const fullPath = path.join(folderPath, entry.name);
-      const treeItem = this._buildFileItem(fullPath, entry.name, subheaderNode.moduleFolderName);
+      const treeItem = this._buildFileItem(fullPath, entry.name, subheaderNode.moduleFolderName, subheaderNode);
       if (treeItem) items.push(treeItem);
     }
 
@@ -216,13 +225,14 @@ class CourseTreeProvider {
     return items;
   }
 
-  _buildFileItem(fullPath, fileName, moduleFolderName) {
+  _buildFileItem(fullPath, fileName, moduleFolderName, subheaderNode) {
     const isMarkdown = fileName.endsWith('.md');
-    const canvasType = isMarkdown ? getCanvasType(fullPath) : 'file';
+    const fm = isMarkdown ? readFrontmatter(fullPath) : null;
+    const canvasType = fm ? fm.canvasType : 'file';
     const ext = path.extname(fileName);
-    const title = isMarkdown
-      ? displayTitle(fileName.replace(/\.md$/, ''))
-      : displayTitle(fileName.replace(ext, ''));
+    // Prefer the frontmatter title — it is what Canvas and Docusaurus show
+    const title = (fm && fm.title)
+      || displayTitle(isMarkdown ? fileName.replace(/\.md$/, '') : fileName.replace(ext, ''));
 
     const item = new CourseTreeItem(
       title,
@@ -232,6 +242,7 @@ class CourseTreeProvider {
         filePath: fullPath,
         moduleFolderName,
         tooltip: fileName,
+        externalUrl: fm ? fm.externalUrl : null,
       }
     );
     if (!isMarkdown) {
@@ -239,10 +250,14 @@ class CourseTreeProvider {
     }
     item._position = extractPosition(fileName);
     item._entryName = fileName;
+    item._subfolderName = subheaderNode ? subheaderNode._entryName : null;
     return item;
   }
 
   // --- Drag and drop ---
+  //
+  // Drops are translated into `npx course` commands (via this._actions.runCli)
+  // so renumbering and Canvas sync state stay consistent with the CLI.
 
   handleDrag(source, dataTransfer, _token) {
     const data = source.map((item) => ({
@@ -250,6 +265,7 @@ class CourseTreeProvider {
       filePath: item.filePath,
       folderPath: item.folderPath,
       moduleFolderName: item.moduleFolderName,
+      subfolderName: item._subfolderName,
       entryName: item._entryName,
       position: item._position,
     }));
@@ -257,9 +273,14 @@ class CourseTreeProvider {
   }
 
   async handleDrop(target, dataTransfer, _token) {
-    // Check for external file drops (from OS Finder/Explorer)
+    const runCli = this._actions.runCli;
+    if (!runCli) return;
+
+    // External file drops (from OS Finder/Explorer or the VS Code explorer)
     const uriListData = dataTransfer.get('text/uri-list');
-    if (uriListData) {
+    const transferItem = dataTransfer.get(TREE_MIME);
+
+    if (!transferItem && uriListData) {
       const uriString = await uriListData.asString();
       const uris = uriString
         .split(/\r?\n/)
@@ -267,235 +288,97 @@ class CourseTreeProvider {
         .filter((u) => u.length > 0)
         .map((u) => vscode.Uri.parse(u));
       if (uris.length > 0) {
-        try {
-          this._handleExternalFileDrop(target, uris);
-        } catch (err) {
-          vscode.window.showErrorMessage(`Failed to copy files: ${err.message}`);
-        }
-        this.refresh();
-        return;
+        await this._handleExternalFileDrop(target, uris, runCli);
       }
+      return;
     }
 
-    // Internal tree reordering
-    const transferItem = dataTransfer.get(TREE_MIME);
     if (!transferItem) return;
-
     const draggedItems = transferItem.value;
     if (!draggedItems || draggedItems.length === 0) return;
-
     const dragged = draggedItems[0];
 
-    try {
-      if (dragged.contextValue === 'module' && (!target || target.contextValue === 'module')) {
-        this._handleModuleDrop(dragged, target);
-      } else if (
-        dragged.contextValue !== 'module' &&
-        dragged.contextValue !== 'subheader' &&
-        target
-      ) {
-        this._handleItemDrop(dragged, target);
-      }
-    } catch (err) {
-      vscode.window.showErrorMessage(`Failed to reorder: ${err.message}`);
+    if (dragged.contextValue === 'module') {
+      if (target && target.contextValue !== 'module') return;
+      await this._handleModuleDrop(dragged, target, runCli);
+    } else if (dragged.contextValue !== 'subheader') {
+      if (!target) return;
+      await this._handleItemDrop(dragged, target, runCli);
     }
-
-    this.refresh();
   }
 
-  _handleModuleDrop(dragged, target) {
+  async _handleModuleDrop(dragged, target, runCli) {
     const courseDir = path.join(this._workspaceRoot, 'course');
-    const entries = this._getSortedEntries(courseDir, 'dirs');
-    const targetPosition = target ? target._position : entries.length;
+    const moduleCount = fs.readdirSync(courseDir, { withFileTypes: true })
+      .filter((e) => e.isDirectory() && !e.name.startsWith('_')).length;
+    const targetPosition = target ? target._position : moduleCount;
+    if (targetPosition === dragged.position) return;
 
-    this._reorder(courseDir, entries, dragged.position, targetPosition);
+    await runCli(['move-module', '--module', dragged.moduleFolderName, '--position', String(targetPosition)]);
   }
 
-  _handleItemDrop(dragged, target) {
+  async _handleItemDrop(dragged, target, runCli) {
+    if (!dragged.filePath) return;
     const draggedDir = path.dirname(dragged.filePath);
 
     if (target.contextValue === 'module' || target.contextValue === 'subheader') {
-      // Dropping item onto a module or subheader — move into that container
-      const targetDir = target.folderPath;
+      // Dropping onto a module or subheader — move into that container
+      if (draggedDir === target.folderPath) return; // already there
 
-      if (draggedDir === targetDir) return; // already in same folder
-
-      // Move file to target directory
-      const destPath = path.join(targetDir, path.basename(dragged.filePath));
-      fs.renameSync(dragged.filePath, destPath);
-
-      // Renumber source directory
-      const sourceEntries = this._getSortedEntries(draggedDir, 'all');
-      this._renumberSequential(draggedDir, sourceEntries);
-
-      // Renumber target directory
-      const targetEntries = this._getSortedEntries(targetDir, 'all');
-      this._renumberSequential(targetDir, targetEntries);
-    } else {
-      // Dropping item onto another item — reorder within the same container
-      const targetDir = path.dirname(target.filePath);
-
-      if (draggedDir === targetDir) {
-        // Same folder: reorder
-        const entries = this._getSortedEntries(targetDir, 'all');
-        const targetPos = extractPosition(target._entryName || path.basename(target.filePath));
-        this._reorder(targetDir, entries, dragged.position, targetPos);
-      } else {
-        // Different folder: move then renumber both
-        const destName = path.basename(dragged.filePath);
-        const destPath = path.join(targetDir, destName);
-        fs.renameSync(dragged.filePath, destPath);
-
-        const sourceEntries = this._getSortedEntries(draggedDir, 'all');
-        this._renumberSequential(draggedDir, sourceEntries);
-
-        const targetEntries = this._getSortedEntries(targetDir, 'all');
-        this._renumberSequential(targetDir, targetEntries);
+      const args = ['movetomodule-item', '--path', dragged.filePath, '--to-module', target.moduleFolderName];
+      if (target.contextValue === 'subheader') {
+        args.push('--to-subsection', target._entryName);
       }
+      await runCli(args);
+      return;
+    }
+
+    // Dropping onto another item
+    const targetDir = path.dirname(target.filePath);
+    if (draggedDir === targetDir) {
+      // Same folder: reorder to the target's position
+      if (dragged.position === target._position) return;
+      await runCli(['move-item', '--path', dragged.filePath, '--position', String(target._position)]);
+    } else {
+      // Different folder: move next to the target
+      const args = ['movetomodule-item', '--path', dragged.filePath, '--to-module', target.moduleFolderName, '--position', String(target._position)];
+      if (target._subfolderName) {
+        args.push('--to-subsection', target._subfolderName);
+      }
+      await runCli(args);
     }
   }
 
-  _handleExternalFileDrop(target, uris) {
-    // Determine target directory
-    let targetDir;
+  async _handleExternalFileDrop(target, uris, runCli) {
     if (!target) {
-      vscode.window.showWarningMessage('Drop files onto a module or item.');
+      vscode.window.showWarningMessage('Canvas Local: Drop files onto a module or item.');
       return;
     }
-    if (target.contextValue === 'module' || target.contextValue === 'subheader') {
-      targetDir = target.folderPath;
+
+    let moduleFolderName;
+    let subsection = null;
+    if (target.contextValue === 'module') {
+      moduleFolderName = target.moduleFolderName;
+    } else if (target.contextValue === 'subheader') {
+      moduleFolderName = target.moduleFolderName;
+      subsection = target._entryName;
     } else if (target.filePath) {
-      targetDir = path.dirname(target.filePath);
+      moduleFolderName = target.moduleFolderName;
+      subsection = target._subfolderName;
     } else {
-      vscode.window.showWarningMessage('Drop files onto a module or item.');
+      vscode.window.showWarningMessage('Canvas Local: Drop files onto a module or item.');
       return;
     }
 
-    // Count existing entries to determine starting position
-    const existing = this._getSortedEntries(targetDir, 'all');
-    let nextPos = existing.length > 0 ? existing[existing.length - 1].prefix + 1 : 1;
-
-    let copied = 0;
     for (const uri of uris) {
       const sourcePath = uri.fsPath;
       if (!fs.existsSync(sourcePath) || !fs.statSync(sourcePath).isFile()) continue;
 
-      const basename = path.basename(sourcePath);
-      const ext = path.extname(basename);
-      const nameWithoutExt = basename.replace(ext, '');
-      const slug = nameWithoutExt
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-|-$/g, '');
-      const destName = `${pad(nextPos)}-${slug}${ext.toLowerCase()}`;
-      const destPath = path.join(targetDir, destName);
-
-      fs.copyFileSync(sourcePath, destPath);
-      nextPos++;
-      copied++;
+      const args = ['new-item', '--module', moduleFolderName, '--type', 'file', '--file', sourcePath];
+      if (subsection) args.push('--subsection', subsection);
+      await runCli(args);
     }
-
-    if (copied > 0) {
-      const folderName = path.basename(targetDir);
-      vscode.window.showInformationMessage(
-        `Canvas Local: Copied ${copied} file(s) to ${folderName}`
-      );
-    }
-  }
-
-  /**
-   * Get sorted entries from a directory for renumbering.
-   * @param {string} filter - 'all' (files + dirs), 'dirs' (directories only), 'files' (files only)
-   */
-  _getSortedEntries(dirPath, filter = 'all') {
-    const entries = fs.readdirSync(dirPath, { withFileTypes: true });
-    const items = [];
-
-    for (const entry of entries) {
-      if (entry.name.startsWith('_')) continue;
-      if (filter === 'dirs' && !entry.isDirectory()) continue;
-      if (filter === 'files' && !entry.isFile()) continue;
-
-      items.push({
-        name: entry.name,
-        prefix: extractPosition(entry.name),
-        isDirectory: entry.isDirectory(),
-      });
-    }
-
-    items.sort((a, b) => a.prefix - b.prefix);
-    return items;
-  }
-
-  /**
-   * Reorder entries by moving one to a new position (two-pass rename).
-   * Mirrors cli/renumber.js reorder().
-   */
-  _reorder(dirPath, entries, sourcePrefix, targetPosition) {
-    const source = entries.find((e) => e.prefix === sourcePrefix);
-    if (!source) return;
-
-    const remaining = entries.filter((e) => e.prefix !== sourcePrefix);
-    remaining.splice(targetPosition - 1, 0, source);
-
-    const tempPrefix = '__reorder_temp_';
-
-    // First pass: rename all to temp names
-    for (let i = 0; i < remaining.length; i++) {
-      const entry = remaining[i];
-      const nameWithoutPrefix = entry.name.replace(/^\d+-/, '');
-      const tempName = `${tempPrefix}${pad(i + 1)}-${nameWithoutPrefix}`;
-      fs.renameSync(path.join(dirPath, entry.name), path.join(dirPath, tempName));
-      remaining[i] = { ...entry, _tempName: tempName };
-    }
-
-    // Second pass: rename from temp to final names
-    for (let i = 0; i < remaining.length; i++) {
-      const entry = remaining[i];
-      const newPrefix = i + 1;
-      const newName = entry.name.replace(/^\d+/, pad(newPrefix));
-      fs.renameSync(path.join(dirPath, entry._tempName), path.join(dirPath, newName));
-
-      if (entry.isDirectory) {
-        this._updateCategoryPosition(dirPath, newName, newPrefix);
-      }
-    }
-  }
-
-  /**
-   * Renumber all entries sequentially (two-pass rename).
-   * Mirrors cli/renumber.js renumberSequential().
-   */
-  _renumberSequential(dirPath, items) {
-    const tempPrefix = '__renumber_temp_';
-
-    for (let i = 0; i < items.length; i++) {
-      const item = items[i];
-      const tempName = `${tempPrefix}${pad(i + 1)}-${item.name.replace(/^\d+-/, '')}`;
-      fs.renameSync(path.join(dirPath, item.name), path.join(dirPath, tempName));
-      items[i] = { ...item, _tempName: tempName };
-    }
-
-    for (let i = 0; i < items.length; i++) {
-      const item = items[i];
-      const newPrefix = i + 1;
-      const newName = item.name.replace(/^\d+/, pad(newPrefix));
-      fs.renameSync(path.join(dirPath, item._tempName), path.join(dirPath, newName));
-
-      if (item.isDirectory) {
-        this._updateCategoryPosition(dirPath, newName, newPrefix);
-      }
-    }
-  }
-
-  _updateCategoryPosition(dirPath, entryName, newPosition) {
-    const catFile = path.join(dirPath, entryName, '_category_.json');
-    if (!fs.existsSync(catFile)) return;
-    const cat = safeReadJSON(catFile, null);
-    if (!cat) return;
-    cat.position = newPosition;
-    fs.writeFileSync(catFile, JSON.stringify(cat, null, 2) + '\n', 'utf8');
   }
 }
 
-module.exports = { CourseTreeProvider, getCanvasId };
+module.exports = { CourseTreeProvider, getCanvasId, readFrontmatter, displayTitle, extractPosition };

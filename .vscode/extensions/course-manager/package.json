@@ -2,7 +2,7 @@
   "name": "canvas-local",
   "displayName": "Canvas Local",
   "description": "VS Code sidebar and palette commands for Canvas Local CLI",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "publisher": "local",
   "repository": {
     "type": "git",
@@ -39,7 +39,7 @@
       { "command": "course.pushModule", "title": "Course: Push Module to Canvas..." },
       { "command": "course.pull", "title": "Course: Pull from Canvas" },
       { "command": "course.status", "title": "Course: Status" },
-      { "command": "course.newModule", "title": "Course: New Module" },
+      { "command": "course.newModule", "title": "Course: New Module", "icon": "$(new-folder)" },
       { "command": "course.moveModule", "title": "Course: Move Module" },
       { "command": "course.renameModule", "title": "Course: Rename Module" },
       { "command": "course.deleteModule", "title": "Course: Delete Module" },
@@ -61,6 +61,7 @@
     ],
     "menus": {
       "view/title": [
+        { "command": "course.newModule", "when": "view == courseTree", "group": "navigation" },
         { "command": "course.preview", "when": "view == courseTree", "group": "navigation" },
         { "command": "course.refreshTree", "when": "view == courseTree", "group": "navigation" },
         { "command": "course.preview", "when": "view == courseTree" },
