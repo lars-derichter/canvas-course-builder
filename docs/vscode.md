@@ -24,7 +24,9 @@ icon on the left). It shows a tree view of all modules and items in the
   the folder name. The numeric prefix is shown as a description.
 - **Subheaders** — subfolders within a module, shown as collapsible groups.
 - **Items** — course pages, assignments, external URLs, and files. Each type has
-  a distinct icon. Clicking an item opens the file in the editor.
+  a distinct icon. Labels come from the frontmatter `title` (the same name
+  Canvas and Docusaurus show); the filename is shown in the tooltip. Clicking an
+  item opens the file in the editor.
 
 ### Inline actions
 
@@ -37,19 +39,30 @@ Hover over a tree item to see inline action buttons:
 
 "Open in Canvas" requires the item to have been pushed at least once. It reads
 the `canvas_id` from the file's frontmatter and the Canvas URL from `.env`.
+Pages and assignments open their Canvas page, file items open the Canvas file
+view, and external URL items open the URL itself.
 
 ### Context menu
 
-Right-click a module or item to access management commands:
+Right-click a module or item to access management commands. The command acts
+on the element you clicked — names, positions, and confirmation are collected
+through native VS Code dialogs, and the operation runs the CLI in the
+background (no terminal pops up):
 
 - **New Item / New Module** — create items or modules
-- **Rename / Move** — rename or reorder items and modules
-- **Move Item to Module** — move an item to a different module
-- **Delete** — delete an item or module
+- **Rename / Move** — rename or reorder items and modules (rename pre-fills the
+  current title)
+- **Move Item to Module** — move an item to a different module (or one of its
+  subsections)
+- **Delete** — delete an item or module, after a modal confirmation
 - **Merge: Set as Source / Merge with Source** — two-step merge: right-click the
   source item first, then right-click the target item to merge them
 
-These commands run the same CLI operations as the command palette equivalents.
+The same commands also work from the command palette; you then pick the module
+or item from a quick-pick list instead. Either way the actual work is done by
+the `npx course` CLI with non-interactive flags, so renumbering and Canvas sync
+state behave exactly like the terminal commands. Full output is available in
+the **Canvas Local** output channel (View → Output).
 
 ### Drag and drop
 
@@ -60,9 +73,12 @@ Drag tree items to reorder them:
 - **Items** — drag an item within the same module to reorder, or drag it onto a
   different module or subheader to move it there. Both source and target
   directories are renumbered automatically.
-- **External files** — drag files from Finder or Explorer onto a module or item
-  to copy them into the course structure. Files are automatically numbered and
-  renamed to match the naming convention (lowercase, hyphenated).
+- **External files** — drag files from Finder or Explorer onto a module,
+  subheader, or item to add them as file items at that location.
+
+Drops are translated into the corresponding CLI commands (`move-module`,
+`move-item`, `movetomodule-item`, `new-item --type file`), so Canvas sync
+state stays correct and the next push picks the changes up cleanly.
 
 ### Auto-refresh
 
@@ -119,12 +135,15 @@ for quick access to sync commands.
 
 ## How It Works
 
-- Commands run in a dedicated **Canvas Local** terminal inside VS Code.
-- A notification message is shown when a command starts.
+- Long-running sync commands (push, pull, status, diff, validate, init) run in
+  a single shared **Canvas Local** terminal so you can follow their output.
+- Structural commands (new/rename/move/delete, merge, split) run the CLI
+  silently in the background; results appear as notifications and in the
+  **Canvas Local** output channel, and the tree refreshes automatically.
 - Most commands validate that a `course/` directory exists in the workspace
   before running. The Init command is exempt from this check.
-- When you have a file open inside `course/`, commands use that file's directory
-  as the working directory. This lets item commands auto-detect which module you
-  are working in.
 - **Push Module** presents a quick-pick list of all module folders so you can
   select which one to push.
+- **Preview** checks whether the Docusaurus dev server is already running. If
+  not, it starts `npm start` in a Preview terminal and opens the browser as
+  soon as the server responds.

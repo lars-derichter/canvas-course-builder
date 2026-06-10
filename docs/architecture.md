@@ -28,17 +28,24 @@ course/  (markdown)
 
 ```json
 {
-  "schema_version": 2,
+  "schema_version": 3,
   "canvas_base_url": "https://school.instructure.com/api/v1",
   "course_id": 12345,
   "modules": {
-    "01-introduction": {
-      "canvas_module_id": 67890,
+    "67890": {
+      "folder": "01-introduction",
       "items": {
-        "01-introduction/01-welcome.md": {
-          "canvas_id": "welcome",
+        "page:1234": {
+          "path": "01-introduction/01-welcome.md",
+          "canvas_id": 1234,
           "canvas_type": "page",
           "page_url": "welcome"
+        },
+        "external_url:https://example.com": {
+          "path": "01-introduction/02-link.md",
+          "canvas_id": 555,
+          "canvas_type": "external_url",
+          "external_url": "https://example.com"
         }
       }
     }
@@ -47,7 +54,8 @@ course/  (markdown)
   "files": {
     "01-introduction/_files/diagram.png": {
       "canvas_file_id": 222,
-      "canvas_url": "/courses/12345/files/222/preview"
+      "canvas_url": "/courses/12345/files/222/preview",
+      "sha256": "9f2c..."
     }
   },
   "last_sync": "2026-03-15T10:00:00.000Z"
@@ -56,12 +64,31 @@ course/  (markdown)
 
 Key properties:
 
-- **modules** — keyed by folder name, contains `canvas_module_id` and per-item
-  sync data.
+- **modules** — keyed by `canvas_module_id`; the local folder name is a value.
+  The id is also mirrored into the folder's `_category_.json` under
+  `customProps.canvas_module_id`, so renaming or renumbering a module folder
+  never breaks the association.
+- **items** — keyed by the stable Canvas identity (`<canvas_type>:<canvas_id>`;
+  external URLs key on the URL itself because their module-item id changes on
+  every push). The local relative path is a value, refreshed on every push from
+  the `canvas_id` in each file's frontmatter. Renaming, renumbering, or moving
+  files locally therefore cannot orphan a sync entry.
 - **icons** — alert SVG icon file IDs on Canvas.
-- **files** — embedded file (images, PDFs) Canvas URLs and IDs.
+- **files** — embedded file (images, PDFs) Canvas URLs and IDs, plus a SHA-256
+  content hash used to re-upload files when their content changes.
 - **last_sync** — timestamp of last push or pull. Used to detect locally
   modified files.
+
+Older v2 sync files (modules keyed by folder, items keyed by path) are migrated
+to v3 automatically the first time any command loads them.
+
+### Prune semantics
+
+`push --prune` deletes a Canvas resource only when no local file *claims* its
+identity: a markdown file claims `canvas_id` (and `external_url`) via its
+frontmatter, a module folder claims its id via `_category_.json`. Identity
+claims are collected over the whole course, so items moved to another module —
+even one outside a `--module` filter — are never mistaken for deletions.
 
 ## Push Algorithm
 
