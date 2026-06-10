@@ -1,12 +1,15 @@
 const fs = require('fs');
 const path = require('path');
+const matter = require('gray-matter');
 const {
   COURSE_DIR,
   prompt,
   getExistingModules,
   pad,
   printModules,
+  readModuleCanvasId,
 } = require('./module-utils');
+const { loadSyncFile, saveSyncFile, itemKey, findModuleEntryByFolder } = require('./sync-utils');
 
 const SKIP_FILES = new Set(['_category_.json']);
 
@@ -51,15 +54,23 @@ function printItems(items) {
 }
 
 /**
- * Try to auto-detect the current module from INIT_CWD.
- * Returns { modulePath, folderName } or null.
+ * Try to auto-detect the current module from the invocation directory.
+ * Uses process.cwd() (where `npx course` runs) and falls back to INIT_CWD
+ * (which npm sets when invoked via `npm run` scripts, where cwd is the
+ * package root). Returns { modulePath, folderName } or null.
  */
 function detectModule() {
-  const initCwd = process.env.INIT_CWD;
-  if (!initCwd) return null;
-
-  const resolved = path.resolve(initCwd);
   const courseDir = path.resolve(COURSE_DIR);
+  const candidates = [process.cwd(), process.env.INIT_CWD].filter(Boolean);
+
+  for (const candidate of candidates) {
+    const detected = detectModuleFrom(path.resolve(candidate), courseDir);
+    if (detected) return detected;
+  }
+  return null;
+}
+
+function detectModuleFrom(resolved, courseDir) {
 
   // Check if we're inside a module folder under course/
   if (!resolved.startsWith(courseDir + path.sep)) return null;
@@ -149,10 +160,70 @@ async function selectTargetDir(rl, modulePath) {
   process.exit(1);
 }
 
+/**
+ * Remove the sync-state entry for an item that is about to be deleted.
+ * Must be called BEFORE the file is removed: the entry is keyed by the
+ * Canvas identity in the file's frontmatter. For directories (subsections)
+ * every entry whose path lives inside the directory is removed.
+ *
+ * @param {string} folderName  - Module folder name.
+ * @param {string} absItemPath - Absolute path of the file or directory.
+ * @returns {string|null} The relative path removed, or null when nothing matched.
+ */
+function removeFromSyncState(folderName, absItemPath) {
+  const syncData = loadSyncFile({ allowNull: true });
+  if (!syncData || !syncData.modules) return null;
+
+  const catId = readModuleCanvasId(path.join(COURSE_DIR, folderName));
+  const moduleEntry = (catId != null && syncData.modules[String(catId)])
+    ? syncData.modules[String(catId)]
+    : (findModuleEntryByFolder(syncData, folderName) || [])[1];
+  if (!moduleEntry || !moduleEntry.items) return null;
+
+  const relativePath = path.relative(COURSE_DIR, absItemPath).split(path.sep).join('/');
+  const keysToRemove = [];
+
+  if (fs.existsSync(absItemPath) && fs.statSync(absItemPath).isDirectory()) {
+    for (const [key, entry] of Object.entries(moduleEntry.items)) {
+      if (entry.path && entry.path.startsWith(relativePath + '/')) {
+        keysToRemove.push(key);
+      }
+    }
+  } else {
+    let key = null;
+    if (absItemPath.endsWith('.md') && fs.existsSync(absItemPath)) {
+      try {
+        const { data } = matter(fs.readFileSync(absItemPath, 'utf8'));
+        if (data.canvas_id != null || data.external_url) {
+          key = itemKey(data.canvas_type || 'page', {
+            canvasId: data.canvas_id,
+            externalUrl: data.external_url,
+          });
+        }
+      } catch (_) {
+        // Fall through to path matching
+      }
+    }
+    if (key && moduleEntry.items[key]) {
+      keysToRemove.push(key);
+    } else {
+      for (const [k, entry] of Object.entries(moduleEntry.items)) {
+        if (entry.path === relativePath) keysToRemove.push(k);
+      }
+    }
+  }
+
+  if (keysToRemove.length === 0) return null;
+  for (const key of keysToRemove) delete moduleEntry.items[key];
+  saveSyncFile(syncData);
+  return relativePath;
+}
+
 module.exports = {
   getItems,
   printItems,
   detectModule,
   selectModule,
   selectTargetDir,
+  removeFromSyncState,
 };

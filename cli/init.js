@@ -2,8 +2,11 @@ const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
 
-const SYNC_FILE = path.resolve(process.cwd(), '.canvas-sync.json');
-const ENV_FILE = path.resolve(process.cwd(), '.env');
+const { PROJECT_ROOT } = require('./project-root');
+const { loadSyncFile } = require('./sync-utils');
+
+const SYNC_FILE = path.join(PROJECT_ROOT, '.canvas-sync.json');
+const ENV_FILE = path.join(PROJECT_ROOT, '.env');
 
 function prompt(rl, question, defaultValue) {
   const suffix = defaultValue ? ` (${defaultValue})` : '';
@@ -65,7 +68,7 @@ async function init() {
 
   // Create .canvas-sync.json
   const syncData = {
-    schema_version: 2,
+    schema_version: 3,
     canvas_base_url: apiUrl,
     course_id: Number(courseId),
     modules: {},
@@ -73,15 +76,16 @@ async function init() {
   };
 
   // Preserve existing module mappings if the file already exists
-  if (fs.existsSync(SYNC_FILE)) {
-    try {
-      const existing = JSON.parse(fs.readFileSync(SYNC_FILE, 'utf8'));
-      if (existing.modules) {
-        syncData.modules = existing.modules;
-      }
-    } catch (_) {
-      // Ignore parse errors, start fresh
-    }
+  // (loadSyncFile migrates older schema versions)
+  const existing = loadSyncFile({ allowNull: true });
+  if (existing && existing.modules) {
+    syncData.modules = existing.modules;
+  }
+  if (existing && existing.files) {
+    syncData.files = existing.files;
+  }
+  if (existing && existing.icons) {
+    syncData.icons = existing.icons;
   }
 
   fs.writeFileSync(SYNC_FILE, JSON.stringify(syncData, null, 2) + '\n', 'utf8');

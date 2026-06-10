@@ -13,19 +13,23 @@ const {
 const SYNC_DATA = {
   course_id: 42,
   modules: {
-    'mod-101': {
+    101: {
+      folder: '01-intro',
       items: {
-        '01-intro/01-welcome.md': {
+        'page:100': {
+          path: '01-intro/01-welcome.md',
           canvas_id: 100,
           canvas_type: 'page',
           page_url: 'welcome',
         },
-        '01-intro/02-setup.md': {
+        'page:200': {
+          path: '01-intro/02-setup.md',
           canvas_id: 200,
           canvas_type: 'page',
           page_url: 'setup',
         },
-        '02-advanced/01-deep-dive.md': {
+        'assignment:300': {
+          path: '02-advanced/01-deep-dive.md',
           canvas_id: 300,
           canvas_type: 'assignment',
         },
@@ -64,7 +68,7 @@ describe('buildLinkMap', () => {
   it('skips items without canvas_id', () => {
     const syncData = {
       course_id: 1,
-      modules: { m: { items: { 'file.md': { canvas_type: 'page' } } } },
+      modules: { 1: { items: { 'page:x': { path: 'file.md', canvas_type: 'page' } } } },
     };
     const { relativeToCanvas } = buildLinkMap(syncData);
     assert.equal(relativeToCanvas.size, 0);

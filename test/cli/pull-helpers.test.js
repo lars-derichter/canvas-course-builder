@@ -16,26 +16,26 @@ const {
 
 describe('buildIdentifierMap', () => {
   it('maps page_url to relative path', () => {
-    const items = { '01-mod/01-page.md': { page_url: 'my-page', canvas_id: 42 } };
+    const items = { 'page:42': { path: '01-mod/01-page.md', page_url: 'my-page', canvas_id: 42 } };
     const map = buildIdentifierMap(items);
     assert.equal(map.get('page:my-page'), '01-mod/01-page.md');
   });
 
   it('maps external_url to relative path', () => {
-    const items = { '01-mod/02-link.md': { external_url: 'https://example.com', canvas_id: 5 } };
+    const items = { 'external_url:https://example.com': { path: '01-mod/02-link.md', external_url: 'https://example.com', canvas_id: 5 } };
     const map = buildIdentifierMap(items);
     assert.equal(map.get('url:https://example.com'), '01-mod/02-link.md');
   });
 
   it('maps canvas_id to relative path', () => {
-    const items = { '01-mod/03-assign.md': { canvas_id: 99 } };
+    const items = { 'assignment:99': { path: '01-mod/03-assign.md', canvas_id: 99 } };
     const map = buildIdentifierMap(items);
     assert.equal(map.get('id:99'), '01-mod/03-assign.md');
   });
 
   it('handles items with multiple identifiers', () => {
     const items = {
-      '01-mod/01-page.md': { page_url: 'slug', canvas_id: 10 },
+      'page:10': { path: '01-mod/01-page.md', page_url: 'slug', canvas_id: 10 },
     };
     const map = buildIdentifierMap(items);
     assert.equal(map.get('page:slug'), '01-mod/01-page.md');

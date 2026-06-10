@@ -2,9 +2,8 @@ const fs = require('fs');
 const path = require('path');
 const matter = require('gray-matter');
 const { prompt, createRL, COURSE_DIR } = require('./module-utils');
-const { getItems, printItems, selectModule, selectTargetDir } = require('./item-utils');
+const { getItems, printItems, selectModule, selectTargetDir, removeFromSyncState } = require('./item-utils');
 const { renumberSequential } = require('./renumber');
-const { loadSyncFile, saveSyncFile } = require('./sync-utils');
 
 /**
  * Core merge logic: append source body into target, delete source, renumber.
@@ -32,23 +31,16 @@ function _mergeFiles(targetPath, sourcePath, targetDir, folderName) {
   fs.writeFileSync(targetPath, result, 'utf8');
   console.log(`[merge-items] Merged content into ${path.basename(targetPath)}`);
 
+  // Remove source from sync state (before deleting: the entry is keyed by
+  // the Canvas identity in the source's frontmatter)
+  const removed = removeFromSyncState(folderName, sourcePath);
+  if (removed) {
+    console.log(`[merge-items] Removed ${removed} from sync state.`);
+  }
+
   // Delete source file
   fs.unlinkSync(sourcePath);
   console.log(`[merge-items] Deleted ${path.basename(sourcePath)}`);
-
-  // Remove source from sync state
-  const syncData = loadSyncFile({ allowNull: true });
-  if (syncData && syncData.modules && syncData.modules[folderName]) {
-    const syncModule = syncData.modules[folderName];
-    if (syncModule.items) {
-      const relativePath = path.relative(COURSE_DIR, sourcePath);
-      if (syncModule.items[relativePath]) {
-        delete syncModule.items[relativePath];
-        saveSyncFile(syncData);
-        console.log(`[merge-items] Removed ${relativePath} from sync state.`);
-      }
-    }
-  }
 
   // Renumber remaining items
   const renames = renumberSequential(targetDir, getItems);

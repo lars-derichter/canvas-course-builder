@@ -3,9 +3,8 @@ const path = require('path');
 const readline = require('readline');
 const log = require('./logger');
 const { parseFrontmatter, serializeFrontmatter } = require('../lib/convert/frontmatter');
-
-const COURSE_DIR = path.resolve(process.cwd(), 'course');
-const SYNC_FILE = path.resolve(process.cwd(), '.canvas-sync.json');
+const { COURSE_DIR } = require('./module-utils');
+const { SYNC_FILE } = require('./sync-utils');
 
 async function resetSyncState() {
   const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
@@ -43,6 +42,25 @@ async function resetSyncState() {
     log.info('[reset] No canvas_id fields found in course files.');
   } else {
     log.info(`[reset] Removed canvas_id from ${count} file(s).`);
+  }
+
+  // Remove canvas_module_id from _category_.json files (module identity)
+  const categoryFiles = entries
+    .filter((e) => path.basename(e) === '_category_.json')
+    .map((e) => path.join(COURSE_DIR, e));
+
+  for (const catFile of categoryFiles) {
+    try {
+      const cat = JSON.parse(fs.readFileSync(catFile, 'utf8'));
+      if (cat.customProps && cat.customProps.canvas_module_id != null) {
+        delete cat.customProps.canvas_module_id;
+        if (Object.keys(cat.customProps).length === 0) delete cat.customProps;
+        fs.writeFileSync(catFile, JSON.stringify(cat, null, 2) + '\n', 'utf8');
+        log.info(`[reset] Removed canvas_module_id from ${path.relative(process.cwd(), catFile)}`);
+      }
+    } catch (err) {
+      log.warn(`[reset] Could not update ${catFile}: ${err.message}`);
+    }
   }
 
   // Delete .canvas-sync.json
