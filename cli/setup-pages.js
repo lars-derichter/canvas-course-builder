@@ -4,11 +4,12 @@ const readline = require('readline');
 const { execSync } = require('child_process');
 
 const log = require('./logger');
+const { PROJECT_ROOT } = require('./project-root');
 
-const CONFIG_FILE = path.resolve(process.cwd(), 'docusaurus.config.js');
-const WORKFLOW_DIR = path.resolve(process.cwd(), '.github', 'workflows');
+const CONFIG_FILE = path.join(PROJECT_ROOT, 'docusaurus.config.js');
+const WORKFLOW_DIR = path.join(PROJECT_ROOT, '.github', 'workflows');
 const WORKFLOW_FILE = path.resolve(WORKFLOW_DIR, 'deploy.yml');
-const STATIC_DIR = path.resolve(process.cwd(), 'static');
+const STATIC_DIR = path.join(PROJECT_ROOT, 'static');
 const CNAME_FILE = path.resolve(STATIC_DIR, 'CNAME');
 
 /**
