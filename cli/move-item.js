@@ -1,8 +1,42 @@
+const fs = require('fs');
+const path = require('path');
 const { prompt, createRL } = require('./module-utils');
 const { getItems, printItems, selectModule, selectTargetDir } = require('./item-utils');
 const { reorder } = require('./renumber');
 
-async function moveItem() {
+async function moveItem(options = {}) {
+  // Non-interactive mode (VS Code): --path and --position provided
+  if (options.path && options.position) {
+    const itemPath = path.resolve(options.path);
+    if (!fs.existsSync(itemPath)) {
+      console.error(`[move-item] Error: Not found: ${itemPath}`);
+      process.exit(1);
+    }
+    const targetDir = path.dirname(itemPath);
+    const items = getItems(targetDir);
+    const entryName = path.basename(itemPath);
+    const sourceItem = items.find((i) => i.name === entryName);
+    if (!sourceItem) {
+      console.error(`[move-item] Error: ${entryName} has no numeric prefix or is not a course item.`);
+      process.exit(1);
+    }
+    const targetPosition = parseInt(options.position, 10);
+    if (isNaN(targetPosition) || targetPosition < 1 || targetPosition > items.length) {
+      console.error(`[move-item] Error: Position must be between 1 and ${items.length}.`);
+      process.exit(1);
+    }
+    const renames = reorder(targetDir, items, sourceItem.prefix, targetPosition);
+    if (renames.length > 0) {
+      console.log('[move-item] Reordered items:');
+      for (const r of renames) {
+        console.log(`  ${r.from} -> ${r.to}`);
+      }
+    } else {
+      console.log('[move-item] Item is already at that position.');
+    }
+    return;
+  }
+
   const rl = createRL();
 
   console.log('[move-item] Move an item to a new position\n');

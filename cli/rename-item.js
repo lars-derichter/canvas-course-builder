@@ -4,7 +4,72 @@ const matter = require('gray-matter');
 const { prompt, pad, toSlug, createRL, safeReadJSON } = require('./module-utils');
 const { getItems, printItems, selectModule, selectTargetDir } = require('./item-utils');
 
-async function renameItem() {
+/**
+ * Core rename: renames a file or subsection folder inside targetDir,
+ * updating the frontmatter title (.md) or _category_.json label (folder).
+ * Returns the new entry name.
+ */
+function renameEntry(targetDir, entryName, newName) {
+  const oldPath = path.join(targetDir, entryName);
+  const isDirectory = fs.statSync(oldPath).isDirectory();
+  const prefixMatch = entryName.match(/^(\d+)/);
+  const prefix = prefixMatch ? parseInt(prefixMatch[1], 10) : 0;
+
+  if (isDirectory) {
+    // Subsection: rename folder and update _category_.json
+    const newSlug = toSlug(newName);
+    const newFolderName = `${pad(prefix)}-${newSlug}`;
+    const newPath = path.join(targetDir, newFolderName);
+
+    if (newFolderName !== entryName) {
+      fs.renameSync(oldPath, newPath);
+    }
+
+    const catFile = path.join(newPath, '_category_.json');
+    const cat = safeReadJSON(catFile);
+    cat.label = newName;
+    if (cat.position == null) cat.position = prefix;
+    fs.writeFileSync(catFile, JSON.stringify(cat, null, 2) + '\n', 'utf8');
+
+    return newFolderName;
+  }
+
+  // File: rename and update frontmatter title if markdown
+  const ext = path.extname(entryName);
+  const newSlug = toSlug(newName);
+  const newFileName = `${pad(prefix)}-${newSlug}${ext}`;
+  const newPath = path.join(targetDir, newFileName);
+
+  if (ext === '.md') {
+    // Update frontmatter title
+    const raw = fs.readFileSync(oldPath, 'utf8');
+    const parsed = matter(raw);
+    parsed.data.title = newName;
+    const updated = matter.stringify(parsed.content, parsed.data);
+    fs.writeFileSync(oldPath, updated, 'utf8');
+  }
+
+  if (newFileName !== entryName) {
+    fs.renameSync(oldPath, newPath);
+  }
+
+  return newFileName;
+}
+
+async function renameItem(options = {}) {
+  // Non-interactive mode (VS Code): --path and --name provided
+  if (options.path && options.name) {
+    const itemPath = path.resolve(options.path);
+    if (!fs.existsSync(itemPath)) {
+      console.error(`[rename-item] Error: Not found: ${itemPath}`);
+      process.exit(1);
+    }
+    const targetDir = path.dirname(itemPath);
+    const newEntryName = renameEntry(targetDir, path.basename(itemPath), options.name);
+    console.log(`[rename-item] Renamed ${path.basename(itemPath)} -> ${newEntryName}`);
+    return;
+  }
+
   const rl = createRL();
 
   console.log('[rename-item] Rename an item\n');
@@ -39,50 +104,9 @@ async function renameItem() {
     process.exit(1);
   }
 
-  const oldPath = path.join(targetDir, item.name);
-
-  if (item.isDirectory) {
-    // Subsection: rename folder and update _category_.json
-    const newSlug = toSlug(newName);
-    const newFolderName = `${pad(sourcePrefix)}-${newSlug}`;
-    const newPath = path.join(targetDir, newFolderName);
-
-    if (newFolderName !== item.name) {
-      fs.renameSync(oldPath, newPath);
-    }
-
-    const catFile = path.join(newPath, '_category_.json');
-    if (fs.existsSync(catFile)) {
-      const cat = safeReadJSON(catFile);
-      cat.label = newName;
-      fs.writeFileSync(catFile, JSON.stringify(cat, null, 2) + '\n', 'utf8');
-    } else {
-      fs.writeFileSync(catFile, JSON.stringify({ label: newName, position: sourcePrefix }, null, 2) + '\n', 'utf8');
-    }
-
-    console.log(`[rename-item] Renamed ${item.name} -> ${newFolderName}`);
-  } else {
-    // File: rename and update frontmatter title if markdown
-    const ext = path.extname(item.name);
-    const newSlug = toSlug(newName);
-    const newFileName = `${pad(sourcePrefix)}-${newSlug}${ext}`;
-    const newPath = path.join(targetDir, newFileName);
-
-    if (ext === '.md') {
-      // Update frontmatter title
-      const raw = fs.readFileSync(oldPath, 'utf8');
-      const parsed = matter(raw);
-      parsed.data.title = newName;
-      const updated = matter.stringify(parsed.content, parsed.data);
-      fs.writeFileSync(oldPath, updated, 'utf8');
-    }
-
-    if (newFileName !== item.name) {
-      fs.renameSync(oldPath, newPath);
-    }
-
-    console.log(`[rename-item] Renamed ${item.name} -> ${newFileName}`);
-  }
+  const newEntryName = renameEntry(targetDir, item.name, newName);
+  console.log(`[rename-item] Renamed ${item.name} -> ${newEntryName}`);
 }
 
 module.exports = renameItem;
+module.exports._renameEntry = renameEntry;

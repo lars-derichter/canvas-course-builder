@@ -4,7 +4,72 @@ const { prompt, pad, createRL, getExistingModules, printModules, COURSE_DIR } = 
 const { getItems, printItems, selectModule, selectTargetDir } = require('./item-utils');
 const { renumberSequential, renumberUp } = require('./renumber');
 
-async function moveToModule() {
+/**
+ * Core move: shift destination items to make room, move the file, renumber
+ * the source directory to close the gap.
+ */
+function moveEntry(sourceDir, entryName, destDir, position) {
+  const destItems = getItems(destDir);
+
+  // Make room at destination
+  if (destItems.some((i) => i.prefix >= position)) {
+    renumberUp(destDir, destItems, position);
+  }
+
+  const newName = entryName.replace(/^\d+/, pad(position));
+  const sourcePath = path.join(sourceDir, entryName);
+  const destPath = path.join(destDir, newName);
+
+  if (fs.existsSync(destPath)) {
+    console.error(`[movetomodule] Error: ${newName} already exists in the destination.`);
+    process.exit(1);
+  }
+
+  fs.renameSync(sourcePath, destPath);
+
+  // Renumber source to close gap
+  const sourceRenames = renumberSequential(sourceDir, getItems);
+
+  console.log(`[movetomodule] Moved ${entryName} -> ${path.relative(process.cwd(), destPath)}`);
+  if (sourceRenames.length > 0) {
+    console.log('[movetomodule] Renumbered source:');
+    for (const r of sourceRenames) {
+      console.log(`  ${r.from} -> ${r.to}`);
+    }
+  }
+}
+
+async function moveToModule(options = {}) {
+  // Non-interactive mode (VS Code): --path and --to-module provided
+  if (options.path && options.toModule) {
+    const itemPath = path.resolve(options.path);
+    if (!fs.existsSync(itemPath)) {
+      console.error(`[movetomodule] Error: Not found: ${itemPath}`);
+      process.exit(1);
+    }
+    let destDir = path.join(COURSE_DIR, options.toModule);
+    if (!fs.existsSync(destDir) || !fs.statSync(destDir).isDirectory()) {
+      console.error(`[movetomodule] Error: Destination module not found: ${options.toModule}`);
+      process.exit(1);
+    }
+    if (options.toSubsection) {
+      destDir = path.join(destDir, options.toSubsection);
+      if (!fs.existsSync(destDir) || !fs.statSync(destDir).isDirectory()) {
+        console.error(`[movetomodule] Error: Destination subsection not found: ${options.toSubsection}`);
+        process.exit(1);
+      }
+    }
+    const destItems = getItems(destDir);
+    const defaultPos = destItems.length > 0 ? destItems[destItems.length - 1].prefix + 1 : 1;
+    const position = options.position ? parseInt(options.position, 10) : defaultPos;
+    if (isNaN(position) || position < 1 || position > 99) {
+      console.error('[movetomodule] Error: Position must be a number between 1 and 99.');
+      process.exit(1);
+    }
+    moveEntry(path.dirname(itemPath), path.basename(itemPath), destDir, position);
+    return;
+  }
+
   const rl = createRL();
 
   console.log('[movetomodule] Move an item to a different module\n');
@@ -53,33 +118,16 @@ async function moveToModule() {
   const destItems = getItems(destDir);
 
   const defaultPos = destItems.length > 0 ? destItems[destItems.length - 1].prefix + 1 : 1;
-  const posStr = await prompt(rl, 'Position in destination', pad(defaultPos));
+  let position;
+  while (true) {
+    const posStr = await prompt(rl, 'Position in destination', pad(defaultPos));
+    position = parseInt(posStr, 10);
+    if (!isNaN(position) && position >= 1 && position <= 99) break;
+    console.log('  Position must be a number between 1 and 99. Please try again.');
+  }
   rl.close();
 
-  const position = parseInt(posStr, 10);
-
-  // Make room at destination
-  if (destItems.some((i) => i.prefix >= position)) {
-    renumberUp(destDir, destItems, position);
-  }
-
-  // Move the item
-  const newName = item.name.replace(/^\d+/, pad(position));
-  const sourcePath = path.join(sourceDir, item.name);
-  const destPath = path.join(destDir, newName);
-
-  fs.renameSync(sourcePath, destPath);
-
-  // Renumber source to close gap
-  const sourceRenames = renumberSequential(sourceDir, getItems);
-
-  console.log(`[movetomodule] Moved ${item.name} -> ${path.relative(process.cwd(), destPath)}`);
-  if (sourceRenames.length > 0) {
-    console.log('[movetomodule] Renumbered source:');
-    for (const r of sourceRenames) {
-      console.log(`  ${r.from} -> ${r.to}`);
-    }
-  }
+  moveEntry(sourceDir, item.name, destDir, position);
 }
 
 module.exports = moveToModule;

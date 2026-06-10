@@ -1,11 +1,72 @@
 const fs = require('fs');
 const path = require('path');
 const { prompt, createRL, COURSE_DIR } = require('./module-utils');
-const { getItems, printItems, selectModule, selectTargetDir } = require('./item-utils');
+const { getItems, printItems, selectModule, selectTargetDir, removeFromSyncState } = require('./item-utils');
 const { renumberSequential } = require('./renumber');
-const { loadSyncFile, saveSyncFile } = require('./sync-utils');
 
-async function deleteItem() {
+/**
+ * Core delete: removes the entry, cleans its sync-state record, and
+ * renumbers the remaining siblings.
+ */
+function deleteEntry(targetDir, entryName, folderName) {
+  const itemPath = path.join(targetDir, entryName);
+  const isDirectory = fs.statSync(itemPath).isDirectory();
+
+  // Capture the item's Canvas identity before deleting so the sync entry
+  // (keyed by identity) can be removed too.
+  const removed = removeFromSyncState(folderName, itemPath);
+
+  if (isDirectory) {
+    fs.rmSync(itemPath, { recursive: true });
+  } else {
+    fs.unlinkSync(itemPath);
+  }
+  console.log(`[delete-item] Deleted ${entryName}`);
+  if (removed) {
+    console.log(`[delete-item] Removed ${removed} from sync state.`);
+  }
+
+  // Renumber remaining items
+  const renames = renumberSequential(targetDir, getItems);
+  if (renames.length > 0) {
+    console.log('[delete-item] Renumbered remaining items:');
+    for (const r of renames) {
+      console.log(`  ${r.from} -> ${r.to}`);
+    }
+  }
+}
+
+/**
+ * Derive the module folder name from an absolute path inside course/.
+ */
+function moduleFolderOf(absPath) {
+  const rel = path.relative(COURSE_DIR, absPath);
+  if (rel.startsWith('..')) return null;
+  return rel.split(path.sep)[0];
+}
+
+async function deleteItem(options = {}) {
+  // Non-interactive mode (VS Code): --path provided; requires --yes since
+  // there is no prompt to confirm.
+  if (options.path) {
+    if (!options.yes) {
+      console.error('[delete-item] Error: --path requires --yes to confirm deletion.');
+      process.exit(1);
+    }
+    const itemPath = path.resolve(options.path);
+    if (!fs.existsSync(itemPath)) {
+      console.error(`[delete-item] Error: Not found: ${itemPath}`);
+      process.exit(1);
+    }
+    const folderName = moduleFolderOf(itemPath);
+    if (!folderName) {
+      console.error('[delete-item] Error: Path is not inside the course/ directory.');
+      process.exit(1);
+    }
+    deleteEntry(path.dirname(itemPath), path.basename(itemPath), folderName);
+    return;
+  }
+
   const rl = createRL();
 
   console.log('[delete-item] Delete an item from a module\n');
@@ -41,36 +102,7 @@ async function deleteItem() {
     return;
   }
 
-  const itemPath = path.join(targetDir, item.name);
-  if (item.isDirectory) {
-    fs.rmSync(itemPath, { recursive: true });
-  } else {
-    fs.unlinkSync(itemPath);
-  }
-  console.log(`[delete-item] Deleted ${item.name}`);
-
-  // Remove from sync state
-  const syncData = loadSyncFile({ allowNull: true });
-  if (syncData && syncData.modules && syncData.modules[folderName]) {
-    const syncModule = syncData.modules[folderName];
-    if (syncModule.items) {
-      const relativePath = path.relative(COURSE_DIR, path.join(targetDir, item.name));
-      if (syncModule.items[relativePath]) {
-        delete syncModule.items[relativePath];
-        saveSyncFile(syncData);
-        console.log(`[delete-item] Removed ${relativePath} from sync state.`);
-      }
-    }
-  }
-
-  // Renumber remaining items
-  const renames = renumberSequential(targetDir, getItems);
-  if (renames.length > 0) {
-    console.log('[delete-item] Renumbered remaining items:');
-    for (const r of renames) {
-      console.log(`  ${r.from} -> ${r.to}`);
-    }
-  }
+  deleteEntry(targetDir, item.name, folderName);
 }
 
 module.exports = deleteItem;

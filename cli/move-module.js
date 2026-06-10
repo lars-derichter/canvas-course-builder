@@ -7,38 +7,55 @@ const {
 } = require('./module-utils');
 const { reorder } = require('./renumber');
 
-async function moveModule() {
-  const rl = createRL();
-
-  console.log('[move-module] Move a course module to a new position\n');
-
-  const modules = getExistingModules();
-
-  if (modules.length < 2) {
-    rl.close();
-    console.log('[move-module] Need at least 2 modules to reorder.');
-    return;
-  }
-
-  printModules(modules);
-
+async function moveModule(options = {}) {
+  let modules;
   let sourceModule;
-  while (true) {
-    const sourceStr = await prompt(rl, 'Module to move (number)');
-    const prefix = parseInt(sourceStr, 10);
-    sourceModule = modules.find((m) => m.prefix === prefix);
-    if (sourceModule) break;
-    console.log(`  No module found with number ${sourceStr}. Please try again.`);
-  }
-
   let targetPosition;
-  while (true) {
-    const targetStr = await prompt(rl, 'New position');
-    targetPosition = parseInt(targetStr, 10);
-    if (!isNaN(targetPosition) && targetPosition >= 1 && targetPosition <= modules.length) break;
-    console.log(`  Position must be between 1 and ${modules.length}. Please try again.`);
+
+  if (options.module && options.position) {
+    // Non-interactive mode (VS Code)
+    modules = getExistingModules();
+    sourceModule = modules.find((m) => m.folderName === options.module);
+    if (!sourceModule) {
+      console.error(`[move-module] Error: Module not found: ${options.module}`);
+      process.exit(1);
+    }
+    targetPosition = parseInt(options.position, 10);
+    if (isNaN(targetPosition) || targetPosition < 1 || targetPosition > modules.length) {
+      console.error(`[move-module] Error: Position must be between 1 and ${modules.length}.`);
+      process.exit(1);
+    }
+  } else {
+    const rl = createRL();
+
+    console.log('[move-module] Move a course module to a new position\n');
+
+    modules = getExistingModules();
+
+    if (modules.length < 2) {
+      rl.close();
+      console.log('[move-module] Need at least 2 modules to reorder.');
+      return;
+    }
+
+    printModules(modules);
+
+    while (true) {
+      const sourceStr = await prompt(rl, 'Module to move (number)');
+      const prefix = parseInt(sourceStr, 10);
+      sourceModule = modules.find((m) => m.prefix === prefix);
+      if (sourceModule) break;
+      console.log(`  No module found with number ${sourceStr}. Please try again.`);
+    }
+
+    while (true) {
+      const targetStr = await prompt(rl, 'New position');
+      targetPosition = parseInt(targetStr, 10);
+      if (!isNaN(targetPosition) && targetPosition >= 1 && targetPosition <= modules.length) break;
+      console.log(`  Position must be between 1 and ${modules.length}. Please try again.`);
+    }
+    rl.close();
   }
-  rl.close();
 
   if (sourceModule.prefix === targetPosition) {
     console.log('[move-module] Module is already at that position.');

@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
-require('dotenv').config();
+const { PROJECT_ROOT } = require('./project-root');
+require('dotenv').config({ path: require('path').join(PROJECT_ROOT, '.env') });
 
 const { Command } = require('commander');
 const pkg = require('../package.json');
@@ -53,46 +54,72 @@ program
 program
   .command('new-module')
   .description('Create a new course module folder with _category_.json')
+  .option('-n, --name <name>', 'Module name (skips the interactive prompt)')
+  .option('-p, --position <number>', 'Position number (default: after the last module)')
   .action(require('./new-module'));
 
 program
   .command('move-module')
   .description('Move a course module to a different position')
+  .option('-m, --module <folder>', 'Module folder name (skips the interactive prompt)')
+  .option('-p, --position <number>', 'New position')
   .action(require('./move-module'));
 
 program
   .command('rename-module')
   .description('Rename a course module')
+  .option('-m, --module <folder>', 'Module folder name (skips the interactive prompt)')
+  .option('-n, --name <name>', 'New module name')
   .action(require('./rename-module'));
 
 program
   .command('delete-module')
   .description('Delete a course module and renumber remaining modules')
+  .option('-m, --module <folder>', 'Module folder name (skips the interactive prompt)')
+  .option('-y, --yes', 'Confirm deletion without prompting (required with --module)')
   .action(require('./delete-module'));
 
 program
   .command('new-item')
   .description('Create a new item (page, assignment, url, subsection, file) in a module')
+  .option('-m, --module <folder>', 'Module folder name (skips the interactive prompts)')
+  .option('-s, --subsection <folder>', 'Subsection folder name within the module')
+  .option('-t, --type <type>', 'Item type: page, assignment, url, subsection, file')
+  .option('-n, --name <name>', 'Item name')
+  .option('-p, --position <number>', 'Position (default: after the last item)')
+  .option('--url <url>', 'External URL (for type url)')
+  .option('--points <number>', 'Points possible (for type assignment)')
+  .option('--file <path>', 'Path to the file to add (for type file)')
   .action(require('./new-item'));
 
 program
   .command('move-item')
   .description('Move an item to a new position within its module')
+  .option('--path <path>', 'Path to the item (skips the interactive prompts)')
+  .option('-p, --position <number>', 'New position')
   .action(require('./move-item'));
 
 program
   .command('movetomodule-item')
   .description('Move an item to a different module')
+  .option('--path <path>', 'Path to the item (skips the interactive prompts)')
+  .option('--to-module <folder>', 'Destination module folder name')
+  .option('--to-subsection <folder>', 'Destination subsection folder name')
+  .option('-p, --position <number>', 'Position in the destination (default: last)')
   .action(require('./movetomodule-item'));
 
 program
   .command('rename-item')
   .description('Rename an item in a module')
+  .option('--path <path>', 'Path to the item (skips the interactive prompts)')
+  .option('-n, --name <name>', 'New item name')
   .action(require('./rename-item'));
 
 program
   .command('delete-item')
   .description('Delete an item from a module and renumber remaining items')
+  .option('--path <path>', 'Path to the item (skips the interactive prompts)')
+  .option('-y, --yes', 'Confirm deletion without prompting (required with --path)')
   .action(require('./delete-item'));
 
 program

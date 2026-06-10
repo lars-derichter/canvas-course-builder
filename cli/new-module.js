@@ -29,34 +29,10 @@ function renumberModulesUp(modules, fromPosition) {
   return renamed;
 }
 
-async function newModule() {
-  const rl = createRL();
-
-  console.log('[new-module] Create a new course module\n');
-
-  const modules = getExistingModules();
-  printModules(modules);
-
-  let name;
-  while (true) {
-    name = await prompt(rl, 'Module name');
-    if (name) break;
-    console.log('  Module name is required. Please try again.');
-  }
-
-  const nextAvailable = modules.length > 0
-    ? modules[modules.length - 1].prefix + 1
-    : 1;
-
-  let position;
-  while (true) {
-    const positionStr = await prompt(rl, 'Position number', pad(nextAvailable));
-    position = parseInt(positionStr, 10);
-    if (!isNaN(position) && position >= 1 && position <= 99) break;
-    console.log('  Position must be a number between 1 and 99. Please try again.');
-  }
-  rl.close();
-
+/**
+ * Core creation shared by interactive and flag-driven paths.
+ */
+function createModuleFolder(modules, name, position) {
   // Renumber if there's a conflict
   const conflicting = modules.some((m) => m.prefix >= position);
   let renamed = [];
@@ -89,6 +65,50 @@ async function newModule() {
       console.log(`  ${r.from} -> ${r.to}`);
     }
   }
+}
+
+async function newModule(options = {}) {
+  // Non-interactive mode (VS Code): --name provided
+  if (options.name) {
+    const modules = getExistingModules();
+    const nextAvailable = modules.length > 0 ? modules[modules.length - 1].prefix + 1 : 1;
+    const position = options.position ? parseInt(options.position, 10) : nextAvailable;
+    if (isNaN(position) || position < 1 || position > 99) {
+      console.error('[new-module] Error: Position must be a number between 1 and 99.');
+      process.exit(1);
+    }
+    createModuleFolder(modules, options.name, position);
+    return;
+  }
+
+  const rl = createRL();
+
+  console.log('[new-module] Create a new course module\n');
+
+  const modules = getExistingModules();
+  printModules(modules);
+
+  let name;
+  while (true) {
+    name = await prompt(rl, 'Module name');
+    if (name) break;
+    console.log('  Module name is required. Please try again.');
+  }
+
+  const nextAvailable = modules.length > 0
+    ? modules[modules.length - 1].prefix + 1
+    : 1;
+
+  let position;
+  while (true) {
+    const positionStr = await prompt(rl, 'Position number', pad(nextAvailable));
+    position = parseInt(positionStr, 10);
+    if (!isNaN(position) && position >= 1 && position <= 99) break;
+    console.log('  Position must be a number between 1 and 99. Please try again.');
+  }
+  rl.close();
+
+  createModuleFolder(modules, name, position);
 }
 
 module.exports = newModule;

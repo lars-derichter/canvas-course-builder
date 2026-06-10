@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
-const { prompt, pad, toSlug, createRL } = require('./module-utils');
+const matter = require('gray-matter');
+const { prompt, pad, toSlug, createRL, COURSE_DIR } = require('./module-utils');
 const { getItems, printItems, selectModule, selectTargetDir } = require('./item-utils');
 const { renumberUp } = require('./renumber');
 
@@ -11,7 +12,127 @@ function getNextPosition(items) {
   return items[items.length - 1].prefix + 1;
 }
 
-async function newItem() {
+/**
+ * Prompt for a position until the input is a number between 1 and 99.
+ */
+async function promptPosition(rl, items) {
+  while (true) {
+    const positionStr = await prompt(rl, 'Position', pad(getNextPosition(items)));
+    const position = parseInt(positionStr, 10);
+    if (!isNaN(position) && position >= 1 && position <= 99) return position;
+    console.log('  Position must be a number between 1 and 99. Please try again.');
+  }
+}
+
+/**
+ * Create the item on disk. Shared by the interactive and flag-driven paths.
+ * Returns the created entry name.
+ */
+function createEntry(targetDir, type, { name, position, url, points, filePath }) {
+  const items = getItems(targetDir);
+  if (items.some((i) => i.prefix >= position)) {
+    renumberUp(targetDir, items, position);
+  }
+
+  if (type === 'file') {
+    const originalName = path.basename(filePath);
+    const createdName = `${pad(position)}-${originalName}`;
+    fs.copyFileSync(filePath, path.join(targetDir, createdName));
+    return createdName;
+  }
+
+  if (type === 'subsection') {
+    const createdName = `${pad(position)}-${toSlug(name)}`;
+    const subPath = path.join(targetDir, createdName);
+    fs.mkdirSync(subPath, { recursive: true });
+    fs.writeFileSync(
+      path.join(subPath, '_category_.json'),
+      JSON.stringify({ label: name, position }, null, 2) + '\n',
+      'utf8'
+    );
+    return createdName;
+  }
+
+  const frontmatterData = { title: name };
+  if (type === 'assignment') {
+    frontmatterData.canvas_type = 'assignment';
+    frontmatterData.points_possible = points != null ? points : 100;
+    frontmatterData.submission_types = ['online_upload'];
+  } else if (type === 'url') {
+    frontmatterData.canvas_type = 'external_url';
+    frontmatterData.external_url = url;
+  } else {
+    frontmatterData.canvas_type = 'page';
+  }
+
+  const createdName = `${pad(position)}-${toSlug(name)}.md`;
+  // matter.stringify produces valid YAML for titles with colons, quotes, ...
+  const content = matter.stringify(`\n# ${name}\n`, frontmatterData);
+  fs.writeFileSync(path.join(targetDir, createdName), content, 'utf8');
+  return createdName;
+}
+
+async function newItem(options = {}) {
+  // Non-interactive mode (VS Code): --module, --type, and --name/--file provided
+  if (options.module && options.type) {
+    const type = options.type.toLowerCase();
+    if (!VALID_TYPES.includes(type)) {
+      console.error(`[new-item] Error: Invalid type "${type}". Must be one of: ${VALID_TYPES.join(', ')}.`);
+      process.exit(1);
+    }
+    let targetDir = path.join(COURSE_DIR, options.module);
+    if (!fs.existsSync(targetDir) || !fs.statSync(targetDir).isDirectory()) {
+      console.error(`[new-item] Error: Module not found: ${options.module}`);
+      process.exit(1);
+    }
+    if (options.subsection) {
+      if (type === 'subsection') {
+        console.error('[new-item] Error: Subsections can only be created at module root level.');
+        process.exit(1);
+      }
+      targetDir = path.join(targetDir, options.subsection);
+      if (!fs.existsSync(targetDir) || !fs.statSync(targetDir).isDirectory()) {
+        console.error(`[new-item] Error: Subsection not found: ${options.subsection}`);
+        process.exit(1);
+      }
+    }
+
+    let filePath = null;
+    if (type === 'file') {
+      if (!options.file || !fs.existsSync(options.file)) {
+        console.error('[new-item] Error: --file must point to an existing file.');
+        process.exit(1);
+      }
+      filePath = path.resolve(options.file);
+    } else if (!options.name) {
+      console.error('[new-item] Error: --name is required.');
+      process.exit(1);
+    }
+    if (type === 'url') {
+      try { new URL(options.url); } catch (_) {
+        console.error('[new-item] Error: --url must be a valid URL.');
+        process.exit(1);
+      }
+    }
+
+    const items = getItems(targetDir);
+    const position = options.position ? parseInt(options.position, 10) : getNextPosition(items);
+    if (isNaN(position) || position < 1 || position > 99) {
+      console.error('[new-item] Error: Position must be a number between 1 and 99.');
+      process.exit(1);
+    }
+
+    const createdName = createEntry(targetDir, type, {
+      name: options.name,
+      position,
+      url: options.url,
+      points: options.points != null ? parseInt(options.points, 10) : undefined,
+      filePath,
+    });
+    console.log(`\n[new-item] Created ${createdName} in ${path.relative(process.cwd(), targetDir)}/`);
+    return;
+  }
+
   const rl = createRL();
 
   console.log('[new-item] Create a new item in a module\n');
@@ -36,69 +157,28 @@ async function newItem() {
     break;
   }
 
-  let createdName;
+  let name = null;
+  let url = null;
+  let points = null;
+  let filePath = null;
 
   if (type === 'file') {
-    let filePath;
     while (true) {
       filePath = await prompt(rl, 'Path to file');
       if (filePath && fs.existsSync(filePath)) break;
       console.log('  File not found. Please try again.');
     }
-
-    const positionStr = await prompt(rl, 'Position', pad(getNextPosition(items)));
-    rl.close();
-    const position = parseInt(positionStr, 10);
-
-    // Renumber if conflict
-    if (items.some((i) => i.prefix >= position)) {
-      renumberUp(targetDir, items, position);
-    }
-
-    const originalName = path.basename(filePath);
-    createdName = `${pad(position)}-${originalName}`;
-    fs.copyFileSync(filePath, path.join(targetDir, createdName));
-  } else if (type === 'subsection') {
-    let name;
-    while (true) {
-      name = await prompt(rl, 'Subsection name');
-      if (name) break;
-      console.log('  Name is required. Please try again.');
-    }
-
-    const positionStr = await prompt(rl, 'Position', pad(getNextPosition(items)));
-    rl.close();
-    const position = parseInt(positionStr, 10);
-
-    if (items.some((i) => i.prefix >= position)) {
-      renumberUp(targetDir, items, position);
-    }
-
-    const slug = toSlug(name);
-    createdName = `${pad(position)}-${slug}`;
-    const subPath = path.join(targetDir, createdName);
-    fs.mkdirSync(subPath, { recursive: true });
-    fs.writeFileSync(
-      path.join(subPath, '_category_.json'),
-      JSON.stringify({ label: name, position }, null, 2) + '\n',
-      'utf8'
-    );
   } else {
-    // page, assignment, url
-    let name;
     while (true) {
-      name = await prompt(rl, 'Item name');
+      name = await prompt(rl, type === 'subsection' ? 'Subsection name' : 'Item name');
       if (name) break;
       console.log('  Name is required. Please try again.');
     }
-
-    let extraFrontmatter = '';
 
     if (type === 'assignment') {
-      const points = await prompt(rl, 'Points possible', '100');
-      extraFrontmatter = `points_possible: ${points}\nsubmission_types:\n  - online_upload\n`;
+      const pointsStr = await prompt(rl, 'Points possible', '100');
+      points = parseInt(pointsStr, 10) || 100;
     } else if (type === 'url') {
-      let url;
       while (true) {
         url = await prompt(rl, 'URL');
         if (!url) { console.log('  URL is required. Please try again.'); continue; }
@@ -106,34 +186,13 @@ async function newItem() {
           console.log(`  "${url}" is not a valid URL. Please try again.`);
         }
       }
-      extraFrontmatter = `external_url: ${url}\n`;
     }
-
-    const positionStr = await prompt(rl, 'Position', pad(getNextPosition(items)));
-    rl.close();
-    const position = parseInt(positionStr, 10);
-
-    if (items.some((i) => i.prefix >= position)) {
-      renumberUp(targetDir, items, position);
-    }
-
-    const canvasType = type === 'url' ? 'external_url' : type;
-    const slug = toSlug(name);
-    createdName = `${pad(position)}-${slug}.md`;
-
-    const content = [
-      '---',
-      `title: ${name}`,
-      `canvas_type: ${canvasType}`,
-      extraFrontmatter ? extraFrontmatter.trimEnd() : null,
-      '---',
-      '',
-      `# ${name}`,
-      '',
-    ].filter((line) => line !== null).join('\n');
-
-    fs.writeFileSync(path.join(targetDir, createdName), content, 'utf8');
   }
+
+  const position = await promptPosition(rl, items);
+  rl.close();
+
+  const createdName = createEntry(targetDir, type, { name, position, url, points, filePath });
 
   console.log(`\n[new-item] Created ${createdName} in ${path.relative(process.cwd(), targetDir)}/`);
 }
