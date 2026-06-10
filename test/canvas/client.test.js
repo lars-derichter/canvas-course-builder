@@ -194,12 +194,28 @@ describe('canvasRequest', () => {
       await assert.rejects(
         () => canvasRequest('GET', '/api/v1/courses/42'),
         (err) => {
-          assert.match(err.message, /failed after 4 attempts/);
+          assert.match(err.message, /failed after 4 attempt/);
           assert.match(err.message, /ECONNRESET/);
           return true;
         }
       );
       assert.equal(fetchMock.mock.calls.length, 4);
+    });
+
+    it('does not retry POST on network error (not idempotent)', async () => {
+      fetchMock = mock.method(global, 'fetch', async () => {
+        throw new Error('ECONNRESET');
+      });
+
+      await assert.rejects(
+        () => canvasRequest('POST', '/api/v1/courses/42/pages', { wiki_page: {} }),
+        (err) => {
+          assert.match(err.message, /failed after 1 attempt/);
+          assert.match(err.message, /ECONNRESET/);
+          return true;
+        }
+      );
+      assert.equal(fetchMock.mock.calls.length, 1);
     });
   });
 
