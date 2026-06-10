@@ -3,9 +3,8 @@ const path = require('path');
 
 const { scanCourse } = require('../lib/convert/course-scanner');
 const { parseFrontmatter } = require('../lib/convert/frontmatter');
-const { extractFileReferences } = require('../lib/convert/link-resolver');
-
-const COURSE_DIR = path.resolve(process.cwd(), 'course');
+const { extractFileReferences, maskCodeRegions } = require('../lib/convert/link-resolver');
+const { COURSE_DIR } = require('./module-utils');
 
 const VALID_CANVAS_TYPES = new Set(['page', 'assignment', 'external_url']);
 
@@ -107,10 +106,12 @@ async function validate() {
         }
       }
 
-      // Check internal links
+      // Check internal links. Mask code blocks and inline code first so
+      // example links in documentation snippets don't count as broken.
+      const scannable = maskCodeRegions(raw);
       const linkRegex = /\[([^\]]*)\]\(([^)]+)\)/g;
       let match;
-      while ((match = linkRegex.exec(raw)) !== null) {
+      while ((match = linkRegex.exec(scannable)) !== null) {
         const href = match[2].split(/\s+/)[0]; // Strip title
         if (href.startsWith('http://') || href.startsWith('https://') || href.startsWith('#') || href.startsWith('//')) {
           continue;

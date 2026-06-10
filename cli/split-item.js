@@ -96,6 +96,10 @@ async function splitItem(options) {
     }
 
     const rawLine = parseInt(opts.line, 10);
+    if (isNaN(rawLine)) {
+      console.error('[split-item] Error: --line must be a number.');
+      process.exit(1);
+    }
     const raw = fs.readFileSync(filePath, 'utf8');
     const fmLines = _frontmatterLineCount(raw);
 
@@ -104,7 +108,16 @@ async function splitItem(options) {
       process.exit(1);
     }
 
-    const bodyLine = rawLine - fmLines;
+    // _splitFile drops the blank line gray-matter leaves at the start of the
+    // body, so when the raw file has one right after the frontmatter the
+    // body-line numbering starts one line later.
+    const lines = raw.split('\n');
+    const blankAfterFm = fmLines > 0 && lines[fmLines] === '' ? 1 : 0;
+    const bodyLine = rawLine - fmLines - blankAfterFm;
+    if (bodyLine < 1) {
+      console.error('[split-item] Error: Split line falls before the body content.');
+      process.exit(1);
+    }
     const targetDir = path.dirname(filePath);
 
     // Determine title
