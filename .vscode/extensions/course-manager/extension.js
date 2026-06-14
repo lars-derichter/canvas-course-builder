@@ -408,9 +408,13 @@ function activate(context) {
 
     const args = ['movetomodule-item', '--path', itemPath, '--to-module', destModule];
 
+    // A subsection can't be nested inside another subsection — move it to the
+    // module root and skip the sub-section prompt.
+    const isSubsection = fs.existsSync(itemPath) && fs.statSync(itemPath).isDirectory();
+
     // Offer subsections of the destination module, when there are any
     const destDir = path.join(workspaceRoot, 'course', destModule);
-    const subsections = listEntries(destDir).filter((e) => e.isDirectory);
+    const subsections = isSubsection ? [] : listEntries(destDir).filter((e) => e.isDirectory);
     if (subsections.length > 0) {
       const sub = await vscode.window.showQuickPick(
         [{ label: '(module root)', name: null }].concat(subsections.map((s) => ({ label: s.name, name: s.name }))),

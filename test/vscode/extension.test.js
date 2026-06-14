@@ -142,6 +142,31 @@ describe('VS Code extension: context-aware commands', () => {
   });
 });
 
+describe('VS Code extension: subsection move support', () => {
+  const itemContextMenus = packageJson.contributes.menus['view/item/context'];
+
+  function whenFor(commandId) {
+    const entry = itemContextMenus.find((m) => m.command === commandId);
+    assert.ok(entry, `${commandId} should have a view/item/context menu entry`);
+    return entry.when;
+  }
+
+  it('offers Move Item on subsections', () => {
+    assert.match(whenFor('course.moveItem'), /subheader/);
+  });
+
+  it('offers Move Item to Module on subsections', () => {
+    assert.match(whenFor('course.moveItemToModule'), /subheader/);
+  });
+
+  it('skips the sub-section prompt when the moved item is itself a subsection', () => {
+    // The moveItemToModule handler must not offer destination subsections for a
+    // directory source — subsections cannot be nested.
+    assert.match(extensionSource, /isSubsection\s*=[^\n]*statSync\([^)]*\)\.isDirectory\(\)/);
+    assert.match(extensionSource, /isSubsection\s*\?\s*\[\]\s*:/);
+  });
+});
+
 describe('VS Code extension: drag and drop', () => {
   const providerSource = fs.readFileSync(path.join(extDir, 'CourseTreeProvider.js'), 'utf-8');
 
@@ -162,6 +187,19 @@ describe('VS Code extension: drag and drop', () => {
     const dropSection = providerSource.slice(providerSource.indexOf('handleDrop'));
     assert.ok(!dropSection.includes('renameSync'), 'drag-and-drop must not bypass the CLI with fs.renameSync');
     assert.ok(!dropSection.includes('copyFileSync'), 'drag-and-drop must not bypass the CLI with fs.copyFileSync');
+  });
+
+  it('routes subsection drags to a dedicated handler', () => {
+    assert.match(providerSource, /contextValue === 'subheader'/);
+    assert.match(providerSource, /_handleSubsectionDrop\(/);
+    assert.match(providerSource, /async _handleSubsectionDrop\(/);
+  });
+
+  it('never nests a subsection inside another subsection during a drop', () => {
+    const start = providerSource.indexOf('async _handleSubsectionDrop(');
+    const subsectionHandler = providerSource.slice(start, providerSource.indexOf('async _handleExternalFileDrop(', start));
+    assert.ok(start !== -1, '_handleSubsectionDrop should exist');
+    assert.ok(!subsectionHandler.includes('--to-subsection'), 'moving a subsection must not pass --to-subsection');
   });
 });
 

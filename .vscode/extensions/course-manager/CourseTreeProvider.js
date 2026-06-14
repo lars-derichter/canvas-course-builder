@@ -301,7 +301,10 @@ class CourseTreeProvider {
     if (dragged.contextValue === 'module') {
       if (target && target.contextValue !== 'module') return;
       await this._handleModuleDrop(dragged, target, runCli);
-    } else if (dragged.contextValue !== 'subheader') {
+    } else if (dragged.contextValue === 'subheader') {
+      if (!target) return;
+      await this._handleSubsectionDrop(dragged, target, runCli);
+    } else {
       if (!target) return;
       await this._handleItemDrop(dragged, target, runCli);
     }
@@ -346,6 +349,39 @@ class CourseTreeProvider {
         args.push('--to-subsection', target._subfolderName);
       }
       await runCli(args);
+    }
+  }
+
+  async _handleSubsectionDrop(dragged, target, runCli) {
+    // A subsection moves between module roots only — it can never be nested
+    // inside another subsection.
+    const sourcePath = dragged.folderPath;
+    if (!sourcePath) return;
+    const sourceModule = dragged.moduleFolderName;
+
+    // Dropping onto a module — move to that module's root (append).
+    if (target.contextValue === 'module') {
+      if (target.moduleFolderName === sourceModule) return; // already there
+      await runCli(['movetomodule-item', '--path', sourcePath, '--to-module', target.moduleFolderName]);
+      return;
+    }
+
+    // Dropping onto an item that lives inside a subsection — no valid module-root
+    // position, so ignore rather than move it somewhere surprising.
+    if (target.contextValue !== 'subheader' && target._subfolderName) {
+      vscode.window.showInformationMessage('Canvas Local: Drop a subsection onto a module or a top-level item.');
+      return;
+    }
+
+    // Dropping onto a sibling subsection or a top-level item — move to that
+    // target's position within its module root.
+    const targetModule = target.moduleFolderName;
+    const targetPosition = target._position;
+    if (targetModule === sourceModule) {
+      if (dragged.position === targetPosition) return;
+      await runCli(['move-item', '--path', sourcePath, '--position', String(targetPosition)]);
+    } else {
+      await runCli(['movetomodule-item', '--path', sourcePath, '--to-module', targetModule, '--position', String(targetPosition)]);
     }
   }
 
