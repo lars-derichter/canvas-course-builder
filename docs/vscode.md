@@ -53,7 +53,8 @@ background (no terminal pops up):
 - **Rename / Move** — rename or reorder items and modules (rename pre-fills the
   current title)
 - **Move Item to Module** — move an item to a different module (or one of its
-  subsections)
+  subsections). Subsections themselves can also be moved, but always to a module
+  root — they cannot be nested inside another subsection.
 - **Delete** — delete an item or module, after a modal confirmation
 - **Merge: Set as Source / Merge with Source** — two-step merge: right-click the
   source item first, then right-click the target item to merge them
@@ -73,6 +74,10 @@ Drag tree items to reorder them:
 - **Items** — drag an item within the same module to reorder, or drag it onto a
   different module or subheader to move it there. Both source and target
   directories are renumbered automatically.
+- **Subsections** — drag a subheader onto another module to move it there, or
+  onto a sibling subheader / top-level item to reorder it within the module root.
+  Subsections are never nested, so dropping one onto an item that lives inside a
+  subsection is ignored.
 - **External files** — drag files from Finder or Explorer onto a module,
   subheader, or item to add them as file items at that location.
 
