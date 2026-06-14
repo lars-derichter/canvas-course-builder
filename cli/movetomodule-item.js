@@ -2,7 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { prompt, pad, createRL, getExistingModules, printModules, COURSE_DIR } = require('./module-utils');
 const { getItems, printItems, selectModule, selectTargetDir } = require('./item-utils');
-const { renumberSequential, renumberUp } = require('./renumber');
+const { renumberSequential, renumberUp, updateCategoryPosition } = require('./renumber');
 
 /**
  * Core move: shift destination items to make room, move the file, renumber
@@ -26,6 +26,12 @@ function moveEntry(sourceDir, entryName, destDir, position) {
   }
 
   fs.renameSync(sourcePath, destPath);
+
+  // A moved subsection keeps its own _category_.json; align its position to
+  // the new prefix (renumberUp/renumberSequential only fix the other entries).
+  if (fs.statSync(destPath).isDirectory()) {
+    updateCategoryPosition(destDir, newName, position);
+  }
 
   // Renumber source to close gap
   const sourceRenames = renumberSequential(sourceDir, getItems);
@@ -131,3 +137,4 @@ async function moveToModule(options = {}) {
 }
 
 module.exports = moveToModule;
+module.exports._moveEntry = moveEntry;

@@ -129,6 +129,7 @@ function reorder(dirPath, entries, sourcePrefix, targetPosition) {
 }
 
 module.exports = {
+  updateCategoryPosition,
   renumberSequential,
   renumberUp,
   reorder,

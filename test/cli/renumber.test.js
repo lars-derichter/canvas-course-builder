@@ -4,7 +4,24 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 
-const { renumberUp, renumberSequential, reorder } = require('../../cli/renumber');
+const { renumberUp, renumberSequential, reorder, updateCategoryPosition } = require('../../cli/renumber');
+
+/**
+ * Create a subsection directory holding a _category_.json with the given position.
+ */
+function createSubsectionDir(parent, name, position) {
+  const dir = path.join(parent, name);
+  fs.mkdirSync(dir);
+  fs.writeFileSync(
+    path.join(dir, '_category_.json'),
+    JSON.stringify({ label: name, position }, null, 2) + '\n',
+    'utf8'
+  );
+}
+
+function readCategoryPosition(dir, name) {
+  return JSON.parse(fs.readFileSync(path.join(dir, name, '_category_.json'), 'utf8')).position;
+}
 
 /**
  * Create numbered entries (files or directories) in the given directory.
@@ -200,5 +217,54 @@ describe('reorder', () => {
     const files = listEntries(tmpDir);
     assert.deepStrictEqual(files, ['01-intro.md', '02-setup.md', '03-usage.md']);
     assert.equal(renames.length, 0);
+  });
+
+  it('updates _category_.json positions when reordering subsection directories', () => {
+    createSubsectionDir(tmpDir, '01-alpha', 1);
+    createSubsectionDir(tmpDir, '02-beta', 2);
+    createSubsectionDir(tmpDir, '03-gamma', 3);
+
+    const items = [
+      { prefix: 1, name: '01-alpha', isDirectory: true },
+      { prefix: 2, name: '02-beta', isDirectory: true },
+      { prefix: 3, name: '03-gamma', isDirectory: true },
+    ];
+
+    // Move the last subsection to the front.
+    reorder(tmpDir, items, 3, 1);
+
+    assert.deepStrictEqual(listEntries(tmpDir), ['01-gamma', '02-alpha', '03-beta']);
+    assert.equal(readCategoryPosition(tmpDir, '01-gamma'), 1);
+    assert.equal(readCategoryPosition(tmpDir, '02-alpha'), 2);
+    assert.equal(readCategoryPosition(tmpDir, '03-beta'), 3);
+  });
+});
+
+describe('updateCategoryPosition', () => {
+  let tmpDir;
+
+  beforeEach(() => {
+    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'update-category-'));
+  });
+
+  afterEach(() => {
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
+
+  it('writes the new position into an existing _category_.json', () => {
+    createSubsectionDir(tmpDir, '02-week', 2);
+
+    updateCategoryPosition(tmpDir, '02-week', 5);
+
+    assert.equal(readCategoryPosition(tmpDir, '02-week'), 5);
+  });
+
+  it('is a no-op when the directory has no _category_.json', () => {
+    fs.mkdirSync(path.join(tmpDir, '02-bare'));
+
+    // Should not throw, and should not create a category file.
+    updateCategoryPosition(tmpDir, '02-bare', 5);
+
+    assert.ok(!fs.existsSync(path.join(tmpDir, '02-bare', '_category_.json')));
   });
 });
