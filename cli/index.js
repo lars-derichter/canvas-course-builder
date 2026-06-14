@@ -157,4 +157,10 @@ program
   .description('Delete all modules, pages, assignments, and files from the Canvas course')
   .action(require('./reset-canvas'));
 
-program.parse();
+// Parse argv explicitly rather than letting commander auto-detect the runtime.
+// When the VS Code extension runs this via process.execPath (VS Code's Electron
+// binary with an inherited ELECTRON_RUN_AS_NODE=1), commander's electron
+// detection slices argv by only one element, leaving the script path as the
+// first command and producing "unknown command '.../cli/index.js'". Slicing off
+// node + script ourselves and parsing the rest as user args avoids that.
+program.parse(process.argv.slice(2), { from: 'user' });
