@@ -213,6 +213,18 @@ during rendering and replaces the document body with a styled file card showing
 a download link. This way file items appear in the Docusaurus sidebar at the
 correct position, matching the Canvas module structure.
 
+**Inline `.html` links** — Docusaurus's built-in `transformLinks` remark plugin
+deliberately skips relative links ending in `.md`, `.mdx`, or `.html`, assuming
+they are page references rather than assets. For `.md`/`.mdx` that is correct,
+but it leaves inline `.html` links (e.g. `[starter](_files/starter.html)` on a
+normal page) broken. The `remark-download-links` plugin
+(`src/plugins/remark-download-links.js`) runs before the default plugins and
+rewrites such links — relative, to an existing local `.html`/`.htm` file — into
+an `<a download="…" href={require(...)}>` anchor. Webpack then bundles the file
+and the browser saves it under its original name. External, absolute, `@site/`,
+anchor-only (`.html#…`), and non-existent targets are left untouched, as is the
+Canvas sync path (the source markdown keeps its plain relative link).
+
 ## Error Recovery
 
 - **Retry**: API calls retry 3 times on 429 (rate limit) and 5xx with

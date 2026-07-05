@@ -56,6 +56,25 @@ These references work across all three layers:
 - **Pull from Canvas** — Canvas file URLs are downloaded to `_files/` and
   converted back to relative paths.
 
+### Linking to `.html` files
+
+Inline links to `.html` files are a special case. Docusaurus treats `.html`
+(like `.md`) as a page reference rather than a downloadable asset, so a plain
+link such as `[example](_files/example.html)` would otherwise break in the
+preview. The `remark-download-links` plugin fixes this: any relative link to an
+existing local `.html` file is turned into a forced download that saves under
+the file's original name.
+
+```md
+Download the starter: [starter.html](_files/starter.html)
+```
+
+You write a normal relative link — no special syntax — and it works in the
+Docusaurus preview (download) and on Canvas (uploaded file) alike. Only `.html`
+and `.htm` are affected; `.md`/`.mdx` stay page links, and other file types
+(`.pdf`, `.zip`, `.docx`, images) already worked. A link with an anchor
+(`_files/example.html#top`) is left as navigation, not a download.
+
 ## Underscore Prefix Convention
 
 Files and folders whose names start with `_` (underscore) are treated as
