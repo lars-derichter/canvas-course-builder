@@ -54,7 +54,7 @@ Alerts use the blockquote alert syntax:
 
 - Use alerts sparingly. Too many callout boxes make content harder to scan.
 - Pick the type that matches the intent, not the color you prefer.
-- Keep the text inside concise. If it needs multiple paragraphs, consider making
-  it regular content instead.
+- Keep the text inside concise. If it needs multiple paragraphs, consider
+  making it regular content instead.
 - Alerts are converted to styled HTML when pushed to Canvas, with icons hosted
   on your Canvas instance.

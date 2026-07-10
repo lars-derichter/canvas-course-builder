@@ -12,7 +12,7 @@ writing right away.
 
 ## Text Formatting
 
-You can make text **bold**, _italic_, or **_both_**. Use strikethrough for
+You can make text **bold**, _italic_, or **_both_**. Use ~~strikethrough~~ for
 deleted text and `inline code` for code references.
 
 ## Headings
@@ -32,9 +32,9 @@ Unordered lists use dashes:
 
 Ordered lists use numbers:
 
-1.  First step
-2.  Second step
-3.  Third step
+1. First step
+2. Second step
+3. Third step
 
 ## Links
 
@@ -55,9 +55,9 @@ converted to Canvas internal URLs.
 
 Try them here:
 
-- [Alerts](https://thomasmore.instructure.com/courses/45083/pages/alerts-11)
-- [Folder Layout](https://thomasmore.instructure.com/courses/45083/pages/folder-layout-24)
-- [Available Types](https://thomasmore.instructure.com/courses/45083/pages/alerts-11#available-types)
+- [Alerts](03-alerts.md)
+- [Folder Layout](04-course-structure/01-folder-layout.md)
+- [Available Types](03-alerts.md#available-types)
 
 ## Images
 
@@ -117,35 +117,12 @@ def greet(name):
 
 Tables use pipes and dashes:
 
-Feature
-
-Syntax
-
-Example
-
-Bold
-
-`**text**`
-
-**bold text**
-
-Italic
-
-`*text*`
-
-_italic text_
-
-Code
-
-`` `code` ``
-
-`code`
-
-Link
-
-`[text](url)`
-
-[a link](#)
+| Feature | Syntax        | Example       |
+| ------- | ------------- | ------------- |
+| Bold    | `**text**`    | **bold text** |
+| Italic  | `*text*`      | _italic text_ |
+| Code    | `` `code` ``  | `code`        |
+| Link    | `[text](url)` | [a link](#)   |
 
 ## Blockquotes
 
