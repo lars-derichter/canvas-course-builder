@@ -88,10 +88,13 @@ Like images, linked files are uploaded to Canvas during push and the link is
 rewritten to the Canvas file URL. Try it: [example
 document](./_files/example-document.docx).
 
-One special case: links to `.html` files become forced downloads instead of
-opening in the browser, both in the local preview and on Canvas. Try it with
-this [starter file](./_files/download-me.html). That is why internal links to
-course pages must always use the `.md` path, never `.html`.
+One special case: in the local preview, a link to an `.html` file opens that
+file in a new browser tab. Try it with this
+[starter file](./_files/download-me.html). To force a download instead, set
+`download: true` in the frontmatter of the page; the flag applies to every
+`.html` link on that page. On Canvas the link simply points to the uploaded
+file. Internal links to course pages must always use the `.md` path, never
+`.html`.
 
 > [!NOTE]
 >
