@@ -50,6 +50,48 @@ describe('htmlToMarkdown', () => {
   });
 });
 
+describe('htmlToMarkdown tables', () => {
+  it('converts a table with a header row to a GFM pipe table', () => {
+    const html = '<table><thead><tr><th>Name</th><th>Score</th></tr></thead>'
+      + '<tbody><tr><td>Alice</td><td>10</td></tr></tbody></table>';
+    const md = htmlToMarkdown(html);
+    assert.match(md, /\| Name \| Score \|/);
+    assert.match(md, /\| ---/, 'Expected header separator row');
+    assert.match(md, /\| Alice \| 10\s+\|/);
+  });
+
+  it('converts a headerless table (Canvas RCE style)', () => {
+    const html = '<table style="border-collapse: collapse;"><tbody>'
+      + '<tr><td><p>a</p></td><td><p>b</p></td></tr>'
+      + '<tr><td>1</td><td>2</td></tr></tbody></table>';
+    const md = htmlToMarkdown(html);
+    assert.match(md, /\| a\s+\| b\s+\|/);
+    assert.match(md, /\| ---/, 'Expected header separator row');
+    assert.match(md, /\| 1\s+\| 2\s+\|/);
+  });
+
+  it('round-trips a pipe table through push and pull conversion', () => {
+    const { markdownToHtml } = require('../../lib/convert/markdown-to-html');
+    const source = '| Name | Score |\n| --- | --- |\n| Alice | 10 |\n| Bob | 7 |';
+    const md = htmlToMarkdown(markdownToHtml(source));
+    assert.match(md, /\| Name \| Score \|/);
+    assert.match(md, /\| ---/, 'Expected header separator row');
+    assert.match(md, /\| Alice \| 10\s+\|/);
+    assert.match(md, /\| Bob\s+\| 7\s+\|/);
+  });
+
+  it('resolves Canvas links inside table cells', () => {
+    const html = '<table><thead><tr><th>Link</th></tr></thead><tbody><tr>'
+      + '<td><a href="/courses/42/pages/welcome">Welcome</a></td>'
+      + '</tr></tbody></table>';
+    const md = htmlToMarkdown(html, {
+      linkResolver: (href) => href === '/courses/42/pages/welcome' ? './01-welcome.md' : null,
+    });
+    assert.match(md, /\[Welcome\]\(.\/01-welcome\.md\)/);
+    assert.match(md, /\| Link \|/);
+  });
+});
+
 describe('htmlToMarkdown alerts', () => {
   const alertHtml = (type, title, body) =>
     `<div class="markdown-alert markdown-alert-${type}" style="border-left: .25em solid #ccc; padding-left: 1em;">

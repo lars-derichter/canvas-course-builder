@@ -32,6 +32,7 @@
   "dependencies": {
     "@docusaurus/core": "^3.7.0",
     "@docusaurus/preset-classic": "^3.7.0",
+    "@joplin/turndown-plugin-gfm": "^1.0.67",
     "@mdx-js/react": "^3.0.0",
     "clsx": "^2.1.0",
     "commander": "^12.1.0",
