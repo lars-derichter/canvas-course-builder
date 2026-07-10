@@ -6,42 +6,43 @@ canvas_type: page
 # VS Code
 
 Visual Studio Code (VS Code) is a free code editor that works beautifully with
-this project. You do not need it — any text editor and a terminal will do — but
-it makes the experience a lot smoother.
+this project. You do not need it — any text editor and a terminal will do —
+but it makes the experience a lot smoother.
 
 ## Why VS Code?
 
-VS Code is a great match for Canvas Local because it brings together everything
-you need in one window:
+VS Code is a great match for Canvas Local because it brings together
+everything you need in one window:
 
 - **Markdown support** — syntax highlighting, live preview, and formatting
   shortcuts for the markdown files you write your course in
 - **Built-in terminal** — run CLI commands like `npx course push` without
   leaving the editor
 - **Git integration** — the Source Control panel lets you stage, commit, and
-  push changes visually (see
-  [Git Workflow](https://thomasmore.instructure.com/courses/45083/pages/git-workflow-11)
-  for a walkthrough)
+  push changes visually (see [Git Workflow](11-git-workflow.md) for a
+  walkthrough)
 - **Course Manager extension** — this project includes a custom VS Code
-  extension that puts all course commands in the sidebar and command palette, so
-  you can manage your course without typing commands at all
+  extension that puts all course commands in the sidebar and command palette,
+  so you can manage your course without typing commands at all
 
 It is free, open-source, and runs on Windows, macOS, and Linux.
 
 ## Installing VS Code
 
-1.  Go to [code.visualstudio.com](https://code.visualstudio.com/) and download
-    the installer for your operating system.
-2.  Install it:
-    - **Windows** — run the downloaded installer and follow the prompts. Check
-      the option to add VS Code to your PATH if offered.
-    - **macOS** — open the downloaded `.zip` file and drag **Visual Studio
-      Code** into your **Applications** folder.
-    - **Linux** — follow the instructions on the download page for your
-      distribution, or install the `.deb` or `.rpm` package directly.
+1. Go to [code.visualstudio.com](https://code.visualstudio.com/) and download
+   the installer for your operating system.
 
-3.  Open VS Code and use **File > Open Folder** (or **Cmd+O** / **Ctrl+K
-    Ctrl+O**) to open your `canvas-local` project folder.
+2. Install it:
+
+   - **Windows** — run the downloaded installer and follow the prompts. Check
+     the option to add VS Code to your PATH if offered.
+   - **macOS** — open the downloaded `.zip` file and drag **Visual Studio
+     Code** into your **Applications** folder.
+   - **Linux** — follow the instructions on the download page for your
+     distribution, or install the `.deb` or `.rpm` package directly.
+
+3. Open VS Code and use **File > Open Folder** (or **Cmd+O** / **Ctrl+K
+   Ctrl+O**) to open your `canvas-local` project folder.
 
 > [!TIP]
 >
@@ -62,19 +63,21 @@ You only need to do this once (or again after the extension is updated).
 ## The Course Manager Sidebar
 
 After installing the extension, you will see a **Course Manager** panel in the
-VS Code sidebar. It shows a tree view of all your modules and items, complete
-with icons for each content type.
+VS Code activity bar (the book icon). It shows a tree view of all your modules
+and items, complete with icons for each content type. Item labels come from
+the frontmatter `title` — the same name Canvas and Docusaurus show — and
+clicking an item opens the file in the editor.
 
 The tree updates automatically whenever you add, rename, or delete files — no
 need to refresh manually.
 
 ### Inline Actions
 
-Each module in the sidebar has quick-action buttons:
+Hover over a module or item in the sidebar for quick-action buttons:
 
 - **Push module** (cloud icon) — push just that module to Canvas
-- **Open in Canvas** (link icon) — open the module directly on Canvas in your
-  browser
+- **Open in Canvas** (link icon) — open the item directly on Canvas in your
+  browser (works once the item has been pushed at least once)
 
 ### Right-Click Menu
 
@@ -82,22 +85,42 @@ Right-click any module or item in the sidebar to see context actions:
 
 - **New**, **Rename**, **Move**, **Delete** — the same management commands,
   without typing
+- **Move Item to Module** — move an item to another module or one of its
+  subsections; works for subsections too (they always land in the module
+  root — subsections are never nested)
 - **Merge items** — a two-step process: first right-click an item and choose
-  "Set as Merge Source", then right-click the target item and choose "Merge with
-  Source"
-- **Split item** — split a long page into two files at a specific line
+  "Set as Merge Source", then right-click the target item and choose "Merge
+  with Source"
+- **Split Item at Cursor** — split the file you have open into two files at
+  the cursor position
 
-You can also drag and drop items to reorder them within a module.
+Names, positions, and confirmations are collected through normal VS Code
+dialogs, and the command runs quietly in the background — no terminal pops up.
+You get a notification when it is done, and the full output is available in
+the **Canvas Local** output channel (View > Output).
+
+### Drag and Drop
+
+The fastest way to reorganise is dragging things around the tree:
+
+- **Reorder modules** — drag a module onto another module
+- **Move items** — drag an item within its module to reorder it, or onto
+  another module or subsection to move it there
+- **Move subsections** — drag a subsection onto another module
+- **Add files** — drag files straight from Finder or Explorer onto a module to
+  add them as file items
+
+Renumbering and Canvas sync state are handled automatically, exactly as if you
+had run the CLI commands yourself.
 
 ## Title Bar Buttons
 
-At the top of the sidebar, you will find toolbar buttons for the most common
-actions:
+At the top of the sidebar, the **Preview** button starts the Docusaurus dev
+server (if it is not already running) and opens the course in your browser.
+The dropdown menu next to it gives quick access to the sync commands:
 
-- **Preview** — starts the Docusaurus dev server so you can preview your course
-  locally
-- **Push** — push all modules to Canvas
-- **Pull** — pull content from Canvas
+- **Push to Canvas** — push all modules
+- **Pull from Canvas** — pull content from Canvas
 - **Status** — compare your local files against Canvas
 - **Diff** — see what changed locally since the last sync
 - **Validate** — check your content for errors before pushing
@@ -107,92 +130,36 @@ actions:
 Open the command palette with **Cmd+Shift+P** (macOS) or **Ctrl+Shift+P**
 (Windows/Linux) and type **"Course:"** to see all available commands:
 
-Command
-
-What it does
-
-Course: Init (Canvas Setup)
-
-Configure Canvas API credentials
-
-Course: Push to Canvas
-
-Push all modules
-
-Course: Push to Canvas (Dry Run)
-
-Preview push without making changes
-
-Course: Push Module to Canvas...
-
-Push a single module
-
-Course: Pull from Canvas
-
-Pull content from Canvas
-
-Course: Status
-
-Compare local vs sync state
-
-Course: Diff
-
-Show changes since last sync
-
-Course: Validate
-
-Check content for errors
-
-Course: New Module
-
-Create a new module
-
-Course: Move Module
-
-Reorder a module
-
-Course: Rename Module
-
-Rename a module
-
-Course: Delete Module
-
-Delete a module
-
-Course: New Item
-
-Create a new item
-
-Course: Move Item
-
-Reorder an item
-
-Course: Move Item to Module
-
-Move an item to another module
-
-Course: Rename Item
-
-Rename an item
-
-Course: Delete Item
-
-Delete an item
-
-Course: Merge Items
-
-Combine two items into one
-
-Course: Split Item
-
-Split an item into two files
+| Command                          | What it does                          |
+| -------------------------------- | ------------------------------------- |
+| Course: Init (Canvas Setup)      | Configure Canvas API credentials      |
+| Course: Push to Canvas           | Push all modules                      |
+| Course: Push to Canvas (Dry Run) | Preview push without making changes   |
+| Course: Push Module to Canvas... | Push a single module                  |
+| Course: Pull from Canvas         | Pull content from Canvas              |
+| Course: Status                   | Compare local vs sync state           |
+| Course: Diff                     | Show changes since last sync          |
+| Course: Validate                 | Check content for errors              |
+| Course: New Module               | Create a new module                   |
+| Course: Move Module              | Reorder a module                      |
+| Course: Rename Module            | Rename a module                       |
+| Course: Delete Module            | Delete a module                       |
+| Course: New Item                 | Create a new item                     |
+| Course: Move Item                | Reorder an item                       |
+| Course: Move Item to Module      | Move an item to another module        |
+| Course: Rename Item              | Rename an item                        |
+| Course: Delete Item              | Delete an item                        |
+| Course: Merge Items              | Combine two items into one            |
+| Course: Split Item at Cursor     | Split the active file at the cursor   |
 
 ## How It Works
 
-The extension runs CLI commands in the VS Code integrated terminal, so you see
-the same output and interactive prompts as you would in a regular terminal.
-Before running any command, it checks that your workspace contains a `course/`
-directory.
+Everything the extension does goes through the same `npx course` CLI you use
+in the terminal, so renumbering and Canvas sync state behave exactly the same
+either way. Sync commands (push, pull, status, diff, validate) run in a shared
+**Canvas Local** terminal so you can follow their output; management commands
+(new, rename, move, delete, merge, split) run silently in the background and
+report back with a notification.
 
 > [!TIP]
 >
@@ -201,8 +168,8 @@ directory.
 
 ## Updating
 
-If the extension is updated (for example, after pulling new changes), reinstall
-it:
+If the extension is updated (for example, after pulling new changes),
+reinstall it:
 
 ```bash
 npm run vscode:install
