@@ -12,7 +12,7 @@ const { getFileLoaderUtils, escapePath } = require('@docusaurus/utils');
  * See node_modules/@docusaurus/mdx-loader/src/remark/transformLinks/index.ts
  * (the `/\.(?:mdx?|html)(?:#|$)/` exclusion).
  */
-const DOWNLOAD_EXTENSIONS = new Set(['.html', '.htm']);
+const HTML_EXTENSIONS = new Set(['.html', '.htm']);
 
 /**
  * Split a link URL into its pathname and the `?query`/`#hash` suffix, so we can
@@ -78,20 +78,26 @@ function collectLinks(node, parent, index, out) {
 }
 
 /**
- * Remark plugin that turns relative links to local `.html` files into forced
- * downloads. Docusaurus otherwise leaves such links broken (see
- * DOWNLOAD_EXTENSIONS). We rewrite `[label](../_files/thing.html)` into an
- * `<a download="thing.html" href={require(...)}>label</a>` so the file is
- * bundled by webpack and saved under its original name when clicked.
+ * Remark plugin that makes relative links to local `.html` files work in the
+ * Docusaurus preview. Docusaurus otherwise leaves such links broken (see
+ * HTML_EXTENSIONS). We rewrite `[label](../_files/thing.html)` into an
+ * `<a href={require(...)}>label</a>` so the file is bundled by webpack.
+ *
+ * By default the anchor gets `target="_blank"`, so the browser renders the
+ * html file in a new tab. A page can opt into forced download instead with
+ * `download: true` in its YAML frontmatter: the anchor then gets a
+ * `download` attribute and the file is saved under its original name.
  *
  * Only relative links to files that actually exist on disk are touched;
  * external, absolute, `@site/`, anchor-only, and `mailto:` links are ignored,
  * as are non-`.html` extensions (which already work via `transformLinks`).
  */
-function remarkDownloadLinks() {
+function remarkHtmlLinks() {
   return (tree, vfile) => {
     if (!vfile.path) return;
 
+    const frontMatter = (vfile.data && vfile.data.frontMatter) || {};
+    const forceDownload = frontMatter.download === true;
     const isServer = vfile.data && vfile.data.compilerName === 'server';
     const fileLoader = getFileLoaderUtils(isServer).loaders.inlineMarkdownLinkFileLoader;
     const sourceDir = path.dirname(vfile.path);
@@ -107,7 +113,7 @@ function remarkDownloadLinks() {
 
       const { pathname, suffix } = splitUrl(url);
       if (!pathname) continue;
-      if (!DOWNLOAD_EXTENSIONS.has(path.extname(pathname).toLowerCase())) continue;
+      if (!HTML_EXTENSIONS.has(path.extname(pathname).toLowerCase())) continue;
       // A hash on an .html link means "jump to an anchor in that page" — that's
       // a navigation intent, not a download. Leave it alone.
       if (suffix.startsWith('#')) continue;
@@ -121,13 +127,20 @@ function remarkDownloadLinks() {
 
       const attributes = [
         { type: 'mdxJsxAttribute', name: 'href', value: requireAttributeValue(requireString) },
-        // A named download forces the browser to save the file (rather than
-        // render the HTML) and preserves the original filename instead of the
-        // content-hashed one file-loader emits.
-        { type: 'mdxJsxAttribute', name: 'download', value: fileName },
         // Assets are required through webpack, not routes — don't flag them.
         { type: 'mdxJsxAttribute', name: 'data-noBrokenLinkCheck', value: 'true' },
       ];
+      if (forceDownload) {
+        // A named download forces the browser to save the file (rather than
+        // render the HTML) and preserves the original filename instead of the
+        // content-hashed one file-loader emits.
+        attributes.push({ type: 'mdxJsxAttribute', name: 'download', value: fileName });
+      } else {
+        attributes.push(
+          { type: 'mdxJsxAttribute', name: 'target', value: '_blank' },
+          { type: 'mdxJsxAttribute', name: 'rel', value: 'noopener noreferrer' },
+        );
+      }
       if (node.title) {
         attributes.push({ type: 'mdxJsxAttribute', name: 'title', value: node.title });
       }
@@ -142,4 +155,4 @@ function remarkDownloadLinks() {
   };
 }
 
-module.exports = remarkDownloadLinks;
+module.exports = remarkHtmlLinks;

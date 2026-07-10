@@ -217,13 +217,16 @@ correct position, matching the Canvas module structure.
 deliberately skips relative links ending in `.md`, `.mdx`, or `.html`, assuming
 they are page references rather than assets. For `.md`/`.mdx` that is correct,
 but it leaves inline `.html` links (e.g. `[starter](_files/starter.html)` on a
-normal page) broken. The `remark-download-links` plugin
-(`src/plugins/remark-download-links.js`) runs before the default plugins and
+normal page) broken. The `remark-html-links` plugin
+(`src/plugins/remark-html-links.js`) runs before the default plugins and
 rewrites such links — relative, to an existing local `.html`/`.htm` file — into
-an `<a download="…" href={require(...)}>` anchor. Webpack then bundles the file
-and the browser saves it under its original name. External, absolute, `@site/`,
-anchor-only (`.html#…`), and non-existent targets are left untouched, as is the
-Canvas sync path (the source markdown keeps its plain relative link).
+an `<a href={require(...)}>` anchor. Webpack then bundles the file. By default
+the anchor gets `target="_blank"`, so the browser renders the file in a new
+tab; with `download: true` in the page's frontmatter it gets a `download`
+attribute instead and the browser saves the file under its original name.
+External, absolute, `@site/`, anchor-only (`.html#…`), and non-existent targets
+are left untouched, as is the Canvas sync path (the source markdown keeps its
+plain relative link).
 
 ## Error Recovery
 

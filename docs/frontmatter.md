@@ -22,6 +22,10 @@ canvas_type: page
 
 Pages are the default type. The `canvas_type` field can be omitted.
 
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `download` | boolean | `false` | Force inline `.html` links on this page to download in the local preview instead of opening in a new tab. Only affects Docusaurus; Canvas links are unchanged. See [Markdown](markdown.md#linking-to-html-files). |
+
 ## Assignment
 
 ```yaml

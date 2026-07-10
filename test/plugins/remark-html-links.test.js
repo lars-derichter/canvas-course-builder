@@ -3,7 +3,7 @@ const assert = require('node:assert/strict');
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
-const remarkDownloadLinks = require('../../src/plugins/remark-download-links');
+const remarkHtmlLinks = require('../../src/plugins/remark-html-links');
 
 // The plugin only rewrites links whose target exists on disk, so tests run
 // against a real temporary fixture: a page.md next to a _files/ folder.
@@ -11,7 +11,7 @@ let fixtureDir;
 let pagePath;
 
 before(() => {
-  fixtureDir = fs.mkdtempSync(path.join(os.tmpdir(), 'download-links-'));
+  fixtureDir = fs.mkdtempSync(path.join(os.tmpdir(), 'html-links-'));
   fs.mkdirSync(path.join(fixtureDir, '_files'));
   fs.writeFileSync(path.join(fixtureDir, '_files', 'example.html'), '<h1>hi</h1>');
   fs.writeFileSync(path.join(fixtureDir, '_files', 'report.docx'), 'binary');
@@ -37,10 +37,12 @@ function treeWithLink({ url, title, text = 'label' }) {
 
 /**
  * Run the plugin against a tree, using the fixture page as the source file.
+ * Pass `frontMatter` to simulate the page's YAML frontmatter.
  */
-function transform(tree, vfileOverrides = {}) {
-  const plugin = remarkDownloadLinks();
-  plugin(tree, { path: pagePath, data: {}, ...vfileOverrides });
+function transform(tree, { frontMatter, ...vfileOverrides } = {}) {
+  const plugin = remarkHtmlLinks();
+  const data = frontMatter ? { frontMatter } : {};
+  plugin(tree, { path: pagePath, data, ...vfileOverrides });
   return tree;
 }
 
@@ -49,8 +51,8 @@ function attr(node, name) {
   return node.attributes.find((a) => a.name === name);
 }
 
-describe('remarkDownloadLinks', () => {
-  it('rewrites a relative .html link into a download anchor', () => {
+describe('remarkHtmlLinks', () => {
+  it('rewrites a relative .html link into an anchor', () => {
     const { tree, getLink } = treeWithLink({ url: './_files/example.html' });
     transform(tree);
 
@@ -61,13 +63,34 @@ describe('remarkDownloadLinks', () => {
     assert.equal(node.children[0].value, 'label');
   });
 
-  it('forces download under the original filename', () => {
-    const { tree, getLink } = treeWithLink({ url: './_files/example.html', text: 'click here' });
+  it('opens in a new tab by default', () => {
+    const { tree, getLink } = treeWithLink({ url: './_files/example.html' });
     transform(tree);
 
-    const download = attr(getLink(tree), 'download');
+    const node = getLink(tree);
+    assert.equal(attr(node, 'target').value, '_blank');
+    assert.equal(attr(node, 'rel').value, 'noopener noreferrer');
+    assert.equal(attr(node, 'download'), undefined);
+  });
+
+  it('forces download under the original filename with frontmatter download: true', () => {
+    const { tree, getLink } = treeWithLink({ url: './_files/example.html', text: 'click here' });
+    transform(tree, { frontMatter: { download: true } });
+
+    const node = getLink(tree);
+    const download = attr(node, 'download');
     assert.ok(download);
     assert.equal(download.value, 'example.html');
+    assert.equal(attr(node, 'target'), undefined);
+  });
+
+  it('treats frontmatter download: false like the default', () => {
+    const { tree, getLink } = treeWithLink({ url: './_files/example.html' });
+    transform(tree, { frontMatter: { download: false } });
+
+    const node = getLink(tree);
+    assert.equal(attr(node, 'target').value, '_blank');
+    assert.equal(attr(node, 'download'), undefined);
   });
 
   it('builds a webpack require() href through file-loader', () => {
@@ -140,7 +163,7 @@ describe('remarkDownloadLinks', () => {
 
   it('is a no-op when the vfile has no path', () => {
     const { tree, getLink } = treeWithLink({ url: './_files/example.html' });
-    const plugin = remarkDownloadLinks();
+    const plugin = remarkHtmlLinks();
     plugin(tree, { data: {} });
 
     assert.equal(getLink(tree).type, 'link');

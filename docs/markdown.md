@@ -61,19 +61,32 @@ These references work across all three layers:
 Inline links to `.html` files are a special case. Docusaurus treats `.html`
 (like `.md`) as a page reference rather than a downloadable asset, so a plain
 link such as `[example](_files/example.html)` would otherwise break in the
-preview. The `remark-download-links` plugin fixes this: any relative link to an
-existing local `.html` file is turned into a forced download that saves under
-the file's original name.
+preview. The `remark-html-links` plugin fixes this: any relative link to an
+existing local `.html` file opens that file in a new browser tab.
 
 ```md
+Open the starter: [starter.html](_files/starter.html)
+```
+
+To force a download instead — the file saves under its original name rather
+than rendering — set `download: true` in the page's frontmatter. The flag
+applies to every `.html` link on that page:
+
+```md
+---
+title: Templates
+download: true
+---
+
 Download the starter: [starter.html](_files/starter.html)
 ```
 
 You write a normal relative link — no special syntax — and it works in the
-Docusaurus preview (download) and on Canvas (uploaded file) alike. Only `.html`
-and `.htm` are affected; `.md`/`.mdx` stay page links, and other file types
-(`.pdf`, `.zip`, `.docx`, images) already worked. A link with an anchor
-(`_files/example.html#top`) is left as navigation, not a download.
+Docusaurus preview and on Canvas (uploaded file) alike. The `download` flag
+only affects the preview; on Canvas the link always points to the Canvas file
+page. Only `.html` and `.htm` are affected; `.md`/`.mdx` stay page links, and
+other file types (`.pdf`, `.zip`, `.docx`, images) already worked. A link with
+an anchor (`_files/example.html#top`) is left as navigation.
 
 ## Underscore Prefix Convention
 
