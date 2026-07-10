@@ -94,6 +94,11 @@ course/01-module/
   05-workflow-diagram.md   -> File: "Workflow Diagram"
 ```
 
+This module contains three live examples: the
+[Workflow Diagram](../05-workflow-diagram.md) (SVG), the
+[Example PDF](../06-example-pdf.md), and the
+[HTML starter](../07-html-starter.md).
+
 > [!NOTE]
 >
 > Over 35 file types are supported, including PDF, PNG, JPG, SVG, MP4, DOCX, and

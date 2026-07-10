@@ -75,6 +75,30 @@ Here is an embedded example:
 During push, images are automatically uploaded to Canvas and their paths are
 rewritten to Canvas file URLs. During pull, they are downloaded back.
 
+## Linking to Files
+
+You can link to any file in `_files/` the same way — handy for handouts,
+templates, or starter files students should download:
+
+```markdown
+[Example document](./_files/example-document.docx)
+```
+
+Like images, linked files are uploaded to Canvas during push and the link is
+rewritten to the Canvas file URL. Try it: [example
+document](./_files/example-document.docx).
+
+One special case: links to `.html` files become forced downloads instead of
+opening in the browser, both in the local preview and on Canvas. Try it with
+this [starter file](./_files/download-me.html). That is why internal links to
+course pages must always use the `.md` path, never `.html`.
+
+> [!NOTE]
+>
+> To make a file its own entry in the module list — instead of a link inside a
+> page — use a file item. See
+> [Content Types](04-course-structure/02-content-types.md).
+
 ## Code Blocks
 
 Use triple backticks for code blocks with optional language highlighting:
