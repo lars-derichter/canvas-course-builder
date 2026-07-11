@@ -42,6 +42,16 @@ You can also edit `style.md` by hand at any time. Treat it as a living document
 — the more it reflects your real preferences, the less you'll need to correct
 Claude Code's output.
 
+## Course context
+
+Where `style.md` captures *how you write*, [course-context.md](course-context.md)
+captures *what your course is*: subject, pedagogy, lesson-plan conventions,
+module structure, code/download rules, glossary, and scope boundaries. The
+lesson skills (`/design-lesson`, `/summarize-lesson`, `/build-lesson-module`)
+read it before generating anything. Run `/initialize-course-context` once when
+you set up a course, and again after your README, docs, or course structure
+change substantially. Like `style.md`, you can also edit it by hand.
+
 ## Skills
 
 Skills are predefined workflows that Claude Code can run. Type the skill name
@@ -115,6 +125,25 @@ corrections, rewrites, and preferences you expressed, and folds them into
 [style.md](style.md) as durable rules. Use it after a session in which you
 corrected Claude Code's drafts, so you don't have to repeat the same feedback
 next time.
+
+### /initialize-course-context
+
+The `/initialize-course-context` skill fills in or refreshes
+[course-context.md](course-context.md). When you type
+`/initialize-course-context` in Claude Code it will:
+
+1. Read what is already in `course-context.md` and note which sections are
+   still the shipped `TODO` template.
+2. Read the repo — README, CLAUDE.md, `style.md`, course-specific docs,
+   existing modules and lesson plans — and infer everything it can.
+3. Interview you (only) about what the repo did not answer: learning-goal
+   scheme, page roles, code-download layout, scope boundaries, and so on.
+4. Show a per-section summary for confirmation, then write the doc.
+5. Warn you if `docs/course-context.md` is missing from `protected_files` in
+   `update-from-upstream.conf`, so upstream updates don't overwrite it.
+
+Re-running is expected: existing content is treated as confirmed and only
+updated where the repo now contradicts it. Nothing is committed automatically.
 
 ### /commit
 

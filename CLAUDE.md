@@ -12,6 +12,8 @@ Course development system that lets you write course materials as markdown, serv
 
 If the user asks you to change how you write, offer to run `/update-style` so the new preference is folded into `style.md` as a durable rule.
 
+**Read [`docs/course-context.md`](docs/course-context.md) before designing lessons or generating modules.** It describes the course itself — pedagogy, lesson-plan and module conventions, code/download rules, glossary, scope boundaries — and drives the lesson skills (`/design-lesson`, `/summarize-lesson`, `/build-lesson-module`). Sections still marked `TODO` mean: gather the fact from the repo or the user, and offer to save it back into the doc. `/initialize-course-context` fills the doc in wholesale.
+
 ## Commands
 
 Run `npx course --help` for the full command list, and `npx course <cmd> --help` for per-command flags. See [`docs/user-guide.md`](docs/user-guide.md) for conceptual walkthroughs of push/pull/status and [`docs/advanced-commands.md`](docs/advanced-commands.md) for destructive operations (`reset-sync-state`, `reset-canvas`).
