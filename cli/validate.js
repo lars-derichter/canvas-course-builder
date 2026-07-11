@@ -1,32 +1,12 @@
 const fs = require('fs');
 const path = require('path');
 
-const { scanCourse } = require('../lib/convert/course-scanner');
+const { scanCourse, flattenItems } = require('../lib/convert/course-scanner');
 const { parseFrontmatter } = require('../lib/convert/frontmatter');
 const { extractFileReferences, maskCodeRegions } = require('../lib/convert/link-resolver');
 const { COURSE_DIR } = require('./module-utils');
 
 const VALID_CANVAS_TYPES = new Set(['page', 'assignment', 'external_url']);
-
-/**
- * Flatten items list, expanding subheader children.
- */
-function flattenItems(items) {
-  const result = [];
-  for (const item of items) {
-    if (item.type === 'subheader') {
-      result.push(item);
-      if (item.items) {
-        for (const child of item.items) {
-          result.push(child);
-        }
-      }
-    } else {
-      result.push(item);
-    }
-  }
-  return result;
-}
 
 async function validate() {
   if (!fs.existsSync(COURSE_DIR)) {
