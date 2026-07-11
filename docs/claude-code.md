@@ -219,6 +219,17 @@ evaluation, or under `sources/rubrics/` for homework (never inside `course/`,
 where it would be served and synced). Output is markdown only; Canvas has no
 rubric sync in this project.
 
+### /coverage-map
+
+The `/coverage-map` skill cross-references the course's learning goals
+against the lesson plans, the student modules, and the evaluations, and
+reports the alignment gaps: goals never practised, practised but never
+assessed, assessed but never taught, and goals whose assessment weight is out
+of proportion to their teaching time. Every claim cites the files behind it;
+inferred mappings are marked as such. Read-only — it only writes a dated
+report under `sources/reports/` if you ask for one. Most useful right before
+an exam period, or after `/design-evaluation`.
+
 ### /initialize-course-context
 
 The `/initialize-course-context` skill fills in or refreshes
