@@ -79,7 +79,7 @@ protected_dirs = course evaluations sources
 
 # Individual files always kept. Includes this config file itself so your
 # customizations here survive future upstream updates.
-protected_files = README.md CLAUDE.md docs/style.md update-from-upstream.conf
+protected_files = README.md CLAUDE.md docs/style.md docs/course-context.md update-from-upstream.conf
 
 # Upstream git remote and branch to merge from.
 upstream_remote = upstream
@@ -91,6 +91,13 @@ upstream_branch = main
 - **`protected_files`** — individual files always kept. The config file lists
   itself here, so your edits to it survive future updates. Add any tooling file
   you've customized and don't want upstream to touch.
+
+> [!NOTE]
+>
+> `docs/course-context.md` was added to the default `protected_files` when the
+> lesson skills were introduced. If your `update-from-upstream.conf` predates
+> that, add it to your `protected_files` line yourself — otherwise upstream
+> updates will overwrite your course-specific version with the template.
 - **`upstream_remote`** / **`upstream_branch`** — where to merge from.
 
 Because the config file is itself protected, edits you make here are never
@@ -186,7 +193,8 @@ If you prefer to run the steps yourself instead of using the script:
 
    # Restore your content and protected files from HEAD
    git checkout HEAD -- course/ evaluations/ sources/ \
-     README.md CLAUDE.md docs/style.md update-from-upstream.conf 2>/dev/null || true
+     README.md CLAUDE.md docs/style.md docs/course-context.md \
+     update-from-upstream.conf 2>/dev/null || true
 
    # Drop the now-untracked upstream-only files
    git clean -fd -- course/ evaluations/ sources/

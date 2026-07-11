@@ -4,8 +4,9 @@ set -euo pipefail
 # Update project from the upstream canvas-local template repository.
 # Uses a squash merge so only one commit is added to your history.
 # Content directories (course/, evaluations/, sources/) and the protected files
-# (README.md, CLAUDE.md, docs/style.md) are always preserved. Conflicts in other
-# files are resolved interactively (keep local / upstream / merge in the editor).
+# (README.md, CLAUDE.md, docs/style.md, docs/course-context.md) are always
+# preserved. Conflicts in other files are resolved interactively (keep local /
+# upstream / merge in the editor).
 
 # --- Load configuration ---
 #
@@ -26,7 +27,7 @@ protected_dirs = course evaluations sources
 
 # Individual files always kept. Includes this config file itself so your
 # customizations here survive future upstream updates.
-protected_files = README.md CLAUDE.md docs/style.md update-from-upstream.conf
+protected_files = README.md CLAUDE.md docs/style.md docs/course-context.md update-from-upstream.conf
 
 # Upstream git remote and branch to merge from.
 upstream_remote = upstream
