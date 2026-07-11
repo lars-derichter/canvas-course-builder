@@ -1,0 +1,121 @@
+---
+title: Exporting to PDF or Word
+canvas_type: page
+---
+
+# Exporting to PDF or Word
+
+Sometimes you need your course materials on paper or as a file you can hand out:
+an exam, a handout, or something to read offline. Canvas Local can turn any
+page, a whole module, or your entire course into a polished PDF or an editable
+Word document.
+
+This is optional. If you only ever publish to Canvas, you can skip it.
+
+## What You Need
+
+Export relies on two free, open-source tools:
+
+- **pandoc** — does the markdown conversion
+- **Typst** — turns the result into a PDF (only needed for PDF, not for Word)
+
+Install both:
+
+- **macOS** — `brew install pandoc typst`
+- **Windows** — `winget install --id JohnMacFarlane.Pandoc --id Typst.Typst`
+- **Linux** — install pandoc with your package manager, and download Typst from
+  its [releases page](https://github.com/typst/typst/releases)
+
+> [!TIP]
+>
+> Word export needs only pandoc. Typst is what produces the PDF.
+
+## Exporting From the Terminal
+
+The `export` command takes whatever you point it at and writes a document to the
+`exports/` folder:
+
+```bash
+npx course export course/01-getting-started/03-alerts.md   # one page
+npx course export -m 01-getting-started                    # a whole module
+npx course export                                          # the full course
+npx course export -m 01-getting-started -f docx            # Word instead of PDF
+```
+
+When you export more than one page, they are combined into a single document
+with a title page, a table of contents, and a page break between chapters. Items
+that are not markdown become link cards (external URLs) or short "attachment"
+references (files).
+
+To export only a chosen set of pages, mark them with `export: true` in their
+frontmatter:
+
+```yaml
+---
+title: Exam Review
+export: true
+---
+```
+
+Then export just the flagged pages:
+
+```bash
+npx course export --flagged
+```
+
+## Exporting a Custom Selection
+
+Want a specific set of pages, in a specific order, without flagging each one?
+Use the two-step table-of-contents flow.
+
+1. Generate a list of everything:
+
+   ```bash
+   npx course export-toc
+   ```
+
+   This writes `exports/toc.md`.
+
+2. Open `exports/toc.md` and delete the lines you do not want. Each page is one
+   line; the headings and comments are only there to help you find your way.
+
+3. Export what is left:
+
+   ```bash
+   npx course export --toc exports/toc.md
+   ```
+
+## Exporting From VS Code
+
+With the Course Manager sidebar you do not have to type anything:
+
+- **Right-click a page or module** and choose **Export to PDF/DOCX**.
+- **Select several pages first** (Ctrl-click or Shift-click in the tree), then
+  right-click and export — they combine into one document.
+- **The title bar dropdown** has an **Export** option for the whole course:
+  everything, only the flagged pages, or a curated table of contents.
+
+You choose PDF or Word each time. Export runs in the Canvas Local terminal so
+you can follow its progress.
+
+## Where Your Files Go
+
+Exports land in the `exports/` folder in your project. That folder is ignored by
+git, so your documents never end up in your repository or on Canvas.
+
+## Changing How Exports Look
+
+Out of the box, exports use a clean default style. You can change the fonts,
+colours, margins, and more, or match an existing house style from a Word
+template. Two Claude Code skills make this easy:
+
+- **`/create-export-style`** builds a style from a reference — a Word document,
+  a PDF, a website, or a CSS file
+- **`/edit-export-style`** makes a plain-language tweak, like "headings dark
+  blue" or "bigger margins"
+
+> [!NOTE]
+>
+> For the full picture of how styling works — what each template file controls
+> and how to tweak the PDF with `--var` — see the Export Styling guide
+> (`docs/export-styling.md`) in the project documentation.
