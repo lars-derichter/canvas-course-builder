@@ -230,6 +230,24 @@ inferred mappings are marked as such. Read-only — it only writes a dated
 report under `sources/reports/` if you ask for one. Most useful right before
 an exam period, or after `/design-evaluation`.
 
+### /consistency-check
+
+The `/consistency-check` skill sweeps every module under `course/` for
+cross-file problems a single-file `/proofread` cannot see:
+
+- dead cross-links and missing download/image files;
+- glossary drift — terms used before their introducing lesson, synonym use
+  where the glossary defines a base term, missing lemmas, and stale generated
+  pages (`npx course build-glossary --check`);
+- structural issues — duplicate or gapped numeric prefixes, invalid
+  frontmatter, `_category_.json`/prefix mismatches;
+- stale prerequisite references ("in les 3" about material that moved).
+
+Findings come back in the same three buckets as `/proofread` (**must fix**,
+**strongly suggest**, **consider**), each with file, line, and a proposed
+fix. Nothing is fixed without confirmation, and only the mechanical
+categories are ever auto-applied.
+
 ### /initialize-course-context
 
 The `/initialize-course-context` skill fills in or refreshes
