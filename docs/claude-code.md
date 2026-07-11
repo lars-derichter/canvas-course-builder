@@ -54,8 +54,8 @@ The `/proofread` skill checks a Dutch markdown document against
 Claude Code it will:
 
 1. Determine the register from the file path (`course/`, `evaluations/` are
-   student-facing; `sources/lesson-plans/` and `sources/` are collega-facing).
-   For other paths, it asks.
+   student-facing; `sources/lessons/`, `sources/lesson-plans/`, and anything
+   else under `sources/` are collega-facing). For other paths, it asks.
 2. Read `style.md` and apply the shared rules plus the audience-specific
    section.
 3. Run mechanical checks: em-dashes, AI-tell phrases, Hollandisms, title-case

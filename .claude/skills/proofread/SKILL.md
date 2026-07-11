@@ -1,6 +1,6 @@
 ---
 name: proofread
-description: Check a Dutch markdown document for spelling, grammar, natural-Dutch flow, and compliance with docs/style.md. Distinguishes the student-facing register (course/, evaluations/) from the collega-facing register (sources/lesson-plans/, sources/), and applies the right rules. Reports findings; does not auto-fix.
+description: Check a Dutch markdown document for spelling, grammar, natural-Dutch flow, and compliance with docs/style.md. Distinguishes the student-facing register (course/, evaluations/) from the collega-facing register (sources/lessons/, sources/lesson-plans/, and anything else under sources/), and applies the right rules. Reports findings; does not auto-fix.
 ---
 
 # Proofread
@@ -21,12 +21,13 @@ decides.
 
 2. **Determine the register** from the path:
    - `course/**` or `evaluations/**` → **student-facing**.
-   - `sources/lesson-plans/**` or anywhere else under `sources/` →
-     **collega-facing**.
+   - `sources/lessons/**`, `sources/lesson-plans/**`, or anywhere else under
+     `sources/` → **collega-facing**.
    - Otherwise, ask the author which register applies.
 
-   `sources/lesson-plans/lesson-01.md` is the worked example for the
-   collega register; `docs/style.md` is the authoritative ruleset.
+   The lowest-numbered lesson under `sources/lessons/` (if any) is the
+   worked example for the collega register; `docs/style.md` is the
+   authoritative ruleset.
 
 3. **Read `docs/style.md` in full.** Apply the **shared rules** plus the
    section matching the chosen register. Do not invent rules that are
