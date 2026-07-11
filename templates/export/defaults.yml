@@ -1,0 +1,12 @@
+# Shipped pandoc defaults for course exports.
+# Override by placing a defaults.yml in sources/export-style/.
+#
+# Template, filter, reference-doc, input and output paths are supplied on the
+# command line. Layout defaults (papersize, fontsize, margin, lang, region)
+# live in template.typ's conf() signature, NOT here: pandoc merges a
+# command-line `-V key=value` with a `variables:` entry into a list instead of
+# overriding it, which would break `--var fontsize=13pt`. Keeping those out of
+# this file lets --var work as a clean override.
+
+number-sections: false
+toc-depth: 2
