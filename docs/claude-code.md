@@ -149,6 +149,16 @@ it will:
 
 It never changes existing lessons and never commits.
 
+### /summarize-lesson
+
+The `/summarize-lesson` skill distills a full lesson plan from
+`sources/lessons/` into a one-page class version under `sources/lesson-plans/`
+— learning goals, content inventory, and a telegram-style timeline that fit on
+one A5 page. A teaching reminder for in the classroom, nothing more. It never
+invents content: if something belongs on the page but is missing from the
+source plan, it surfaces the gap and stops. Grouping labels and headings follow
+the Class versions section of [course-context.md](course-context.md).
+
 ### /initialize-course-context
 
 The `/initialize-course-context` skill fills in or refreshes
