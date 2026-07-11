@@ -68,7 +68,21 @@ Write course materials as markdown, preview via
    The included **Getting Started** module walks you through writing markdown,
    organising content, syncing with Canvas, and using the VS Code extension.
 
-7. **Connect to Canvas** — when you are ready to publish, run the interactive
+7. **(Optional) Install pandoc and Typst for PDF/DOCX export** — only needed if
+   you want to export course materials to printable documents. Install both:
+
+   ```bash
+   # macOS
+   brew install pandoc typst
+   # Windows
+   winget install --id JohnMacFarlane.Pandoc --id Typst.Typst
+   # Linux: use your package manager for pandoc; see the Typst releases page
+   ```
+
+   See [Exporting to PDF or DOCX](#exporting-to-pdf-or-docx) below. DOCX export
+   needs only pandoc; PDF export also needs Typst.
+
+8. **Connect to Canvas** — when you are ready to publish, run the interactive
    setup to configure your Canvas API credentials:
 
    ```bash
@@ -78,7 +92,7 @@ Write course materials as markdown, preview via
    See the [Canvas Setup Guide](canvas-setup.md) for detailed instructions on
    obtaining your API URL, token, and course ID.
 
-8. **Start writing** — add your own content to `course/` alongside or in place
+9. **Start writing** — add your own content to `course/` alongside or in place
    of the example module:
 
    ```bash
@@ -220,6 +234,40 @@ npx course --quiet <command>     # only show errors
 
 See the [New Academic Year Guide](new-academic-year.md) for switching your
 materials to a new Canvas course at the start of a new academic year.
+
+## Exporting to PDF or DOCX
+
+Turn course materials into printable PDFs or editable Word documents — handy for
+exams, handouts, and offline review. This needs pandoc (and Typst for PDF); see
+the [optional install step](#getting-started) above.
+
+```bash
+npx course export course/01-intro/03-alerts.md   # one item
+npx course export -m 01-intro                     # a whole module
+npx course export                                 # the full course
+npx course export -m 01-intro -f docx             # Word instead of PDF
+npx course export --flagged                       # only items with export: true
+```
+
+Multiple items combine into one document with a title page, a generated table
+of contents, and a page break between chapters. Output lands in `exports/`
+(gitignored). Non-markdown items become link cards (external URLs) or attachment
+references (files) in the combined document.
+
+For a curated selection, use the two-step **table of contents** flow: generate a
+list, delete the lines you do not want, then export what remains.
+
+```bash
+npx course export-toc                    # writes exports/toc.md
+# …edit exports/toc.md, delete unwanted lines…
+npx course export --toc exports/toc.md
+```
+
+All of this is also available from the VS Code sidebar, including multi-select
+export of highlighted items. To change how exports look — fonts, colours,
+margins, a house style from a Word template — see
+[Export Styling](export-styling.md) and the `/create-export-style` and
+`/edit-export-style` skills.
 
 ## VS Code Integration
 

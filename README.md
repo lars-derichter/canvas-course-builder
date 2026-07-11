@@ -48,6 +48,7 @@ This course covers ...
 - [Canvas Setup](docs/canvas-setup.md) — API credentials and course ID
 - [Markdown Guide](docs/markdown.md) — supported syntax and alerts
 - [Frontmatter Guide](docs/frontmatter.md) — page and assignment metadata
+- [Export Styling](docs/export-styling.md) — customise PDF/DOCX exports
 - [VS Code Extension](docs/vscode.md) — visual sidebar commands
 - [Troubleshooting](docs/troubleshooting.md) — common issues and fixes
 

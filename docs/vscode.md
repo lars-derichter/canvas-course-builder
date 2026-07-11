@@ -58,6 +58,9 @@ background (no terminal pops up):
 - **Delete** — delete an item or module, after a modal confirmation
 - **Merge: Set as Source / Merge with Source** — two-step merge: right-click the
   source item first, then right-click the target item to merge them
+- **Export to PDF/DOCX** — export the item (or module). Select several items
+  first — Ctrl/Cmd-click or Shift-click in the tree — to export them together as
+  one combined document. You then pick PDF or Word.
 
 The same commands also work from the command palette; you then pick the module
 or item from a quick-pick list instead. Either way the actual work is done by
@@ -95,7 +98,10 @@ or modified. Use the refresh button in the view title bar to manually refresh.
 The title bar has a **Preview** button that starts the Docusaurus dev server (if
 not already running) and opens the course in the browser. The dropdown includes
 **Push to Canvas**, **Pull from Canvas**, **Status**, **Diff**, and **Validate**
-for quick access to sync commands.
+for quick access to sync commands, plus **Export** — a quick pick to export the
+full course, only flagged items, or a curated selection via a table of contents.
+Choosing the TOC option opens the generated list for editing and reveals an
+**Export via TOC** action once it is ready.
 
 ## Commands
 
@@ -137,6 +143,18 @@ for quick access to sync commands.
 | Course: Delete Item           | Delete an item and renumber remaining                     |
 | Course: Merge Items           | Merge two items into one                                  |
 | Course: Split Item at Cursor  | Split the active file at the cursor into two files        |
+
+### Export
+
+| Command                     | Description                                               |
+| --------------------------- | --------------------------------------------------------- |
+| Export to PDF/DOCX          | Export the selected item(s) — multi-select combines them  |
+| Export Module to PDF/DOCX   | Export a whole module                                     |
+| Course: Export to PDF/DOCX  | Export the full course, only flagged items, or via a TOC  |
+| Course: Export via TOC      | Render the curated `exports/toc.md` after editing it      |
+
+See [Export Styling](export-styling.md) for customising fonts, colours, and
+margins.
 
 ## How It Works
 

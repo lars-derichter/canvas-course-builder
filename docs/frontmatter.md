@@ -10,6 +10,7 @@ Canvas type and metadata.
 | `title` | string | Display title on Canvas. Auto-generated from filename if omitted. |
 | `canvas_type` | string | One of `page`, `assignment`, `external_url`. Defaults to `page`. |
 | `canvas_id` | string/number | Canvas resource ID. Written automatically after first push — do not set manually. |
+| `export` | boolean | Set `true` to include this item in `npx course export --flagged`. See [Exporting to PDF or DOCX](user-guide.md#exporting-to-pdf-or-docx). |
 
 ## Page
 
@@ -72,6 +73,10 @@ Non-markdown files in module directories (e.g. `.pdf`, `.docx`,
 `.zip`) are automatically detected as `canvas_type: file` by the
 course scanner. They don't use frontmatter — the filename determines
 the title and position.
+
+Because file items carry no frontmatter, they cannot use the `export`
+flag. To include a file item in an export, list it by path or add it to
+a TOC file — see [Exporting to PDF or DOCX](user-guide.md#exporting-to-pdf-or-docx).
 
 ## Notes
 

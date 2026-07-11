@@ -2,25 +2,6 @@
 
 Feature ideas and bug fixes for future development.
 
-## PDF Export Support
-
-Add a PDF/docx export option. Educators often need printable versions of course
-materials for exams, handouts, or offline review.
-
-This should work in multiple ways:
-
-1. Export single item
-2. Export complete module
-3. Export full course
-4. Export selected items:
-   - In terminal mode do this in two steps with distinct commands:
-     1. A command that generates a TOC, user should delete unwanted items from
-        TOC-file
-     2. A command that exports items in TOC file (check if this exists
-   - In VS Code sidebar: export selected items to pdf
-
-These commands should be able to use some kind of template file.
-
 ## Content Templates
 
 Extend `npx course new-item` with template options: lab assignment, reading
@@ -48,6 +29,17 @@ markdown files and shows results with context lines. Faster than grep for
 educators who aren't terminal-savvy.
 
 ## Implemented
+
+### PDF/DOCX Export Support
+
+`npx course export` renders course materials to PDF (pandoc + Typst) or DOCX
+(pandoc + `reference.docx`): a single item, a whole module, the full course, an
+ad-hoc selection of paths, `--flagged` items, or a curated list via the two-step
+`export-toc` → `export --toc` flow. Multiple items combine into one document
+with a title page, generated TOC, and page breaks. Styles are customisable in
+`sources/export-style/` and via the `/create-export-style` and
+`/edit-export-style` skills. Exposed in the VS Code sidebar with multi-select.
+See [Export Styling](../../docs/export-styling.md).
 
 ### VS Code Sidebar for Course Structure
 
