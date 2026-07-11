@@ -2,7 +2,7 @@
   "name": "canvas-local",
   "displayName": "Canvas Local",
   "description": "VS Code sidebar and palette commands for Canvas Local CLI",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "publisher": "local",
   "repository": {
     "type": "git",
@@ -57,7 +57,11 @@
       { "command": "course.preview", "title": "Course: Preview", "icon": "$(open-preview)" },
       { "command": "course.refreshTree", "title": "Course: Refresh Tree", "icon": "$(refresh)" },
       { "command": "course.openInCanvas", "title": "Open in Canvas", "icon": "$(link-external)" },
-      { "command": "course.pushItem", "title": "Push Module", "icon": "$(cloud-upload)" }
+      { "command": "course.pushItem", "title": "Push Module", "icon": "$(cloud-upload)" },
+      { "command": "course.exportItem", "title": "Export to PDF/DOCX..." },
+      { "command": "course.exportModule", "title": "Export Module to PDF/DOCX..." },
+      { "command": "course.exportCourse", "title": "Course: Export to PDF/DOCX..." },
+      { "command": "course.exportCourseToc", "title": "Course: Export via TOC..." }
     ],
     "menus": {
       "view/title": [
@@ -69,7 +73,9 @@
         { "command": "course.pull", "when": "view == courseTree" },
         { "command": "course.status", "when": "view == courseTree" },
         { "command": "course.diff", "when": "view == courseTree" },
-        { "command": "course.validate", "when": "view == courseTree" }
+        { "command": "course.validate", "when": "view == courseTree" },
+        { "command": "course.exportCourse", "when": "view == courseTree" },
+        { "command": "course.exportCourseToc", "when": "view == courseTree && course.tocReady" }
       ],
       "view/item/context": [
         { "command": "course.pushItem", "when": "view == courseTree && viewItem =~ /^(page|assignment|external_url|file|module)$/", "group": "inline" },
@@ -84,7 +90,9 @@
         { "command": "course.mergeSetSource", "when": "view == courseTree && viewItem =~ /^(page|assignment)$/", "group": "1_edit" },
         { "command": "course.mergeWithSource", "when": "view == courseTree && viewItem =~ /^(page|assignment)$/ && course.mergeSourceSet", "group": "1_edit" },
         { "command": "course.deleteItem", "when": "view == courseTree && viewItem =~ /^(page|assignment|external_url|file|subheader)$/", "group": "2_danger" },
-        { "command": "course.deleteModule", "when": "view == courseTree && viewItem == module", "group": "2_danger" }
+        { "command": "course.deleteModule", "when": "view == courseTree && viewItem == module", "group": "2_danger" },
+        { "command": "course.exportItem", "when": "view == courseTree && viewItem =~ /^(page|assignment|external_url|file)$/", "group": "3_export" },
+        { "command": "course.exportModule", "when": "view == courseTree && viewItem == module", "group": "3_export" }
       ]
     }
   }

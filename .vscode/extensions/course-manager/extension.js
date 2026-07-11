@@ -192,6 +192,18 @@ async function resolveModuleFolder(treeItem, placeHolder) {
   return pickModuleFolder(placeHolder);
 }
 
+/** Ask which output format to export to. Returns 'pdf', 'docx', or null. */
+async function pickFormat() {
+  const picked = await vscode.window.showQuickPick(
+    [
+      { label: 'PDF', format: 'pdf' },
+      { label: 'Word (DOCX)', format: 'docx' },
+    ],
+    { placeHolder: 'Output format' }
+  );
+  return picked ? picked.format : null;
+}
+
 // --- Activation ---
 
 function activate(context) {
@@ -205,6 +217,7 @@ function activate(context) {
     treeDataProvider: courseTreeProvider,
     dragAndDropController: courseTreeProvider,
     showCollapseAll: true,
+    canSelectMany: true,
   });
   context.subscriptions.push(treeView);
 
@@ -489,6 +502,79 @@ function activate(context) {
     const filePath = editor.document.uri.fsPath;
     const line = editor.selection.active.line + 1; // VS Code is 0-based
     await runCli(['split-item', '--file', filePath, '--line', String(line)]);
+  });
+
+  // --- Export to PDF/DOCX (pandoc + typst) ---
+  // Output streams in the shared terminal, where pandoc/preflight messages
+  // belong. Item export supports multi-select: the second handler argument is
+  // the full tree selection when several items are highlighted.
+  register('course.exportItem', async (item, selected) => {
+    if (!validateWorkspace()) return;
+    const chosen = Array.isArray(selected) && selected.length ? selected : item ? [item] : [];
+    let paths = [...new Set(chosen.map((t) => t && t.filePath).filter(Boolean))];
+    if (paths.length === 0) {
+      const single = await resolveItemPath(item, 'Select item to export');
+      if (!single) return;
+      paths = [single];
+    }
+    const format = await pickFormat();
+    if (!format) return;
+    const quoted = paths.map((p) => `"${p}"`).join(' ');
+    runInTerminal(`npx course export ${quoted} --format ${format}`);
+  });
+
+  register('course.exportModule', async (treeItem) => {
+    if (!validateWorkspace()) return;
+    const folder = await resolveModuleFolder(treeItem, 'Select module to export');
+    if (!folder) return;
+    const format = await pickFormat();
+    if (!format) return;
+    runInTerminal(`npx course export --module ${folder} --format ${format}`);
+  });
+
+  register('course.exportCourse', async () => {
+    if (!validateWorkspace()) return;
+    const scope = await vscode.window.showQuickPick(
+      [
+        { label: 'Full course', scope: 'full' },
+        { label: 'Only flagged items', description: 'frontmatter export: true', scope: 'flagged' },
+        { label: 'Via table of contents…', description: 'curate a list first', scope: 'toc' },
+      ],
+      { placeHolder: 'What to export' }
+    );
+    if (!scope) return;
+
+    if (scope.scope === 'toc') {
+      // Two-step flow: generate the TOC, open it for editing, then gate the
+      // "Export via TOC" action (view menu) behind a context key.
+      const ok = await runCli(['export-toc']);
+      if (!ok) return;
+      const tocPath = path.join(workspaceRoot, 'exports', 'toc.md');
+      try {
+        const doc = await vscode.workspace.openTextDocument(tocPath);
+        await vscode.window.showTextDocument(doc);
+      } catch {
+        /* the file was written; opening is best-effort */
+      }
+      vscode.commands.executeCommand('setContext', 'course.tocReady', true);
+      vscode.window.showInformationMessage(
+        'Canvas Local: Delete the item lines you do not want, then run "Course: Export via TOC" from the view menu.'
+      );
+      return;
+    }
+
+    const format = await pickFormat();
+    if (!format) return;
+    const flag = scope.scope === 'flagged' ? ' --flagged' : '';
+    runInTerminal(`npx course export${flag} --format ${format}`);
+  });
+
+  register('course.exportCourseToc', async () => {
+    if (!validateWorkspace()) return;
+    const format = await pickFormat();
+    if (!format) return;
+    runInTerminal(`npx course export --toc "exports/toc.md" --format ${format}`);
+    vscode.commands.executeCommand('setContext', 'course.tocReady', false);
   });
 
   // --- Open in Canvas ---

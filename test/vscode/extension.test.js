@@ -142,6 +142,43 @@ describe('VS Code extension: context-aware commands', () => {
   });
 });
 
+describe('VS Code extension: export commands', () => {
+  const itemContextMenus = packageJson.contributes.menus['view/item/context'];
+  const viewTitleMenus = packageJson.contributes.menus['view/title'];
+
+  it('registers all export commands individually', () => {
+    for (const id of ['course.exportItem', 'course.exportModule', 'course.exportCourse', 'course.exportCourseToc']) {
+      assert.ok(extraRegistered.includes(id), `${id} should be registered via registerCommand`);
+    }
+  });
+
+  it('streams export output through the shared terminal', () => {
+    assert.match(extensionSource, /runInTerminal\(`npx course export /);
+    assert.match(extensionSource, /npx course export --module \$\{folder\} --format/);
+  });
+
+  it('exportItem supports multi-select via the second handler argument', () => {
+    assert.match(extensionSource, /register\('course\.exportItem',\s*async \(item, selected\)/);
+    assert.match(extensionSource, /Array\.isArray\(selected\)/);
+  });
+
+  it('offers Export on item and module context menus', () => {
+    const exportItem = itemContextMenus.find((m) => m.command === 'course.exportItem');
+    assert.ok(exportItem, 'course.exportItem needs a context menu entry');
+    assert.match(exportItem.when, /page\|assignment\|external_url\|file/);
+    const exportModule = itemContextMenus.find((m) => m.command === 'course.exportModule');
+    assert.ok(exportModule, 'course.exportModule needs a context menu entry');
+    assert.match(exportModule.when, /module/);
+  });
+
+  it('gates the TOC export action behind a context key', () => {
+    const tocEntry = viewTitleMenus.find((m) => m.command === 'course.exportCourseToc');
+    assert.ok(tocEntry, 'course.exportCourseToc needs a view/title entry');
+    assert.match(tocEntry.when, /course\.tocReady/);
+    assert.match(extensionSource, /setContext', 'course\.tocReady', true/);
+  });
+});
+
 describe('VS Code extension: subsection move support', () => {
   const itemContextMenus = packageJson.contributes.menus['view/item/context'];
 
