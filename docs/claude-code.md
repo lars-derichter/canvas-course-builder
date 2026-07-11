@@ -126,6 +126,29 @@ corrections, rewrites, and preferences you expressed, and folds them into
 corrected Claude Code's drafts, so you don't have to repeat the same feedback
 next time.
 
+### /design-lesson
+
+The `/design-lesson` skill helps you design a new lesson plan under
+`sources/lessons/`, following [course-context.md](course-context.md) and the
+collega-facing register of [style.md](style.md). It accepts rough notes, a
+request for a follow-up to an earlier lesson, or just a vague intent (it will
+ask up to three sharp questions). When you type `/design-lesson` in Claude Code
+it will:
+
+1. Read `course-context.md`, `style.md`, all existing lesson plans, and the
+   structural template lesson.
+2. Propose a design in chat — learning goals, place in the course, block
+   structure, deliberate exclusions — with honest pros and cons of **your**
+   suggestions and of **its own**, plus open questions.
+3. Stop and wait. Nothing is written until you approve the design.
+4. After approval, write `sources/lessons/lesson-NN.md` mirroring the template
+   lesson, and add new terms to the canonical glossary if your course keeps
+   one.
+5. Suggest follow-ups without running them: `/proofread`, `/summarize-lesson`,
+   `/build-lesson-module`.
+
+It never changes existing lessons and never commits.
+
 ### /initialize-course-context
 
 The `/initialize-course-context` skill fills in or refreshes
