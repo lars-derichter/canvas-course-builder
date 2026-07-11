@@ -52,6 +52,10 @@ read it before generating anything. Run `/initialize-course-context` once when
 you set up a course, and again after your README, docs, or course structure
 change substantially. Like `style.md`, you can also edit it by hand.
 
+How the lesson skills chain together — from idea to lesson plan to class
+version to published module — is described in the
+[Lesson Workflow](lesson-workflow.md).
+
 ## Skills
 
 Skills are predefined workflows that Claude Code can run. Type the skill name

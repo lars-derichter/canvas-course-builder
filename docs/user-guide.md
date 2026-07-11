@@ -247,6 +247,13 @@ operations.
 See [Claude Code](claude-code.md) for how to use Claude Code as an AI assistant
 for writing course content, managing modules, and more.
 
+## Lesson Workflow
+
+See the [Lesson Workflow](lesson-workflow.md) for the Claude Code skills that
+take a lesson from rough idea to lesson plan (`/design-lesson`), one-page class
+version (`/summarize-lesson`), and published student module
+(`/build-lesson-module`), plus the generated glossary pipeline.
+
 ## Updating Your Project
 
 See [Updating Your Project](updating-your-project.md) for how to pull in bug

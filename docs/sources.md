@@ -8,13 +8,33 @@ Create subfolders as needed. Suggested structure:
 
 ```
 sources/
-  articles/        # Research papers, blog posts, bookmarks
-  code-examples/   # Code snippets, demos, prototypes
-  images/          # Diagrams, screenshots, figures
-  ideas/           # Teaching ideas, rough notes, drafts
+  articles/             # Research papers, blog posts, bookmarks
+  code-examples/        # Code snippets, demos, prototypes
+  images/               # Diagrams, screenshots, figures
+  ideas/                # Teaching ideas, rough notes, drafts
+  lessons/              # Full lesson plans (lesson-NN.md)
+  lesson-plans/         # One-page class versions (lesson-plan-NN.md)
+  reference-materials/  # Canonical course data, e.g. glossary.yml
 ```
 
 No folders are required — add what you need, when you need it.
+
+## Lesson plans
+
+Three of the suggested folders carry the [lesson workflow](lesson-workflow.md):
+
+- **`lessons/`** — full lesson designs, one `lesson-NN.md` per lesson
+  (two-digit number). Written for you and colleagues; `/design-lesson` drafts
+  them and `/build-lesson-module` turns them into student modules under
+  `course/`.
+- **`lesson-plans/`** — one-page class versions, `lesson-plan-NN.md`,
+  distilled from the matching lesson by `/summarize-lesson`.
+- **`reference-materials/`** — canonical course data. `glossary.yml` here
+  feeds `npx course build-glossary`, which generates per-module glossary
+  pages.
+
+These conventions are defaults, not requirements — the skills follow whatever
+[course-context.md](course-context.md) says.
 
 ## Conventions
 
