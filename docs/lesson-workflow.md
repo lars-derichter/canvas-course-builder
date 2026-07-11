@@ -106,6 +106,38 @@ If your course maintains a canonical glossary, per-module glossary pages are
 New terms enter the YAML file when you design a lesson (`/design-lesson` adds
 them) or build a module; the pages then follow from one command.
 
+## After teaching: the retro
+
+`/lesson-retro` closes the loop. Right after a lesson, it interviews you —
+one question at a time — about timing, comprehension, what worked, and
+material friction, then folds timing corrections and notes-to-self back into
+the lesson plan and course-wide insights into `course-context.md`. Next
+year's version of the lesson starts better than this year's.
+
+## Assessment
+
+The same design-first pattern extends to testing:
+
+- `/design-evaluation` — draft an exam or test from the lessons taught so
+  far, starting from a blueprint matrix (learning goals × questions ×
+  difficulty) that flags over- and under-tested goals.
+- `/rubric` — a grading rubric for an assignment, every criterion traced to
+  the assignment text or a learning goal.
+- `/build-quiz` — a QTI package Canvas imports as a quiz, from a question
+  list or straight from your lessons.
+- `/coverage-map` — the whole-course picture: which goals are taught,
+  practised, and assessed, and where the gaps are.
+
+## Course quality
+
+Two report-only sweeps complement the single-file `/proofread`:
+
+- `/consistency-check` — dead links, terms used before their introducing
+  lesson, glossary drift, numbering and frontmatter problems across all
+  modules.
+- `/image-todos` — every placeholder image and image-TODO block still
+  waiting for real artwork.
+
 ## Adopting the workflow mid-course
 
 Nothing requires starting from scratch. Point `course-context.md` at your
