@@ -275,6 +275,23 @@ against the known 1x1 PNG; the report is one table (module, page, image file,
 TODO text) plus an orphan list — placeholders without a TODO, TODOs naming
 missing files, placeholders no page embeds. Pure report, writes nothing.
 
+### /lesson-retro
+
+The `/lesson-retro` skill debriefs a lesson right after you taught it, in a
+conversational interview — one question at a time, following up on your
+answers rather than working through a form. It opens wide ("how did it go?"),
+then adaptively covers timing per block (using the plan's actual block names
+and budgets), student comprehension, what worked, material friction, and
+what to change next time.
+
+Afterwards it sorts every observation into a destination and shows the list
+before touching anything: timing corrections and notes-to-self go into the
+lesson plan, insights that hold course-wide go into
+[course-context.md](course-context.md), content errors in student pages
+become a fix list, and writing-style corrections are pointed at
+`/update-style`. The retro is the one sanctioned way to modify an existing
+lesson plan; scope changes are flagged as a `/design-lesson` job instead.
+
 ### /initialize-course-context
 
 The `/initialize-course-context` skill fills in or refreshes
