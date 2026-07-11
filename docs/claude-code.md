@@ -159,6 +159,30 @@ invents content: if something belongs on the page but is missing from the
 source plan, it surfaces the gap and stops. Grouping labels and headings follow
 the Class versions section of [course-context.md](course-context.md).
 
+### /build-lesson-module
+
+The `/build-lesson-module` skill turns a finished lesson plan into a complete
+student-facing module under `course/`. When you type
+`/build-lesson-module <lesson>` in Claude Code it will:
+
+1. Read the lesson plan, [course-context.md](course-context.md),
+   [style.md](style.md), [frontmatter.md](frontmatter.md), and one or two
+   existing modules as worked examples.
+2. Propose a design in chat: module name and position, page split (overview,
+   content pages, reference cards if your course uses them, summary, glossary,
+   homework), downloadable code archives, and image placeholders.
+3. Stop and wait for your approval. Nothing is written in this phase.
+4. After approval, write every file: markdown pages with the right
+   frontmatter, code archives built to your course's conventions, transparent
+   placeholder PNGs with TODO notes for images, and `_category_.json`. If your
+   course keeps a canonical glossary, the module's glossary page is generated
+   with `npx course build-glossary`.
+5. Report what was created and suggest verification steps (Docusaurus preview,
+   `/proofread`) without running them.
+
+It invents nothing beyond the plan, never touches the source lesson or other
+modules, and never commits.
+
 ### /initialize-course-context
 
 The `/initialize-course-context` skill fills in or refreshes
