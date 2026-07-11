@@ -268,8 +268,3 @@ improvements, and submit pull requests.
 
 The Docusaurus preview uses Thomas More-inspired styling (orange `#fa6432`
 accent, Nunito font, light weights). Customise in `src/css/custom.css`.
-
-## Ideas
-
-See [Improvement Ideas](improvement-ideas.md) for feature ideas under
-consideration, like PDF export and content templates.
