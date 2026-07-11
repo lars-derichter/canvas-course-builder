@@ -187,6 +187,26 @@ student-facing module under `course/`. When you type
 It invents nothing beyond the plan, never touches the source lesson or other
 modules, and never commits.
 
+### /design-evaluation
+
+The `/design-evaluation` skill is the `evaluations/` counterpart of
+`/design-lesson`: it designs an exam or test from the lessons taught so far.
+When you type `/design-evaluation <scope>` in Claude Code it will:
+
+1. Read [course-context.md](course-context.md), [style.md](style.md), every
+   lesson plan in scope, and existing evaluations as worked examples.
+2. Propose a blueprint matrix in chat — per question: the learning goal(s) it
+   tests, difficulty level, and points — plus a coverage check that flags
+   goals not tested, goals weighted out of proportion to their lesson time,
+   and goals tested below the level they were taught at.
+3. Stop and wait for your approval.
+4. After approval, write two files under `evaluations/<year>/<slug>/`: the
+   student-facing `instructions.md` and the collega-facing `blueprint.md`
+   (matrix, coverage notes, scoring hints).
+
+It only tests what was taught: every question maps to a goal a lesson in
+scope actively practised. Nothing is committed.
+
 ### /initialize-course-context
 
 The `/initialize-course-context` skill fills in or refreshes
