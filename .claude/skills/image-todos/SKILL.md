@@ -20,13 +20,13 @@ means all of `course/`.
 ## Steps
 
 1. **Find placeholder PNGs.** `/build-lesson-module` writes a fixed 1x1
-   transparent PNG. Decode the known bytes to the scratchpad and compare
+   transparent PNG. Decode the known bytes to a temp file and compare
    checksums against every PNG under `course/**/_files/`:
 
    ```bash
    echo "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" \
-     | base64 -d > "$SCRATCHPAD/placeholder.png"
-   shasum "$SCRATCHPAD/placeholder.png"
+     | base64 -d > /tmp/image-todos-placeholder.png
+   shasum /tmp/image-todos-placeholder.png
    find course -path '*/_files/*.png' -exec shasum {} +
    ```
 
