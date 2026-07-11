@@ -22,6 +22,8 @@ conventions, so it can assist you effectively out of the box.
   sync state, logs, and Canvas responses
 - **Reviewing content** — ask Claude Code to check for broken links, missing
   frontmatter, or inconsistencies across modules
+- **Exporting to PDF or Word** — turn pages, modules, or the whole course into
+  printable documents, and derive a custom export style from a reference
 
 ## Writing style
 
@@ -291,6 +293,26 @@ lesson plan, insights that hold course-wide go into
 become a fix list, and writing-style corrections are pointed at
 `/update-style`. The retro is the one sanctioned way to modify an existing
 lesson plan; scope changes are flagged as a `/design-lesson` job instead.
+
+### /create-export-style
+
+The `/create-export-style` skill derives a reusable PDF/DOCX export style from a
+reference — a Word document, a PDF, a website, or a CSS file. Phase A inspects
+the source, works out the fonts, colours, spacing, and margins, and proposes a
+style spec that maps each decision to where it applies (the Typst template for
+PDF, the `reference.docx` styles for Word), then stops for approval. Phase B
+forks the shipped defaults into `sources/export-style/`, edits the template and
+the Word XML (keeping the custom alert and link-card styles intact), and
+regenerates the sample so you can see the result. See
+[export-styling.md](export-styling.md) for how the pipeline fits together.
+
+### /edit-export-style
+
+The `/edit-export-style` skill makes a plain-language change to an existing
+export style — "headings dark blue", "bigger margins", "font Georgia" — editing
+`sources/export-style/template.typ` (PDF) and/or `reference.docx` (Word),
+keeping the two formats in sync, then regenerating the sample. It forks the
+shipped defaults on first use, so your style survives upstream updates.
 
 ### /initialize-course-context
 
