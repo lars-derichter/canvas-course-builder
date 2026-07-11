@@ -1,0 +1,278 @@
+const fs = require('fs');
+const path = require('path');
+const yaml = require('js-yaml');
+
+const log = require('./logger');
+const { parseFrontmatter } = require('../lib/convert/frontmatter');
+
+const COURSE_DIR = path.resolve(process.cwd(), 'course');
+const DEFAULT_GLOSSARY_PATH = 'sources/reference-materials/glossary.yml';
+
+// Per-course values live in the glossary file's own `config:` block, so they
+// sit under the protected sources/ tree and survive upstream updates.
+const DEFAULT_CONFIG = {
+  title: '📘 Glossary',
+  page_pattern: 'glossary\\.md$',
+  module_pattern: '^(\\d+)',
+  intro:
+    'This is the glossary as it stands after lesson {lesson}. It grows as ' +
+    'the course progresses: each module shows the full list up to that ' +
+    'point, in alphabetical order.',
+  kinds: ['concept', 'code', 'operator'],
+  code_kinds: ['code', 'operator'],
+  headings: { operators: 'Operators', terms: 'Terms' },
+};
+
+/**
+ * Load and validate the canonical glossary.
+ * @param {string} glossaryPath - Absolute path to the glossary YAML file.
+ * @returns {{ terms: Array<object>, config: object }} Term entries and the
+ *   file's config merged over the defaults.
+ */
+function loadGlossary(glossaryPath) {
+  const raw = fs.readFileSync(glossaryPath, 'utf8');
+  const data = yaml.load(raw);
+  if (!data || !Array.isArray(data.terms)) {
+    throw new Error(`${path.basename(glossaryPath)} has no "terms" list`);
+  }
+  const config = {
+    ...DEFAULT_CONFIG,
+    ...(data.config || {}),
+    headings: { ...DEFAULT_CONFIG.headings, ...(data.config || {}).headings },
+  };
+  for (const t of data.terms) {
+    if (!t.term || typeof t.lesson !== 'number' || !t.kind || !t.definition) {
+      throw new Error(
+        `glossary entry is missing a required field: ${JSON.stringify(t)}`,
+      );
+    }
+    if (!config.kinds.includes(t.kind)) {
+      throw new Error(`Unknown kind "${t.kind}" for term "${t.term}"`);
+    }
+  }
+  return { terms: data.terms, config };
+}
+
+/**
+ * Render one term as a Markdown list item.
+ */
+function renderLemma(t, config = DEFAULT_CONFIG) {
+  const isCode = config.code_kinds.includes(t.kind);
+  let head = isCode ? `**\`${t.term}\`**` : `**${t.term}**`;
+  const synonyms = t.synonyms || [];
+  if (synonyms.length) head += ` (${synonyms.join(', ')})`;
+  let line = `- ${head}: ${t.definition}`;
+  if (t.note) line += ` ${t.note}`;
+  return line;
+}
+
+/**
+ * Build the full page body (intro + sections) for a given lesson number.
+ * Cumulative: every term with lesson <= the page's lesson.
+ */
+function renderBody(terms, lesson, config = DEFAULT_CONFIG) {
+  const upto = terms.filter((t) => t.lesson <= lesson);
+
+  // Operators sort on the raw symbol; terms sort case-insensitively.
+  const operators = upto
+    .filter((t) => t.kind === 'operator')
+    .sort((a, b) => (a.term < b.term ? -1 : a.term > b.term ? 1 : 0));
+  const regular = upto
+    .filter((t) => t.kind !== 'operator')
+    .sort((a, b) => {
+      const x = a.term.toLowerCase();
+      const y = b.term.toLowerCase();
+      return x < y ? -1 : x > y ? 1 : 0;
+    });
+
+  const lines = [config.intro.replaceAll('{lesson}', String(lesson)), ''];
+  if (operators.length) {
+    lines.push(`## ${config.headings.operators}`, '');
+    for (const t of operators) lines.push(renderLemma(t, config));
+    lines.push('');
+  }
+  lines.push(`## ${config.headings.terms}`, '');
+  for (const t of regular) lines.push(renderLemma(t, config));
+
+  return lines.join('\n');
+}
+
+/**
+ * Serialize a page: preserve all existing frontmatter (e.g. canvas_id), force
+ * the canonical title, default canvas_type, then append the generated body.
+ *
+ * The frontmatter is dumped with the project's js-yaml 4.x and forceQuotes, so
+ * every string scalar is double-quoted with the emoji kept literal. Docusaurus
+ * trips over an unquoted emoji title, and gray-matter's bundled js-yaml 3.x
+ * would mangle the emoji into a `\U..` escape — hence neither plain js-yaml
+ * output nor serializeFrontmatter works here.
+ */
+function serializePage(existingData, body, config = DEFAULT_CONFIG) {
+  // title and canvas_type first, then any remaining keys in their original order.
+  const ordered = {
+    title: config.title,
+    canvas_type: existingData.canvas_type || 'page',
+  };
+  for (const [k, v] of Object.entries(existingData)) {
+    if (k !== 'title' && k !== 'canvas_type') ordered[k] = v;
+  }
+  const frontmatter = yaml
+    .dump(ordered, { lineWidth: -1, forceQuotes: true, quotingType: '"' })
+    .trimEnd();
+  return `---\n${frontmatter}\n---\n\n${body}\n`;
+}
+
+/**
+ * Find the single glossary markdown file in a module folder, if any.
+ */
+function findGlossaryPage(moduleDir, config) {
+  const pageRe = new RegExp(config.page_pattern, 'i');
+  const matches = fs.readdirSync(moduleDir).filter((f) => pageRe.test(f));
+  if (matches.length === 0) return null;
+  if (matches.length > 1) {
+    throw new Error(
+      `Multiple glossary pages in ${moduleDir}: ${matches.join(', ')}`,
+    );
+  }
+  return matches[0];
+}
+
+/**
+ * Resolve the lesson number a module's glossary page renders up to:
+ * a `lesson:` frontmatter key on the page wins; otherwise the config's
+ * module_pattern regex is applied to the folder name (by default the
+ * module's numeric prefix, i.e. module number = lesson number).
+ */
+function resolveLesson(folder, pageData, config) {
+  if (typeof pageData.lesson === 'number') return pageData.lesson;
+  const match = folder.match(new RegExp(config.module_pattern, 'i'));
+  if (!match || match[1] === undefined) return null;
+  return parseInt(match[1], 10);
+}
+
+/**
+ * Regenerate every module's glossary page from the canonical glossary file.
+ *
+ * @param {object} options
+ * @param {string} [options.module] - Limit to a single module folder name.
+ * @param {string} [options.glossary] - Path to the glossary YAML file.
+ * @param {boolean} [options.check] - Do not write; exit non-zero if any page
+ *   is out of date. Useful for CI and pre-push checks.
+ */
+async function buildGlossary(options = {}) {
+  const glossaryPath = path.resolve(
+    process.cwd(),
+    options.glossary || DEFAULT_GLOSSARY_PATH,
+  );
+  if (!fs.existsSync(glossaryPath)) {
+    log.error(`[build-glossary] No glossary found at ${glossaryPath}`);
+    process.exit(1);
+  }
+  if (!fs.existsSync(COURSE_DIR)) {
+    log.error('[build-glossary] No course/ directory found.');
+    process.exit(1);
+  }
+
+  let terms;
+  let config;
+  try {
+    ({ terms, config } = loadGlossary(glossaryPath));
+  } catch (err) {
+    log.error(`[build-glossary] ${err.message}`);
+    process.exit(1);
+  }
+
+  const folders = fs
+    .readdirSync(COURSE_DIR, { withFileTypes: true })
+    .filter((d) => d.isDirectory() && !d.name.startsWith('_'))
+    .map((d) => d.name)
+    .sort();
+
+  if (options.module && !folders.includes(options.module)) {
+    log.error(
+      `[build-glossary] Module "${options.module}" not found in course/ directory.`,
+    );
+    process.exit(1);
+  }
+
+  let written = 0;
+  let unchanged = 0;
+  let skipped = 0;
+  const stale = [];
+
+  for (const folder of folders) {
+    if (options.module && folder !== options.module) continue;
+
+    try {
+      const moduleDir = path.join(COURSE_DIR, folder);
+      const pageFile = findGlossaryPage(moduleDir, config);
+      if (!pageFile) continue; // module has no glossary page
+
+      const filePath = path.join(moduleDir, pageFile);
+      const raw = fs.readFileSync(filePath, 'utf8');
+      const { data } = parseFrontmatter(raw);
+
+      const lesson = resolveLesson(folder, data, config);
+      if (lesson === null) {
+        // Not a lesson module (e.g. a reference module). Its page is not a
+        // cumulative-to-lesson-N render, so leave it alone and say so.
+        log.warn(
+          `[build-glossary] Skipped ${folder}/${pageFile}: no lesson number ` +
+            `(no "lesson:" frontmatter, folder does not match /${config.module_pattern}/).`,
+        );
+        skipped += 1;
+        continue;
+      }
+
+      const output = serializePage(data, renderBody(terms, lesson, config), config);
+
+      if (output === raw) {
+        unchanged += 1;
+        log.verbose(`[build-glossary] unchanged: ${folder}/${pageFile}`);
+        continue;
+      }
+
+      if (options.check) {
+        stale.push(`${folder}/${pageFile}`);
+        continue;
+      }
+
+      fs.writeFileSync(filePath, output, 'utf8');
+      written += 1;
+      log.info(
+        `[build-glossary] wrote ${folder}/${pageFile} (up to lesson ${lesson})`,
+      );
+    } catch (err) {
+      log.error(`[build-glossary] Failed on ${folder}: ${err.message}`);
+      process.exit(1);
+    }
+  }
+
+  if (options.check) {
+    if (stale.length) {
+      log.error(
+        `[build-glossary] ${stale.length} glossary page(s) out of date:\n  ` +
+          stale.join('\n  ') +
+          '\nRun: npx course build-glossary',
+      );
+      process.exit(1);
+    }
+    log.info('[build-glossary] All glossary pages are up to date.');
+    return;
+  }
+
+  log.info(
+    `[build-glossary] Done: ${written} written, ${unchanged} unchanged` +
+      (skipped ? `, ${skipped} skipped` : '') +
+      '.',
+  );
+}
+
+module.exports = buildGlossary;
+// Exported for unit tests.
+module.exports.DEFAULT_CONFIG = DEFAULT_CONFIG;
+module.exports.loadGlossary = loadGlossary;
+module.exports.renderLemma = renderLemma;
+module.exports.renderBody = renderBody;
+module.exports.serializePage = serializePage;
+module.exports.resolveLesson = resolveLesson;

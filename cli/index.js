@@ -148,6 +148,18 @@ program
   .action(require('./validate'));
 
 program
+  .command('build-glossary')
+  .description('Regenerate module glossary pages from the canonical glossary YAML')
+  .option('-m, --module <name>', 'Only rebuild a specific module folder name')
+  .option(
+    '-g, --glossary <path>',
+    'Path to the glossary YAML file',
+    'sources/reference-materials/glossary.yml',
+  )
+  .option('--check', 'Do not write; exit non-zero if any page is out of date')
+  .action(require('./build-glossary'));
+
+program
   .command('reset-sync-state')
   .description('Remove all canvas_id fields from course files and delete .canvas-sync.json')
   .action(require('./reset-sync-state'));

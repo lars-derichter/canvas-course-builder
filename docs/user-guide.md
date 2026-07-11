@@ -172,6 +172,18 @@ npx course split-item         # split an item into two files at a given line
 Item commands auto-detect the current module when run from inside a module
 folder. Items can be added to the module root or into subsections.
 
+### Generated glossary pages
+
+```bash
+npx course build-glossary          # regenerate module glossary pages from the canonical glossary
+npx course build-glossary --check  # verify pages are up to date (CI / pre-push)
+```
+
+If your course keeps a canonical glossary in
+`sources/reference-materials/glossary.yml`, this command renders a cumulative
+glossary page per module. See the [Lesson Workflow](lesson-workflow.md) for the
+file format and how it fits the authoring flow.
+
 ### Docusaurus preview
 
 ```bash
