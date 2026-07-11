@@ -248,6 +248,24 @@ Findings come back in the same three buckets as `/proofread` (**must fix**,
 fix. Nothing is fixed without confirmation, and only the mechanical
 categories are ever auto-applied.
 
+### /build-quiz
+
+The `/build-quiz` skill turns a question list — a notes file, a
+`blueprint.md` from `/design-evaluation`, questions drafted in the
+conversation, or questions generated from your lessons — into a QTI 1.2
+`.zip` that Canvas imports as a quiz. Phase A maps every question to a
+supported Canvas question type (multiple choice, multiple answers,
+true/false, short answer, numerical, essay), flags anything that fits none,
+and stops for approval. Phase B generates the package under
+`evaluations/<year>/<slug>/`, verifies its structure and question count, and
+writes a collega-facing `questions.md` with the answers.
+
+Importing is manual (there is no quiz sync): in Canvas go to **Settings →
+Import Course Content**, choose content type **QTI .zip file**, select the
+generated zip, and import. The quiz appears unpublished under **Quizzes**;
+check the questions and points, set availability dates and time limit (QTI
+does not carry those), then publish. The skill's report repeats these steps.
+
 ### /initialize-course-context
 
 The `/initialize-course-context` skill fills in or refreshes
