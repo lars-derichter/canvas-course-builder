@@ -160,6 +160,33 @@ program
   .action(require('./build-glossary'));
 
 program
+  .command('export [paths...]')
+  .description('Export course materials to PDF or DOCX (needs pandoc and typst)')
+  .option('-m, --module <folder>', 'Export one full module')
+  .option('--toc <file>', 'Export the items listed in a TOC file')
+  .option('--flagged', 'Only include items with frontmatter export: true')
+  .option('-f, --format <format>', 'Output format: pdf or docx', 'pdf')
+  .option('-o, --output <path>', 'Output file path')
+  .option('--title <text>', 'Title-page title')
+  .option('--subtitle <text>', 'Title-page subtitle')
+  .option('--template <path>', 'Override the Typst template')
+  .option('--reference-doc <path>', 'Override the reference.docx')
+  .option('--var <key=value>', 'Pandoc variable (repeatable)', require('./export').collectVar, {})
+  .option('--keep-markdown', 'Also write the intermediate combined markdown')
+  .option('--sample', 'Export the kitchen-sink style sample')
+  .action(require('./export'));
+
+program
+  .command('export-toc')
+  .description('Write a TOC file listing course items, for a curated export')
+  .option('-m, --module <folder>', 'Only list items from one module')
+  .option('--flagged', 'Only list items with frontmatter export: true')
+  .option('--title <text>', 'Title for the TOC frontmatter')
+  .option('--subtitle <text>', 'Subtitle for the TOC frontmatter')
+  .option('-o, --output <path>', 'Output file path (default exports/toc.md)')
+  .action(require('./export-toc'));
+
+program
   .command('reset-sync-state')
   .description('Remove all canvas_id fields from course files and delete .canvas-sync.json')
   .action(require('./reset-sync-state'));
