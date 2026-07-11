@@ -266,6 +266,15 @@ generated zip, and import. The quiz appears unpublished under **Quizzes**;
 check the questions and points, set availability dates and time limit (QTI
 does not carry those), then publish. The skill's report repeats these steps.
 
+### /image-todos
+
+The `/image-todos` skill lists all outstanding image work across the course:
+the transparent placeholder PNGs and image-TODO comment blocks that
+`/build-lesson-module` leaves behind. Placeholders are confirmed by checksum
+against the known 1x1 PNG; the report is one table (module, page, image file,
+TODO text) plus an orphan list — placeholders without a TODO, TODOs naming
+missing files, placeholders no page embeds. Pure report, writes nothing.
+
 ### /initialize-course-context
 
 The `/initialize-course-context` skill fills in or refreshes
