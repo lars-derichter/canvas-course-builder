@@ -207,6 +207,18 @@ When you type `/design-evaluation <scope>` in Claude Code it will:
 It only tests what was taught: every question maps to a goal a lesson in
 scope actively practised. Nothing is committed.
 
+### /rubric
+
+The `/rubric` skill builds a grading rubric for one assignment — a homework
+page under `course/` or an evaluation under `evaluations/`. Phase A proposes
+the criteria × levels matrix in chat, with every criterion traced to a
+requirement in the assignment text or a learning goal, plus an alignment
+check for requirements without a criterion (and vice versa). After your
+approval, Phase B writes a collega-facing markdown rubric — next to the
+evaluation, or under `sources/rubrics/` for homework (never inside `course/`,
+where it would be served and synced). Output is markdown only; Canvas has no
+rubric sync in this project.
+
 ### /initialize-course-context
 
 The `/initialize-course-context` skill fills in or refreshes
