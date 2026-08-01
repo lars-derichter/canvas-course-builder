@@ -345,3 +345,44 @@ Add reset-canvas command to wipe all content from a Canvas course
 Upload files to module-named Canvas folder instead of unfiled
 Fix push failing to add pages/assignments to Canvas modules
 ```
+
+## Writing your own skills
+
+Skills live in `.claude/skills/<name>/SKILL.md`. The shipped skills follow a
+shared template; new ones should too, so they stay predictable for both the
+reader and the model:
+
+- **Frontmatter**: `name` (matching the folder) and a `description` that
+  says what the skill does, where it writes, and the approval gate if any,
+  ending in four or five quoted trigger phrases in English and Dutch.
+- **Section order**: H1, a 2–4-line intro, `## Input` (only when the skill
+  takes arguments — describe the `$ARGUMENTS` forms and the fallback),
+  `## Steps`, `## Rules`, and a bare `$ARGUMENTS` line at the end.
+- **Approval gates** only when a skill writes something worth reviewing
+  first. Split `## Steps` into `### Phase A — <Verb> (writes nothing)` and
+  `### Phase B — <Verb> (only after approval)`, and end Phase A with the
+  canonical sentence: "Stop. Wait for explicit approval before starting
+  Phase B."
+- **State each rule once.** A rule already carried by a step does not
+  reappear under `## Rules`; drop the Rules section if nothing is left.
+- **Defer, don't copy.** Content owned by [style.md](style.md),
+  [frontmatter.md](frontmatter.md), or
+  [course-context.md](course-context.md) is referenced, never inlined —
+  copies drift. Dense reference payloads (format specs, protocol details)
+  go in a `references/` file inside the skill folder, read on demand.
+- **Course-agnostic.** No hardcoded course vocabulary, module names, or
+  paths that exist in only one course; course facts come from
+  `course-context.md` at runtime.
+- **Temp files** go to the session scratchpad, never `/tmp`. Build zips and
+  binaries there and copy them into the repo (cloud-synced folders can
+  reject direct writes).
+- **Naming**: verb-first for actions on course material — `design-*` for
+  gated interactive authoring, `build-*` for generation from an approved
+  source, `initialize-*` for one-time setup interviews — and noun-first for
+  configuration clusters (`style-*`, `export-style-*`) so related skills
+  sort together.
+
+If you rename or remove a skill folder in this template repo, add the old
+path to `STALE_PATHS` in
+[update-from-upstream.sh](../update-from-upstream.sh) so downstream
+projects prune it on their next update.
