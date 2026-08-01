@@ -132,6 +132,29 @@ for file in "${PROTECTED_FILES[@]}"; do
   fi
 done
 
+# --- Prune paths renamed or removed upstream ---
+#
+# A squash merge never deletes files that exist only locally, so a folder
+# that upstream renamed would linger here under its old name next to the new
+# one. Upstream lists old paths here when a rename happens. Removal is safe:
+# git history keeps the old content, and the renamed successor arrives in
+# the same update.
+
+STALE_PATHS=(
+  ".claude/skills/initialize-style"
+  ".claude/skills/update-style"
+  ".claude/skills/create-export-style"
+  ".claude/skills/edit-export-style"
+)
+
+for path in "${STALE_PATHS[@]}"; do
+  if [ -e "$path" ]; then
+    echo "Removing stale path (renamed upstream): $path"
+    git rm -r -q --cached --ignore-unmatch -- "$path" >/dev/null 2>&1 || true
+    rm -rf -- "$path"
+  fi
+done
+
 # --- Resolve any remaining (non-protected) conflicts interactively ---
 #
 # Each conflicted file exists on both sides with differing content. For each one,

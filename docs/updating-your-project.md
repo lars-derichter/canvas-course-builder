@@ -103,6 +103,18 @@ upstream_branch = main
 Because the config file is itself protected, edits you make here are never
 overwritten. Commit the file after changing it.
 
+### Renamed skill folders
+
+Upstream occasionally renames a skill folder (in 2026: `initialize-style` →
+`style-init`, `update-style` → `style-update`, `create-export-style` →
+`export-style-create`, `edit-export-style` → `export-style-edit`). A squash
+merge does not delete the old folder in your project, so the update script
+prunes known old paths automatically — but it can only do that from the run
+*after* the one that brought it the new list. After an update that renames
+skills, either run the update once more or remove the old folders yourself
+with `git rm -r`. If you customized one of the old skills, re-apply your
+edits to the renamed successor; the old content stays in your git history.
+
 ## Resolving conflicts
 
 A conflict only happens when a file outside your protected paths was changed
