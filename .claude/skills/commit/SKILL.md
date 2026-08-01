@@ -1,6 +1,6 @@
 ---
 name: commit
-description: Stage changes and create a git commit with a clear, consistent message.
+description: Stage changes and create a git commit with a clear, consistent message. Use for "commit", "commit dit", "maak een commit", "commit the changes".
 ---
 
 # Commit
@@ -9,55 +9,46 @@ Create a git commit following the project's commit message conventions.
 
 ## Steps
 
-1. Run `git status` (never use `-uall`) and `git diff` to review all changes.
-2. **Before staging**, run `git remote get-url origin` to determine the mode:
-   - If the **origin** URL contains `canvas-local` → **development mode**: skip
-     **all** changes inside `course/` unless the user explicitly asks to include
-     them. These are typically temporary test artifacts from sync testing and
-     should not end up in git history or on the remote.
-   - Otherwise → **production mode**: stage all changes (including `canvas_id`
-     and other `course/` changes) normally.
-3. Stage the appropriate files by name. Prefer `git add <file>...` over
-   `git add -A` or `git add .`.
-4. Write a commit message and commit. Pass the message via a HEREDOC:
+1. Review all changes with `git status` (never `-uall`) and `git diff`.
+2. **Before staging**, run `git remote get-url origin` to determine the
+   mode:
+   - Origin URL contains `canvas-local` → **development mode**: skip all
+     changes inside `course/` unless the user explicitly asks to include
+     them — they are typically temporary sync-test artifacts that should
+     not reach git history or the remote.
+   - Otherwise → **production mode**: stage everything (including
+     `canvas_id` and other `course/` changes) normally.
+3. Stage by name (`git add <file>...`), never `git add -A` or `git add .`.
+4. Commit with the message in a HEREDOC, ending in the standard Claude
+   Code co-author trailer the harness specifies for the current model —
+   never a hardcoded model name:
    ```bash
    git commit -m "$(cat <<'EOF'
    Message here
 
-   Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+   <standard Claude Code co-author trailer>
    EOF
    )"
    ```
-5. Run `git status` to verify the commit succeeded.
 
-## Commit message style
+## Message style
 
-- **Imperative, present tense, verb-first.** Start with a verb like Add, Fix,
-  Update, Replace, Remove, Rename, Move, Rewrite, Extract, Correct, Upload.
-- **Single line summary** — no conventional-commit prefixes (no `feat:`,
-  `fix:`, etc.).
-- **Focus on what and why**, not implementation details.
-- Keep it concise but descriptive enough to understand the change without
-  reading the diff.
-- Add a blank line and a short body only when the summary alone is not enough
-  to explain the motivation.
-
-### Examples from this project
-
-```
-Add reset-canvas command to wipe all content from a Canvas course
-Fix push failing to add pages/assignments to Canvas modules
-Upload files to module-named Canvas folder instead of unfiled
-Add instruction to exclude instance-specific canvas_id from commits
-Replace example module with comprehensive Getting Started guide
-```
+- Imperative, present tense, verb-first (Add, Fix, Update, Replace,
+  Remove, Rewrite, …); no conventional-commit prefixes (`feat:`, `fix:`).
+- A single-line summary focused on what and why, concise but clear
+  without reading the diff. A blank line plus a short body only when the
+  summary alone cannot carry the motivation.
+- Examples from this project:
+  ```
+  Add reset-canvas command to wipe all content from a Canvas course
+  Fix push failing to add pages/assignments to Canvas modules
+  Replace example module with comprehensive Getting Started guide
+  ```
 
 ## Rules
 
-- Never push to the remote unless explicitly asked.
-- Never amend an existing commit unless explicitly asked.
-- Never skip hooks (`--no-verify`).
-- If a pre-commit hook fails, fix the issue, re-stage, and create a **new**
-  commit (do not amend).
+- Never push or amend unless explicitly asked.
+- Never skip hooks (`--no-verify`). If a pre-commit hook fails, fix the
+  issue, re-stage, and create a new commit — do not amend.
 
 $ARGUMENTS
