@@ -118,7 +118,10 @@ for the student pages that surface in the retro can be logged with
 
 ## Assessment
 
-The same design-first pattern extends to testing:
+The same design-first pattern extends to testing. The first three skills
+form a pipeline — `/design-evaluation` produces the approved blueprint,
+`/build-quiz` turns approved questions into a Canvas-import zip, and
+`/rubric` adds the grading criteria — but each also works on its own:
 
 - `/design-evaluation` — draft an exam or test from the lessons taught so
   far, starting from a blueprint matrix (learning goals × questions ×

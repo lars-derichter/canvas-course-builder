@@ -1,6 +1,6 @@
 ---
 name: consistency-check
-description: Whole-course consistency sweep of course/ — dead cross-links, terms used before their introducing lesson, glossary drift, duplicate or gapped numeric prefixes, frontmatter problems, stale prerequisite references. Complements /proofread, which checks a single file. Reports findings grouped by severity; does not auto-fix. Use for "consistency check", "consistentiecheck", "dode links zoeken", "hele cursus nakijken", "cursusbrede controle", "check alle modules".
+description: Whole-course consistency sweep of course/ — dead cross-links, terms used before their introducing lesson, glossary drift, duplicate or gapped numeric prefixes, frontmatter problems, stale prerequisite references. Complements /proofread, which checks a single file, and /coverage-map, which checks learning-goal alignment rather than structure. Reports findings grouped by severity; does not auto-fix. Use for "consistency check", "consistentiecheck", "dode links zoeken", "hele cursus nakijken", "check alle modules".
 ---
 
 # Consistency check
