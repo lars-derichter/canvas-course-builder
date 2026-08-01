@@ -333,6 +333,38 @@ The `/initialize-course-context` skill fills in or refreshes
 Re-running is expected: existing content is treated as confirmed and only
 updated where the repo now contradicts it. Nothing is committed automatically.
 
+### /report-issue
+
+The `/report-issue` skill logs an error or a wanted change while you are
+checking course material — on the site, in Canvas, or in the raw markdown —
+without pulling you out of your reviewing flow. Describe the problem and
+where you saw it (a page title as rendered is fine; it maps that back to the
+file); the skill pins the exact passage, quotes it back, and appends one
+bullet to the issue queue in `sources/issues.md`. It asks at most one
+clarifying question, and if the location stays ambiguous it logs the report
+anyway with a marker rather than interrogating you.
+
+It never fixes or diagnoses anything — that is `/fix-issues` — and it never
+commits. The queue file is created on first use, is safe to hand-edit, and
+documents its own entry format.
+
+### /fix-issues
+
+The `/fix-issues` skill works through the open entries in
+`sources/issues.md`, in two phases. Phase A is triage: it verifies every
+entry against the current files, groups related ones, and checks the wider
+implications of each fix — the same defect on other pages, a style
+preference that belongs in `style.md` (routed to `/update-style`, never
+folded in silently), glossary drift, contradictions with
+`course-context.md`, lesson plans, or evaluations. It bundles all its
+clarifying questions into a single round, presents one fix plan, and stops.
+
+Phase B runs only after you approve the plan: it applies the fixes, runs a
+style pass on the touched passages, and moves each handled entry to the
+queue's Resolved section with the date and what fixed it. Nothing is
+committed, and Canvas keeps serving the old text until you run
+`npx course push` yourself.
+
 ### /commit
 
 The `/commit` skill makes committing safer and more consistent. When you type

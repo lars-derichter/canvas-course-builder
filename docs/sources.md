@@ -15,9 +15,12 @@ sources/
   lessons/              # Full lesson plans (lesson-NN.md)
   lesson-plans/         # One-page class versions (lesson-plan-NN.md)
   reference-materials/  # Canonical course data, e.g. glossary.yml
+  issues.md             # Issue queue: /report-issue appends, /fix-issues resolves
 ```
 
-No folders are required — add what you need, when you need it.
+No folders are required — add what you need, when you need it. `issues.md`
+is created by `/report-issue` on first use and is safe to hand-edit; its
+header documents the entry format.
 
 ## Lesson plans
 
