@@ -34,9 +34,9 @@ Three skills wrap around `style.md`:
 
 - Run `/proofread <path>` to check an existing document against `style.md`
   (spelling, grammar, naturalness, audience-appropriate register).
-- Run `/initialize-style` once when you set up a new course, to adapt `style.md`
+- Run `/style-init` once when you set up a new course, to adapt `style.md`
   to your own voice and audience.
-- Run `/update-style` now and then after a working session in which you
+- Run `/style-update` now and then after a working session in which you
   corrected Claude Code's drafts, to fold those corrections into `style.md` as
   durable rules so you don't have to repeat them.
 
@@ -66,28 +66,19 @@ Skills are predefined workflows that Claude Code can run. Type the skill name
 ### /proofread
 
 The `/proofread` skill checks a Dutch markdown document against
-[style.md](style.md) and your spelling. When you type `/proofread <path>` in
-Claude Code it will:
+[style.md](style.md) and your spelling. It determines the register from the
+file path (`course/` and `evaluations/` are student-facing; anything under
+`sources/` is collega-facing), applies the shared rules plus the
+audience-specific section, runs mechanical and naturalness checks, and
+spell-checks with `hunspell` if installed — treating `cSpell.words` in
+[.vscode/settings.json](../.vscode/settings.json) and code-block tokens as
+the project whitelist.
 
-1. Determine the register from the file path (`course/`, `evaluations/` are
-   student-facing; `sources/lessons/`, `sources/lesson-plans/`, and anything
-   else under `sources/` are collega-facing). For other paths, it asks.
-2. Read `style.md` and apply the shared rules plus the audience-specific
-   section.
-3. Run mechanical checks: em-dashes, AI-tell phrases, Hollandisms, title-case
-   headings, address form (`u`/`jij`), audience-mismatch (page-title emoji or
-   callouts in a collega doc; meta-intros in a student doc).
-4. Spell-check with `hunspell` if installed, treating `cSpell.words` in
-   [.vscode/settings.json](../.vscode/settings.json) and code-block tokens as
-   the project whitelist.
-5. Read the prose for naturalness: anglicisms and translated-English patterns,
-   decorative tricolons, scattered bold, trailing summaries.
-6. Report findings in three buckets: **must fix**, **strongly suggest**,
-   **consider**. Each finding includes the line number, the quoted text, a
-   one-sentence diagnosis, and a proposed replacement.
-
-The skill reports but does not auto-fix. After the report it offers to apply
-selected fixes; the default is to leave the file alone. Nothing is committed.
+Findings come back in three buckets — **must fix**, **strongly suggest**,
+**consider** — each with the line number, the quoted text, a one-sentence
+diagnosis, and a proposed replacement. The skill reports but does not
+auto-fix: after the report it offers to apply selected fixes, and the
+default is to leave the file alone. Nothing is committed.
 
 For best spell-checking, install `hunspell` with `nl_NL` and `en_GB`
 dictionaries:
@@ -104,29 +95,22 @@ curl -fLO https://raw.githubusercontent.com/LibreOffice/dictionaries/master/en/e
 Without `hunspell`, the skill falls back to a visual spelling scan and says so
 in the report.
 
-### /initialize-style
+### /style-init
 
-The `/initialize-style` skill adapts [style.md](style.md) to your own voice and
-audience. When you type `/initialize-style` in Claude Code it will:
-
-1. Ask for samples of your own writing and read them (strongly preferred).
-2. Interview you about course language, student level, tone, formality,
-   punctuation, emoji, and callout preferences — only the parts the samples did
-   not already answer.
-3. Rewrite `style.md` to match, preserving its section structure.
-4. Update [CLAUDE.md](../CLAUDE.md) if anything in it now contradicts the new
-   style.
-
-If you have no samples, the skill will run interview-only and warn you that the
-result is a best guess. You can still edit the file directly afterwards or
-refine it later with `/update-style`.
+The `/style-init` skill adapts [style.md](style.md) to your own voice and
+audience: it asks for samples of your writing (strongly preferred),
+interviews you only about what the samples did not answer — course language,
+student level, tone, formality, punctuation, emoji, callouts — and rewrites
+`style.md` to match, preserving its structure. Without samples it runs
+interview-only and warns you that the result is a best guess.
 
 Run this once when you set up a new course, and again whenever your voice or
-audience changes substantially.
+audience changes substantially; refine later with `/style-update` or by
+editing the file directly.
 
-### /update-style
+### /style-update
 
-The `/update-style` skill reviews the current Claude Code conversation for style
+The `/style-update` skill reviews the current Claude Code conversation for style
 corrections, rewrites, and preferences you expressed, and folds them into
 [style.md](style.md) as durable rules. Use it after a session in which you
 corrected Claude Code's drafts, so you don't have to repeat the same feedback
@@ -137,23 +121,17 @@ next time.
 The `/design-lesson` skill helps you design a new lesson plan under
 `sources/lessons/`, following [course-context.md](course-context.md) and the
 collega-facing register of [style.md](style.md). It accepts rough notes, a
-request for a follow-up to an earlier lesson, or just a vague intent (it will
-ask up to three sharp questions). When you type `/design-lesson` in Claude Code
-it will:
+request for a follow-up to an earlier lesson, or just a vague intent (it
+asks up to three sharp questions).
 
-1. Read `course-context.md`, `style.md`, all existing lesson plans, and the
-   structural template lesson.
-2. Propose a design in chat — learning goals, place in the course, block
-   structure, deliberate exclusions — with honest pros and cons of **your**
-   suggestions and of **its own**, plus open questions.
-3. Stop and wait. Nothing is written until you approve the design.
-4. After approval, write `sources/lessons/lesson-NN.md` mirroring the template
-   lesson, and add new terms to the canonical glossary if your course keeps
-   one.
-5. Suggest follow-ups without running them: `/proofread`, `/summarize-lesson`,
-   `/build-lesson-module`.
-
-It never changes existing lessons and never commits.
+The design comes first, in chat: learning goals, place in the course, block
+structure, deliberate exclusions — with honest pros and cons of **your**
+suggestions and of **its own**, plus open questions. Nothing is written
+until you approve; then it writes `sources/lessons/lesson-NN.md` mirroring
+the template lesson, adds new terms to the canonical glossary if your
+course keeps one, and suggests follow-ups (`/proofread`,
+`/summarize-lesson`, `/build-lesson-module`) without running them. It never
+changes existing lessons and never commits.
 
 ### /summarize-lesson
 
@@ -167,44 +145,32 @@ the Class versions section of [course-context.md](course-context.md).
 
 ### /build-lesson-module
 
-The `/build-lesson-module` skill turns a finished lesson plan into a complete
-student-facing module under `course/`. When you type
-`/build-lesson-module <lesson>` in Claude Code it will:
+The `/build-lesson-module` skill turns a finished lesson plan into a
+complete student-facing module under `course/`. It first proposes a design
+in chat — module name and position, page split (overview, content pages,
+reference cards if your course uses them, summary, glossary, homework),
+downloadable code archives, and image placeholders — and stops for your
+approval. Only then does it write every file: markdown pages with the right
+frontmatter, code archives built to your course's conventions, transparent
+placeholder PNGs with TODO notes for images, and `_category_.json`, with
+the glossary page generated by `npx course build-glossary` if your course
+keeps one. It closes by suggesting verification steps (Docusaurus preview,
+`/proofread`) without running them.
 
-1. Read the lesson plan, [course-context.md](course-context.md),
-   [style.md](style.md), [frontmatter.md](frontmatter.md), and one or two
-   existing modules as worked examples.
-2. Propose a design in chat: module name and position, page split (overview,
-   content pages, reference cards if your course uses them, summary, glossary,
-   homework), downloadable code archives, and image placeholders.
-3. Stop and wait for your approval. Nothing is written in this phase.
-4. After approval, write every file: markdown pages with the right
-   frontmatter, code archives built to your course's conventions, transparent
-   placeholder PNGs with TODO notes for images, and `_category_.json`. If your
-   course keeps a canonical glossary, the module's glossary page is generated
-   with `npx course build-glossary`.
-5. Report what was created and suggest verification steps (Docusaurus preview,
-   `/proofread`) without running them.
-
-It invents nothing beyond the plan, never touches the source lesson or other
-modules, and never commits.
+It invents nothing beyond the plan, never touches the source lesson or
+other modules, and never commits.
 
 ### /design-evaluation
 
 The `/design-evaluation` skill is the `evaluations/` counterpart of
-`/design-lesson`: it designs an exam or test from the lessons taught so far.
-When you type `/design-evaluation <scope>` in Claude Code it will:
-
-1. Read [course-context.md](course-context.md), [style.md](style.md), every
-   lesson plan in scope, and existing evaluations as worked examples.
-2. Propose a blueprint matrix in chat — per question: the learning goal(s) it
-   tests, difficulty level, and points — plus a coverage check that flags
-   goals not tested, goals weighted out of proportion to their lesson time,
-   and goals tested below the level they were taught at.
-3. Stop and wait for your approval.
-4. After approval, write two files under `evaluations/<year>/<slug>/`: the
-   student-facing `instructions.md` and the collega-facing `blueprint.md`
-   (matrix, coverage notes, scoring hints).
+`/design-lesson`: it designs an exam or test from the lessons taught so
+far. It proposes a blueprint matrix in chat — per question the learning
+goal(s) it tests, difficulty, and points — plus a coverage check that flags
+goals not tested, goals weighted out of proportion to their lesson time,
+and goals tested below the level they were taught at. After your approval
+it writes the student-facing `instructions.md` and the collega-facing
+`blueprint.md` (matrix, coverage notes, scoring hints) under
+`evaluations/<year>/<slug>/`.
 
 It only tests what was taught: every question maps to a goal a lesson in
 scope actively practised. Nothing is committed.
@@ -291,12 +257,12 @@ before touching anything: timing corrections and notes-to-self go into the
 lesson plan, insights that hold course-wide go into
 [course-context.md](course-context.md), content errors in student pages
 become a fix list, and writing-style corrections are pointed at
-`/update-style`. The retro is the one sanctioned way to modify an existing
+`/style-update`. The retro is the one sanctioned way to modify an existing
 lesson plan; scope changes are flagged as a `/design-lesson` job instead.
 
-### /create-export-style
+### /export-style-create
 
-The `/create-export-style` skill derives a reusable PDF/DOCX export style from a
+The `/export-style-create` skill derives a reusable PDF/DOCX export style from a
 reference — a Word document, a PDF, a website, or a CSS file. Phase A inspects
 the source, works out the fonts, colours, spacing, and margins, and proposes a
 style spec that maps each decision to where it applies (the Typst template for
@@ -306,9 +272,9 @@ the Word XML (keeping the custom alert and link-card styles intact), and
 regenerates the sample so you can see the result. See
 [export-styling.md](export-styling.md) for how the pipeline fits together.
 
-### /edit-export-style
+### /export-style-edit
 
-The `/edit-export-style` skill makes a plain-language change to an existing
+The `/export-style-edit` skill makes a plain-language change to an existing
 export style — "headings dark blue", "bigger margins", "font Georgia" — editing
 `sources/export-style/template.typ` (PDF) and/or `reference.docx` (Word),
 keeping the two formats in sync, then regenerating the sample. It forks the
@@ -317,18 +283,12 @@ shipped defaults on first use, so your style survives upstream updates.
 ### /initialize-course-context
 
 The `/initialize-course-context` skill fills in or refreshes
-[course-context.md](course-context.md). When you type
-`/initialize-course-context` in Claude Code it will:
-
-1. Read what is already in `course-context.md` and note which sections are
-   still the shipped `TODO` template.
-2. Read the repo — README, CLAUDE.md, `style.md`, course-specific docs,
-   existing modules and lesson plans — and infer everything it can.
-3. Interview you (only) about what the repo did not answer: learning-goal
-   scheme, page roles, code-download layout, scope boundaries, and so on.
-4. Show a per-section summary for confirmation, then write the doc.
-5. Warn you if `docs/course-context.md` is missing from `protected_files` in
-   `update-from-upstream.conf`, so upstream updates don't overwrite it.
+[course-context.md](course-context.md): it reads the repo — README,
+CLAUDE.md, `style.md`, course-specific docs, existing modules and lesson
+plans — infers everything it can, interviews you only about what the repo
+did not answer, and writes the doc after a per-section confirmation. It
+also warns if `docs/course-context.md` is missing from `protected_files` in
+`update-from-upstream.conf`, so upstream updates don't overwrite it.
 
 Re-running is expected: existing content is treated as confirmed and only
 updated where the repo now contradicts it. Nothing is committed automatically.
@@ -354,7 +314,7 @@ The `/fix-issues` skill works through the open entries in
 `sources/issues.md`, in two phases. Phase A is triage: it verifies every
 entry against the current files, groups related ones, and checks the wider
 implications of each fix — the same defect on other pages, a style
-preference that belongs in `style.md` (routed to `/update-style`, never
+preference that belongs in `style.md` (routed to `/style-update`, never
 folded in silently), glossary drift, contradictions with
 `course-context.md`, lesson plans, or evaluations. It bundles all its
 clarifying questions into a single round, presents one fix plan, and stops.
@@ -367,12 +327,9 @@ committed, and Canvas keeps serving the old text until you run
 
 ### /commit
 
-The `/commit` skill makes committing safer and more consistent. When you type
-`/commit` in Claude Code it will:
-
-1. Review all staged and unstaged changes.
-2. Stage the appropriate files.
-3. Create a commit with a clear message following the project conventions.
+The `/commit` skill makes committing safer and more consistent: it reviews
+the changes, stages the appropriate files, and creates a commit following
+the project conventions.
 
 #### Commit message conventions
 
