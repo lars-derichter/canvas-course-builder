@@ -48,9 +48,9 @@ plausibly recent, propose it in the same breath.
 
 3. **Then cover the ground below, adaptively.** Skip what the author already
    answered, dig into what they flag, and drop lines that yield nothing after
-   one follow-up. Reference the plan's actual block names and time budgets in
-   your questions — "Blok 2 stond op 25 minuten; klopte dat?" beats "how was
-   the timing?".
+   one follow-up. Reference the plan's actual block names and time budgets
+   in your questions — in the author's language, e.g. "Blok 2 stond op 25
+   minuten; klopte dat?" beats "how was the timing?".
    - **Timing** — which blocks ran long or short, where the break actually
      fell, what got cut or rushed at the end.
    - **Comprehension** — what confused students, which questions they asked,

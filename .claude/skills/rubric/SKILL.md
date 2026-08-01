@@ -7,22 +7,20 @@ description: Generate a grading rubric for an assignment or evaluation, with cri
 
 Build a grading rubric for one assignment — a homework page under `course/`
 or an evaluation under `evaluations/` — aligned with the learning goals it
-serves. The skill runs in two phases: **Phase A** proposes the criteria and
-levels in chat and stops for approval; **Phase B** writes the rubric as a
-collega-facing markdown file. The output is markdown only: pushing rubrics to
-Canvas would need a `lib/canvas/rubrics.js` that does not exist.
+serves, written as a collega-facing markdown file. Markdown only: pushing
+rubrics to Canvas would need a `lib/canvas/rubrics.js` that does not exist.
 
 ## Input
 
 `$ARGUMENTS` may hold a path to the assignment, free text naming it
 (_"huiswerk les 3"_), and/or constraints (point total, number of levels). If
-empty and `ide_opened_file` is an assignment or evaluation, propose that;
-otherwise ask for a path. Stop with one sentence if the target is not a
-markdown file under `course/` or `evaluations/`.
+empty, propose the file open in the IDE when it is an assignment or
+evaluation; otherwise ask for a path. Stop with one sentence if the target
+is not a markdown file under `course/` or `evaluations/`.
 
 ## Steps
 
-### Phase A — Design
+### Phase A — Design (writes nothing)
 
 1. **Read the fixed inputs**, in this order:
    - The assignment itself, in full. Its stated requirements are the primary
@@ -58,7 +56,8 @@ markdown file under `course/` or `evaluations/`.
      claims to practise but the rubric cannot see. Flag each.
    - **Open questions.** Anything the author must decide before Phase B.
 
-5. **Stop. Wait for approval.** Adjust on request; write nothing in Phase A.
+5. Adjust on request. Stop. Wait for explicit approval before starting
+   Phase B.
 
 ### Phase B — Write (only after approval)
 
@@ -75,19 +74,17 @@ markdown file under `course/` or `evaluations/`.
 
 7. **Offer, do not run:**
    - A student-facing summary of the criteria (no level descriptors, just
-     "waarop word je beoordeeld") appended to the assignment page — only on
-     explicit request, since it edits student-facing material.
+     what is graded — in the course's language, e.g. "waarop word je
+     beoordeeld") appended to the assignment page — only on explicit
+     request, since it edits student-facing material.
    - `/proofread` on the rubric.
 
 ## Rules
 
-- Every criterion traces to the assignment text or a learning goal; every
-  descriptor names something observable in the student's work. No criteria
-  from your own initiative without flagging them in Phase A.
+- No criteria from your own initiative without flagging them in Phase A.
 - One assignment per call.
 - Never change the assignment page or lesson plans without the explicit
   request in step 7.
-- Markdown output only; no Canvas API calls.
 - No commits, no pushes, no staging.
 
 $ARGUMENTS

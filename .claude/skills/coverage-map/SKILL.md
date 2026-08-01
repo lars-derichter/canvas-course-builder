@@ -9,8 +9,7 @@ Cross-reference the course's learning goals with the lesson plans under
 `sources/lessons/`, the student modules under `course/`, and the assessment
 material under `evaluations/`, following the learning-goal scheme defined in
 [`docs/course-context.md`](../../../docs/course-context.md). Report which
-goals are taught, practised, and assessed — and where the gaps are. Report
-only; never change course material.
+goals are taught, practised, and assessed — and where the gaps are.
 
 ## Input
 
@@ -86,6 +85,5 @@ means the whole course.
 - Mark inferred goal mappings (step 4) explicitly; do not present them
   with the same confidence as explicit references.
 - No commits, no pushes, no staging.
-- If nothing is found, say so and stop — do not invent findings.
 
 $ARGUMENTS
