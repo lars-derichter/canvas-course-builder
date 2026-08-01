@@ -40,7 +40,7 @@ backlog.
 
 ## Meta
 
-- **/update-course-context** — the `/update-style` analogue: after a working
+- **/update-course-context** — the `/style-update` analogue: after a working
   session, fold corrections about course *design* (not writing style) into
   `course-context.md`. Currently the lesson skills offer this ad hoc; a
   dedicated end-of-session sweep would catch more.

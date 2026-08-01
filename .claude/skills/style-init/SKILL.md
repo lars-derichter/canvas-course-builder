@@ -1,9 +1,9 @@
 ---
-name: initialize-style
+name: style-init
 description: Interview the user and analyse samples of their writing to rewrite docs/style.md to match their voice, audience, and formatting preferences. Use for "initialize style", "stijlgids opzetten", "schrijfstijl instellen", "set up the style guide".
 ---
 
-# Initialize style
+# Style init
 
 Adapt [`docs/style.md`](../../../docs/style.md) — the writing-style guide
 Claude Code follows when drafting course content — to the course author's
@@ -16,7 +16,7 @@ own voice and audience.
    blog posts, handouts). Samples reveal habits the author may not
    articulate. Without samples, proceed interview-only and warn explicitly
    that the resulting `style.md` is a best guess, refinable later via
-   `/update-style` or direct edits.
+   `/style-update` or direct edits.
 
 2. **Analyse the samples, then interview only what they did not answer**
    (AskUserQuestion). Dimensions for both:
@@ -50,7 +50,7 @@ own voice and audience.
    now directly contradicts the new `style.md`.
 
 6. **Report** what changed and remind the author they can refine further
-   with `/update-style` or by editing the file directly.
+   with `/style-update` or by editing the file directly.
 
 ## Rules
 

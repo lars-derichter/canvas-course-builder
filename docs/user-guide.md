@@ -266,8 +266,8 @@ npx course export --toc exports/toc.md
 All of this is also available from the VS Code sidebar, including multi-select
 export of highlighted items. To change how exports look — fonts, colours,
 margins, a house style from a Word template — see
-[Export Styling](export-styling.md) and the `/create-export-style` and
-`/edit-export-style` skills.
+[Export Styling](export-styling.md) and the `/export-style-create` and
+`/export-style-edit` skills.
 
 ## VS Code Integration
 

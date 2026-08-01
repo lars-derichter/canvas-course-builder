@@ -35,8 +35,8 @@ Beyond everyday help — "draft a page about X", "move these three items to anot
 module", "why did my push fail?" — this project ships a set of skills built for
 course authoring. The main families:
 
-- **Writing style** — `/initialize-style` adapts the style guide to your voice,
-  `/update-style` folds in new preferences, and `/proofread` checks a page
+- **Writing style** — `/style-init` adapts the style guide to your voice,
+  `/style-update` folds in new preferences, and `/proofread` checks a page
   against it.
 - **Lessons** — `/design-lesson` helps you plan a lesson, `/summarize-lesson`
   makes a one-page class version, and `/build-lesson-module` turns the plan into
@@ -47,8 +47,8 @@ course authoring. The main families:
 - **Quality** — `/consistency-check` sweeps the whole course for dead links and
   drift, `/coverage-map` checks which learning goals are taught and tested, and
   `/image-todos` lists the artwork you still owe.
-- **Export styling** — `/create-export-style` derives a PDF or Word style from a
-  reference document, and `/edit-export-style` tweaks it in plain language (see
+- **Export styling** — `/export-style-create` derives a PDF or Word style from a
+  reference document, and `/export-style-edit` tweaks it in plain language (see
   [Exporting to PDF or Word](13-exporting.md)).
 
 You do not have to memorise these. Type `/` in Claude Code to see the list, or

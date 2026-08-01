@@ -37,8 +37,8 @@ educators who aren't terminal-savvy.
 ad-hoc selection of paths, `--flagged` items, or a curated list via the two-step
 `export-toc` → `export --toc` flow. Multiple items combine into one document
 with a title page, generated TOC, and page breaks. Styles are customisable in
-`sources/export-style/` and via the `/create-export-style` and
-`/edit-export-style` skills. Exposed in the VS Code sidebar with multi-select.
+`sources/export-style/` and via the `/export-style-create` and
+`/export-style-edit` skills. Exposed in the VS Code sidebar with multi-select.
 See [Export Styling](../../docs/export-styling.md).
 
 ### VS Code Sidebar for Course Structure

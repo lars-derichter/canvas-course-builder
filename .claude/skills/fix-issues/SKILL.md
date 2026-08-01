@@ -41,7 +41,7 @@ Empty means every entry under `## Open`.
      same wrong text or pattern; list the extra hits.
    - **Style rule.** Does the fix encode a durable writing preference that
      `docs/style.md` does not have yet? Mark the group for an
-     `/update-style` offer — never edit `style.md` here — and grep for
+     `/style-update` offer — never edit `style.md` here — and grep for
      other pages that would violate the would-be rule.
    - **Glossary.** Does the fix change or rename a term? Check the
      canonical glossary (default `sources/reference-materials/glossary.yml`;
@@ -66,7 +66,7 @@ Empty means every entry under `## Open`.
 
 6. **Present one fix plan in chat**, per group and numbered entry: the
    proposed action — fix as described / already fixed, move only / not a
-   defect, close as author decision / route to `/update-style` or
+   defect, close as author decision / route to `/style-update` or
    `/lesson-retro` / defer —, the files it touches, and the follow-ups from
    step 4. Add a separate list of what will *not* be fixed and why.
 
@@ -92,11 +92,11 @@ Empty means every entry under `## Open`.
 11. **Move every handled entry to `## Resolved`**, keeping its text and
     appending `→ resolved YYYY-MM-DD: what fixed it (files touched)` — or
     the non-fix outcome: already fixed, author decision, routed to
-    `/update-style`. Deferred entries stay under `## Open` with a dated
+    `/style-update`. Deferred entries stay under `## Open` with a dated
     `deferred:` note. Never delete an entry; Resolved is the dedupe memory
     for `/report-issue`.
 
-12. **Report and offer follow-ups, do not run them**: `/update-style` for
+12. **Report and offer follow-ups, do not run them**: `/style-update` for
     the style preferences that surfaced; `/proofread` for heavily edited
     files; `/commit` or `/atomic-commits` for the changes; and the reminder
     that Canvas keeps serving the old text until `npx course push` — never
@@ -105,7 +105,7 @@ Empty means every entry under `## Open`.
 ## Rules
 
 - Never fix silently: `[style]` preferences route through the
-  `/update-style` offer, design decisions and scope changes go back to the
+  `/style-update` offer, design decisions and scope changes go back to the
   author, anything unclear goes into the question round.
 - Fix only what the queue and the approved plan cover — no drive-by
   rewrites of surrounding prose.

@@ -109,9 +109,9 @@ Out of the box, exports use a clean default style. You can change the fonts,
 colours, margins, and more, or match an existing house style from a Word
 template. Two Claude Code skills make this easy:
 
-- **`/create-export-style`** builds a style from a reference — a Word document,
+- **`/export-style-create`** builds a style from a reference — a Word document,
   a PDF, a website, or a CSS file
-- **`/edit-export-style`** makes a plain-language tweak, like "headings dark
+- **`/export-style-edit`** makes a plain-language tweak, like "headings dark
   blue" or "bigger margins"
 
 > [!NOTE]

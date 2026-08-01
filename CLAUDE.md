@@ -10,7 +10,7 @@ Course development system that lets you write course materials as markdown, serv
 
 **Always read [`docs/style.md`](docs/style.md) before drafting or editing any file under `course/` or `evaluations/`.** The style guide defines the language, tone, structure, headings, callouts, punctuation, and AI-tell patterns for this project's student-facing content. Apply it from the first draft — do not write course prose, assignment instructions, or exam text without consulting it first in the current session.
 
-If the user asks you to change how you write, offer to run `/update-style` so the new preference is folded into `style.md` as a durable rule.
+If the user asks you to change how you write, offer to run `/style-update` so the new preference is folded into `style.md` as a durable rule.
 
 **Read [`docs/course-context.md`](docs/course-context.md) before designing lessons or generating modules.** It describes the course itself — pedagogy, lesson-plan and module conventions, code/download rules, glossary, scope boundaries — and drives the lesson skills (`/design-lesson`, `/summarize-lesson`, `/build-lesson-module`). Sections still marked `TODO` mean: gather the fact from the repo or the user, and offer to save it back into the doc. `/initialize-course-context` fills the doc in wholesale.
 

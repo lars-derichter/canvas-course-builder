@@ -76,7 +76,7 @@ budget below.
 
 7. **Stop.** Never fix, never start diagnosing, never open the affected
    file for editing. Close with one sentence: `/fix-issues` works the
-   queue. For a `[style]` entry, add one more: `/update-style` can make the
+   queue. For a `[style]` entry, add one more: `/style-update` can make the
    preference a durable rule in `docs/style.md` — the logged entry covers
    only this one instance.
 

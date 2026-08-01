@@ -1,13 +1,13 @@
 ---
-name: edit-export-style
+name: export-style-edit
 description: Make a plain-language change to the course export style — heading colour, fonts, margins, alert colours, paper size — by editing sources/export-style/template.typ (PDF) and/or reference.docx (DOCX), then regenerating the sample to show the result. Forks the shipped defaults on first use. Use for "edit export style", "exportstijl aanpassen", "koppen donkerblauw", "ander lettertype voor de export".
 ---
 
-# Edit export style
+# Export style edit
 
 Apply a small, plain-language change to how `npx course export` looks, and
 show the result. The iterate-in-place companion to
-[`create-export-style`](../create-export-style/SKILL.md) — use that skill
+[`export-style-create`](../export-style-create/SKILL.md) — use that skill
 to derive a whole new look from a reference.
 
 ## Input
@@ -15,7 +15,7 @@ to derive a whole new look from a reference.
 `$ARGUMENTS` is the requested change in plain language ("koppen
 donkerblauw", "font Georgia", "grotere marges"). If empty, ask what to
 change. If the request is really "build a style from this document/site",
-hand off to `create-export-style`.
+hand off to `export-style-create`.
 
 ## Steps
 

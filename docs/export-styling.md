@@ -3,8 +3,8 @@
 `npx course export` turns course markdown into a printable PDF or an editable
 Word document. This guide explains how the export pipeline is put together and
 how to customise the look, either by hand or with the
-[`/create-export-style`](#deriving-a-style-from-a-reference) and
-`/edit-export-style` Claude skills.
+[`/export-style-create`](#deriving-a-style-from-a-reference) and
+`/export-style-edit` Claude skills.
 
 For prerequisites and everyday usage, see the
 [Export section of the User Guide](user-guide.md#exporting-to-pdf-or-docx).
@@ -79,11 +79,11 @@ pick one `typst fonts` lists.
 
 Two Claude skills automate the editing described above:
 
-- **`/create-export-style`** takes a Word document, a PDF, a website URL, or a
+- **`/export-style-create`** takes a Word document, a PDF, a website URL, or a
   CSS file, works out the fonts, colours, spacing, and margins, proposes a style
   spec, and — after you approve — writes `template.typ` and `reference.docx`
   into `sources/export-style/` and regenerates the sample.
-- **`/edit-export-style`** makes a plain-language change ("headings dark blue",
+- **`/export-style-edit`** makes a plain-language change ("headings dark blue",
   "bigger margins", "font Georgia") to an existing style and regenerates the
   sample so you can see it.
 
