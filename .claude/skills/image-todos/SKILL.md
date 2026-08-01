@@ -24,9 +24,10 @@ means all of `course/`.
    checksums against every PNG under `course/**/_files/`:
 
    ```bash
+   P="<session scratchpad>/image-todos-placeholder.png"
    echo "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" \
-     | base64 -d > /tmp/image-todos-placeholder.png
-   shasum /tmp/image-todos-placeholder.png
+     | base64 -d > "$P"
+   shasum "$P"
    find course -path '*/_files/*.png' -exec shasum {} +
    ```
 
@@ -73,6 +74,5 @@ means all of `course/`.
 - Course-agnostic: no hardcoded module names or image lists; everything
   comes from the filesystem at runtime.
 - No commits, no pushes, no staging.
-- If nothing is found, say so and stop — do not invent findings.
 
 $ARGUMENTS

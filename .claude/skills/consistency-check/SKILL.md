@@ -36,8 +36,7 @@ scoped modules are still verified.
    keeping file and line. For each target that is a relative path — `.md`
    pages, `_files/` downloads and images — resolve it against the linking
    file's directory and verify it exists on the filesystem. Strip anchors
-   and query strings before checking; skip absolute URLs. Every reported
-   dead link must be a verified filesystem miss, not a grep hit.
+   and query strings before checking; skip absolute URLs.
 
 4. **Glossary checks** — only if the course keeps one; otherwise skip this
    step and say so in the report.
@@ -97,8 +96,6 @@ scoped modules are still verified.
 
 ## Rules
 
-- Report first, fix never without explicit confirmation — and then only
-  the mechanical categories from step 8.
 - Every mechanical finding is verified against the filesystem or a command
   result; a grep hit alone is not a finding.
 - Skip code blocks, inline code, URLs, frontmatter, and HTML comments for
@@ -106,6 +103,5 @@ scoped modules are still verified.
 - Course specifics (glossary path, module conventions) come from
   `course-context.md` at runtime; hardcode nothing.
 - No commits, no pushes, no staging.
-- If nothing is found, say so and stop — do not invent findings.
 
 $ARGUMENTS
