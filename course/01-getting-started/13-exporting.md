@@ -107,7 +107,7 @@ git, so your documents never end up in your repository or on Canvas.
 
 Out of the box, exports use a clean default style. You can change the fonts,
 colours, margins, and more, or match an existing house style from a Word
-template. Two Claude Code skills make this easy:
+template. Two ready-made skills make this easy:
 
 - **`/export-style-create`** builds a style from a reference — a Word document,
   a PDF, a website, or a CSS file

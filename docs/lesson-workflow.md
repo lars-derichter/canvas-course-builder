@@ -1,6 +1,6 @@
 # Lesson workflow
 
-Canvas Course Builder includes a set of [Claude Code](claude-code.md) skills that take a
+Canvas Course Builder includes a set of [AI-assistant](ai-assistants.md) skills that take a
 lesson from rough idea to published Canvas module. Using them is optional — you
 can keep writing modules by hand — but together they form a complete authoring
 flow:
@@ -56,7 +56,7 @@ the skills need to ask.
 4. **Check and publish** — `/proofread` the new pages, preview with
    `npm start`, then `npx course push`.
 
-See [claude-code.md](claude-code.md) for what each skill does in detail.
+See [ai-assistants.md](ai-assistants.md) for what each skill does in detail.
 
 ## The glossary pipeline
 

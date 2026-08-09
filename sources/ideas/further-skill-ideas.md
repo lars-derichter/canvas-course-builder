@@ -8,7 +8,7 @@ write phases, no auto-commits.
 The assessment and quality skills first sketched here — `/design-evaluation`,
 `/build-quiz`, `/rubric`, `/coverage-map`, `/consistency-check`,
 `/image-todos`, and `/lesson-retro` — have since been built and documented in
-[`docs/claude-code.md`](../../docs/claude-code.md). What remains below is the
+[`docs/ai-assistants.md`](../../docs/ai-assistants.md). What remains below is the
 backlog.
 
 ## Course quality

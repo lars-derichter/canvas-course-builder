@@ -334,14 +334,15 @@ npx course reset-canvas          # delete all modules, pages, assignments, and f
 See [Advanced Commands](advanced-commands.md) for details on these destructive
 operations.
 
-## Claude Code
+## AI Assistants
 
-See [Claude Code](claude-code.md) for how to use Claude Code as an AI assistant
-for writing course content, managing modules, and more.
+See [AI Assistants](ai-assistants.md) for how to use an AI assistant — Claude
+Code, OpenAI Codex, or another agentic tool — for writing course content,
+managing modules, and more.
 
 ## Lesson Workflow
 
-See the [Lesson Workflow](lesson-workflow.md) for the Claude Code skills that
+See the [Lesson Workflow](lesson-workflow.md) for the AI-assistant skills that
 take a lesson from rough idea to lesson plan (`/design-lesson`), one-page class
 version (`/summarize-lesson`), and published student module
 (`/build-lesson-module`), plus the generated glossary pipeline.

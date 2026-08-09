@@ -1,34 +1,49 @@
-# Claude Code
+# AI assistants
 
-[Claude Code](https://claude.ai/code) is an AI coding assistant by Anthropic
-that runs in your terminal or inside VS Code. It can read your project files,
-run commands, and make changes — all guided by natural language instructions.
+This project is set up for AI coding assistants that run in your terminal or
+inside VS Code — Claude Code, OpenAI Codex, and other agentic tools. They can
+read your project files, run commands, and make changes — all guided by
+natural language instructions.
 
-This project includes a [CLAUDE.md](../CLAUDE.md) file that gives Claude Code
-full context about the project structure, available commands, and coding
+An [AGENTS.md](../AGENTS.md) file at the project root gives any assistant full
+context about the project structure, available commands, and coding
 conventions, so it can assist you effectively out of the box.
+[CLAUDE.md](../CLAUDE.md) is a one-line import of the same file, because Claude
+Code reads that name.
+
+## Supported tools
+
+- **[Claude Code](https://claude.ai/code)** — reads `AGENTS.md` through
+  `CLAUDE.md`, discovers the skills through the `.claude/skills` alias, and
+  invokes them as `/name`.
+- **[OpenAI Codex](https://developers.openai.com/codex)** — reads `AGENTS.md`
+  and discovers the skills in `.agents/skills/` natively.
+- **Other tools** — point them at `AGENTS.md`; the skills are plain markdown,
+  so you can paste a skill's instructions into any assistant that lacks skill
+  support.
 
 ## Use cases for course authors
 
 - **Writing course content** — describe what a page or assignment should cover
-  and let Claude Code draft the markdown
-- **Creating modules and items** — ask Claude Code to run the CLI commands for
-  you, filling in names and positions interactively
+  and let the assistant draft the markdown
+- **Creating modules and items** — ask the assistant to run the CLI commands
+  for you, filling in names and positions interactively
 - **Restructuring courses** — move, rename, merge, or split items across modules
   in bulk
 - **Generating markdown from notes** — paste rough notes or bullet points and
   have them turned into polished course pages
-- **Debugging sync issues** — describe the problem and let Claude Code inspect
-  sync state, logs, and Canvas responses
-- **Reviewing content** — ask Claude Code to check for broken links, missing
+- **Debugging sync issues** — describe the problem and let the assistant
+  inspect sync state, logs, and Canvas responses
+- **Reviewing content** — ask the assistant to check for broken links, missing
   frontmatter, or inconsistencies across modules
 - **Exporting to PDF or Word** — turn pages, modules, or the whole course into
   printable documents, and derive a custom export style from a reference
 
 ## Writing style
 
-Claude Code follows the conventions in [style.md](style.md) when drafting course
-content: language register, tone, structure, formatting, and patterns to avoid.
+Your AI assistant follows the conventions in [style.md](style.md) when drafting
+course content: language register, tone, structure, formatting, and patterns to
+avoid.
 
 Three skills wrap around `style.md`:
 
@@ -37,12 +52,12 @@ Three skills wrap around `style.md`:
 - Run `/style-init` once when you set up a new course, to adapt `style.md`
   to your own voice and audience.
 - Run `/style-update` now and then after a working session in which you
-  corrected Claude Code's drafts, to fold those corrections into `style.md` as
-  durable rules so you don't have to repeat them.
+  corrected the assistant's drafts, to fold those corrections into `style.md`
+  as durable rules so you don't have to repeat them.
 
 You can also edit `style.md` by hand at any time. Treat it as a living document
 — the more it reflects your real preferences, the less you'll need to correct
-Claude Code's output.
+the assistant's output.
 
 ## Course context
 
@@ -60,8 +75,9 @@ version to published module — is described in the
 
 ## Skills
 
-Skills are predefined workflows that Claude Code can run. Type the skill name
-(e.g. `/commit`) in Claude Code to invoke it.
+Skills are predefined workflows your AI assistant can run. In Claude Code,
+type the skill name (e.g. `/commit`) to invoke it; in Codex and other tools,
+mention the skill or let the assistant activate it from your request.
 
 ### /proofread
 
@@ -110,10 +126,10 @@ editing the file directly.
 
 ### /style-update
 
-The `/style-update` skill reviews the current Claude Code conversation for style
+The `/style-update` skill reviews the current conversation for style
 corrections, rewrites, and preferences you expressed, and folds them into
 [style.md](style.md) as durable rules. Use it after a session in which you
-corrected Claude Code's drafts, so you don't have to repeat the same feedback
+corrected the assistant's drafts, so you don't have to repeat the same feedback
 next time.
 
 ### /design-lesson
@@ -284,7 +300,7 @@ shipped defaults on first use, so your style survives upstream updates.
 
 The `/initialize-course-context` skill fills in or refreshes
 [course-context.md](course-context.md): it reads the repo — README,
-CLAUDE.md, `style.md`, course-specific docs, existing modules and lesson
+AGENTS.md, `style.md`, course-specific docs, existing modules and lesson
 plans — infers everything it can, interviews you only about what the repo
 did not answer, and writes the doc after a per-section confirmation. It
 also warns if `docs/course-context.md` is missing from `protected_files` in
@@ -348,9 +364,15 @@ Fix push failing to add pages/assignments to Canvas modules
 
 ## Writing your own skills
 
-Skills live in `.claude/skills/<name>/SKILL.md`. The shipped skills follow a
-shared template; new ones should too, so they stay predictable for both the
-reader and the model:
+Skills live in `.agents/skills/<name>/SKILL.md` (`.claude/skills` is a
+committed symlink to the same directory). The frontmatter — just `name` and
+`description` — is the portable [Agent Skills](https://agentskills.io) format,
+so the same files work in every tool that reads skills. `$ARGUMENTS` is
+substituted by Claude Code and Codex, and reads as an obvious placeholder
+anywhere else.
+
+The shipped skills follow a shared template; new ones should too, so they stay
+predictable for both the reader and the model:
 
 - **Frontmatter**: `name` (matching the folder) and a `description` that
   says what the skill does, where it writes, and the approval gate if any,
@@ -386,3 +408,19 @@ If you rename or remove a skill folder in this template repo, add the old
 path to `STALE_PATHS` in
 [update-from-upstream.sh](../update-from-upstream.sh) so downstream
 projects prune it on their next update.
+
+## Troubleshooting: skills on Windows
+
+`.claude/skills` is a git symlink, and git on Windows only creates real
+symlinks when `core.symlinks` is `true` — which requires Developer Mode (or
+admin rights). Without it, the checkout silently turns the symlink into a
+small text file, and Claude Code finds no skills; no error is shown anywhere.
+
+To fix:
+
+1. Enable Developer Mode (Settings → System → For developers).
+2. Run `git config core.symlinks true` in the repo.
+3. Restore the checkout: `git checkout -- .claude` (or re-clone).
+
+Working inside WSL2 avoids the problem entirely — symlinks always work there.
+`AGENTS.md` and `CLAUDE.md` are plain files and are unaffected either way.

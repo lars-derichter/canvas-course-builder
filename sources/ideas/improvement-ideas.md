@@ -31,18 +31,18 @@ locale. Built-in sets live in `lib/config/labels.js`; the loader is
 `lib/config/course-config.js` (English fallback when the file is missing).
 The file is protected during upstream updates, and the update script
 self-registers it in `protected_files` for existing instances. Doubles as the
-machine-readable course language for Claude.
+machine-readable course language for AI assistants.
 
-### Claude Helper Skills
+### AI Helper Skills
 
-`.claude/skills/` holds a suite of skills covering the authoring cycle: writing
+`.agents/skills/` holds a suite of skills covering the authoring cycle: writing
 style (`/style-init`, `/style-update`, `/proofread`), lessons
 (`/design-lesson`, `/summarize-lesson`, `/build-lesson-module`), assessment
 (`/design-evaluation`, `/build-quiz`, `/rubric`), course-wide sweeps
 (`/consistency-check`, `/coverage-map`, `/image-todos`), the issue queue
 (`/report-issue`, `/fix-issues`), export styling, course context, and
 `/lesson-retro` and `/commit`. All are documented in
-[Claude Code](../../docs/claude-code.md). Skills still on the wish list live in
+[AI Assistants](../../docs/ai-assistants.md). Skills still on the wish list live in
 [further-skill-ideas.md](further-skill-ideas.md).
 
 ### PDF/DOCX Export Support
@@ -64,7 +64,7 @@ move-to-module, merge, split, delete, and export. The view title bar carries
 push, pull, status, diff, validate, preview, and the course-wide exports. See
 [VS Code](../../docs/vscode.md).
 
-### Update Claude `/commit` Skill
+### Update `/commit` Skill
 
 `/commit` runs `git remote get-url origin` before staging. An origin containing
 `canvas-course-builder` means development mode: changes inside `course/` are skipped

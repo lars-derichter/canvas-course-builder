@@ -4,7 +4,7 @@
 Word document. This guide explains how the export pipeline is put together and
 how to customise the look, either by hand or with the
 [`/export-style-create`](#deriving-a-style-from-a-reference) and
-`/export-style-edit` Claude skills.
+`/export-style-edit` skills.
 
 For prerequisites and everyday usage, see the
 [Export section of the User Guide](user-guide.md#exporting-to-pdf-or-docx).
@@ -105,7 +105,7 @@ result will not match. Install the font, drop its files in
 
 ## Deriving a style from a reference
 
-Two Claude skills automate the editing described above:
+Two skills automate the editing described above:
 
 - **`/export-style-create`** takes a Word document, a PDF, a website URL, or a
   CSS file, works out the fonts, colours, spacing, and margins, proposes a style
