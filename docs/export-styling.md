@@ -62,11 +62,19 @@ Note, Tip, Important, Warning, Caution, and Check, plus `Link Card Title`,
 
 > [!IMPORTANT]
 >
-> The alert kinds, colours, and Dutch titles appear in four places that must
-> stay in sync: `ALERT_CONFIG` in `lib/convert/markdown-to-html.js`, the
-> `alert-colors` map in `template.typ`, `ALERT_TITLES` in `filter.lua`, and the
-> twelve per-kind `Alert Title/Body <Kind>` styles in `reference.docx`. Change
-> a kind or colour in one, change it in all four.
+> Alert titles and the attachment label are single-sourced from
+> `lib/config/labels.js`: the exporter passes them to pandoc as `labels:`
+> metadata, which `filter.lua` and `template.typ` read (with English
+> fallbacks). Only the alert *kinds and colours* still appear in three places
+> that must stay in sync: `ALERT_CONFIG` in `lib/convert/markdown-to-html.js`,
+> the `alert-colors` map in `template.typ`, and the twelve per-kind
+> `Alert Title/Body <Kind>` styles in `reference.docx`. Change a kind or
+> colour in one, change it in all three.
+>
+> A `filter.lua` or `template.typ` forked into `sources/export-style/` before
+> this mechanism existed keeps its own hardcoded (Dutch) labels; re-fork the
+> shipped defaults, or port the `Meta` handler and `attachment-label`
+> substitution, to make the fork follow `course.config.yml`.
 
 ## Overriding layout with `--var`
 

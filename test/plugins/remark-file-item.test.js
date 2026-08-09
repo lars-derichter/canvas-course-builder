@@ -19,8 +19,8 @@ function makeVfile(frontMatter) {
 /**
  * Helper: run the plugin transform on a tree with given frontmatter.
  */
-function transform(tree, frontMatter) {
-  const plugin = remarkFileItem();
+function transform(tree, frontMatter, options) {
+  const plugin = remarkFileItem(options);
   plugin(tree, makeVfile(frontMatter));
   return tree;
 }
@@ -43,7 +43,7 @@ describe('remarkFileItem', () => {
     assert.equal(classAttr.value, 'file-item-card');
   });
 
-  it('renders the label as "Bestand"', () => {
+  it('renders the label as "File" by default', () => {
     const tree = makeTree([]);
     transform(tree, {
       canvas_type: 'file',
@@ -55,7 +55,18 @@ describe('remarkFileItem', () => {
     assert.equal(label.name, 'p');
     const labelClass = label.attributes.find((a) => a.name === 'className');
     assert.equal(labelClass.value, 'file-item-label');
-    assert.equal(label.children[0].value, 'Bestand');
+    assert.equal(label.children[0].value, 'File');
+  });
+
+  it('renders options.label when provided', () => {
+    const tree = makeTree([]);
+    transform(
+      tree,
+      { canvas_type: 'file', file_ref: '_files/diagram.svg' },
+      { label: 'Bestand' },
+    );
+
+    assert.equal(tree.children[0].children[0].children[0].value, 'Bestand');
   });
 
   it('renders an mdast link node with file_ref as url and filename as text', () => {

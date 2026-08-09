@@ -3,7 +3,18 @@ title: "Stijlvoorbeeld"
 subtitle: "Overzicht van alle exportelementen"
 course: "Voorbeeldcursus"
 date: "2026-07-12"
+lang: nl
 toc: true
+# The sample document is Dutch, so pin the Dutch labels here. Real exports get
+# this block generated from course.config.yml — it doubles as a live example.
+labels:
+  note: "Info"
+  tip: "Tip"
+  important: "Belangrijk"
+  warning: "Waarschuwing"
+  caution: "Opgelet"
+  check: "Check"
+  attachment: "Bijlage:"
 ---
 
 # Eerste hoofdstuk

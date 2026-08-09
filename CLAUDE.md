@@ -46,6 +46,10 @@ Three layers:
 - `.env` — Canvas API credentials (gitignored).
 - `.canvas-sync.json` — Tracks Canvas IDs for modules, items, icons, and embedded files (gitignored).
 
+### Course configuration
+
+- `course.config.yml` — Committed, per-course settings: the course `language` (drives every generated student-facing label — alert titles, link/file cards, export labels, glossary — and the Docusaurus locale) plus optional per-label `labels:` overrides. Loaded via `lib/config/course-config.js`; built-in `en`/`nl` label sets live in `lib/config/labels.js`. Also the machine-readable answer to "what language is this course in".
+
 ### Naming conventions
 
 All filenames and folder names are lowercase, hyphenated, and prefixed with a two-digit number (00-99) for ordering. The numeric prefix is stripped when deriving Canvas item titles and Docusaurus sidebar labels. Files and folders prefixed with `_` (underscore) are internal and excluded from Canvas syncing (e.g. `_files/`, `_category_.json`).

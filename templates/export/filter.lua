@@ -4,16 +4,19 @@
 -- page-break) onto format-specific output: Typst calls the helpers defined in
 -- template.typ; DOCX uses custom paragraph styles from reference.docx.
 --
--- Alert kinds and Dutch titles mirror ALERT_CONFIG in
--- lib/convert/markdown-to-html.js. Keep both in sync.
+-- Labels (alert titles, attachment prefix) are single-sourced from
+-- lib/config/labels.js: the exporter passes them as `labels:` metadata and the
+-- Meta handler below overwrites these English fallbacks. Alert kinds mirror
+-- ALERT_CONFIG in lib/convert/markdown-to-html.js. Keep those in sync.
 
-local ALERT_TITLES = {
-  note = "Info",
+local LABELS = {
+  note = "Note",
   tip = "Tip",
-  important = "Belangrijk",
-  warning = "Waarschuwing",
-  caution = "Opgelet",
+  important = "Important",
+  warning = "Warning",
+  caution = "Caution",
   check = "Check",
+  attachment = "Attachment:",
 }
 
 local ALERT_KINDS = {
@@ -47,7 +50,7 @@ end
 
 local function render_typst_alert(el)
   local kind = alert_kind(el)
-  local title = ALERT_TITLES[kind] or "Info"
+  local title = LABELS[kind] or LABELS.note
   local blocks = pandoc.List()
   blocks:insert(typst_open('#alert("' .. kind .. '", "' .. typst_str(title) .. '")['))
   blocks:extend(el.content)
@@ -82,7 +85,7 @@ end
 
 local function render_docx_alert(el)
   local kind = alert_kind(el)
-  local title = ALERT_TITLES[kind] or "Info"
+  local title = LABELS[kind] or LABELS.note
   -- Per-kind styles in reference.docx: "Alert Title Note" .. "Alert Body Check".
   local suffix = kind:sub(1, 1):upper() .. kind:sub(2)
   local blocks = pandoc.List()
@@ -108,12 +111,12 @@ end
 local function render_docx_attachment(el)
   local name = el.attributes["name"] or ""
   return pandoc.Div(
-    { pandoc.Para({ pandoc.Strong({ pandoc.Str("Bijlage:") }), pandoc.Space(), pandoc.Str(name) }) },
+    { pandoc.Para({ pandoc.Strong({ pandoc.Str(LABELS.attachment) }), pandoc.Space(), pandoc.Str(name) }) },
     pandoc.Attr("", {}, { ["custom-style"] = "Attachment" })
   )
 end
 
-function Div(el)
+local function div(el)
   local is_typst = FORMAT:match("typst")
   local is_docx = FORMAT:match("docx")
 
@@ -135,3 +138,22 @@ function Div(el)
 
   return nil
 end
+
+-- Overwrite the label fallbacks from the document's `labels:` metadata.
+local function capture_labels(meta)
+  if meta.labels then
+    for key, value in pairs(meta.labels) do
+      if LABELS[key] ~= nil then
+        LABELS[key] = pandoc.utils.stringify(value)
+      end
+    end
+  end
+end
+
+-- Two sequential filter tables: within a single table pandoc runs Meta *after*
+-- the block filters, so the labels must be captured in a pass of their own
+-- before any Div is rendered.
+return {
+  { Meta = capture_labels },
+  { Div = div },
+}

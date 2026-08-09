@@ -11,6 +11,8 @@ const { resolveStyle } = require('../lib/export/style-resolver');
 const { runPandoc } = require('../lib/export/pandoc');
 const { buildCombinedMarkdown } = require('../lib/export/assemble');
 const { parseToc, validateTocPaths } = require('../lib/export/toc');
+const { loadCourseConfig } = require('../lib/config/course-config');
+const { getLabels, slugify } = require('../lib/config/labels');
 
 const EXPORTS_DIR = path.join(PROJECT_ROOT, 'exports');
 
@@ -148,8 +150,9 @@ function resolvePositional(p, byPath) {
 
 /**
  * Resolve the export mode into { groups, regime, defaultSlug, defaultTitle }.
+ * `labels` supplies the localized default titles/slugs (en when omitted).
  */
-function resolveMode(paths, options, index) {
+function resolveMode(paths, options, index, labels = getLabels()) {
   const { modules, byPath } = index;
   const flagged = (entry) =>
     !options.flagged || (entry.item.frontmatter && entry.item.frontmatter.export === true);
@@ -176,7 +179,7 @@ function resolveMode(paths, options, index) {
       groups,
       regime: groups.length > 1 ? 'course' : 'flat',
       defaultSlug: 'toc',
-      defaultTitle: meta.title || 'Cursus',
+      defaultTitle: meta.title || labels.export.course_title,
       defaultSubtitle: meta.subtitle,
     };
   }
@@ -233,8 +236,8 @@ function resolveMode(paths, options, index) {
     return {
       groups,
       regime: groups.length > 1 ? 'course' : 'flat',
-      defaultSlug: 'selectie',
-      defaultTitle: options.title || 'Selectie',
+      defaultSlug: slugify(labels.export.selection_title),
+      defaultTitle: options.title || labels.export.selection_title,
     };
   }
 
@@ -253,7 +256,7 @@ function resolveMode(paths, options, index) {
       groups,
       regime: groups.length > 1 ? 'course' : 'flat',
       defaultSlug: 'flagged',
-      defaultTitle: options.title || 'Cursus',
+      defaultTitle: options.title || labels.export.course_title,
     };
   }
 
@@ -264,8 +267,8 @@ function resolveMode(paths, options, index) {
   return {
     groups,
     regime: 'course',
-    defaultSlug: 'cursus',
-    defaultTitle: options.title || 'Cursus',
+    defaultSlug: slugify(labels.export.course_title),
+    defaultTitle: options.title || labels.export.course_title,
   };
 }
 
@@ -304,9 +307,11 @@ async function exportCmd(paths = [], options = {}) {
     return;
   }
 
+  const { language, labels } = loadCourseConfig();
+
   let mode;
   try {
-    mode = resolveMode(paths, options, indexCourse());
+    mode = resolveMode(paths, options, indexCourse(), labels);
   } catch (err) {
     log.error(`[export] ${err.message}`);
     process.exit(1);
@@ -318,8 +323,11 @@ async function exportCmd(paths = [], options = {}) {
   ).padStart(2, '0')}`;
   const meta = {
     regime: mode.regime,
-    lang: 'nl',
+    lang: language,
     date: localDate,
+    // Rendered labels travel as pandoc metadata so filter.lua and template.typ
+    // pick them up without hardcoding any language themselves.
+    labels: { ...labels.alerts, attachment: labels.export.attachment },
   };
   if (mode.regime !== 'bare') {
     meta.title = options.title || mode.defaultTitle;
@@ -334,6 +342,7 @@ async function exportCmd(paths = [], options = {}) {
     includedPaths: collectIncludedPaths(mode.groups),
     linkMap,
     courseId,
+    onlineLabel: labels.export.online,
   });
 
   const slug = mode.defaultSlug;

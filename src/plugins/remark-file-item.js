@@ -1,18 +1,23 @@
 const path = require('path');
 
+const { LABEL_SETS } = require('../../lib/config/labels');
+
 /**
  * Remark plugin that replaces the content of file item pages with a
  * styled file card. File items are markdown wrappers around binary files
  * (PDF, SVG, etc.) pulled from Canvas. This plugin intercepts them and
  * shows a download link instead of an empty page.
  *
- * @param {{ siteDir?: string }} [options] - `siteDir` (the Docusaurus site
- *   root) lets the link be emitted as a `@site/...` alias so Docusaurus's
- *   transformLinks plugin bundles the asset regardless of its extension. Pass
- *   `__dirname` from docusaurus.config.js.
+ * @param {{ siteDir?: string, label?: string }} [options] - `siteDir` (the
+ *   Docusaurus site root) lets the link be emitted as a `@site/...` alias so
+ *   Docusaurus's transformLinks plugin bundles the asset regardless of its
+ *   extension. Pass `__dirname` from docusaurus.config.js. `label` overrides
+ *   the card label (defaults to English; docusaurus.config.js passes the
+ *   course language's `labels.cards.file`).
  */
 function remarkFileItem(options = {}) {
   const { siteDir } = options;
+  const labelText = options.label || LABEL_SETS.en.cards.file;
 
   return (tree, vfile) => {
     const frontMatter = vfile.data.frontMatter;
@@ -36,7 +41,7 @@ function remarkFileItem(options = {}) {
     }
 
     // Build: <div class="file-item-card">
-    //          <p class="file-item-label">Bestand</p>
+    //          <p class="file-item-label">File</p>
     //          <p class="file-item-link">[fileName](url)</p>
     //        </div>
     // The link is a plain mdast link node (not a JSX <a>) so transformLinks
@@ -53,7 +58,7 @@ function remarkFileItem(options = {}) {
       attributes: [
         { type: 'mdxJsxAttribute', name: 'className', value: 'file-item-label' },
       ],
-      children: [{ type: 'text', value: 'Bestand' }],
+      children: [{ type: 'text', value: labelText }],
     };
 
     const linkParagraph = {

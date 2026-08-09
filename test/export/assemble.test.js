@@ -40,8 +40,29 @@ describe('buildMetaBlock', () => {
     assert.doesNotMatch(block, /subtitle/);
   });
 
+  it('defaults lang to en', () => {
+    assert.match(buildMetaBlock({ title: 'T' }), /lang: en/);
+  });
+
   it('escapes double quotes in values', () => {
     assert.match(buildMetaBlock({ title: 'a "b"' }), /title: "a \\"b\\""/);
+  });
+
+  it('emits a labels block when meta.labels is set', () => {
+    const block = buildMetaBlock({
+      labels: { note: 'Info', attachment: 'Bijlage:' },
+    });
+    assert.match(block, /labels:\n {2}note: "Info"\n {2}attachment: "Bijlage:"/);
+  });
+
+  it('escapes quotes in label values', () => {
+    const block = buildMetaBlock({ labels: { note: 'zeg "hallo"' } });
+    assert.match(block, /note: "zeg \\"hallo\\""/);
+  });
+
+  it('omits the labels block when meta.labels is absent or empty', () => {
+    assert.doesNotMatch(buildMetaBlock({ title: 'T' }), /labels:/);
+    assert.doesNotMatch(buildMetaBlock({ labels: {} }), /labels:/);
   });
 });
 

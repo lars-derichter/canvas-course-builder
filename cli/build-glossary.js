@@ -4,32 +4,45 @@ const yaml = require('js-yaml');
 
 const log = require('./logger');
 const { parseFrontmatter } = require('../lib/convert/frontmatter');
+const { LABEL_SETS } = require('../lib/config/labels');
+const { loadCourseConfig } = require('../lib/config/course-config');
 
 const COURSE_DIR = path.resolve(process.cwd(), 'course');
 const DEFAULT_GLOSSARY_PATH = 'sources/reference-materials/glossary.yml';
 
-// Per-course values live in the glossary file's own `config:` block, so they
-// sit under the protected sources/ tree and survive upstream updates.
-const DEFAULT_CONFIG = {
-  title: '📘 Glossary',
-  page_pattern: 'glossary\\.md$',
-  module_pattern: '^(\\d+)',
-  intro:
-    'This is the glossary as it stands after lesson {lesson}. It grows as ' +
-    'the course progresses: each module shows the full list up to that ' +
-    'point, in alphabetical order.',
-  kinds: ['concept', 'code', 'operator'],
-  code_kinds: ['code', 'operator'],
-  headings: { operators: 'Operators', terms: 'Terms' },
-};
+/**
+ * Defaults for a given labels object (see lib/config/labels.js). Language
+ * strings come from `labels.glossary`; the structural settings are fixed.
+ */
+function defaultConfigFor(labels) {
+  return {
+    title: labels.glossary.title,
+    page_pattern: 'glossary\\.md$',
+    module_pattern: '^(\\d+)',
+    intro: labels.glossary.intro,
+    kinds: ['concept', 'code', 'operator'],
+    code_kinds: ['code', 'operator'],
+    headings: {
+      operators: labels.glossary.operators,
+      terms: labels.glossary.terms,
+    },
+  };
+}
+
+// English baseline. Per-course values come from course.config.yml (language +
+// label overrides) and from the glossary file's own `config:` block, which
+// sits under the protected sources/ tree and survives upstream updates.
+const DEFAULT_CONFIG = defaultConfigFor(LABEL_SETS.en);
 
 /**
  * Load and validate the canonical glossary.
  * @param {string} glossaryPath - Absolute path to the glossary YAML file.
+ * @param {object} [defaults] - Base config the file's `config:` block merges
+ *   over (default: the English baseline).
  * @returns {{ terms: Array<object>, config: object }} Term entries and the
  *   file's config merged over the defaults.
  */
-function loadGlossary(glossaryPath) {
+function loadGlossary(glossaryPath, defaults = DEFAULT_CONFIG) {
   const raw = fs.readFileSync(glossaryPath, 'utf8');
   // js-yaml 5 throws on empty input; keep the friendly error below instead
   const data = raw.trim() ? yaml.load(raw) : null;
@@ -37,9 +50,9 @@ function loadGlossary(glossaryPath) {
     throw new Error(`${path.basename(glossaryPath)} has no "terms" list`);
   }
   const config = {
-    ...DEFAULT_CONFIG,
+    ...defaults,
     ...(data.config || {}),
-    headings: { ...DEFAULT_CONFIG.headings, ...(data.config || {}).headings },
+    headings: { ...defaults.headings, ...(data.config || {}).headings },
   };
   for (const t of data.terms) {
     if (!t.term || typeof t.lesson !== 'number' || !t.kind || !t.definition) {
@@ -195,7 +208,8 @@ async function buildGlossary(options = {}) {
   let terms;
   let config;
   try {
-    ({ terms, config } = loadGlossary(glossaryPath));
+    const defaults = defaultConfigFor(loadCourseConfig().labels);
+    ({ terms, config } = loadGlossary(glossaryPath, defaults));
   } catch (err) {
     log.error(`[build-glossary] ${err.message}`);
     process.exit(1);
@@ -290,6 +304,7 @@ async function buildGlossary(options = {}) {
 module.exports = buildGlossary;
 // Exported for unit tests.
 module.exports.DEFAULT_CONFIG = DEFAULT_CONFIG;
+module.exports.defaultConfigFor = defaultConfigFor;
 module.exports.loadGlossary = loadGlossary;
 module.exports.renderLemma = renderLemma;
 module.exports.renderBody = renderBody;

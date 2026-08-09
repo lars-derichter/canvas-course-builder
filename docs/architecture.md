@@ -22,6 +22,14 @@ course/  (markdown)
 3. **Canvas sync** — the CLI converts markdown to HTML (push) or HTML to
    markdown (pull) and communicates with the Canvas REST API.
 
+All three layers read `course.config.yml` at the project root through
+`lib/config/course-config.js`: it resolves the course language plus optional
+per-label overrides against the built-in label sets in `lib/config/labels.js`
+(English fallback when the file is missing). The CLI loads it for push (alert
+titles), pull (untitled fallback), export (metadata labels, document language,
+default titles), and the glossary builder; `docusaurus.config.js` loads it for
+the site locale and the remark plugin labels.
+
 ## Sync State
 
 `.canvas-sync.json` tracks the mapping between local files and Canvas resources:

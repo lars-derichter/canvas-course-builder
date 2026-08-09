@@ -13,6 +13,7 @@ const { SYNC_FILE, loadSyncFile, saveSyncFile, itemKey, ensureModuleEntry, remov
 const { COURSE_DIR, safeReadJSON } = require('./module-utils');
 const { toFolderName, toFileName, toFileSlug, computeRelativePath } = require('./naming');
 const log = require('./logger');
+const { loadCourseConfig } = require('../lib/config/course-config');
 
 async function pull(options) {
   const courseId = process.env.CANVAS_COURSE_ID;
@@ -206,7 +207,7 @@ async function pullModule(courseId, mod, syncData, force, canvasToRelative, canv
       subfolderName = null;
     }
 
-    const targetFileName = toFileName(item.title || 'Untitled', pos);
+    const targetFileName = toFileName(item.title || loadCourseConfig().labels.pull.untitled, pos);
 
     planned.push({
       kind: 'content',
@@ -513,7 +514,7 @@ function sha256File(filePath) {
  * a markdown wrapper so the item appears in the Docusaurus sidebar.
  */
 async function pullFileItem(item, targetDir, targetFileName, syncData, force, folderName, moduleEntry, moduleIdKey) {
-  const title = item.title || 'Untitled';
+  const title = item.title || loadCourseConfig().labels.pull.untitled;
   const contentId = item.content_id;
   if (!contentId) {
     log.info(`  [pull] Skipping file "${title}": no content_id`);
@@ -634,7 +635,7 @@ const pullStrategies = {
 };
 
 async function pullItem(courseId, item, moduleDir, targetFileName, syncData, force, folderName, canvasToRelative, canvasToLocal, moduleEntry, moduleIdKey) {
-  const title = item.title || 'Untitled';
+  const title = item.title || loadCourseConfig().labels.pull.untitled;
   const strategy = pullStrategies[item.type];
 
   if (!strategy) {

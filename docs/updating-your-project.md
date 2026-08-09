@@ -79,7 +79,7 @@ protected_dirs = course evaluations sources
 
 # Individual files always kept. Includes this config file itself so your
 # customizations here survive future upstream updates.
-protected_files = README.md CLAUDE.md docs/style.md docs/course-context.md update-from-upstream.conf
+protected_files = README.md CLAUDE.md docs/style.md docs/course-context.md update-from-upstream.conf course.config.yml
 
 # Upstream git remote and branch to merge from.
 upstream_remote = upstream
@@ -98,6 +98,16 @@ upstream_branch = main
 > lesson skills were introduced. If your `update-from-upstream.conf` predates
 > that, add it to your `protected_files` line yourself — otherwise upstream
 > updates will overwrite your course-specific version with the template.
+
+> [!NOTE]
+>
+> `course.config.yml` (the course language and label settings) arrived later
+> still. The first update after it appeared upstream brings the file in with
+> `language: nl`; the update script then adds it to your `protected_files`
+> automatically on the *next* run, once the file exists locally. Do **not**
+> add it to `protected_files` by hand before the file exists in your project —
+> the protection step deletes protected files that are absent from your
+> history, which would eat the incoming file.
 - **`upstream_remote`** / **`upstream_branch`** — where to merge from.
 
 Because the config file is itself protected, edits you make here are never
@@ -206,7 +216,7 @@ If you prefer to run the steps yourself instead of using the script:
    # Restore your content and protected files from HEAD
    git checkout HEAD -- course/ evaluations/ sources/ \
      README.md CLAUDE.md docs/style.md docs/course-context.md \
-     update-from-upstream.conf 2>/dev/null || true
+     update-from-upstream.conf course.config.yml 2>/dev/null || true
 
    # Drop the now-untracked upstream-only files
    git clean -fd -- course/ evaluations/ sources/

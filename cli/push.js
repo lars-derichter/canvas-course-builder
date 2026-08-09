@@ -6,6 +6,7 @@ const readline = require('readline');
 const { scanCourse } = require('../lib/convert/course-scanner');
 const { updateFrontmatter } = require('../lib/convert/frontmatter');
 const { markdownToHtml } = require('../lib/convert/markdown-to-html');
+const { loadCourseConfig } = require('../lib/config/course-config');
 const { createModule, updateModule, createModuleItem, deleteModule: deleteCanvasModule, listModuleItems, deleteModuleItem } = require('../lib/canvas/modules');
 const { createPage, updatePage, deletePage } = require('../lib/canvas/pages');
 const { createAssignment, updateAssignment, deleteAssignment } = require('../lib/canvas/assignments');
@@ -119,7 +120,12 @@ async function push(options) {
         };
         const fileResolver = buildFileResolver(relativePath, syncData);
         const raw = fs.readFileSync(filePath, 'utf8');
-        const html = markdownToHtml(raw, { iconUrls: iu, linkResolver, fileResolver });
+        const html = markdownToHtml(raw, {
+          iconUrls: iu,
+          alertTitles: loadCourseConfig().labels.alerts,
+          linkResolver,
+          fileResolver,
+        });
 
         if (canvasType === 'page') {
           await updatePage(cId, canvasId, { body: html });
@@ -437,7 +443,12 @@ async function pushContentItem(courseId, moduleId, { title, filePath, relativePa
     return resolved;
   };
   const fileResolver = buildFileResolver(relativePath, syncData);
-  const html = markdownToHtml(raw, { iconUrls, linkResolver, fileResolver });
+  const html = markdownToHtml(raw, {
+    iconUrls,
+    alertTitles: loadCourseConfig().labels.alerts,
+    linkResolver,
+    fileResolver,
+  });
 
   const opts = strategy.buildOpts(title, html, frontmatter);
   let itemId = canvasId;

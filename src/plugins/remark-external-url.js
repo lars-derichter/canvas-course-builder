@@ -1,9 +1,17 @@
+const { LABEL_SETS } = require('../../lib/config/labels');
+
 /**
  * Remark plugin that replaces the content of external_url pages with a
  * styled link card. Docusaurus normally renders these files as regular
  * documents; this plugin intercepts them and shows only the link.
+ *
+ * @param {{ label?: string }} [options] - `label` overrides the card label
+ *   (defaults to English; docusaurus.config.js passes the course language's
+ *   `labels.cards.external_url`).
  */
-function remarkExternalUrl() {
+function remarkExternalUrl(options = {}) {
+  const labelText = options.label || LABEL_SETS.en.cards.external_url;
+
   return (tree, vfile) => {
     const frontMatter = vfile.data.frontMatter;
     if (!frontMatter) return;
@@ -13,7 +21,7 @@ function remarkExternalUrl() {
     const url = frontMatter.external_url;
 
     // Build: <div class="external-url-card">
-    //          <p class="external-url-label">🔗 Externe link</p>
+    //          <p class="external-url-label">External link</p>
     //          <p><a href="URL" target="_blank" rel="noopener noreferrer">URL</a></p>
     //        </div>
     const linkNode = {
@@ -33,7 +41,7 @@ function remarkExternalUrl() {
       attributes: [
         { type: 'mdxJsxAttribute', name: 'className', value: 'external-url-label' },
       ],
-      children: [{ type: 'text', value: 'Externe link' }],
+      children: [{ type: 'text', value: labelText }],
     };
 
     const linkParagraph = {

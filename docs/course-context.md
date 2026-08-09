@@ -18,7 +18,9 @@ updates never overwrite your version.
 
 <!-- Subject, course name, institution, programme, language of instruction,
 students' level (year, prior knowledge, CEFR level if relevant), course length
-(number of lessons/weeks, minutes per lesson). -->
+(number of lessons/weeks, minutes per lesson). The machine-readable language
+setting lives in course.config.yml (it drives generated labels and the site
+locale); keep the two consistent. -->
 
 TODO
 

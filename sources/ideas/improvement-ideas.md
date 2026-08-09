@@ -9,18 +9,6 @@ assignment, lecture notes, quiz instructions, etc. Templates would provide
 pre-filled frontmatter and boilerplate markdown tailored to common course item
 patterns.
 
-## Multilingual support
-
-Alert labels are hardcoded in Dutch in two places — `ALERT_TYPES` in
-`lib/convert/markdown-to-html.js` (Canvas HTML) and `ALERT_MAP` in
-`src/plugins/remark-gfm-alerts.js` (Docusaurus preview) — and Docusaurus is
-configured with `locale: 'en'` while the content is Dutch. There should be a
-possibility to set the course language once and get the labels in that language
-everywhere. Should also check where else in the user interface labels etc. are
-used.
-
-This could also come in handy for Claude to know what language the course is in.
-
 ## Search Across Course Content
 
 A local search command (`npx course search "keyword"`) that searches all course
@@ -28,6 +16,19 @@ markdown files and shows results with context lines. Faster than grep for
 educators who aren't terminal-savvy.
 
 ## Implemented
+
+### Multilingual support
+
+`course.config.yml` at the project root sets the course language (`en` or
+`nl`) plus optional per-label overrides. It drives every generated
+student-facing label — alert titles in Canvas HTML, the Docusaurus preview,
+and PDF/DOCX exports (via pandoc metadata), the link/file cards, export
+defaults, the pull fallback title, the glossary page — and the Docusaurus site
+locale. Built-in sets live in `lib/config/labels.js`; the loader is
+`lib/config/course-config.js` (English fallback when the file is missing).
+The file is protected during upstream updates, and the update script
+self-registers it in `protected_files` for existing instances. Doubles as the
+machine-readable course language for Claude.
 
 ### Claude Helper Skills
 

@@ -2,9 +2,12 @@
  * Custom remark plugin that transforms GFM blockquote alerts (> [!NOTE], etc.)
  * into styled HTML divs for Docusaurus rendering.
  *
- * Produces <div class="markdown-alert markdown-alert-{type}"> with Dutch titles,
- * matching the Canvas HTML output styling via CSS classes.
+ * Produces <div class="markdown-alert markdown-alert-{type}">, matching the
+ * Canvas HTML output styling via CSS classes. Titles default to English and
+ * follow the course language when docusaurus.config.js passes
+ * `{ titles: labels.alerts }` from lib/config/course-config.js.
  */
+const { LABEL_SETS } = require('../../lib/config/labels');
 /**
  * Simple tree walker for mdast nodes of a given type.
  * Visits nodes depth-first, calling visitor(node, index, parent).
@@ -29,13 +32,13 @@ function visit(tree, type, visitor) {
 }
 
 const ALERT_TYPES = {
-  NOTE:      { cssType: 'note',      title: 'Info' },
-  TIP:       { cssType: 'tip',       title: 'Tip' },
-  IMPORTANT: { cssType: 'important', title: 'Belangrijk' },
-  WARNING:   { cssType: 'warning',   title: 'Waarschuwing' },
-  CAUTION:   { cssType: 'caution',   title: 'Opgelet' },
-  ATTENTION: { cssType: 'caution',   title: 'Opgelet' },
-  CHECK:     { cssType: 'check',     title: 'Check' },
+  NOTE:      { cssType: 'note' },
+  TIP:       { cssType: 'tip' },
+  IMPORTANT: { cssType: 'important' },
+  WARNING:   { cssType: 'warning' },
+  CAUTION:   { cssType: 'caution' },
+  ATTENTION: { cssType: 'caution' },
+  CHECK:     { cssType: 'check' },
 };
 
 const ALERT_PATTERN = /^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION|ATTENTION|CHECK)\]\s*\n?/;
@@ -61,7 +64,13 @@ const ICON_DATA_URIS = Object.fromEntries(
   Object.entries(SVG_ICONS).map(([key, svg]) => [key, svgToDataUri(svg)])
 );
 
-function remarkGfmAlerts() {
+/**
+ * @param {{ titles?: object }} [options] - `titles` maps alert cssType to the
+ *   displayed title, merged over the built-in English titles.
+ */
+function remarkGfmAlerts(options = {}) {
+  const titles = { ...LABEL_SETS.en.alerts, ...options.titles };
+
   return (tree) => {
     visit(tree, 'blockquote', (node, index, parent) => {
       // Extract the raw text from the first child to check for alert pattern
@@ -83,7 +92,8 @@ function remarkGfmAlerts() {
       const alertDef = ALERT_TYPES[alertKey];
       if (!alertDef) return;
 
-      const { cssType, title } = alertDef;
+      const { cssType } = alertDef;
+      const title = titles[cssType];
       const iconDataUri = ICON_DATA_URIS[cssType];
 
       // Remove the [!TYPE] marker from the first text node

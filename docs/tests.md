@@ -27,6 +27,9 @@ test/
 │   ├── push-helpers.test.js      # Push file resolver and page/assignment strategies
 │   ├── renumber.test.js          # Renumbering and reordering numbered entries
 │   └── split-item.test.js        # Splitting a multi-section item into separate files
+├── config/
+│   ├── course-config.test.js     # course.config.yml loading, caching, validation warnings
+│   └── labels.test.js            # Built-in label sets, override merging, slugify
 ├── convert/
 │   ├── course-scanner.test.js    # Course directory scanning, position extraction, title derivation
 │   ├── frontmatter.test.js       # YAML frontmatter parsing and serialization
@@ -45,7 +48,8 @@ test/
     └── extension.test.js         # VS Code extension command wiring vs. package.json
 ```
 
-Coverage spans the conversion layer (`lib/convert/`), the export layer
+Coverage spans the config layer (`lib/config/`), the conversion layer
+(`lib/convert/`), the export layer
 (`lib/export/`), the Canvas HTTP client and helpers (`lib/canvas/`), CLI command
 helpers (`cli/`), the Docusaurus remark plugins (`src/plugins/`), and the local
 VS Code extension (`.vscode/extensions/course-manager/`). Tests that exercise

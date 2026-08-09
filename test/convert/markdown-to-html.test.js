@@ -45,7 +45,7 @@ describe('markdownToHtml alerts', () => {
     const md = '> [!NOTE]\n> This is a note.';
     const html = markdownToHtml(md);
     assert.match(html, /markdown-alert-note/);
-    assert.match(html, /Info<\/p>/);
+    assert.match(html, /Note<\/p>/);
     assert.match(html, /This is a note\./);
   });
 
@@ -60,21 +60,21 @@ describe('markdownToHtml alerts', () => {
     const md = '> [!IMPORTANT]\n> Very important.';
     const html = markdownToHtml(md);
     assert.match(html, /markdown-alert-important/);
-    assert.match(html, /Belangrijk<\/p>/);
+    assert.match(html, /Important<\/p>/);
   });
 
   it('converts WARNING alert', () => {
     const md = '> [!WARNING]\n> Be careful.';
     const html = markdownToHtml(md);
     assert.match(html, /markdown-alert-warning/);
-    assert.match(html, /Waarschuwing<\/p>/);
+    assert.match(html, /Warning<\/p>/);
   });
 
   it('converts ATTENTION alert (mapped to caution)', () => {
     const md = '> [!ATTENTION]\n> Watch out!';
     const html = markdownToHtml(md);
     assert.match(html, /markdown-alert-caution/);
-    assert.match(html, /Opgelet<\/p>/);
+    assert.match(html, /Caution<\/p>/);
   });
 
   it('converts CHECK alert', () => {
@@ -82,6 +82,31 @@ describe('markdownToHtml alerts', () => {
     const html = markdownToHtml(md);
     assert.match(html, /markdown-alert-check/);
     assert.match(html, /Check<\/p>/);
+  });
+
+  it('renders titles from options.alertTitles', () => {
+    const alertTitles = {
+      note: 'Info',
+      important: 'Belangrijk',
+      warning: 'Waarschuwing',
+      caution: 'Opgelet',
+      check: 'Checklist',
+    };
+    const cases = [
+      ['> [!NOTE]\n> x', /Info<\/p>/],
+      ['> [!IMPORTANT]\n> x', /Belangrijk<\/p>/],
+      ['> [!WARNING]\n> x', /Waarschuwing<\/p>/],
+      ['> [!ATTENTION]\n> x', /Opgelet<\/p>/],
+      ['> [!CHECK]\n> x', /Checklist<\/p>/],
+    ];
+    for (const [md, expected] of cases) {
+      assert.match(markdownToHtml(md, { alertTitles }), expected);
+    }
+  });
+
+  it('keeps English defaults for types missing from alertTitles', () => {
+    const html = markdownToHtml('> [!TIP]\n> x', { alertTitles: { note: 'Info' } });
+    assert.match(html, /Tip<\/p>/);
   });
 
   it('includes icon when iconUrls are provided', () => {
@@ -158,7 +183,6 @@ describe('ALERT_CONFIG', () => {
       assert.ok(ALERT_CONFIG[type], `Missing config for type: ${type}`);
       assert.ok(ALERT_CONFIG[type].color, `Missing color for type: ${type}`);
       assert.ok(ALERT_CONFIG[type].icon, `Missing icon for type: ${type}`);
-      assert.ok(ALERT_CONFIG[type].title, `Missing title for type: ${type}`);
     }
   });
 });

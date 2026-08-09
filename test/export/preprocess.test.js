@@ -124,6 +124,20 @@ describe('rewriteCrossLinks', () => {
     assert.equal(out, 'X^[Online: /courses/42/pages/x-slug]');
   });
 
+  it('uses ctx.onlineLabel as the footnote prefix', () => {
+    const ctx = {
+      includedPaths: new Set(),
+      anchorFor,
+      linkMap: new Map([
+        ['01-mod/99-x.md', { canvasType: 'page', canvasId: 'x-slug' }],
+      ]),
+      courseId: 42,
+      onlineLabel: 'Zie online:',
+    };
+    const out = rewriteCrossLinks('[X](99-x.md)', '01-mod/01-page.md', ctx);
+    assert.equal(out, 'X^[Zie online: /courses/42/pages/x-slug]');
+  });
+
   it('leaves external and non-md links untouched', () => {
     const ctx = { includedPaths: new Set(), anchorFor };
     const input = '[web](https://x.com) and [file](./_files/a.zip)';

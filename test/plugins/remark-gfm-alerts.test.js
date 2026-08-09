@@ -32,8 +32,8 @@ function makeTree(blockquote) {
 /**
  * Helper: run the plugin transform on a tree and return the tree.
  */
-function transform(tree) {
-  const plugin = remarkGfmAlerts();
+function transform(tree, options) {
+  const plugin = remarkGfmAlerts(options);
   plugin(tree);
   return tree;
 }
@@ -75,7 +75,7 @@ describe('remarkGfmAlerts', () => {
     const tree = transform(makeTree(bq));
 
     assert.equal(tree.children.length, 1);
-    assertAlertDiv(tree.children[0], 'note', 'Info');
+    assertAlertDiv(tree.children[0], 'note', 'Note');
   });
 
   it('transforms > [!TIP] into a styled tip element', () => {
@@ -89,21 +89,21 @@ describe('remarkGfmAlerts', () => {
     const bq = makeAlertBlockquote('WARNING', 'Be careful.');
     const tree = transform(makeTree(bq));
 
-    assertAlertDiv(tree.children[0], 'warning', 'Waarschuwing');
+    assertAlertDiv(tree.children[0], 'warning', 'Warning');
   });
 
   it('transforms > [!IMPORTANT] into a styled important element', () => {
     const bq = makeAlertBlockquote('IMPORTANT', 'Critical info.');
     const tree = transform(makeTree(bq));
 
-    assertAlertDiv(tree.children[0], 'important', 'Belangrijk');
+    assertAlertDiv(tree.children[0], 'important', 'Important');
   });
 
   it('transforms > [!ATTENTION] mapping to caution type', () => {
     const bq = makeAlertBlockquote('ATTENTION', 'Watch out.');
     const tree = transform(makeTree(bq));
 
-    assertAlertDiv(tree.children[0], 'caution', 'Opgelet');
+    assertAlertDiv(tree.children[0], 'caution', 'Caution');
   });
 
   it('transforms > [!CHECK] into a styled check element', () => {
@@ -178,7 +178,7 @@ describe('remarkGfmAlerts', () => {
     const tree = transform(makeTree(bq));
 
     const div = tree.children[0];
-    assertAlertDiv(div, 'warning', 'Waarschuwing');
+    assertAlertDiv(div, 'warning', 'Warning');
 
     // Title + 2 body paragraphs
     assert.equal(div.children.length, 3);
@@ -223,7 +223,7 @@ describe('remarkGfmAlerts', () => {
     transform(tree);
 
     assert.equal(tree.children.length, 2);
-    assertAlertDiv(tree.children[0], 'note', 'Info');
+    assertAlertDiv(tree.children[0], 'note', 'Note');
     assertAlertDiv(tree.children[1], 'tip', 'Tip');
   });
 
@@ -231,7 +231,34 @@ describe('remarkGfmAlerts', () => {
     const bq = makeAlertBlockquote('CAUTION', 'Danger ahead.');
     const tree = transform(makeTree(bq));
 
-    assertAlertDiv(tree.children[0], 'caution', 'Opgelet');
+    assertAlertDiv(tree.children[0], 'caution', 'Caution');
+  });
+
+  it('renders titles from options.titles', () => {
+    const titles = {
+      note: 'Info',
+      important: 'Belangrijk',
+      warning: 'Waarschuwing',
+      caution: 'Opgelet',
+    };
+    const cases = [
+      ['NOTE', 'note', 'Info'],
+      ['IMPORTANT', 'important', 'Belangrijk'],
+      ['WARNING', 'warning', 'Waarschuwing'],
+      ['CAUTION', 'caution', 'Opgelet'],
+      ['ATTENTION', 'caution', 'Opgelet'],
+    ];
+    for (const [marker, cssType, title] of cases) {
+      const tree = transform(makeTree(makeAlertBlockquote(marker, 'x')), { titles });
+      assertAlertDiv(tree.children[0], cssType, title);
+    }
+  });
+
+  it('keeps English defaults for types missing from options.titles', () => {
+    const tree = transform(makeTree(makeAlertBlockquote('TIP', 'x')), {
+      titles: { note: 'Info' },
+    });
+    assertAlertDiv(tree.children[0], 'tip', 'Tip');
   });
 
   it('icon img element has expected attributes', () => {

@@ -148,6 +148,37 @@ evaluations/
 Reference materials, inspiration, and notes. Not served by Docusaurus or synced
 to Canvas. See [Sources Guide](sources.md) for conventions.
 
+## Course Language and Labels
+
+`course.config.yml` at the project root sets the language of every generated,
+student-facing label in one place: alert titles (Canvas HTML, Docusaurus
+preview, and PDF/DOCX exports), the "External link" and "File" cards in the
+preview, the attachment and online-footnote labels in exports, default export
+titles and filenames, the fallback title for unnamed pulled items, and the
+generated glossary page. It also sets the Docusaurus site locale, so the site
+chrome ("On this page", "Next", …) follows along.
+
+```yaml
+language: nl          # built-in label sets: en, nl (default: en)
+
+labels:               # optional per-label overrides on top of the set
+  alerts:
+    caution: Let op
+  cards:
+    file: Document
+```
+
+Override groups and keys: `alerts` (`note`, `tip`, `important`, `warning`,
+`caution`, `check`), `cards` (`external_url`, `file`), `export` (`attachment`,
+`online`, `course_title`, `selection_title`), `pull` (`untitled`), and
+`glossary` (`title`, `intro`, `operators`, `terms`). When the file or a key is
+missing, English is used.
+
+After changing the language or a label, re-push modules whose pages contain
+alerts (`npx course push`) and regenerate glossary pages
+(`npx course build-glossary`) so Canvas picks up the new labels. The file is
+listed in `protected_files`, so upstream updates never overwrite your choice.
+
 ## Markdown Files
 
 Markdown is a simple way to format text using plain characters — for example,

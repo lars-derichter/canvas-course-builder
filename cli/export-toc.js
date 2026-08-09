@@ -6,6 +6,7 @@ const { PROJECT_ROOT } = require('./project-root');
 const { COURSE_DIR } = require('./module-utils');
 const { scanCourse } = require('../lib/convert/course-scanner');
 const { generateToc } = require('../lib/export/toc');
+const { loadCourseConfig } = require('../lib/config/course-config');
 
 const EXPORTS_DIR = path.join(PROJECT_ROOT, 'exports');
 
@@ -26,7 +27,7 @@ async function exportTocCmd(options = {}) {
 
   const body = generateToc(modules, {
     flagged: options.flagged,
-    title: options.title,
+    title: options.title || loadCourseConfig().labels.export.course_title,
     subtitle: options.subtitle,
   });
 

@@ -27,7 +27,7 @@ protected_dirs = course evaluations sources
 
 # Individual files always kept. Includes this config file itself so your
 # customizations here survive future upstream updates.
-protected_files = README.md CLAUDE.md docs/style.md docs/course-context.md update-from-upstream.conf
+protected_files = README.md CLAUDE.md docs/style.md docs/course-context.md update-from-upstream.conf course.config.yml
 
 # Upstream git remote and branch to merge from.
 upstream_remote = upstream
@@ -252,6 +252,25 @@ if [ -n "$CONFLICTED" ]; then
   while read -r file; do
     [ -n "$file" ] && resolve_conflict "$file"
   done <<< "$CONFLICTED"
+fi
+
+# --- Migrate: protect per-course config files introduced upstream ---
+#
+# course.config.yml arrived after many instances forked, and their
+# update-from-upstream.conf is itself protected, so upstream cannot add it to
+# their protected_files. Once the file exists locally (the squash merge stages
+# upstream-only files silently), register it. This must only happen when the
+# file is actually present: the protection loop above deletes protected files
+# that are absent from HEAD, which would eat the incoming starter file.
+
+if [ -f course.config.yml ]; then
+  case " ${PROTECTED_FILES[*]} " in
+    *" course.config.yml "*) : ;;
+    *)
+      add_to_protected_files "course.config.yml"
+      echo "Added course.config.yml to protected_files in $(basename "$CONFIG_FILE")."
+      ;;
+  esac
 fi
 
 git add -A

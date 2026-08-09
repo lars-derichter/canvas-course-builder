@@ -3,11 +3,13 @@ const assert = require('node:assert/strict');
 
 const {
   DEFAULT_CONFIG,
+  defaultConfigFor,
   renderLemma,
   renderBody,
   serializePage,
   resolveLesson,
 } = require('../../cli/build-glossary');
+const { getLabels } = require('../../lib/config/labels');
 
 const TERMS = [
   { term: 'variable', lesson: 1, kind: 'concept', synonyms: [], definition: 'A named box.' },
@@ -128,5 +130,25 @@ describe('resolveLesson', () => {
   it('returns null when no lesson number can be resolved', () => {
     const config = { ...DEFAULT_CONFIG, module_pattern: 'les(\\d+)' };
     assert.equal(resolveLesson('99-reference', {}, config), null);
+  });
+});
+
+describe('defaultConfigFor', () => {
+  it('keeps the English baseline in DEFAULT_CONFIG', () => {
+    assert.equal(DEFAULT_CONFIG.title, '📘 Glossary');
+    assert.equal(DEFAULT_CONFIG.headings.operators, 'Operators');
+    assert.equal(DEFAULT_CONFIG.headings.terms, 'Terms');
+    assert.match(DEFAULT_CONFIG.intro, /\{lesson\}/);
+  });
+
+  it('localizes the language strings for nl labels', () => {
+    const config = defaultConfigFor(getLabels('nl'));
+    assert.equal(config.title, '📘 Woordenlijst');
+    assert.equal(config.headings.operators, 'Operatoren');
+    assert.equal(config.headings.terms, 'Termen');
+    assert.match(config.intro, /\{lesson\}/);
+    // structural settings stay identical to the baseline
+    assert.equal(config.page_pattern, DEFAULT_CONFIG.page_pattern);
+    assert.deepEqual(config.kinds, DEFAULT_CONFIG.kinds);
   });
 });

@@ -129,7 +129,10 @@ appropriate styling in both the Docusaurus preview and Canvas.
 > Verification step or checklist item.
 ```
 
-Each type displays with a distinct colour, icon, and Dutch title in Canvas
-(Info, Tip, Belangrijk, Waarschuwing, Opgelet, Check). Alert icons are
+Each type displays with a distinct colour, icon, and title in Canvas. Titles
+follow the course language set in `course.config.yml` (English: Note, Tip,
+Important, Warning, Caution, Check; Dutch: Info, Tip, Belangrijk, Waarschuwing,
+Opgelet, Check) and can be overridden per label — see the "Course language and
+labels" section in the [user guide](user-guide.md). Alert icons are
 automatically uploaded to Canvas on first push and tracked in
 `.canvas-sync.json`.

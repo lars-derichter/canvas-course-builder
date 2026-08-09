@@ -66,11 +66,18 @@ $endif$
   #link(url)[#text(size: 0.9em)[#url]]
 ]
 
+$-- Attachment label follows the course language via the `labels:` metadata
+$-- that the exporter emits (see lib/config/labels.js); English fallback.
+$if(labels.attachment)$
+#let attachment-label = [$labels.attachment$]
+$else$
+#let attachment-label = [Attachment:]
+$endif$
 #let attachment(name) = block(
   above: 1.2em,
   below: 1.2em,
 )[
-  #text(weight: "bold")[Bijlage:] #raw(name)
+  #text(weight: "bold")[#attachment-label] #raw(name)
 ]
 
 #let conf(
@@ -79,7 +86,7 @@ $endif$
   course: none,
   date: none,
   logo: none,
-  lang: "nl",
+  lang: "en",
   region: "BE",
   paper: "a4",
   margin: (left: 2.5cm, right: 2.5cm, top: 2.5cm, bottom: 2.3cm),

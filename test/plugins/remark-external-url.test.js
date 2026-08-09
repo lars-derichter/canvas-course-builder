@@ -19,8 +19,8 @@ function makeVfile(frontMatter) {
 /**
  * Helper: run the plugin transform on a tree with given frontmatter.
  */
-function transform(tree, frontMatter) {
-  const plugin = remarkExternalUrl();
+function transform(tree, frontMatter, options) {
+  const plugin = remarkExternalUrl(options);
   plugin(tree, makeVfile(frontMatter));
   return tree;
 }
@@ -43,7 +43,7 @@ describe('remarkExternalUrl', () => {
     assert.equal(classAttr.value, 'external-url-card');
   });
 
-  it('renders the label as "Externe link"', () => {
+  it('renders the label as "External link" by default', () => {
     const tree = makeTree([]);
     transform(tree, {
       canvas_type: 'external_url',
@@ -55,6 +55,18 @@ describe('remarkExternalUrl', () => {
     assert.equal(label.name, 'p');
     const labelClass = label.attributes.find((a) => a.name === 'className');
     assert.equal(labelClass.value, 'external-url-label');
+    assert.equal(label.children[0].value, 'External link');
+  });
+
+  it('renders options.label when provided', () => {
+    const tree = makeTree([]);
+    transform(
+      tree,
+      { canvas_type: 'external_url', external_url: 'https://example.com' },
+      { label: 'Externe link' },
+    );
+
+    const label = tree.children[0].children[0];
     assert.equal(label.children[0].value, 'Externe link');
   });
 
