@@ -48,8 +48,8 @@ The script:
    history is not imported.
 3. Always keeps your protected paths. The content directories (`course/`,
    `evaluations/`, `sources/`) and the protected files (`README.md`,
-   `CLAUDE.md`, `docs/style.md`, and the config file itself) are restored from
-   your version, never overwritten by upstream.
+   `AGENTS.md`, `CLAUDE.md`, `docs/style.md`, and the config file itself) are
+   restored from your version, never overwritten by upstream.
 4. Prompts you for any **other** file that changed on both sides. For each
    conflict you choose what to do (see
    [Resolving conflicts](#resolving-conflicts) below).
@@ -79,7 +79,7 @@ protected_dirs = course evaluations sources
 
 # Individual files always kept. Includes this config file itself so your
 # customizations here survive future upstream updates.
-protected_files = README.md CLAUDE.md docs/style.md docs/course-context.md update-from-upstream.conf course.config.yml
+protected_files = README.md AGENTS.md CLAUDE.md docs/style.md docs/course-context.md update-from-upstream.conf course.config.yml
 
 # Upstream git remote and branch to merge from.
 upstream_remote = upstream
@@ -108,22 +108,32 @@ upstream_branch = main
 > add it to `protected_files` by hand before the file exists in your project —
 > the protection step deletes protected files that are absent from your
 > history, which would eat the incoming file.
+
+> [!NOTE]
+>
+> `AGENTS.md` arrived when the template went agent-agnostic (the shared
+> instructions for Claude Code, OpenAI Codex, and other agentic tools;
+> `CLAUDE.md` became a one-line import of it). It follows the same pattern as
+> `course.config.yml`: the first update brings the file in, and the script
+> registers it in your `protected_files` automatically on the next run. Do
+> **not** add it by hand before the file exists in your project.
 - **`upstream_remote`** / **`upstream_branch`** — where to merge from.
 
 Because the config file is itself protected, edits you make here are never
 overwritten. Commit the file after changing it.
 
-### Renamed skill folders
+### Renamed files and folders
 
-Upstream occasionally renames a skill folder (in 2026: `initialize-style` →
-`style-init`, `update-style` → `style-update`, `create-export-style` →
-`export-style-create`, `edit-export-style` → `export-style-edit`). A squash
-merge does not delete the old folder in your project, so the update script
-prunes known old paths automatically — but it can only do that from the run
-*after* the one that brought it the new list. After an update that renames
-skills, either run the update once more or remove the old folders yourself
-with `git rm -r`. If you customized one of the old skills, re-apply your
-edits to the renamed successor; the old content stays in your git history.
+Upstream occasionally renames a skill folder or a docs file (in 2026:
+`initialize-style` → `style-init`, `update-style` → `style-update`,
+`create-export-style` → `export-style-create`, `edit-export-style` →
+`export-style-edit`, and `docs/claude-code.md` → `docs/ai-assistants.md`). A
+squash merge does not delete the old path in your project, so the update
+script prunes known old paths automatically — but it can only do that from the
+run *after* the one that brought it the new list. After an update that renames
+files, either run the update once more or remove the old paths yourself with
+`git rm -r`. If you customized one of the old files, re-apply your edits to
+the renamed successor; the old content stays in your git history.
 
 ## Resolving conflicts
 
@@ -215,7 +225,7 @@ If you prefer to run the steps yourself instead of using the script:
 
    # Restore your content and protected files from HEAD
    git checkout HEAD -- course/ evaluations/ sources/ \
-     README.md CLAUDE.md docs/style.md docs/course-context.md \
+     README.md AGENTS.md CLAUDE.md docs/style.md docs/course-context.md \
      update-from-upstream.conf course.config.yml 2>/dev/null || true
 
    # Drop the now-untracked upstream-only files

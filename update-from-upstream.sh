@@ -4,8 +4,8 @@ set -euo pipefail
 # Update project from the upstream canvas-course-builder template repository.
 # Uses a squash merge so only one commit is added to your history.
 # Content directories (course/, evaluations/, sources/) and the protected files
-# (README.md, CLAUDE.md, docs/style.md, docs/course-context.md) are always
-# preserved. Conflicts in other files are resolved interactively (keep local /
+# (README.md, AGENTS.md, CLAUDE.md, docs/style.md, docs/course-context.md) are
+# always preserved. Conflicts in other files are resolved interactively (keep local /
 # upstream / merge in the editor).
 
 # --- Load configuration ---
@@ -27,7 +27,7 @@ protected_dirs = course evaluations sources
 
 # Individual files always kept. Includes this config file itself so your
 # customizations here survive future upstream updates.
-protected_files = README.md CLAUDE.md docs/style.md docs/course-context.md update-from-upstream.conf course.config.yml
+protected_files = README.md AGENTS.md CLAUDE.md docs/style.md docs/course-context.md update-from-upstream.conf course.config.yml
 
 # Upstream git remote and branch to merge from.
 upstream_remote = upstream
@@ -145,6 +145,7 @@ STALE_PATHS=(
   ".claude/skills/update-style"
   ".claude/skills/create-export-style"
   ".claude/skills/edit-export-style"
+  "docs/claude-code.md"
 )
 
 for path in "${STALE_PATHS[@]}"; do
@@ -269,6 +270,20 @@ if [ -f course.config.yml ]; then
     *)
       add_to_protected_files "course.config.yml"
       echo "Added course.config.yml to protected_files in $(basename "$CONFIG_FILE")."
+      ;;
+  esac
+fi
+
+# AGENTS.md arrived when the template went agent-agnostic (CLAUDE.md became a
+# one-line import of it). Same situation as course.config.yml above: register
+# it once it exists locally.
+
+if [ -f AGENTS.md ]; then
+  case " ${PROTECTED_FILES[*]} " in
+    *" AGENTS.md "*) : ;;
+    *)
+      add_to_protected_files "AGENTS.md"
+      echo "Added AGENTS.md to protected_files in $(basename "$CONFIG_FILE")."
       ;;
   esac
 fi
