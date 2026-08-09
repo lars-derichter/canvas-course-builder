@@ -1,7 +1,7 @@
 # Further skill ideas for canvas-local
 
-Temporary scratchpad, 2026-07-11. Ideas for skills that could help a course
-creator/instructor, roughly ordered by expected value. All would follow the
+Backlog of skills that could help a course creator/instructor, started
+2026-07-11 and roughly ordered by expected value. All would follow the
 established pattern: read `course-context.md` + `style.md` first, design-then-
 write phases, no auto-commits.
 

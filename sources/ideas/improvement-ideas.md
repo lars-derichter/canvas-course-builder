@@ -9,11 +9,6 @@ assignment, lecture notes, quiz instructions, etc. Templates would provide
 pre-filled frontmatter and boilerplate markdown tailored to common course item
 patterns.
 
-## Claude Helper Skills
-
-Create Claude skills that help with common tasks while creating course
-materials.
-
 ## Multilingual support
 
 Alert labels are always in Dutch. There should be a possibility to set the
@@ -29,6 +24,18 @@ markdown files and shows results with context lines. Faster than grep for
 educators who aren't terminal-savvy.
 
 ## Implemented
+
+### Claude Helper Skills
+
+`.claude/skills/` holds a suite of skills covering the authoring cycle: writing
+style (`/style-init`, `/style-update`, `/proofread`), lessons
+(`/design-lesson`, `/summarize-lesson`, `/build-lesson-module`), assessment
+(`/design-evaluation`, `/build-quiz`, `/rubric`), course-wide sweeps
+(`/consistency-check`, `/coverage-map`, `/image-todos`), the issue queue
+(`/report-issue`, `/fix-issues`), export styling, course context, and
+`/lesson-retro` and `/commit`. All are documented in
+[Claude Code](../../docs/claude-code.md). Skills still on the wish list live in
+[further-skill-ideas.md](further-skill-ideas.md).
 
 ### PDF/DOCX Export Support
 
