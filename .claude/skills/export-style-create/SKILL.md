@@ -27,10 +27,12 @@ sentence if the source is not a document, URL, or stylesheet.
    styles) each control, and how `--var` variables map into the template;
    [`templates/export/template.typ`](../../../templates/export/template.typ)
    — the default you will fork; note the `conf(...)` signature (font,
-   codefont, fontsize, margin, paper) and the `alert-colors` map. The
-   custom paragraph styles inside `templates/export/reference.docx`
-   (`AlertTitle`, `AlertBody`, `LinkCard`, `LinkCardTitle`, `Attachment`)
-   are mapped by the Lua filter and **must survive** any edit to the DOCX.
+   codefont, fontsize, margin, paper, logo) and the `alert-colors` map. The
+   custom paragraph styles inside `templates/export/reference.docx` — the
+   twelve per-kind `AlertTitle<Kind>`/`AlertBody<Kind>` pairs (Note, Tip,
+   Important, Warning, Caution, Check) plus `LinkCard`, `LinkCardTitle`,
+   `Attachment`, and `SourceCode` — are mapped by the Lua filter and
+   **must survive** any edit to the DOCX.
 
 2. **Extract the visual decisions** from the reference:
    - `.docx` — unzip into a fresh directory in the session scratchpad; read
@@ -89,8 +91,10 @@ sentence if the source is not a document, URL, or stylesheet.
    In `word/styles.xml`: `Normal`, `Heading1/2/3`, `Hyperlink` — font via
    `<w:rFonts>`, size via `<w:sz>` in half-points (`28` = 14pt), colour via
    `<w:color w:val="RRGGBB">` (no `#`); theme fonts via `<a:latin typeface>`
-   in `word/theme/theme1.xml`. Leave `AlertTitle`, `AlertBody`, `LinkCard`,
-   `LinkCardTitle`, and `Attachment` untouched.
+   in `word/theme/theme1.xml`. Leave the per-kind `AlertTitle*`/`AlertBody*`
+   pairs, `LinkCard`, `LinkCardTitle`, `Attachment`, and `SourceCode`
+   untouched (unless the new style redefines the alert palette — then keep
+   the style *names* and change only their colours).
 
 7. **Regenerate and show the sample**: `npx course export --sample -f pdf`
    and `-f docx`. Surface `exports/style-sample.pdf` (and the DOCX), point
@@ -105,7 +109,12 @@ sentence if the source is not a document, URL, or stylesheet.
 - Keep PDF and DOCX in sync: apply each format-agnostic decision (fonts,
   colours, margins) to both files.
 - If the reference uses a licensed font the system lacks, say so — Typst
-  uses installed system fonts; suggest `typst fonts` to list them and a
-  close free alternative.
+  uses installed system fonts plus the style's `fonts/` directory (the
+  exporter passes `sources/export-style/fonts/`, or the shipped
+  `templates/export/fonts/`, to Typst via `TYPST_FONT_PATHS`); suggest
+  `typst fonts` to list installed ones, dropping font files in
+  `sources/export-style/fonts/`, or a close free alternative.
+- A `sources/export-style/tm-logo.png` overrides the shipped cover logo;
+  deleting the shipped one removes the logo from the cover.
 
 $ARGUMENTS

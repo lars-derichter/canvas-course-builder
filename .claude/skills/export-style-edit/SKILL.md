@@ -33,7 +33,9 @@ hand off to `export-style-create`.
    | Body font/size | `font:`/`fontsize:` in `conf()` | `Normal` + theme `<a:latin>` |
    | Link colour | `show link: set text(fill:)` | `Hyperlink` colour |
    | Margins / paper | `margin:`/`paper:` in `conf()` | `<w:pgMar>`/`<w:pgSz>` |
-   | Alert colours | the `alert-colors` map | `AlertTitle` colour |
+   | Alert colours | the `alert-colors` map | the per-kind `AlertTitle<Kind>`/`AlertBody<Kind>` styles |
+   | Cover logo | `sources/export-style/tm-logo.png` (PDF only) | — |
+   | Heading numbering | `sectionnumbering:` in `conf()` | the `numId 900` numbering + heading `numPr` |
 
    Apply each format-agnostic change to **both** files; a PDF-only tweak
    (justification, page numbering) touches only `template.typ`.
@@ -51,9 +53,10 @@ hand off to `export-style-create`.
    ( cd "$D" && zip -Xrq "<absolute repo path>/sources/export-style/reference.docx" . )
    ```
    Font size is in half-points (`<w:sz w:val="28">` = 14pt); colour is
-   `<w:color w:val="RRGGBB">` (no `#`). Leave `AlertTitle`, `AlertBody`,
-   `LinkCard`, `LinkCardTitle`, and `Attachment` untouched unless the
-   request is specifically about them.
+   `<w:color w:val="RRGGBB">` (no `#`). Leave the per-kind
+   `AlertTitle<Kind>`/`AlertBody<Kind>` pairs, `LinkCard`, `LinkCardTitle`,
+   `Attachment`, and `SourceCode` untouched unless the request is
+   specifically about them — the Lua filter references them by name.
 
 5. **Regenerate and show**: `npx course export --sample -f pdf` (add
    `-f docx` when the change touched the DOCX). Confirm the change landed,

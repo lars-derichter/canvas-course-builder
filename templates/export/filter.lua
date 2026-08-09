@@ -83,12 +83,14 @@ end
 local function render_docx_alert(el)
   local kind = alert_kind(el)
   local title = ALERT_TITLES[kind] or "Info"
+  -- Per-kind styles in reference.docx: "Alert Title Note" .. "Alert Body Check".
+  local suffix = kind:sub(1, 1):upper() .. kind:sub(2)
   local blocks = pandoc.List()
   blocks:insert(pandoc.Div(
     { pandoc.Para({ pandoc.Str(title) }) },
-    pandoc.Attr("", {}, { ["custom-style"] = "Alert Title" })
+    pandoc.Attr("", {}, { ["custom-style"] = "Alert Title " .. suffix })
   ))
-  blocks:extend(styled(el.content, "Alert Body"))
+  blocks:extend(styled(el.content, "Alert Body " .. suffix))
   return blocks
 end
 

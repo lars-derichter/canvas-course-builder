@@ -1,28 +1,31 @@
 $-- Course export template for pandoc's Typst writer (shipped default).
+$-- Styled after the Thomas More course template (Cursussjabloon A4).
 $-- Override by placing a template.typ in sources/export-style/.
 $if(highlighting-definitions)$
 // syntax highlighting functions from skylighting:
 $highlighting-definitions$
 
 $endif$
-#let horizontalrule = line(start: (25%, 0%), end: (75%, 0%))
+// Thomas More palette. Headings and covers use tm-orange/tm-navy; the
+// near-duplicate theme values (#FA6232, #00627B) are deliberately not used.
+#let tm-orange = rgb("#FA6432")
+#let tm-navy = rgb("#00283C")
+#let tm-link = rgb("#00637C")
+#let tm-grey = rgb("#E8EBEE")
+#let tm-muted = rgb("#595959")
+#let tm-tableline = rgb("#AABDCA")
+
+#let heading-font = ("Century Gothic", "Arial")
+
+#let horizontalrule = line(start: (25%, 0%), end: (75%, 0%), stroke: 0.5pt + tm-tableline)
 
 #show terms.item: it => block(breakable: false)[
   #text(weight: "bold")[#it.term]
   #block(inset: (left: 1.5em, top: -0.4em))[#it.description]
 ]
 
-#set table(
-  inset: 6pt,
-  stroke: none,
-)
-
-#show figure.where(kind: table): set figure.caption(position: top)
-
-#show figure.where(kind: image): set figure.caption(position: bottom)
-
-// Alert colors and kinds mirror ALERT_CONFIG in lib/convert/markdown-to-html.js.
-// Keep both in sync when a kind or color changes.
+// Alert colors and kinds mirror ALERT_CONFIG in lib/convert/markdown-to-html.js
+// and the per-kind Alert styles in reference.docx. Keep all three in sync.
 #let alert-colors = (
   note: rgb("#4bafe1"),
   tip: rgb("#64c8c8"),
@@ -51,7 +54,7 @@ $endif$
 
 #let linkcard(title, url) = block(
   width: 100%,
-  stroke: 0.5pt + luma(170),
+  stroke: 0.5pt + tm-tableline,
   radius: 4pt,
   inset: 10pt,
   above: 1.2em,
@@ -75,67 +78,115 @@ $endif$
   subtitle: none,
   course: none,
   date: none,
+  logo: none,
   lang: "nl",
   region: "BE",
   paper: "a4",
-  margin: (x: 2.5cm, y: 2.5cm),
-  font: ("Libertinus Serif",),
+  margin: (left: 2.5cm, right: 2.5cm, top: 2.5cm, bottom: 2.3cm),
+  font: ("Arial",),
   codefont: ("DejaVu Sans Mono",),
-  fontsize: 11pt,
-  sectionnumbering: none,
+  fontsize: 12pt,
+  sectionnumbering: "1.1.",
   pagenumbering: "1",
   toc: false,
   toc-depth: 2,
   doc,
 ) = {
-  set page(paper: paper, margin: margin, numbering: pagenumbering)
+  // Footer per the TM template: centred page number with a small vertical
+  // orange rule near the left page edge. Hidden on the cover (page 1).
+  let tm-footer = if pagenumbering == none { none } else {
+    context {
+      if counter(page).get().first() > 1 {
+        place(left + horizon, dx: -1.5cm,
+          line(start: (0pt, -0.4cm), end: (0pt, 0.4cm), stroke: 0.5pt + tm-orange))
+        align(center, text(size: 9pt, fill: tm-muted,
+          counter(page).display(pagenumbering)))
+      }
+    }
+  }
+  set page(paper: paper, margin: margin, numbering: pagenumbering, footer: tm-footer)
   set text(font: font, size: fontsize, lang: lang, region: region)
-  set par(justify: true)
+  set par(justify: true, leading: 0.6em, spacing: 1.2em)
   set heading(numbering: sectionnumbering)
   set list(indent: 1em)
   set enum(indent: 1em)
 
-  show link: set text(fill: rgb("#1a5fb4"))
+  show link: set text(fill: tm-link)
 
+  show heading: set text(font: heading-font, weight: "bold")
   show heading: set block(above: 1.4em, below: 0.8em)
+  show heading.where(level: 1): set text(size: 21pt, fill: tm-orange)
+  show heading.where(level: 2): set text(size: 15pt, fill: tm-navy)
+  show heading.where(level: 3): set text(size: 13pt, fill: tm-orange)
+  show heading.where(level: 4): set text(size: 12pt, fill: tm-navy, style: "italic")
   show heading.where(level: 1): it => {
     pagebreak(weak: true)
     it
   }
+  // H5/H6 are small bold-caps labels in the TM template, not numbered.
+  show heading.where(level: 5): it => block(above: 1.4em, below: 0.8em,
+    text(font: font, size: 11pt, weight: "bold", fill: tm-orange, upper(it.body)))
+  show heading.where(level: 6): it => block(above: 1.4em, below: 0.8em,
+    text(font: font, size: 11pt, weight: "bold", fill: tm-navy, upper(it.body)))
+
+  show quote.where(block: true): set text(style: "italic", fill: tm-muted)
 
   show raw.where(block: true): it => block(
     width: 100%,
-    fill: luma(246),
+    fill: tm-grey,
     inset: 8pt,
     radius: 3pt,
     text(font: codefont, size: 0.85em, it),
   )
   show raw.where(block: false): it => box(
-    fill: luma(246),
+    fill: tm-grey,
     inset: (x: 3pt, y: 0pt),
     outset: (y: 3pt),
     radius: 2pt,
     text(font: codefont, size: 0.9em, it),
   )
 
+  // Tables per the TM "Tabel (oranje)" style: navy header row with white bold
+  // text, inner hairlines only, no outer border.
+  set table(
+    inset: (x: 8pt, y: 4pt),
+    fill: (x, y) => if y == 0 { tm-navy } else { none },
+    stroke: (x, y) => (
+      left: if x > 0 { 0.5pt + tm-tableline } else { none },
+      top: if y > 0 { 0.5pt + tm-tableline } else { none },
+    ),
+  )
+  show table.cell.where(y: 0): set text(weight: "bold", fill: white)
+
+  show figure.where(kind: table): set figure.caption(position: top)
+  show figure.where(kind: image): set figure.caption(position: bottom)
+  show figure.caption: set text(size: 9pt, style: "italic")
+
+  // TOC: level-1 entries bold navy, per the TM toc styles.
+  show outline.entry.where(level: 1): set block(above: 1em)
+  show outline.entry.where(level: 1): set text(weight: "bold", fill: tm-navy)
+
   if title != none {
+    if logo != none {
+      place(top + left, dx: -0.49cm, dy: -0.49cm, image(logo, width: 3.76cm))
+    }
+    v(8cm)
+    if subtitle != none {
+      text(font: heading-font, size: 13pt, weight: "bold", fill: tm-navy,
+        tracking: 0.03em, upper(subtitle))
+      v(0.8em, weak: true)
+    }
+    par(leading: 0.45em, text(font: heading-font, size: 32pt, weight: "bold",
+      fill: tm-orange, title))
+    if course != none {
+      v(1.6em, weak: true)
+      text(size: 12pt)[#course]
+    }
+    if date != none {
+      v(0.9em, weak: true)
+      text(size: 12pt, fill: tm-muted)[#date]
+    }
     v(1fr)
-    align(center)[
-      #text(size: 2.4em, weight: "bold")[#title]
-      #if subtitle != none [
-        #v(0.8em)
-        #text(size: 1.4em, fill: luma(80))[#subtitle]
-      ]
-      #if course != none [
-        #v(2.5em)
-        #text(size: 1.1em)[#course]
-      ]
-      #if date != none [
-        #v(0.6em)
-        #text(fill: luma(100))[#date]
-      ]
-    ]
-    v(1.6fr)
     pagebreak()
   }
 
@@ -168,6 +219,9 @@ $if(course)$
 $endif$
 $if(date)$
   date: [$date$],
+$endif$
+$if(logo)$
+  logo: "$logo$",
 $endif$
 $if(lang)$
   lang: "$lang$",

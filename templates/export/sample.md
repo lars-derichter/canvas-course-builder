@@ -19,7 +19,36 @@ beoordelen. Hier staat wat `inline code` tussen de woorden.
 
 ### Een sub-subkop
 
-Een korte alinea onder de derde kopniveau.
+Een korte alinea onder de derde kopniveau. Deze zin krijgt een voetnoot om de
+notenstijl te tonen.[^1]
+
+[^1]: Zo ziet een voetnoot eruit onderaan de pagina.
+
+#### Een vierde kopniveau
+
+Het vierde kopniveau is cursief in marineblauw, zoals in het sjabloon.
+
+## Citaat en definities
+
+Een blokcitaat ziet er zo uit:
+
+> Onderwijs is niet het vullen van een vat, maar het ontsteken van een vuur.
+
+Een definitielijst:
+
+Selector
+: Een patroon dat bepaalt op welke elementen een CSS-regel van toepassing is.
+
+Markup
+: De structuur van een document, uitgedrukt in tags.
+
+Een horizontale lijn als scheiding:
+
+---
+
+## Afbeelding
+
+![Het logo van Thomas More als voorbeeldafbeelding](tm-logo.png)
 
 ## Alerts
 

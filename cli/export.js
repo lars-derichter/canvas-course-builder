@@ -378,6 +378,8 @@ async function run(style, input, output, format, options, resourcePath) {
       referenceDoc: style.referenceDoc,
       resourcePath,
       variables: options.var || {},
+      logo: style.logo,
+      fontsDir: style.fontsDir,
     });
   } catch (err) {
     log.error(`[export] ${err.message}`);

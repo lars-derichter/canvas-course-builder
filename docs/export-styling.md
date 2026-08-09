@@ -28,7 +28,17 @@ DOCX through pandoc's Word writer using `reference.docx`. A single Lua filter
 translates the exporter's fenced divs (alerts, link cards, attachments, page
 breaks) into the right thing for each renderer.
 
-## The four style files
+## The shipped Thomas More style
+
+The shipped defaults follow the official Thomas More course template
+(Cursussjabloon A4): Century Gothic headings in TM orange (`#FA6432`) and navy
+(`#00283C`), Arial 12 pt body text, headings auto-numbered `1.` / `1.1.`, every
+H1 on a new page, A4 with 2.5 cm margins (2.3 cm bottom), a centred page number
+with a small orange rule in the footer, and a typographic cover with the TM
+logo. Both formats carry the same look; the DOCX also uses the TM colours as
+its Word theme.
+
+## The style files
 
 The shipped defaults live in `templates/export/`. Your overrides live in
 `sources/export-style/` — that folder is protected from upstream updates, so a
@@ -39,16 +49,24 @@ shipped default. A `--template` or `--reference-doc` CLI flag wins over both.
 | File | Renderer | Controls |
 | --- | --- | --- |
 | `template.typ` | PDF (Typst) | Fonts, sizes, margins, colours, title page, TOC, alert/link-card/attachment styling, page-break behaviour. |
-| `reference.docx` | DOCX (Word) | All Word paragraph and character styles: `Normal`, `Heading 1/2/3`, `Hyperlink`, and the custom `Alert Title/Body`, `Link Card`, `Link Card Title`, `Attachment` styles. |
-| `defaults.yml` | both | Pandoc defaults shared by every export (TOC depth, section numbering). Layout defaults deliberately live in `template.typ` instead, so `--var` can override them. |
+| `reference.docx` | DOCX (Word) | All Word paragraph and character styles: `Normal`, `Heading 1/2/3`, `Hyperlink`, and the custom styles listed below. |
+| `defaults.yml` | both | Pandoc defaults shared by every export (TOC depth). Layout defaults deliberately live in `template.typ` instead, so `--var` can override them. Heading numbering is native to both templates, so `number-sections` stays `false`. |
 | `filter.lua` | both | Maps the exporter's `.alert`, `.link-card`, `.attachment`, and `.page-break` divs onto Typst function calls (PDF) or custom-style paragraphs (DOCX). Rarely needs editing. |
+| `tm-logo.png` | PDF (Typst) | Cover logo. Resolved like the other files; delete or override it in `sources/export-style/` to change the cover mark. Optional — without it the cover simply has no logo. |
+| `fonts/` | PDF (Typst) | Fonts shipped with the style (Century Gothic). The exporter points Typst at this directory via `TYPST_FONT_PATHS`, so the PDF renders identically on machines where the font is not installed. |
+
+The custom Word styles `reference.docx` must define (pandoc matches on the
+spaced display names): `Alert Title <Kind>` and `Alert Body <Kind>` for each of
+Note, Tip, Important, Warning, Caution, and Check, plus `Link Card Title`,
+`Link Card`, `Attachment`, and `Source Code`.
 
 > [!IMPORTANT]
 >
-> The alert kinds and their Dutch titles appear in three places that must stay
-> in sync: `ALERT_CONFIG` in `lib/convert/markdown-to-html.js`, the
-> `alert-colors` map in `template.typ`, and `ALERT_TITLES` in `filter.lua`.
-> Change a kind or colour in one, change it in all three.
+> The alert kinds, colours, and Dutch titles appear in four places that must
+> stay in sync: `ALERT_CONFIG` in `lib/convert/markdown-to-html.js`, the
+> `alert-colors` map in `template.typ`, `ALERT_TITLES` in `filter.lua`, and the
+> twelve per-kind `Alert Title/Body <Kind>` styles in `reference.docx`. Change
+> a kind or colour in one, change it in all four.
 
 ## Overriding layout with `--var`
 
@@ -70,10 +88,12 @@ To see which fonts Typst can actually use on this machine:
 typst fonts
 ```
 
-Typst renders with installed **system fonts**. The shipped template sticks to
-widely available fonts; if you set `mainfont` to something you have not
-installed, Typst falls back and the result will not match. Install the font, or
-pick one `typst fonts` lists.
+Typst renders with installed **system fonts**, plus whatever the style ships in
+its `fonts/` directory (the exporter passes that directory to Typst via
+`TYPST_FONT_PATHS` — this is how Century Gothic works out of the box). If you
+set `mainfont` to something you have not installed, Typst falls back and the
+result will not match. Install the font, drop its files in
+`sources/export-style/fonts/`, or pick one `typst fonts` lists.
 
 ## Deriving a style from a reference
 
@@ -106,9 +126,15 @@ DOCX is a lossy target next to the Typst PDF. These are known and accepted:
 
 - **Table of contents** — Word writes the TOC as a field that shows empty until
   you update it: open the document, select all (Ctrl/Cmd-A), then press F9.
+  Heading numbers need no such step — they are native Word numbering.
 - **`--var` font/margin variables** affect the PDF only. Style the DOCX through
   `reference.docx`.
-- **Alerts** keep their coloured border and Dutch title but have no icon.
+- **Cover logo** appears in the PDF only; the DOCX cover is typographic
+  (Title/Subtitle styles in the TM look).
+- **Alerts** keep their per-kind coloured border and Dutch title but have no
+  icon. A `reference.docx` fork made before the per-kind styles existed lacks
+  the `Alert Title/Body <Kind>` styles; pandoc then falls back to plain
+  paragraphs — re-derive the fork from the current shipped file to fix that.
 - **Inline SVG** renders natively in the PDF. For DOCX, pandoc needs
   `rsvg-convert` (from librsvg, e.g. `brew install librsvg`) on the PATH to
   rasterise it; without it the image is dropped with a warning. SVG shown
