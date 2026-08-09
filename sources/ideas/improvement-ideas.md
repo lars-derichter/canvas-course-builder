@@ -11,9 +11,13 @@ patterns.
 
 ## Multilingual support
 
-Alert labels are always in Dutch. There should be a possibility to set the
-course language and get the labels in that language. Should also check where
-else in the user interface labels etc. are used.
+Alert labels are hardcoded in Dutch in two places — `ALERT_TYPES` in
+`lib/convert/markdown-to-html.js` (Canvas HTML) and `ALERT_MAP` in
+`src/plugins/remark-gfm-alerts.js` (Docusaurus preview) — and Docusaurus is
+configured with `locale: 'en'` while the content is Dutch. There should be a
+possibility to set the course language once and get the labels in that language
+everywhere. Should also check where else in the user interface labels etc. are
+used.
 
 This could also come in handy for Claude to know what language the course is in.
 
