@@ -37,6 +37,9 @@ but describe:
 - **Why it would help** — the use case or problem it solves
 - **How you use Canvas Course Builder today** — this helps prioritise what matters most
 
+Check the [Roadmap](roadmap.md) first — your idea may already be on the
+backlog, or already shipped.
+
 ## Contributing with a pull request
 
 If you'd like to contribute a fix or improvement yourself, follow these steps:

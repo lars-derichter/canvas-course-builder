@@ -11,7 +11,7 @@ sources/
   articles/             # Research papers, blog posts, bookmarks
   code-examples/        # Code snippets, demos, prototypes
   images/               # Diagrams, screenshots, figures
-  ideas/                # Teaching ideas, rough notes, drafts
+  ideas/                # Rough notes and drafts
   lessons/              # Full lesson plans (lesson-NN.md)
   lesson-plans/         # One-page class versions (lesson-plan-NN.md)
   reference-materials/  # Canonical course data, e.g. glossary.yml
