@@ -229,6 +229,19 @@ If your course keeps a canonical glossary in
 glossary page per module. See the [Lesson Workflow](lesson-workflow.md) for the
 file format and how it fits the authoring flow.
 
+### Searching course content
+
+```bash
+npx course search "flexbox"                          # find a word or phrase in course/
+npx course search "flexbox" -C 4                     # show more context around matches
+npx course search "flexbox" --evaluations --sources  # also search those folders
+npx course search "Flexbox" --case-sensitive         # match upper/lower case exactly
+```
+
+Results are grouped per file with the module and item they belong to, line
+numbers, and a few lines of context around each match. By default only
+`course/` is searched; `--evaluations` and `--sources` widen the scope.
+
 ### Docusaurus preview
 
 ```bash

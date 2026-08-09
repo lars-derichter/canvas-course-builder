@@ -9,13 +9,16 @@ assignment, lecture notes, quiz instructions, etc. Templates would provide
 pre-filled frontmatter and boilerplate markdown tailored to common course item
 patterns.
 
-## Search Across Course Content
-
-A local search command (`npx course search "keyword"`) that searches all course
-markdown files and shows results with context lines. Faster than grep for
-educators who aren't terminal-savvy.
-
 ## Implemented
+
+### Search Across Course Content
+
+`npx course search "keyword"` searches all course markdown files and shows
+matches grouped per file, labelled with the module and item, with line numbers
+and context lines (`-C` sets how many). Case-insensitive by default
+(`--case-sensitive` to opt out); `--evaluations` and `--sources` widen the
+scope beyond `course/`. Also available as "Course: Search..." in the VS Code
+command palette and as a search icon on the course sidebar title bar.
 
 ### Multilingual support
 

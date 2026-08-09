@@ -26,6 +26,7 @@ test/
 │   ├── pull-helpers.test.js      # Pull identifier maps, local-modification checks, strategies
 │   ├── push-helpers.test.js      # Push file resolver and page/assignment strategies
 │   ├── renumber.test.js          # Renumbering and reordering numbered entries
+│   ├── search.test.js            # Keyword matching, context windows, result rendering
 │   └── split-item.test.js        # Splitting a multi-section item into separate files
 ├── config/
 │   ├── course-config.test.js     # course.config.yml loading, caching, validation warnings

@@ -270,6 +270,17 @@ function activate(context) {
     }
   });
 
+  register('course.search', async () => {
+    if (!validateWorkspace()) return;
+    const keyword = await vscode.window.showInputBox({
+      prompt: 'Search course content for a word or phrase',
+      placeHolder: 'e.g. flexbox',
+      validateInput: (v) => (v.trim() ? null : 'Enter a search term'),
+    });
+    if (!keyword) return;
+    runInTerminal(`npx course search "${keyword.trim().replace(/"/g, '\\"')}"`);
+  });
+
   // --- Module commands (context-aware) ---
 
   register('course.newModule', async () => {

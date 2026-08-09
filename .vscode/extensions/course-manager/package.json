@@ -54,6 +54,7 @@
       { "command": "course.splitItem", "title": "Course: Split Item at Cursor" },
       { "command": "course.diff", "title": "Course: Diff (Changes Since Last Sync)" },
       { "command": "course.validate", "title": "Course: Validate" },
+      { "command": "course.search", "title": "Course: Search...", "icon": "$(search)" },
       { "command": "course.preview", "title": "Course: Preview", "icon": "$(open-preview)" },
       { "command": "course.refreshTree", "title": "Course: Refresh Tree", "icon": "$(refresh)" },
       { "command": "course.openInCanvas", "title": "Open in Canvas", "icon": "$(link-external)" },
@@ -66,6 +67,7 @@
     "menus": {
       "view/title": [
         { "command": "course.newModule", "when": "view == courseTree", "group": "navigation" },
+        { "command": "course.search", "when": "view == courseTree", "group": "navigation" },
         { "command": "course.preview", "when": "view == courseTree", "group": "navigation" },
         { "command": "course.refreshTree", "when": "view == courseTree", "group": "navigation" },
         { "command": "course.preview", "when": "view == courseTree" },

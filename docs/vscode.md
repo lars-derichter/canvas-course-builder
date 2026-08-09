@@ -95,8 +95,10 @@ or modified. Use the refresh button in the view title bar to manually refresh.
 
 ### Title bar menu
 
-The title bar has a **Preview** button that starts the Docusaurus dev server (if
-not already running) and opens the course in the browser. The dropdown includes
+The title bar has a **Search** button that asks for a word or phrase and shows
+all matches (with context) in the terminal, and a **Preview** button that starts
+the Docusaurus dev server (if not already running) and opens the course in the
+browser. The dropdown includes
 **Push to Canvas**, **Pull from Canvas**, **Status**, **Diff**, and **Validate**
 for quick access to sync commands, plus **Export** — a quick pick to export the
 full course, only flagged items, or a curated selection via a table of contents.
@@ -143,6 +145,12 @@ Choosing the TOC option opens the generated list for editing and reveals an
 | Course: Delete Item           | Delete an item and renumber remaining                     |
 | Course: Merge Items           | Merge two items into one                                  |
 | Course: Split Item at Cursor  | Split the active file at the cursor into two files        |
+
+### Search
+
+| Command          | Description                                        |
+| ---------------- | -------------------------------------------------- |
+| Course: Search...  | Find a word or phrase across course files          |
 
 ### Export
 

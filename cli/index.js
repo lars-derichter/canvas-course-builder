@@ -148,6 +148,15 @@ program
   .action(require('./validate'));
 
 program
+  .command('search <keyword>')
+  .description('Find a word or phrase in your course markdown files')
+  .option('-C, --context <lines>', 'Lines of context to show around each match', '2')
+  .option('--evaluations', 'Also search the evaluations/ directory')
+  .option('--sources', 'Also search the sources/ directory')
+  .option('--case-sensitive', 'Match upper/lower case exactly')
+  .action(require('./search'));
+
+program
   .command('build-glossary')
   .description('Regenerate module glossary pages from the canonical glossary YAML')
   .option('-m, --module <name>', 'Only rebuild a specific module folder name')

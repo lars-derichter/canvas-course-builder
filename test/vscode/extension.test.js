@@ -253,6 +253,38 @@ describe('VS Code extension: pushModule command', () => {
   });
 });
 
+describe('VS Code extension: search command', () => {
+  it('registers course.search as a separate command', () => {
+    assert.ok(
+      extraRegistered.includes('course.search'),
+      'course.search should be registered via registerCommand'
+    );
+  });
+
+  it('declares the command with a title and search icon', () => {
+    const cmd = packageCommands.find((c) => c.command === 'course.search');
+    assert.ok(cmd, 'course.search needs a contributes.commands entry');
+    assert.equal(cmd.title, 'Course: Search...');
+    assert.match(cmd.icon, /search/);
+  });
+
+  it('appears as a navigation icon on the courseTree title bar', () => {
+    const entry = packageJson.contributes.menus['view/title'].find(
+      (m) => m.command === 'course.search'
+    );
+    assert.ok(entry, 'course.search needs a view/title entry');
+    assert.equal(entry.group, 'navigation');
+  });
+
+  it('prompts for a keyword and streams the search through the terminal', () => {
+    const start = extensionSource.indexOf("register('course.search'");
+    assert.ok(start !== -1);
+    const handler = extensionSource.slice(start, start + 600);
+    assert.match(handler, /showInputBox/);
+    assert.match(handler, /npx course search "/);
+  });
+});
+
 describe('VS Code extension: activate and deactivate', () => {
   it('exports activate function', () => {
     assert.match(extensionSource, /module\.exports\s*=\s*\{[^}]*activate/);
