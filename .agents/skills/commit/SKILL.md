@@ -19,14 +19,15 @@ Create a git commit following the project's commit message conventions.
    - Otherwise → **production mode**: stage everything (including
      `canvas_id` and other `course/` changes) normally.
 3. Stage by name (`git add <file>...`), never `git add -A` or `git add .`.
-4. Commit with the message in a HEREDOC, ending in the standard Claude
-   Code co-author trailer the harness specifies for the current model —
-   never a hardcoded model name:
+4. Commit with the message in a HEREDOC, ending in the co-author trailer
+   your harness specifies for the current assistant, if it defines one —
+   never a hardcoded model or tool name; omit the trailer when your
+   harness does not define one:
    ```bash
    git commit -m "$(cat <<'EOF'
    Message here
 
-   <standard Claude Code co-author trailer>
+   <co-author trailer specified by your harness, if any>
    EOF
    )"
    ```

@@ -22,8 +22,8 @@ logical lesson". Three modes, combinable:
   the course context and from what earlier lessons actively practised versus
   only seeded. Present two or three candidate directions neutrally with pros
   and cons; let the author choose before designing further.
-- **Q&A**: only vague intent. Ask at most three sharp questions (one bundled
-  AskUserQuestion call): the moment in the course's running context, active
+- **Q&A**: only vague intent. Ask at most three sharp questions (bundled
+  into one round): the moment in the course's running context, active
   versus seeded learning goals, ambition (calm / standard / bold), material
   constraints.
 
@@ -94,8 +94,8 @@ logical lesson". Three modes, combinable:
    own conventions: skip what is already a lemma or a synonym under another
    lemma; never standardise on a synonym or invent one; definitions of one or
    two sentences in the voice of the existing entries, tagged with this
-   lesson's number. If in doubt whether a term belongs, ask via one
-   AskUserQuestion call. Page regeneration happens in `/build-lesson-module`,
+   lesson's number. If in doubt whether a term belongs, ask the author in
+   one bundled question. Page regeneration happens in `/build-lesson-module`,
    not here.
 
 6. **Report and offer follow-ups, do not run them**: `/proofread` on the new

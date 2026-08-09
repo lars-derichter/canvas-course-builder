@@ -42,7 +42,7 @@ intent. If the scope is not given, default to every lesson with a plan in
 
 3. **Settle the practicalities** before designing questions — from the
    worked example, `course-context.md`, or the author (bundle open ones in
-   one AskUserQuestion call): duration, total points, question formats the
+   one question round): duration, total points, question formats the
    course uses, allowed aids (open/closed book, IDE, cheat sheet), and the
    evaluation's weight in the course grade if the instructions must state
    it.

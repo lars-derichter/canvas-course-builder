@@ -22,7 +22,7 @@ now contradicts it, and say so explicitly in the report.
    still the shipped template (marked `TODO`) and which are filled in.
 
 2. **Read the repo before asking anything.** In order:
-   - `README.md` and `CLAUDE.md` at the project root — course name, subject,
+   - `README.md` and `AGENTS.md` at the project root — course name, subject,
      institution, audience.
    - `docs/style.md` — language, register, student level; do not duplicate
      style rules into the context doc, only cross-reference.
@@ -37,9 +37,9 @@ now contradicts it, and say so explicitly in the report.
    - `sources/reference-materials/glossary.yml` or any similar canonical
      glossary file — infer the Glossary section.
 
-3. **Interview the author — only ask what the repo did not answer.** Use
-   AskUserQuestion, bundling related questions. Candidate topics, one per
-   context-doc section:
+3. **Interview the author — only ask what the repo did not answer.** Ask
+   directly, bundling related questions into one round. Candidate topics,
+   one per context-doc section:
    - Course overview: anything not in the README (lesson count, minutes per
      lesson, student prior knowledge).
    - Pedagogy: learning-goal scheme and the notation lesson plans use to
@@ -81,7 +81,7 @@ now contradicts it, and say so explicitly in the report.
 
 - Never invent course facts. Everything in the doc comes from the repo or from
   the author; when in doubt, ask or leave `TODO`.
-- Do not modify `docs/style.md`, `CLAUDE.md`, or course content — the only
+- Do not modify `docs/style.md`, `AGENTS.md`, or course content — the only
   written artefact is `docs/course-context.md`.
 - Do not commit the changes automatically — leave that to the author.
 

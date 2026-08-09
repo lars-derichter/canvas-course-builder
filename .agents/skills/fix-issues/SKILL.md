@@ -58,7 +58,7 @@ Empty means every entry under `## Open`.
    - **Inbound links.** If a fix renames a heading or a file, grep for
      relative links pointing at it.
 
-5. **Bundle every clarifying question into one `AskUserQuestion` round**:
+5. **Bundle every clarifying question into one question round**:
    unverifiable locations, entries that are really author decisions rather
    than defects, whether an approved fix should extend to the
    same-defect-elsewhere hits. A question that surfaces later goes into a
@@ -76,7 +76,7 @@ Empty means every entry under `## Open`.
 
 ### Phase B — Fix (only after approval)
 
-8. **Apply the fixes serially**, group by group: minimal `Edit`s, one
+8. **Apply the fixes serially**, group by group: minimal edits, one
    concern per edit, including the approved same-defect-elsewhere hits.
    Re-grep after each fix to confirm it landed.
 

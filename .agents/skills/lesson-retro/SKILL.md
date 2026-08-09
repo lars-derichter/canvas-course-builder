@@ -15,8 +15,7 @@ not the writing.
 
 The interview is a conversation, not a form. Ask **one question at a time**,
 in the language the author is chatting in, and follow up on what they say
-before moving on. Never bundle the whole interview into one `AskUserQuestion`
-call.
+before moving on. Never bundle the whole interview into one question round.
 
 ## Input
 
@@ -84,7 +83,8 @@ plausibly recent, propose it in the same breath.
 
    Mark anything you are unsure about as a question, not a proposal.
 
-6. **Apply after confirmation.** Surgical `Edit`s, one concern per edit.
+6. **Apply after confirmation.** Surgical, minimal edits, one concern per
+   edit.
    Keep the lesson plan's structure and voice: notes-to-self stay in that
    section's existing style, timing changes touch only the numbers and a
    short reason. Never rewrite blocks wholesale.

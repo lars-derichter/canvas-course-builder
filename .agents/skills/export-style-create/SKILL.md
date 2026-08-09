@@ -41,7 +41,8 @@ sentence if the source is not a document, URL, or stylesheet.
      `<w:sectPr>` in `word/document.xml` (margins).
    - `.pdf` — read it with the Read tool (it renders pages); judge fonts,
      heading treatment, body size, colours, and margins by eye.
-   - Website URL — `WebFetch` the page and its stylesheet; extract
+   - Website URL — fetch the page and its stylesheet (your web-fetch tool,
+     or `curl`); extract
      `font-family` for body and headings, base `font-size`, link and
      heading colours, content `max-width`/margins, accent colour.
    - `.css` — parse the same properties directly.

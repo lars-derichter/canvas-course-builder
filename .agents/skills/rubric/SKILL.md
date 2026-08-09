@@ -36,7 +36,7 @@ is not a markdown file under `course/` or `evaluations/`.
      `sources/rubrics/`, if any, as the structural worked example.
 
 2. **Settle the grading model.** From `$ARGUMENTS`, the worked example, or
-   one `AskUserQuestion` call: analytic (criteria × levels, the default) or
+   one bundled question round: analytic (criteria × levels, the default) or
    holistic; number of levels and their labels (default four, in the course's
    language — e.g. insufficient / sufficient / good / excellent, or the
    worked example's); point total and whether points sit per criterion or

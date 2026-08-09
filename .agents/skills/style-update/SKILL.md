@@ -7,7 +7,7 @@ description: Review style corrections and preferences the user expressed in this
 
 Turn one-off style corrections from the current conversation into permanent
 entries in [`docs/style.md`](../../../docs/style.md), so the author does
-not have to repeat the same feedback next time Claude Code drafts material.
+not have to repeat the same feedback next time the assistant drafts material.
 
 ## Steps
 
@@ -25,10 +25,10 @@ not have to repeat the same feedback next time Claude Code drafts material.
 
 3. **Propose the edits**: a concise list of additions, rewordings, or
    removals with the reason for each, sourced from the conversation. Apply
-   only after confirmation, with surgical `Edit`s so the author can review
-   a small diff.
+   only after confirmation, with surgical, minimal edits so the author can
+   review a small diff.
 
-4. **Check `CLAUDE.md` at the project root** and update it only where a
+4. **Check `AGENTS.md` at the project root** and update it only where a
    new rule directly contradicts it. Then report what changed; the next
    draft follows the updated rules.
 

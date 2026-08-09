@@ -89,8 +89,8 @@ scoped modules are still verified.
 8. **Offer to apply mechanical fixes.** Only the mechanical categories
    qualify: dead links with an obvious correct target, prefix and
    `_category_.json` corrections. Ask whether the author wants all, a
-   selection by number, or none — default is none. When applying, use
-   `Edit` calls with minimal diffs, then re-run the relevant check to
+   selection by number, or none — default is none. When applying, make
+   minimal-diff edits, then re-run the relevant check to
    confirm. Judgement findings (glossary, terminology, prerequisites) are
    never auto-fixed; the author handles those.
 

@@ -48,7 +48,7 @@ other extensions, stop and explain.
    `cSpell.words` (`.vscode/settings.json`) or used as identifiers in the
    file's own code blocks. Without hunspell, scan visually, note in the
    report that no system spell-checker ran, and point to the install
-   instructions in [`docs/claude-code.md`](../../../docs/claude-code.md).
+   instructions in [`docs/ai-assistants.md`](../../../docs/ai-assistants.md).
 
 5. **Content checks** (judgement-based; do not flood the report):
    - Translated English: literal idiom translations, calqued collocations,
@@ -75,7 +75,7 @@ other extensions, stop and explain.
    is clean and stop — do not invent findings.
 
 7. **Offer to apply fixes**: all "must fix", a named selection, or none
-   (the default). When applying, use minimal `Edit`s, one concern per edit,
+   (the default). When applying, use minimal edits, one concern per edit,
    then re-run the mechanical checks once to confirm. Close with what
    changed and what was reported but left untouched. Do not commit, push,
    or stage.

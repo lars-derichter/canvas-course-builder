@@ -6,8 +6,8 @@ description: Interview the user and analyse samples of their writing to rewrite 
 # Style init
 
 Adapt [`docs/style.md`](../../../docs/style.md) — the writing-style guide
-Claude Code follows when drafting course content — to the course author's
-own voice and audience.
+your AI assistant follows when drafting course content — to the course
+author's own voice and audience.
 
 ## Steps
 
@@ -19,7 +19,8 @@ own voice and audience.
    `/style-update` or direct edits.
 
 2. **Analyse the samples, then interview only what they did not answer**
-   (AskUserQuestion). Dimensions for both:
+   (ask the user, bundling related questions into one round). Dimensions
+   for both:
    - Language and regional variety (Dutch — Flemish/Netherlands; English —
      UK/US; …); student age band and CEFR level if the course language is
      not the students' first language.
@@ -46,7 +47,7 @@ own voice and audience.
    the content adapts. Keep the English meta-note at the top of the file
    (`style.md` is consumed by AI tools).
 
-5. **Check `CLAUDE.md` at the project root** and update it only where it
+5. **Check `AGENTS.md` at the project root** and update it only where it
    now directly contradicts the new `style.md`.
 
 6. **Report** what changed and remind the author they can refine further
