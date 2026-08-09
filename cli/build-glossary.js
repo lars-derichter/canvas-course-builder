@@ -31,7 +31,8 @@ const DEFAULT_CONFIG = {
  */
 function loadGlossary(glossaryPath) {
   const raw = fs.readFileSync(glossaryPath, 'utf8');
-  const data = yaml.load(raw);
+  // js-yaml 5 throws on empty input; keep the friendly error below instead
+  const data = raw.trim() ? yaml.load(raw) : null;
   if (!data || !Array.isArray(data.terms)) {
     throw new Error(`${path.basename(glossaryPath)} has no "terms" list`);
   }
@@ -101,12 +102,30 @@ function renderBody(terms, lesson, config = DEFAULT_CONFIG) {
  * Serialize a page: preserve all existing frontmatter (e.g. canvas_id), force
  * the canonical title, default canvas_type, then append the generated body.
  *
- * The frontmatter is dumped with the project's js-yaml 4.x and forceQuotes, so
- * every string scalar is double-quoted with the emoji kept literal. Docusaurus
- * trips over an unquoted emoji title, and gray-matter's bundled js-yaml 3.x
- * would mangle the emoji into a `\U..` escape — hence neither plain js-yaml
- * output nor serializeFrontmatter works here.
+ * Every string value is double-quoted with the emoji kept literal (via the
+ * js-yaml 5 dump transform below; the v4 forceQuotes option no longer exists).
+ * Docusaurus trips over an unquoted emoji title, and gray-matter's bundled
+ * js-yaml 3.x would mangle the emoji into a `\U..` escape — hence neither
+ * default js-yaml output nor serializeFrontmatter works here.
  */
+
+/**
+ * Dump transform: double-quote every string *value* (not keys), matching the
+ * output of js-yaml 4's forceQuotes + quotingType '"'.
+ */
+function quoteStringValues(documents) {
+  const walk = (node) => {
+    if (!node) return;
+    if (node.kind === 'mapping') {
+      for (const item of node.items) walk(item.value);
+    } else if (node.kind === 'sequence') {
+      for (const item of node.items) walk(item);
+    } else if (node.kind === 'scalar' && node.tag === 'tag:yaml.org,2002:str') {
+      node.style.doubleQuoted = true;
+    }
+  };
+  for (const doc of documents) walk(doc.contents);
+}
 function serializePage(existingData, body, config = DEFAULT_CONFIG) {
   // title and canvas_type first, then any remaining keys in their original order.
   const ordered = {
@@ -117,7 +136,7 @@ function serializePage(existingData, body, config = DEFAULT_CONFIG) {
     if (k !== 'title' && k !== 'canvas_type') ordered[k] = v;
   }
   const frontmatter = yaml
-    .dump(ordered, { lineWidth: -1, forceQuotes: true, quotingType: '"' })
+    .dump(ordered, { lineWidth: -1, transform: quoteStringValues })
     .trimEnd();
   return `---\n${frontmatter}\n---\n\n${body}\n`;
 }
