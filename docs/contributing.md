@@ -8,7 +8,7 @@ whether that's a bug report, a feature suggestion, or a pull request with a fix.
 If something isn't working as expected, open an issue on GitHub:
 
 1. Go to the **Issues** tab on
-   [the original Canvas Local project page.](https://github.com/lars-derichter/canvas-local)
+   [the original Canvas Course Builder project page.](https://github.com/lars-derichter/canvas-course-builder)
 2. Click **New issue**.
 3. Fill in a clear title and description.
 
@@ -35,13 +35,13 @@ but describe:
 
 - **What you'd like** — the feature or change you have in mind
 - **Why it would help** — the use case or problem it solves
-- **How you use Canvas Local today** — this helps prioritise what matters most
+- **How you use Canvas Course Builder today** — this helps prioritise what matters most
 
 ## Contributing with a pull request
 
 If you'd like to contribute a fix or improvement yourself, follow these steps:
 
-1. **Fork** the original Canvas Local project — on the project page, click the
+1. **Fork** the original Canvas Course Builder project — on the project page, click the
    **Fork** button in the top-right corner to create a copy under your account.
 
 2. **Create a branch** for your change:

@@ -1,4 +1,4 @@
-# Further skill ideas for canvas-local
+# Further skill ideas for canvas-course-builder
 
 Backlog of skills that could help a course creator/instructor, started
 2026-07-11 and roughly ordered by expected value. All would follow the
@@ -35,7 +35,7 @@ backlog.
   topic, images extracted, speaker notes as prose. Big adoption lever for
   colleagues; hard to do well.
 - **/import-module** — restructure a scraped/legacy course page dump (e.g.
-  brightspace-scraper output) into canvas-local conventions: numbering,
+  brightspace-scraper output) into canvas-course-builder conventions: numbering,
   frontmatter, link rewriting.
 
 ## Meta

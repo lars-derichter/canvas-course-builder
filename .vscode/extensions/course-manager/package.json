@@ -1,12 +1,12 @@
 {
-  "name": "canvas-local",
-  "displayName": "Canvas Local",
-  "description": "VS Code sidebar and palette commands for Canvas Local CLI",
+  "name": "canvas-course-builder",
+  "displayName": "Canvas Course Builder",
+  "description": "VS Code sidebar and palette commands for Canvas Course Builder CLI",
   "version": "0.4.0",
   "publisher": "local",
   "repository": {
     "type": "git",
-    "url": "https://github.com/lars-derichter/canvas-local"
+    "url": "https://github.com/lars-derichter/canvas-course-builder"
   },
   "engines": {
     "vscode": "^1.85.0"

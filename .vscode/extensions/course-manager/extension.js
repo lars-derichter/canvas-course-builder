@@ -33,14 +33,14 @@ function getWorkspaceRoot() {
 function validateWorkspace() {
   const root = getWorkspaceRoot();
   if (!root) {
-    vscode.window.showErrorMessage('Canvas Local: No workspace folder open.');
+    vscode.window.showErrorMessage('Canvas Course Builder: No workspace folder open.');
     return null;
   }
 
   const courseDir = path.join(root, 'course');
   if (!fs.existsSync(courseDir)) {
     vscode.window.showWarningMessage(
-      'Canvas Local: No course/ directory found. Run "Course: Init" first.'
+      'Canvas Course Builder: No course/ directory found. Run "Course: Init" first.'
     );
   }
 
@@ -50,9 +50,9 @@ function validateWorkspace() {
 // --- Terminal runner (for streaming commands like push/pull) ---
 
 function getSharedTerminal() {
-  let terminal = vscode.window.terminals.find((t) => t.name === 'Canvas Local');
+  let terminal = vscode.window.terminals.find((t) => t.name === 'Canvas Course Builder');
   if (!terminal) {
-    terminal = vscode.window.createTerminal({ name: 'Canvas Local', cwd: workspaceRoot });
+    terminal = vscode.window.createTerminal({ name: 'Canvas Course Builder', cwd: workspaceRoot });
   }
   return terminal;
 }
@@ -67,7 +67,7 @@ function runInTerminal(commandStr) {
 
 /**
  * Run `npx course <args>` without a terminal. Output goes to the
- * "Canvas Local" output channel; failures surface as error notifications.
+ * "Canvas Course Builder" output channel; failures surface as error notifications.
  * Returns a promise resolving to true on success.
  */
 function runCli(args) {
@@ -83,13 +83,13 @@ function runCli(args) {
       if (stderr) outputChannel.appendLine(stderr.trimEnd());
       if (err) {
         const firstError = (stderr || stdout || err.message).trim().split('\n')[0];
-        vscode.window.showErrorMessage(`Canvas Local: ${firstError}`, 'Show Log').then((choice) => {
+        vscode.window.showErrorMessage(`Canvas Course Builder: ${firstError}`, 'Show Log').then((choice) => {
           if (choice === 'Show Log') outputChannel.show();
         });
         resolve(false);
       } else {
         const lastLine = stdout.trim().split('\n').filter(Boolean).pop();
-        if (lastLine) vscode.window.setStatusBarMessage(`Canvas Local: ${lastLine.replace(/^\[[^\]]+\]\s*/, '')}`, 5000);
+        if (lastLine) vscode.window.setStatusBarMessage(`Canvas Course Builder: ${lastLine.replace(/^\[[^\]]+\]\s*/, '')}`, 5000);
         courseTreeProvider.refresh();
         resolve(true);
       }
@@ -111,7 +111,7 @@ function listModuleFolders() {
 async function pickModuleFolder(placeHolder) {
   const folders = listModuleFolders();
   if (folders.length === 0) {
-    vscode.window.showErrorMessage('Canvas Local: No modules found in course/.');
+    vscode.window.showErrorMessage('Canvas Course Builder: No modules found in course/.');
     return null;
   }
   const items = folders.map((f) => {
@@ -151,7 +151,7 @@ async function pickItemPath(placeHolder) {
 
   const entries = listEntries(moduleDir);
   if (entries.length === 0) {
-    vscode.window.showErrorMessage('Canvas Local: No items in this module.');
+    vscode.window.showErrorMessage('Canvas Course Builder: No items in this module.');
     return null;
   }
   const picked = await vscode.window.showQuickPick(
@@ -208,7 +208,7 @@ async function pickFormat() {
 
 function activate(context) {
   workspaceRoot = getWorkspaceRoot();
-  outputChannel = vscode.window.createOutputChannel('Canvas Local');
+  outputChannel = vscode.window.createOutputChannel('Canvas Course Builder');
   context.subscriptions.push(outputChannel);
 
   // --- Tree view ---
@@ -347,7 +347,7 @@ function activate(context) {
     if (!type) return;
 
     if (type.type === 'subsection' && subsection) {
-      vscode.window.showErrorMessage('Canvas Local: Subsections can only be created at module root level.');
+      vscode.window.showErrorMessage('Canvas Course Builder: Subsections can only be created at module root level.');
       return;
     }
 
@@ -463,7 +463,7 @@ function activate(context) {
     mergeSource = treeItem;
     vscode.commands.executeCommand('setContext', 'course.mergeSourceSet', true);
     vscode.window.showInformationMessage(
-      `Canvas Local: Merge source set to "${path.basename(treeItem.filePath)}". Now right-click the target item.`
+      `Canvas Course Builder: Merge source set to "${path.basename(treeItem.filePath)}". Now right-click the target item.`
     );
   });
 
@@ -493,7 +493,7 @@ function activate(context) {
     if (!validateWorkspace()) return;
     const editor = vscode.window.activeTextEditor;
     if (!editor || !editor.document.fileName.endsWith('.md')) {
-      vscode.window.showErrorMessage('Canvas Local: Open a markdown file and place the cursor on the split line.');
+      vscode.window.showErrorMessage('Canvas Course Builder: Open a markdown file and place the cursor on the split line.');
       return;
     }
     if (editor.document.isDirty) {
@@ -558,7 +558,7 @@ function activate(context) {
       }
       vscode.commands.executeCommand('setContext', 'course.tocReady', true);
       vscode.window.showInformationMessage(
-        'Canvas Local: Delete the item lines you do not want, then run "Course: Export via TOC" from the view menu.'
+        'Canvas Course Builder: Delete the item lines you do not want, then run "Course: Export via TOC" from the view menu.'
       );
       return;
     }
@@ -586,7 +586,7 @@ function activate(context) {
 
     if (!apiUrl || !courseId) {
       vscode.window.showWarningMessage(
-        'Canvas Local: No Canvas API configuration found. Run "Course: Init" first.'
+        'Canvas Course Builder: No Canvas API configuration found. Run "Course: Init" first.'
       );
       return;
     }
@@ -615,7 +615,7 @@ function activate(context) {
     const canvasId = getCanvasId(treeItem.filePath);
     if (!canvasId) {
       vscode.window.showInformationMessage(
-        'Canvas Local: This item has not been pushed to Canvas yet.'
+        'Canvas Course Builder: This item has not been pushed to Canvas yet.'
       );
       return;
     }
@@ -645,11 +645,11 @@ function activate(context) {
     }
 
     let previewTerminal = vscode.window.terminals.find(
-      (t) => t.name === 'Canvas Local: Preview'
+      (t) => t.name === 'Canvas Course Builder: Preview'
     );
     if (!previewTerminal) {
       previewTerminal = vscode.window.createTerminal({
-        name: 'Canvas Local: Preview',
+        name: 'Canvas Course Builder: Preview',
         cwd: workspaceRoot,
       });
     }
@@ -658,7 +658,7 @@ function activate(context) {
 
     // Poll until the dev server answers (cold starts take a while), then open
     vscode.window.withProgress(
-      { location: vscode.ProgressLocation.Window, title: 'Canvas Local: starting preview…' },
+      { location: vscode.ProgressLocation.Window, title: 'Canvas Course Builder: starting preview…' },
       async () => {
         for (let i = 0; i < 60; i++) {
           await new Promise((r) => setTimeout(r, 2000));
@@ -667,7 +667,7 @@ function activate(context) {
             return;
           }
         }
-        vscode.window.showWarningMessage('Canvas Local: Preview server did not start within 2 minutes. Check the Preview terminal.');
+        vscode.window.showWarningMessage('Canvas Course Builder: Preview server did not start within 2 minutes. Check the Preview terminal.');
       }
     );
   });

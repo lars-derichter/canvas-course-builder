@@ -131,7 +131,7 @@ time.
 The easiest way to explore your project's history is on GitHub:
 
 1. Go to your repository on GitHub (e.g.
-   `github.com/YOUR-USERNAME/canvas-local`)
+   `github.com/YOUR-USERNAME/canvas-course-builder`)
 2. Click on the **commits** link near the top of the page — you will see a
    list of all your commits, newest first
 3. Click on any commit to see exactly what changed in that commit

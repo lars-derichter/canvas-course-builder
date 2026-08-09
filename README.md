@@ -1,4 +1,4 @@
-# Canvas Local
+# Canvas Course Builder
 
 - **Write in markdown** — use familiar tools (VS Code, Git) instead of the
   Canvas web editor
@@ -25,7 +25,7 @@ Write course materials as markdown, preview via
 > your course.
 
 Course materials for **Course Name**, written in markdown and synced with Canvas
-LMS using [Canvas Local](https://github.com/lars-derichter/canvas-local).
+LMS using [Canvas Course Builder](https://github.com/lars-derichter/canvas-course-builder).
 
 ## Course Overview
 
@@ -44,7 +44,7 @@ This course covers ...
 
 ## Useful Links
 
-- [User Guide](docs/user-guide.md) — full Canvas Local documentation
+- [User Guide](docs/user-guide.md) — full Canvas Course Builder documentation
 - [Canvas Setup](docs/canvas-setup.md) — API credentials and course ID
 - [Markdown Guide](docs/markdown.md) — supported syntax and alerts
 - [Frontmatter Guide](docs/frontmatter.md) — page and assignment metadata

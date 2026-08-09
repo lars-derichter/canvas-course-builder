@@ -6,8 +6,8 @@ const { parseGitHubRemote, rewriteDocusaurusConfig } = require('../../cli/setup-
 describe('parseGitHubRemote', () => {
   it('parses an SSH remote with .git suffix', () => {
     assert.deepEqual(
-      parseGitHubRemote('git@github.com:lars-derichter/canvas-local.git'),
-      { owner: 'lars-derichter', repo: 'canvas-local' }
+      parseGitHubRemote('git@github.com:lars-derichter/canvas-course-builder.git'),
+      { owner: 'lars-derichter', repo: 'canvas-course-builder' }
     );
   });
 
@@ -45,7 +45,7 @@ describe('parseGitHubRemote', () => {
 });
 
 const PLACEHOLDER_CONFIG = `const config = {
-  title: 'Canvas Local',
+  title: 'Canvas Course Builder',
 
   url: 'https://example.com',
   baseUrl: '/',

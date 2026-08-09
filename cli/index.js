@@ -10,7 +10,7 @@ const log = require('./logger');
 const program = new Command();
 
 program
-  .name('canvas-local')
+  .name('course')
   .description('Sync course content with Canvas LMS')
   .version(pkg.version)
   .option('-v, --verbose', 'Show detailed output including API request info')

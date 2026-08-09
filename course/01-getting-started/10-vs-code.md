@@ -11,7 +11,7 @@ but it makes the experience a lot smoother.
 
 ## Why VS Code?
 
-VS Code is a great match for Canvas Local because it brings together
+VS Code is a great match for Canvas Course Builder because it brings together
 everything you need in one window:
 
 - **Markdown support** — syntax highlighting, live preview, and formatting
@@ -42,13 +42,13 @@ It is free, open-source, and runs on Windows, macOS, and Linux.
      distribution, or install the `.deb` or `.rpm` package directly.
 
 3. Open VS Code and use **File > Open Folder** (or **Cmd+O** / **Ctrl+K
-   Ctrl+O**) to open your `canvas-local` project folder.
+   Ctrl+O**) to open your `canvas-course-builder` project folder.
 
 > [!TIP]
 >
 > If you installed VS Code with the PATH option (Windows) or ran **Shell
 > Command: Install 'code' command in PATH** from the command palette (macOS),
-> you can open your project from the terminal: `code canvas-local`
+> you can open your project from the terminal: `code canvas-course-builder`
 
 ## Installing the Course Manager Extension
 
@@ -97,7 +97,7 @@ Right-click any module or item in the sidebar to see context actions:
 Names, positions, and confirmations are collected through normal VS Code
 dialogs, and the command runs quietly in the background — no terminal pops up.
 You get a notification when it is done, and the full output is available in
-the **Canvas Local** output channel (View > Output).
+the **Canvas Course Builder** output channel (View > Output).
 
 ### Drag and Drop
 
@@ -157,7 +157,7 @@ Open the command palette with **Cmd+Shift+P** (macOS) or **Ctrl+Shift+P**
 Everything the extension does goes through the same `npx course` CLI you use
 in the terminal, so renumbering and Canvas sync state behave exactly the same
 either way. Sync commands (push, pull, status, diff, validate) run in a shared
-**Canvas Local** terminal so you can follow their output; management commands
+**Canvas Course Builder** terminal so you can follow their output; management commands
 (new, rename, move, delete, merge, split) run silently in the background and
 report back with a notification.
 

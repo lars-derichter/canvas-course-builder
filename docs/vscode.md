@@ -66,7 +66,7 @@ The same commands also work from the command palette; you then pick the module
 or item from a quick-pick list instead. Either way the actual work is done by
 the `npx course` CLI with non-interactive flags, so renumbering and Canvas sync
 state behave exactly like the terminal commands. Full output is available in
-the **Canvas Local** output channel (View → Output).
+the **Canvas Course Builder** output channel (View → Output).
 
 ### Drag and drop
 
@@ -159,10 +159,10 @@ margins.
 ## How It Works
 
 - Long-running sync commands (push, pull, status, diff, validate, init) run in
-  a single shared **Canvas Local** terminal so you can follow their output.
+  a single shared **Canvas Course Builder** terminal so you can follow their output.
 - Structural commands (new/rename/move/delete, merge, split) run the CLI
   silently in the background; results appear as notifications and in the
-  **Canvas Local** output channel, and the tree refreshes automatically.
+  **Canvas Course Builder** output channel, and the tree refreshes automatically.
 - Most commands validate that a `course/` directory exists in the workspace
   before running. The Init command is exempt from this check.
 - **Push Module** presents a quick-pick list of all module folders so you can

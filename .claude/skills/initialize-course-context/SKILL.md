@@ -26,7 +26,7 @@ now contradicts it, and say so explicitly in the report.
      institution, audience.
    - `docs/style.md` — language, register, student level; do not duplicate
      style rules into the context doc, only cross-reference.
-   - Any course-specific doc under `docs/` that is not part of the canvas-local
+   - Any course-specific doc under `docs/` that is not part of the canvas-course-builder
      tooling docs (e.g. a pedagogical framework, card or page-type
      descriptions). These are prime sources for the Pedagogy and Module
      conventions sections.

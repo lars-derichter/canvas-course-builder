@@ -369,7 +369,7 @@ class CourseTreeProvider {
     // Dropping onto an item that lives inside a subsection — no valid module-root
     // position, so ignore rather than move it somewhere surprising.
     if (target.contextValue !== 'subheader' && target._subfolderName) {
-      vscode.window.showInformationMessage('Canvas Local: Drop a subsection onto a module or a top-level item.');
+      vscode.window.showInformationMessage('Canvas Course Builder: Drop a subsection onto a module or a top-level item.');
       return;
     }
 
@@ -387,7 +387,7 @@ class CourseTreeProvider {
 
   async _handleExternalFileDrop(target, uris, runCli) {
     if (!target) {
-      vscode.window.showWarningMessage('Canvas Local: Drop files onto a module or item.');
+      vscode.window.showWarningMessage('Canvas Course Builder: Drop files onto a module or item.');
       return;
     }
 
@@ -402,7 +402,7 @@ class CourseTreeProvider {
       moduleFolderName = target.moduleFolderName;
       subsection = target._subfolderName;
     } else {
-      vscode.window.showWarningMessage('Canvas Local: Drop files onto a module or item.');
+      vscode.window.showWarningMessage('Canvas Course Builder: Drop files onto a module or item.');
       return;
     }
 

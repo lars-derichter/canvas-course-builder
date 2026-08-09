@@ -1,6 +1,6 @@
 # Lesson workflow
 
-Canvas Local includes a set of [Claude Code](claude-code.md) skills that take a
+Canvas Course Builder includes a set of [Claude Code](claude-code.md) skills that take a
 lesson from rough idea to published Canvas module. Using them is optional — you
 can keep writing modules by hand — but together they form a complete authoring
 flow:

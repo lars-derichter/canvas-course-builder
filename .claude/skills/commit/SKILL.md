@@ -12,7 +12,7 @@ Create a git commit following the project's commit message conventions.
 1. Review all changes with `git status` (never `-uall`) and `git diff`.
 2. **Before staging**, run `git remote get-url origin` to determine the
    mode:
-   - Origin URL contains `canvas-local` → **development mode**: skip all
+   - Origin URL contains `canvas-course-builder` → **development mode**: skip all
      changes inside `course/` unless the user explicitly asks to include
      them — they are typically temporary sync-test artifacts that should
      not reach git history or the remote.

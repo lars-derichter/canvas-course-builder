@@ -7,7 +7,7 @@ const remarkHtmlLinks = require('./src/plugins/remark-html-links');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Canvas Local',
+  title: 'Canvas Course Builder',
   tagline: 'Course materials',
   favicon: 'img/favicon.ico',
 
@@ -60,7 +60,7 @@ const config = {
         respectPrefersColorScheme: false,
       },
       navbar: {
-        title: 'Canvas Local',
+        title: 'Canvas Course Builder',
         items: [],
       },
       footer: {

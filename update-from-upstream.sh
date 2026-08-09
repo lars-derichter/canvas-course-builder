@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Update project from the upstream canvas-local template repository.
+# Update project from the upstream canvas-course-builder template repository.
 # Uses a squash merge so only one commit is added to your history.
 # Content directories (course/, evaluations/, sources/) and the protected files
 # (README.md, CLAUDE.md, docs/style.md, docs/course-context.md) are always
@@ -82,7 +82,7 @@ fi
 
 if ! git remote get-url "$UPSTREAM_REMOTE" &>/dev/null; then
   echo "Error: remote '$UPSTREAM_REMOTE' not found."
-  echo "Run: git remote add $UPSTREAM_REMOTE https://github.com/lars-derichter/canvas-local.git"
+  echo "Run: git remote add $UPSTREAM_REMOTE https://github.com/lars-derichter/canvas-course-builder.git"
   exit 1
 fi
 
@@ -264,7 +264,7 @@ if git diff --cached --quiet; then
   exit 0
 fi
 
-git commit -m "Import upstream updates from canvas-local ($UPSTREAM_HASH)"
+git commit -m "Import upstream updates from canvas-course-builder ($UPSTREAM_HASH)"
 
 # --- Tag for future reference ---
 

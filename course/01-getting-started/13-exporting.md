@@ -6,7 +6,7 @@ canvas_type: page
 # Exporting to PDF or Word
 
 Sometimes you need your course materials on paper or as a file you can hand out:
-an exam, a handout, or something to read offline. Canvas Local can turn any
+an exam, a handout, or something to read offline. Canvas Course Builder can turn any
 page, a whole module, or your entire course into a polished PDF or an editable
 Word document.
 
@@ -95,7 +95,7 @@ With the Course Manager sidebar you do not have to type anything:
 - **The title bar dropdown** has an **Export** option for the whole course:
   everything, only the flagged pages, or a curated table of contents.
 
-You choose PDF or Word each time. Export runs in the Canvas Local terminal so
+You choose PDF or Word each time. Export runs in the Canvas Course Builder terminal so
 you can follow its progress.
 
 ## Where Your Files Go

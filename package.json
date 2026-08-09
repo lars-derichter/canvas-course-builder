@@ -1,5 +1,5 @@
 {
-  "name": "canvas-local",
+  "name": "canvas-course-builder",
   "version": "0.1.0",
   "private": true,
   "description": "Write course materials locally, sync to Canvas LMS",
@@ -25,9 +25,9 @@
     "item:movetomodule": "node cli/index.js movetomodule-item",
     "item:rename": "node cli/index.js rename-item",
     "item:delete": "node cli/index.js delete-item",
-    "vscode:package": "cd .vscode/extensions/course-manager && npx @vscode/vsce package -o canvas-local.vsix",
+    "vscode:package": "cd .vscode/extensions/course-manager && npx @vscode/vsce package -o canvas-course-builder.vsix",
     "test": "node --test 'test/**/*.test.js'",
-    "vscode:install": "npm run vscode:package && code --install-extension .vscode/extensions/course-manager/canvas-local.vsix"
+    "vscode:install": "npm run vscode:package && code --install-extension .vscode/extensions/course-manager/canvas-course-builder.vsix"
   },
   "dependencies": {
     "@docusaurus/core": "^3.7.0",

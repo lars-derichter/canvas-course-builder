@@ -1,7 +1,7 @@
 # Git & GitHub Guide
 
 This guide helps you get set up with Git and GitHub so you can start working
-with Canvas Local. No prior experience required.
+with Canvas Course Builder. No prior experience required.
 
 ## What are Git and GitHub?
 
@@ -12,7 +12,7 @@ easy.
 
 **GitHub** is a website that hosts Git projects online. It lets you store a
 backup of your work in the cloud, collaborate with others, and easily get
-updates from the original Canvas Local project.
+updates from the original Canvas Course Builder project.
 
 ## Creating a GitHub account
 
@@ -85,12 +85,12 @@ sudo dnf install git
 
 ## Creating your project
 
-Canvas Local is a **template repository** — you create your own independent copy
+Canvas Course Builder is a **template repository** — you create your own independent copy
 from it. Your project won't affect the original, and you can create as many
 copies as you need (one per course, for example).
 
 1. Make sure you're logged in to GitHub.
-2. Go to the Canvas Local project page.
+2. Go to the Canvas Course Builder project page.
 3. Click **Use this template** in the top-right corner, then select **Create a
    new repository**.
 4. Choose a descriptive name (e.g. `course-web-development`), set the visibility

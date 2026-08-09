@@ -6,7 +6,7 @@ sidebar_position: 0
 
 # Welcome
 
-This course is built and maintained with **Canvas Local**, a tool that lets you write all your course materials as markdown files, preview them locally with Docusaurus, and sync everything to Canvas LMS with a single command.
+This course is built and maintained with **Canvas Course Builder**, a tool that lets you write all your course materials as markdown files, preview them locally with Docusaurus, and sync everything to Canvas LMS with a single command.
 
 ## How It Works
 

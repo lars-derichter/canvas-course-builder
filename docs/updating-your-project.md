@@ -1,6 +1,6 @@
 # Updating Your Project
 
-The original Canvas Local project may receive bug fixes, new features, or
+The original Canvas Course Builder project may receive bug fixes, new features, or
 improved documentation over time. This guide shows you how to pull those updates
 into your project.
 
@@ -11,11 +11,11 @@ into your project.
 
 ## One-time setup
 
-Add the original Canvas Local project as a remote called `upstream`. You only
+Add the original Canvas Course Builder project as a remote called `upstream`. You only
 need to do this once:
 
 ```bash
-git remote add upstream https://github.com/lars-derichter/canvas-local.git
+git remote add upstream https://github.com/lars-derichter/canvas-course-builder.git
 ```
 
 You can verify it was added:
@@ -226,7 +226,7 @@ If you prefer to run the steps yourself instead of using the script:
 4. **Commit** the result:
 
    ```bash
-   git commit -m "Import upstream updates from canvas-local"
+   git commit -m "Import upstream updates from canvas-course-builder"
    ```
 
 5. **Tag** the merge point for future reference:

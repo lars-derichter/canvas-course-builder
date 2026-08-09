@@ -19,7 +19,7 @@ Write course materials as markdown, preview via
    [Git & GitHub Guide](git-and-github.md) if you need help with these steps
 
 2. **Create your own copy** — click **Use this template** at the top-right of
-   [this project’s homepage,](https://github.com/lars-derichter/canvas-local)
+   [this project’s homepage,](https://github.com/lars-derichter/canvas-course-builder)
    then select **Create a new repository**. Pick a descriptive name that
    reflects the course, like `course-web-development` or `course-databases` —
    this makes it much easier to find your materials, especially if you manage
@@ -305,7 +305,7 @@ version (`/summarize-lesson`), and published student module
 ## Updating Your Project
 
 See [Updating Your Project](updating-your-project.md) for how to pull in bug
-fixes and new features from the original Canvas Local project.
+fixes and new features from the original Canvas Course Builder project.
 
 ## Contributing
 

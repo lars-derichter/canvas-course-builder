@@ -63,7 +63,7 @@ push, pull, status, diff, validate, preview, and the course-wide exports. See
 ### Update Claude `/commit` Skill
 
 `/commit` runs `git remote get-url origin` before staging. An origin containing
-`canvas-local` means development mode: changes inside `course/` are skipped
+`canvas-course-builder` means development mode: changes inside `course/` are skipped
 unless explicitly asked for, since they are sync-test artifacts. Any other
 origin means production mode and everything is staged normally.
 

@@ -293,6 +293,6 @@ describe('VS Code extension: CLI runner', () => {
 
   it('reuses a single shared terminal for streaming commands', () => {
     assert.match(extensionSource, /function getSharedTerminal\(\)/);
-    assert.match(extensionSource, new RegExp("terminals\\.find\\(\\(t\\) => t\\.name === 'Canvas Local'\\)"));
+    assert.match(extensionSource, new RegExp("terminals\\.find\\(\\(t\\) => t\\.name === 'Canvas Course Builder'\\)"));
   });
 });
