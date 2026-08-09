@@ -212,27 +212,34 @@ nav.menu {
    Theme DOM (theme-classic):
      main.docMainContainer_*            <- + .docMainContainerEnhanced_* when the
        |                                   left sidebar is hidden (hideable)
-       > div.container.docItemWrapper_*
-         > div.row
-           > div.col.docItemCol_*       <- article (theme caps it at 75% !important >=997px)
-           > div.col.col--3             <- desktop TOC (in DOM only when JS viewport > 996px)
-   NOTE: custom.css is emitted BEFORE the theme's CSS-module rules in the build,
-   so overriding them needs strictly higher specificity — an equal-specificity
-   tie loses, even with !important on both sides. */
+       > div.container                  <- + .docItemWrapperEnhanced_* when hidden.
+         > div.row                         There is NO docItemWrapper_* class in the
+           > div.col.docItemCol_*          DOM: the theme's CSS module has no rule
+           > div.col.col--3                for it, so css-loader exports undefined
+                                           and clsx drops it. Anchor selectors on
+                                           docMainContainer, never docItemWrapper.
+   docItemCol_* = article (theme caps it at 75% !important >=997px); col--3 =
+   desktop TOC (in DOM only when the JS viewport is > 996px).
+   NOTE: the chunk order of custom.css vs infima vs the theme's CSS modules is
+   NOT stable across builds (both orders observed), so every override of their
+   rules needs strictly higher specificity — an equal-specificity tie breaks
+   on source order, even with !important on both sides. */
 
-/* Wide container so content + TOC can spread across the viewport.
-   (With the sidebar hidden, the theme's .docItemWrapperEnhanced_* rule wins
-   with !important and caps the container at ~1466px instead — acceptable.) */
-.container {
+/* Wide container so content + TOC can spread across the viewport. Anchored on
+   <main> to out-specify infima's .container rules (incl. the 1320px xl rule at
+   >=1440px viewports). With the sidebar hidden, the theme's
+   .docItemWrapperEnhanced_* !important rule wins and caps the container at
+   ~1466px instead — acceptable. */
+main[class*='docMainContainer'] > .container {
   max-width: 1400px;
 }
 
 @media (min-width: 997px) {
   /* Never let the TOC column wrap below the article: let both columns shrink
-     below min-content (long code lines scroll instead of forcing a wrap).
-     With no column margins, the flex bases are 0% + 25%, so one line always
-     fits at any width. */
-  [class*='docItemWrapper'] > .row > .col {
+     below min-content (long code lines and wide images stay inside the
+     article instead of forcing a wrap). With no column margins, the flex
+     bases are 0% + 25%, so one line always fits at any width. */
+  main[class*='docMainContainer'] > .container > .row > .col {
     min-width: 0;
   }
 
@@ -241,11 +248,22 @@ nav.menu {
     padding: 0 2rem;
   }
 
-  /* Gap between article and TOC. Padding, not margin: it sits inside the
-     column's 25% flex basis (border-box), so it can never overflow the row
-     and push the TOC below the content. */
-  [class*='docItemWrapper'] > .row > .col.col--3 {
-    padding-left: 4rem;
+  /* Cap the reading width on ultra-wide screens. Needs strictly higher
+     specificity than the theme's `.docItemCol_* { max-width: 75% !important }`
+     (see NOTE above). Below ~1590px viewport the flex sizing (row minus the
+     25% TOC column) is the effective cap and this rule is not binding. */
+  main[class*='docMainContainer'] > .container > .row > [class*='docItemCol'] {
+    max-width: 48rem !important;
+  }
+
+  /* Gap between article and TOC. Padding, not a fixed margin: a fixed margin
+     sits outside the column's 25% flex basis and would overflow the row,
+     pushing the TOC below the content. margin-left: auto IS safe (it resolves
+     to 0 when the line is full) and keeps the TOC pinned to the far right
+     once the reading-width cap frees up space. */
+  main[class*='docMainContainer'] > .container > .row > .col.col--3 {
+    margin-left: auto;
+    padding-left: 2rem;
   }
 }
 
@@ -264,8 +282,10 @@ nav.menu {
   }
 
   main[class*='docMainContainer']:not([class*='docMainContainerEnhanced'])
-    [class*='docItemCol'] {
-    max-width: 100% !important; /* out-specifies the theme's 75% !important */
+    > .container
+    > .row
+    > [class*='docItemCol'] {
+    max-width: 100% !important; /* out-specifies the theme's 75% and the 48rem cap */
   }
 
   /* The theme hides .tocMobile_* at >=997px with a single-class selector
