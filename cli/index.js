@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 const { PROJECT_ROOT } = require('./project-root');
-require('dotenv').config({ path: require('path').join(PROJECT_ROOT, '.env') });
+require('dotenv').config({ path: require('path').join(PROJECT_ROOT, '.env'), quiet: true });
 
 const { Command } = require('commander');
 const pkg = require('../package.json');
