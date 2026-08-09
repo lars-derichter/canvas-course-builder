@@ -54,5 +54,5 @@ See [`docs/architecture.md`](docs/architecture.md) for sync algorithms, state sc
 
 ## Notes
 
-- Node.js 20+ required (built-in test runner stable from v20)
+- Node.js 24+ required
 - Docusaurus `_category_.json` files control sidebar labels/ordering and are skipped by the course scanner

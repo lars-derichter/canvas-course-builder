@@ -54,7 +54,7 @@ Write course materials as markdown, preview via
    cd your-project-name
    ```
 
-5. **Install [Node.js 20+](https://nodejs.org/)** — download the installer from
+5. **Install [Node.js 24+](https://nodejs.org/)** — download the installer from
    the link, run it, and accept the default settings
 
 6. **Install dependencies and start the preview** — run these two commands to
