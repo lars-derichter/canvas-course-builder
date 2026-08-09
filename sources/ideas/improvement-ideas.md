@@ -50,20 +50,18 @@ See [Export Styling](../../docs/export-styling.md).
 
 ### VS Code Sidebar for Course Structure
 
-A tree view in the VS Code sidebar showing modules and items, with inline
-actions like push single item, open in Canvas, move, and rename. Would be much
-faster than the command palette for frequent operations.
+The `courseTree` view shows modules, subsections, and items. Push and open in
+Canvas sit inline on every node; the context menu adds new, rename, move,
+move-to-module, merge, split, delete, and export. The view title bar carries
+push, pull, status, diff, validate, preview, and the course-wide exports. See
+[VS Code](../../docs/vscode.md).
 
 ### Update Claude `/commit` Skill
 
-The Claude commit skill ignores changes to canvas_id changes in course
-materials. This is good when working in development mode, but not when working
-on real course materials.
-
-We need a way to check which mode we are in. I would suggest checking the URL of
-the git remote (origin). If it matches:
-`git@github.com:lars-derichter/canvas-local.git` we are in development mode,
-otherwise we are in production mode.
+`/commit` runs `git remote get-url origin` before staging. An origin containing
+`canvas-local` means development mode: changes inside `course/` are skipped
+unless explicitly asked for, since they are sync-test artifacts. Any other
+origin means production mode and everything is staged normally.
 
 ### Push with --prune deletes individual items as well as modules
 
