@@ -208,33 +208,71 @@ nav.menu {
 
 /* ---------------------------------------------------------------------------
    Content area layout
-   --------------------------------------------------------------------------- */
+   ---------------------------------------------------------------------------
+   Theme DOM (theme-classic):
+     main.docMainContainer_*            <- + .docMainContainerEnhanced_* when the
+       |                                   left sidebar is hidden (hideable)
+       > div.container.docItemWrapper_*
+         > div.row
+           > div.col.docItemCol_*       <- article (theme caps it at 75% !important >=997px)
+           > div.col.col--3             <- desktop TOC (in DOM only when JS viewport > 996px)
+   NOTE: custom.css is emitted BEFORE the theme's CSS-module rules in the build,
+   so overriding them needs strictly higher specificity — an equal-specificity
+   tie loses, even with !important on both sides. */
 
-/* Let the doc main area fill the available width so the TOC can sit far right */
-[class*='docMainContainer'] {
-  max-width: 100%;
-}
-
-/* Wide container so content + TOC can spread across the viewport */
-[class*='docItemContainer'] > .container,
+/* Wide container so content + TOC can spread across the viewport.
+   (With the sidebar hidden, the theme's .docItemWrapperEnhanced_* rule wins
+   with !important and caps the container at ~1466px instead — acceptable.) */
 .container {
   max-width: 1400px;
 }
 
-/* Override the default 75% col cap — content + TOC side by side */
 @media (min-width: 997px) {
-  /* Cap the reading width, but keep the column growable (default flex-basis 0)
-     so content + TOC always pack onto one line and the TOC never wraps below
-     the content on narrower desktop viewports. */
+  /* Never let the TOC column wrap below the article: let both columns shrink
+     below min-content (long code lines scroll instead of forcing a wrap).
+     With no column margins, the flex bases are 0% + 25%, so one line always
+     fits at any width. */
+  [class*='docItemWrapper'] > .row > .col {
+    min-width: 0;
+  }
+
+  /* Breathing room around the article text. */
   [class*='docItemCol'] {
-    max-width: 48rem !important;
     padding: 0 2rem;
   }
 
-  /* TOC sits next to content with generous gap */
-  div.col.col--3 {
-    max-width: none !important;
-    margin-left: 4rem;
+  /* Gap between article and TOC. Padding, not margin: it sits inside the
+     column's 25% flex basis (border-box), so it can never overflow the row
+     and push the TOC below the content. */
+  [class*='docItemWrapper'] > .row > .col.col--3 {
+    padding-left: 4rem;
+  }
+}
+
+/* 997-1199px with the left doc sidebar VISIBLE: a right-column TOC would make
+   the article too narrow. Hide the desktop TOC column, let the article use
+   the full row, and re-show the collapsible "On this page" dropdown instead.
+   When the sidebar is hidden (or a page has no sidebar), <main> also carries
+   docMainContainerEnhanced_*, none of these rules match, and the normal
+   right-column TOC applies from 997px up. */
+@media screen and (min-width: 997px) and (max-width: 1199.98px) {
+  main[class*='docMainContainer']:not([class*='docMainContainerEnhanced'])
+    > .container
+    > .row
+    > .col.col--3 {
+    display: none;
+  }
+
+  main[class*='docMainContainer']:not([class*='docMainContainerEnhanced'])
+    [class*='docItemCol'] {
+    max-width: 100% !important; /* out-specifies the theme's 75% !important */
+  }
+
+  /* The theme hides .tocMobile_* at >=997px with a single-class selector
+     (0,1,0); this wins on specificity, not source order. */
+  main[class*='docMainContainer']:not([class*='docMainContainerEnhanced'])
+    .theme-doc-toc-mobile {
+    display: block;
   }
 }
 
@@ -257,7 +295,6 @@ article {
 .table-of-contents {
   border-left: 3px solid var(--tm-color-border);
   font-size: 0.85rem;
-  width: 14rem;
 }
 
 .table-of-contents__link {
