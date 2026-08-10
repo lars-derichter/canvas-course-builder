@@ -27,13 +27,19 @@ describe('buildFileResolver', () => {
   it('resolves a relative file path to a Canvas URL', () => {
     const resolver = buildFileResolver('01-mod/01-page.md', syncData);
     const result = resolver('./_files/image.png');
-    assert.equal(result, 'https://canvas.example.com/courses/1/files/100/preview');
+    assert.equal(
+      result,
+      'https://canvas.example.com/courses/1/files/100/preview',
+    );
   });
 
   it('resolves cross-directory file references', () => {
     const resolver = buildFileResolver('01-mod/01-page.md', syncData);
     const result = resolver('../02-other/_files/shared.pdf');
-    assert.equal(result, 'https://canvas.example.com/courses/1/files/200/preview');
+    assert.equal(
+      result,
+      'https://canvas.example.com/courses/1/files/200/preview',
+    );
   });
 
   it('returns null for external URLs', () => {
@@ -70,7 +76,9 @@ describe('pageStrategy', () => {
   });
 
   it('ignores frontmatter fields', () => {
-    const opts = pageStrategy.buildOpts('Title', '<p>Body</p>', { points_possible: 10 });
+    const opts = pageStrategy.buildOpts('Title', '<p>Body</p>', {
+      points_possible: 10,
+    });
     assert.deepEqual(opts, { title: 'Title', body: '<p>Body</p>' });
   });
 
@@ -94,14 +102,24 @@ describe('pageStrategy', () => {
   });
 
   it('extracts slug from result', () => {
-    assert.equal(pageStrategy.extractSlug({ url: 'my-page-slug' }), 'my-page-slug');
+    assert.equal(
+      pageStrategy.extractSlug({ url: 'my-page-slug' }),
+      'my-page-slug',
+    );
   });
 });
 
 describe('assignmentStrategy', () => {
   it('builds options with name and description', () => {
-    const opts = assignmentStrategy.buildOpts('My Assignment', '<p>Instructions</p>', {});
-    assert.deepEqual(opts, { name: 'My Assignment', description: '<p>Instructions</p>' });
+    const opts = assignmentStrategy.buildOpts(
+      'My Assignment',
+      '<p>Instructions</p>',
+      {},
+    );
+    assert.deepEqual(opts, {
+      name: 'My Assignment',
+      description: '<p>Instructions</p>',
+    });
   });
 
   it('maps frontmatter fields to assignment options', () => {
@@ -111,7 +129,11 @@ describe('assignmentStrategy', () => {
       due_at: '2025-06-01T23:59:00Z',
       published: true,
     };
-    const opts = assignmentStrategy.buildOpts('Title', '<p>Body</p>', frontmatter);
+    const opts = assignmentStrategy.buildOpts(
+      'Title',
+      '<p>Body</p>',
+      frontmatter,
+    );
     assert.equal(opts.pointsPossible, 100);
     assert.deepEqual(opts.submissionTypes, ['online_upload']);
     assert.equal(opts.dueAt, '2025-06-01T23:59:00Z');

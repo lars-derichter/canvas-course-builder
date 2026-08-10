@@ -21,8 +21,7 @@ course/
 ```
 
 The two-digit prefix (`01`, `02`, ...) controls the order. It is stripped when
-generating the display title, so `01-getting-started` becomes "Getting
-Started".
+generating the display title, so `01-getting-started` becomes "Getting Started".
 
 ## Items inside a module
 

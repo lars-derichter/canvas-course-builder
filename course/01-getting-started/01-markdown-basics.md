@@ -85,8 +85,8 @@ templates, or starter files students should download:
 ```
 
 Like images, linked files are uploaded to Canvas during push and the link is
-rewritten to the Canvas file URL. Try it: [example
-document](./_files/example-document.docx).
+rewritten to the Canvas file URL. Try it:
+[example document](./_files/example-document.docx).
 
 One special case: in the local preview, a link to an `.html` file opens that
 file in a new browser tab. Try it with this

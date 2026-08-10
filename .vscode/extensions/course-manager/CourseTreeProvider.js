@@ -28,7 +28,12 @@ function safeReadJSON(filePath, fallback = {}) {
  * Returns { canvasType, title, canvasId, externalUrl }.
  */
 function readFrontmatter(filePath) {
-  const result = { canvasType: 'page', title: null, canvasId: null, externalUrl: null };
+  const result = {
+    canvasType: 'page',
+    title: null,
+    canvasId: null,
+    externalUrl: null,
+  };
   try {
     const content = fs.readFileSync(filePath, 'utf8');
     if (!content.startsWith('---')) return result;
@@ -49,7 +54,8 @@ function readFrontmatter(filePath) {
     if (idMatch) result.canvasId = idMatch[1].trim();
 
     const urlMatch = frontmatter.match(/^external_url:\s*(.+)$/m);
-    if (urlMatch) result.externalUrl = urlMatch[1].trim().replace(/^["'](.*)["']$/, '$1');
+    if (urlMatch)
+      result.externalUrl = urlMatch[1].trim().replace(/^["'](.*)["']$/, '$1');
   } catch {
     // Defaults
   }
@@ -83,7 +89,10 @@ class CourseTreeItem extends vscode.TreeItem {
     this.folderPath = opts.folderPath || null;
     this.externalUrl = opts.externalUrl || null;
 
-    if (opts.filePath && collapsibleState === vscode.TreeItemCollapsibleState.None) {
+    if (
+      opts.filePath &&
+      collapsibleState === vscode.TreeItemCollapsibleState.None
+    ) {
       this.command = {
         command: 'vscode.open',
         arguments: [vscode.Uri.file(opts.filePath)],
@@ -136,7 +145,8 @@ class CourseTreeProvider {
 
     if (!element) return this._getModules(courseDir);
     if (element.contextValue === 'module') return this._getModuleItems(element);
-    if (element.contextValue === 'subheader') return this._getSubfolderItems(element);
+    if (element.contextValue === 'subheader')
+      return this._getSubfolderItems(element);
     return [];
   }
 
@@ -161,7 +171,7 @@ class CourseTreeProvider {
           folderPath,
           moduleFolderName: entry.name,
           tooltip: entry.name,
-        }
+        },
       );
       item._position = position;
       item.description = String(position).padStart(2, '0');
@@ -192,13 +202,17 @@ class CourseTreeProvider {
             folderPath: fullPath,
             moduleFolderName: moduleNode.moduleFolderName,
             tooltip: entry.name,
-          }
+          },
         );
         item._position = extractPosition(entry.name);
         item._entryName = entry.name;
         items.push(item);
       } else if (entry.isFile()) {
-        const treeItem = this._buildFileItem(fullPath, entry.name, moduleNode.moduleFolderName);
+        const treeItem = this._buildFileItem(
+          fullPath,
+          entry.name,
+          moduleNode.moduleFolderName,
+        );
         if (treeItem) items.push(treeItem);
       }
     }
@@ -217,7 +231,12 @@ class CourseTreeProvider {
       if (!entry.isFile()) continue;
 
       const fullPath = path.join(folderPath, entry.name);
-      const treeItem = this._buildFileItem(fullPath, entry.name, subheaderNode.moduleFolderName, subheaderNode);
+      const treeItem = this._buildFileItem(
+        fullPath,
+        entry.name,
+        subheaderNode.moduleFolderName,
+        subheaderNode,
+      );
       if (treeItem) items.push(treeItem);
     }
 
@@ -231,8 +250,11 @@ class CourseTreeProvider {
     const canvasType = fm ? fm.canvasType : 'file';
     const ext = path.extname(fileName);
     // Prefer the frontmatter title — it is what Canvas and Docusaurus show
-    const title = (fm && fm.title)
-      || displayTitle(isMarkdown ? fileName.replace(/\.md$/, '') : fileName.replace(ext, ''));
+    const title =
+      (fm && fm.title) ||
+      displayTitle(
+        isMarkdown ? fileName.replace(/\.md$/, '') : fileName.replace(ext, ''),
+      );
 
     const item = new CourseTreeItem(
       title,
@@ -243,7 +265,7 @@ class CourseTreeProvider {
         moduleFolderName,
         tooltip: fileName,
         externalUrl: fm ? fm.externalUrl : null,
-      }
+      },
     );
     if (!isMarkdown) {
       item.description = ext;
@@ -312,23 +334,39 @@ class CourseTreeProvider {
 
   async _handleModuleDrop(dragged, target, runCli) {
     const courseDir = path.join(this._workspaceRoot, 'course');
-    const moduleCount = fs.readdirSync(courseDir, { withFileTypes: true })
+    const moduleCount = fs
+      .readdirSync(courseDir, { withFileTypes: true })
       .filter((e) => e.isDirectory() && !e.name.startsWith('_')).length;
     const targetPosition = target ? target._position : moduleCount;
     if (targetPosition === dragged.position) return;
 
-    await runCli(['move-module', '--module', dragged.moduleFolderName, '--position', String(targetPosition)]);
+    await runCli([
+      'move-module',
+      '--module',
+      dragged.moduleFolderName,
+      '--position',
+      String(targetPosition),
+    ]);
   }
 
   async _handleItemDrop(dragged, target, runCli) {
     if (!dragged.filePath) return;
     const draggedDir = path.dirname(dragged.filePath);
 
-    if (target.contextValue === 'module' || target.contextValue === 'subheader') {
+    if (
+      target.contextValue === 'module' ||
+      target.contextValue === 'subheader'
+    ) {
       // Dropping onto a module or subheader — move into that container
       if (draggedDir === target.folderPath) return; // already there
 
-      const args = ['movetomodule-item', '--path', dragged.filePath, '--to-module', target.moduleFolderName];
+      const args = [
+        'movetomodule-item',
+        '--path',
+        dragged.filePath,
+        '--to-module',
+        target.moduleFolderName,
+      ];
       if (target.contextValue === 'subheader') {
         args.push('--to-subsection', target._entryName);
       }
@@ -341,10 +379,24 @@ class CourseTreeProvider {
     if (draggedDir === targetDir) {
       // Same folder: reorder to the target's position
       if (dragged.position === target._position) return;
-      await runCli(['move-item', '--path', dragged.filePath, '--position', String(target._position)]);
+      await runCli([
+        'move-item',
+        '--path',
+        dragged.filePath,
+        '--position',
+        String(target._position),
+      ]);
     } else {
       // Different folder: move next to the target
-      const args = ['movetomodule-item', '--path', dragged.filePath, '--to-module', target.moduleFolderName, '--position', String(target._position)];
+      const args = [
+        'movetomodule-item',
+        '--path',
+        dragged.filePath,
+        '--to-module',
+        target.moduleFolderName,
+        '--position',
+        String(target._position),
+      ];
       if (target._subfolderName) {
         args.push('--to-subsection', target._subfolderName);
       }
@@ -362,14 +414,22 @@ class CourseTreeProvider {
     // Dropping onto a module — move to that module's root (append).
     if (target.contextValue === 'module') {
       if (target.moduleFolderName === sourceModule) return; // already there
-      await runCli(['movetomodule-item', '--path', sourcePath, '--to-module', target.moduleFolderName]);
+      await runCli([
+        'movetomodule-item',
+        '--path',
+        sourcePath,
+        '--to-module',
+        target.moduleFolderName,
+      ]);
       return;
     }
 
     // Dropping onto an item that lives inside a subsection — no valid module-root
     // position, so ignore rather than move it somewhere surprising.
     if (target.contextValue !== 'subheader' && target._subfolderName) {
-      vscode.window.showInformationMessage('Canvas Course Builder: Drop a subsection onto a module or a top-level item.');
+      vscode.window.showInformationMessage(
+        'Canvas Course Builder: Drop a subsection onto a module or a top-level item.',
+      );
       return;
     }
 
@@ -379,15 +439,31 @@ class CourseTreeProvider {
     const targetPosition = target._position;
     if (targetModule === sourceModule) {
       if (dragged.position === targetPosition) return;
-      await runCli(['move-item', '--path', sourcePath, '--position', String(targetPosition)]);
+      await runCli([
+        'move-item',
+        '--path',
+        sourcePath,
+        '--position',
+        String(targetPosition),
+      ]);
     } else {
-      await runCli(['movetomodule-item', '--path', sourcePath, '--to-module', targetModule, '--position', String(targetPosition)]);
+      await runCli([
+        'movetomodule-item',
+        '--path',
+        sourcePath,
+        '--to-module',
+        targetModule,
+        '--position',
+        String(targetPosition),
+      ]);
     }
   }
 
   async _handleExternalFileDrop(target, uris, runCli) {
     if (!target) {
-      vscode.window.showWarningMessage('Canvas Course Builder: Drop files onto a module or item.');
+      vscode.window.showWarningMessage(
+        'Canvas Course Builder: Drop files onto a module or item.',
+      );
       return;
     }
 
@@ -402,19 +478,36 @@ class CourseTreeProvider {
       moduleFolderName = target.moduleFolderName;
       subsection = target._subfolderName;
     } else {
-      vscode.window.showWarningMessage('Canvas Course Builder: Drop files onto a module or item.');
+      vscode.window.showWarningMessage(
+        'Canvas Course Builder: Drop files onto a module or item.',
+      );
       return;
     }
 
     for (const uri of uris) {
       const sourcePath = uri.fsPath;
-      if (!fs.existsSync(sourcePath) || !fs.statSync(sourcePath).isFile()) continue;
+      if (!fs.existsSync(sourcePath) || !fs.statSync(sourcePath).isFile())
+        continue;
 
-      const args = ['new-item', '--module', moduleFolderName, '--type', 'file', '--file', sourcePath];
+      const args = [
+        'new-item',
+        '--module',
+        moduleFolderName,
+        '--type',
+        'file',
+        '--file',
+        sourcePath,
+      ];
       if (subsection) args.push('--subsection', subsection);
       await runCli(args);
     }
   }
 }
 
-module.exports = { CourseTreeProvider, getCanvasId, readFrontmatter, displayTitle, extractPosition };
+module.exports = {
+  CourseTreeProvider,
+  getCanvasId,
+  readFrontmatter,
+  displayTitle,
+  extractPosition,
+};

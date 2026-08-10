@@ -9,7 +9,11 @@ const {
   readModuleCanvasId,
 } = require('./module-utils');
 const { renumberSequential } = require('./renumber');
-const { loadSyncFile, saveSyncFile, findModuleEntryByFolder } = require('./sync-utils');
+const {
+  loadSyncFile,
+  saveSyncFile,
+  findModuleEntryByFolder,
+} = require('./sync-utils');
 
 /**
  * Get module entries in the format expected by renumberSequential.
@@ -40,13 +44,17 @@ async function deleteModule(options = {}) {
   if (options.module) {
     // Non-interactive mode (VS Code): requires --yes since there is no prompt
     if (!options.yes) {
-      console.error('[delete-module] Error: --module requires --yes to confirm deletion.');
+      console.error(
+        '[delete-module] Error: --module requires --yes to confirm deletion.',
+      );
       process.exit(1);
     }
     const modules = getExistingModules();
     sourceModule = modules.find((m) => m.folderName === options.module);
     if (!sourceModule) {
-      console.error(`[delete-module] Error: Module not found: ${options.module}`);
+      console.error(
+        `[delete-module] Error: Module not found: ${options.module}`,
+      );
       process.exit(1);
     }
   } else {
@@ -70,11 +78,17 @@ async function deleteModule(options = {}) {
 
     if (!sourceModule) {
       rl.close();
-      console.error(`[delete-module] Error: No module found with number ${sourceStr}.`);
+      console.error(
+        `[delete-module] Error: No module found with number ${sourceStr}.`,
+      );
       process.exit(1);
     }
 
-    const confirm = await prompt(rl, `Delete ${sourceModule.folderName} and all its contents? (y/N)`, 'N');
+    const confirm = await prompt(
+      rl,
+      `Delete ${sourceModule.folderName} and all its contents? (y/N)`,
+      'N',
+    );
     rl.close();
 
     if (confirm.toLowerCase() !== 'y') {
@@ -96,9 +110,10 @@ async function deleteModule(options = {}) {
   // id lives in their _category_.json)
   const syncData = loadSyncFile({ allowNull: true });
   if (syncData && syncData.modules) {
-    const idKey = canvasModuleId != null
-      ? String(canvasModuleId)
-      : (findModuleEntryByFolder(syncData, sourceModule.folderName) || [])[0];
+    const idKey =
+      canvasModuleId != null
+        ? String(canvasModuleId)
+        : (findModuleEntryByFolder(syncData, sourceModule.folderName) || [])[0];
     if (idKey && syncData.modules[idKey]) {
       delete syncData.modules[idKey];
     }
@@ -138,7 +153,8 @@ async function deleteModule(options = {}) {
         if (syncData.files) {
           for (const filePath of Object.keys(syncData.files)) {
             if (filePath.startsWith(from + '/')) {
-              syncData.files[to + filePath.slice(from.length)] = syncData.files[filePath];
+              syncData.files[to + filePath.slice(from.length)] =
+                syncData.files[filePath];
               delete syncData.files[filePath];
             }
           }

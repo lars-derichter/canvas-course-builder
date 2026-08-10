@@ -1,6 +1,9 @@
 const { describe, it } = require('node:test');
 const assert = require('node:assert/strict');
-const { markdownToHtml, getAlertConfig } = require('../../lib/convert/markdown-to-html');
+const {
+  markdownToHtml,
+  getAlertConfig,
+} = require('../../lib/convert/markdown-to-html');
 
 describe('markdownToHtml', () => {
   it('converts basic markdown to HTML', () => {
@@ -10,7 +13,8 @@ describe('markdownToHtml', () => {
   });
 
   it('strips frontmatter before conversion', () => {
-    const md = '---\ntitle: Test\ncanvas_type: page\n---\n\n# Title\n\nContent.';
+    const md =
+      '---\ntitle: Test\ncanvas_type: page\n---\n\n# Title\n\nContent.';
     const html = markdownToHtml(md);
     assert.doesNotMatch(html, /title:/);
     assert.doesNotMatch(html, /canvas_type/);
@@ -105,7 +109,9 @@ describe('markdownToHtml alerts', () => {
   });
 
   it('keeps English defaults for types missing from alertTitles', () => {
-    const html = markdownToHtml('> [!TIP]\n> x', { alertTitles: { note: 'Info' } });
+    const html = markdownToHtml('> [!TIP]\n> x', {
+      alertTitles: { note: 'Info' },
+    });
     assert.match(html, /Tip<\/p>/);
   });
 
@@ -128,7 +134,8 @@ describe('markdownToHtml link/file resolvers', () => {
   it('resolves internal .md links via linkResolver', () => {
     const md = '[Setup](./02-setup.md)';
     const html = markdownToHtml(md, {
-      linkResolver: (href) => href === './02-setup.md' ? '/courses/42/pages/setup' : null,
+      linkResolver: (href) =>
+        href === './02-setup.md' ? '/courses/42/pages/setup' : null,
     });
     assert.match(html, /href="\/courses\/42\/pages\/setup"/);
   });
@@ -144,21 +151,29 @@ describe('markdownToHtml link/file resolvers', () => {
   it('resolves image sources via fileResolver', () => {
     const md = '![diagram](./_files/diagram.png)';
     const html = markdownToHtml(md, {
-      fileResolver: (href) => href === './_files/diagram.png'
-        ? 'https://canvas.example.com/files/500/preview'
-        : null,
+      fileResolver: (href) =>
+        href === './_files/diagram.png'
+          ? 'https://canvas.example.com/files/500/preview'
+          : null,
     });
-    assert.match(html, /src="https:\/\/canvas\.example\.com\/files\/500\/preview"/);
+    assert.match(
+      html,
+      /src="https:\/\/canvas\.example\.com\/files\/500\/preview"/,
+    );
   });
 
   it('resolves file links via fileResolver', () => {
     const md = '[Download](./_files/guide.pdf)';
     const html = markdownToHtml(md, {
-      fileResolver: (href) => href === './_files/guide.pdf'
-        ? 'https://canvas.example.com/files/600/download'
-        : null,
+      fileResolver: (href) =>
+        href === './_files/guide.pdf'
+          ? 'https://canvas.example.com/files/600/download'
+          : null,
     });
-    assert.match(html, /href="https:\/\/canvas\.example\.com\/files\/600\/download"/);
+    assert.match(
+      html,
+      /href="https:\/\/canvas\.example\.com\/files\/600\/download"/,
+    );
   });
 
   it('escapes quotes in link title attributes', () => {
@@ -179,11 +194,21 @@ describe('markdownToHtml link/file resolvers', () => {
 describe('getAlertConfig', () => {
   it('has entries for all supported types', () => {
     const config = getAlertConfig();
-    const expectedTypes = ['note', 'tip', 'important', 'warning', 'caution', 'check'];
+    const expectedTypes = [
+      'note',
+      'tip',
+      'important',
+      'warning',
+      'caution',
+      'check',
+    ];
     for (const type of expectedTypes) {
       assert.ok(config[type], `Missing config for type: ${type}`);
       assert.ok(config[type].color, `Missing color for type: ${type}`);
-      assert.ok(config[type].background, `Missing background for type: ${type}`);
+      assert.ok(
+        config[type].background,
+        `Missing background for type: ${type}`,
+      );
       assert.ok(config[type].icon, `Missing icon for type: ${type}`);
     }
   });

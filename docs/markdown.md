@@ -18,9 +18,9 @@ These links work across all three layers:
 
 - **Docusaurus** — resolved natively as relative links.
 - **Push to Canvas** — automatically converted to Canvas internal URLs (e.g.
-  `/courses/ID/pages/alerts`). On the first push, pages are created first,
-  then any items with forward references are updated in a second pass so all
-  links resolve in one go.
+  `/courses/ID/pages/alerts`). On the first push, pages are created first, then
+  any items with forward references are updated in a second pass so all links
+  resolve in one go.
 - **Pull from Canvas** — Canvas internal URLs are converted back to relative
   markdown paths.
 
@@ -68,9 +68,9 @@ existing local `.html` file opens that file in a new browser tab.
 Open the starter: [starter.html](_files/starter.html)
 ```
 
-To force a download instead — the file saves under its original name rather
-than rendering — set `download: true` in the page's frontmatter. The flag
-applies to every `.html` link on that page:
+To force a download instead — the file saves under its original name rather than
+rendering — set `download: true` in the page's frontmatter. The flag applies to
+every `.html` link on that page:
 
 ```md
 ---
@@ -82,11 +82,11 @@ Download the starter: [starter.html](_files/starter.html)
 ```
 
 You write a normal relative link — no special syntax — and it works in the
-Docusaurus preview and on Canvas (uploaded file) alike. The `download` flag
-only affects the preview; on Canvas the link always points to the Canvas file
-page. Only `.html` and `.htm` are affected; `.md`/`.mdx` stay page links, and
-other file types (`.pdf`, `.zip`, `.docx`, images) already worked. A link with
-an anchor (`_files/example.html#top`) is left as navigation.
+Docusaurus preview and on Canvas (uploaded file) alike. The `download` flag only
+affects the preview; on Canvas the link always points to the Canvas file page.
+Only `.html` and `.htm` are affected; `.md`/`.mdx` stay page links, and other
+file types (`.pdf`, `.zip`, `.docx`, images) already worked. A link with an
+anchor (`_files/example.html#top`) is left as navigation.
 
 ## Underscore prefix convention
 
@@ -136,9 +136,9 @@ Opgelet, Check) and can be overridden per label; see the "Course language and
 labels" section in the [user guide](user-guide.md).
 
 One naming quirk to know: the alert you write as `[!ATTENTION]` is the one
-GitHub calls `[!CAUTION]`, so its label key in `course.config.yml` is
-`caution` and its default English title is "Caution". `[!CAUTION]` is
-accepted in your markdown as a synonym.
+GitHub calls `[!CAUTION]`, so its label key in `course.config.yml` is `caution`
+and its default English title is "Caution". `[!CAUTION]` is accepted in your
+markdown as a synonym.
 
-Alert icons are automatically uploaded to Canvas on first push and tracked
-in `.canvas-sync.json`.
+Alert icons are automatically uploaded to Canvas on first push and tracked in
+`.canvas-sync.json`.

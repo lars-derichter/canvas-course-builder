@@ -22,7 +22,9 @@ async function status(options) {
   const syncData = loadSyncFile({ allowNull: true });
 
   if (!syncData) {
-    console.log('[status] No .canvas-sync.json found. Run "npx course init" first.');
+    console.log(
+      '[status] No .canvas-sync.json found. Run "npx course init" first.',
+    );
     return;
   }
 
@@ -54,7 +56,9 @@ async function status(options) {
       notPushedModules++;
     } else {
       claimedModuleIds.add(found[0]);
-      console.log(`  SYNCED  module: ${mod.folderName} (canvas_module_id: ${found[0]})`);
+      console.log(
+        `  SYNCED  module: ${mod.folderName} (canvas_module_id: ${found[0]})`,
+      );
       syncedModules++;
     }
 
@@ -73,10 +77,14 @@ async function status(options) {
           modified = mtime > new Date(syncData.last_sync);
         }
         if (modified) {
-          console.log(`    MODIFIED ${item.relativePath} (changed since last sync)`);
+          console.log(
+            `    MODIFIED ${item.relativePath} (changed since last sync)`,
+          );
           modifiedItems++;
         } else {
-          console.log(`    SYNCED  ${item.relativePath} (canvas_id: ${canvasId})`);
+          console.log(
+            `    SYNCED  ${item.relativePath} (canvas_id: ${canvasId})`,
+          );
         }
         syncedItems++;
       } else {
@@ -90,7 +98,9 @@ async function status(options) {
   for (const [idKey, entry] of Object.entries(syncModules)) {
     if (claimedModuleIds.has(idKey)) continue;
     if (entry.folder && localFolders.has(entry.folder)) continue;
-    console.log(`  DELETED module: ${entry.folder || idKey} (exists in sync file but not locally)`);
+    console.log(
+      `  DELETED module: ${entry.folder || idKey} (exists in sync file but not locally)`,
+    );
     deletedModules++;
   }
 
@@ -121,7 +131,9 @@ async function status(options) {
 async function compareWithCanvas(syncData, localModules) {
   const courseId = process.env.CANVAS_COURSE_ID;
   if (!courseId) {
-    console.log('\n[status] Cannot compare with Canvas: CANVAS_COURSE_ID is not set.');
+    console.log(
+      '\n[status] Cannot compare with Canvas: CANVAS_COURSE_ID is not set.',
+    );
     return;
   }
 
@@ -159,7 +171,9 @@ async function compareWithCanvas(syncData, localModules) {
     const localFolder = canvasIdToLocal[canvasMod.id];
 
     if (!localFolder) {
-      console.log(`  CANVAS-ONLY module: "${canvasMod.name}" (id: ${canvasMod.id})`);
+      console.log(
+        `  CANVAS-ONLY module: "${canvasMod.name}" (id: ${canvasMod.id})`,
+      );
       canvasOnlyModules++;
       continue;
     }
@@ -187,16 +201,21 @@ async function compareWithCanvas(syncData, localModules) {
       for (const canvasItem of canvasItems) {
         if (canvasItem.type === 'SubHeader') continue;
 
-        const contentId = canvasItem.content_id || canvasItem.page_url || canvasItem.id;
+        const contentId =
+          canvasItem.content_id || canvasItem.page_url || canvasItem.id;
         if (localCanvasIds.has(String(contentId))) {
           matchedItems++;
         } else {
-          console.log(`    CANVAS-ONLY item: "${canvasItem.title}" (type: ${canvasItem.type})`);
+          console.log(
+            `    CANVAS-ONLY item: "${canvasItem.title}" (type: ${canvasItem.type})`,
+          );
           canvasOnlyItems++;
         }
       }
     } catch (err) {
-      console.error(`    [status] Error fetching items for module "${canvasMod.name}": ${err.message}`);
+      console.error(
+        `    [status] Error fetching items for module "${canvasMod.name}": ${err.message}`,
+      );
     }
   }
 

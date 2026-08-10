@@ -61,7 +61,11 @@ function renameModule(folderName, newPrefix) {
   if (fs.existsSync(categoryFile)) {
     const category = safeReadJSON(categoryFile);
     category.position = newPrefix;
-    fs.writeFileSync(categoryFile, JSON.stringify(category, null, 2) + '\n', 'utf8');
+    fs.writeFileSync(
+      categoryFile,
+      JSON.stringify(category, null, 2) + '\n',
+      'utf8',
+    );
   }
 
   return { from: folderName, to: newFolderName };
@@ -101,7 +105,9 @@ function safeReadJSON(filePath, fallback = {}) {
     return JSON.parse(fs.readFileSync(filePath, 'utf8'));
   } catch (err) {
     if (err.code !== 'ENOENT') {
-      console.warn(`[warn] Failed to parse ${path.basename(filePath)}: ${err.message}`);
+      console.warn(
+        `[warn] Failed to parse ${path.basename(filePath)}: ${err.message}`,
+      );
     }
     return fallback;
   }
@@ -126,7 +132,10 @@ function writeModuleCanvasId(moduleDir, canvasModuleId, defaults = {}) {
   const catFile = path.join(moduleDir, '_category_.json');
   const cat = safeReadJSON(catFile, {});
   const merged = { ...defaults, ...cat };
-  merged.customProps = { ...(merged.customProps || {}), canvas_module_id: canvasModuleId };
+  merged.customProps = {
+    ...(merged.customProps || {}),
+    canvas_module_id: canvasModuleId,
+  };
   fs.writeFileSync(catFile, JSON.stringify(merged, null, 2) + '\n', 'utf8');
 }
 

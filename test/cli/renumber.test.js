@@ -4,7 +4,12 @@ const fs = require('fs');
 const path = require('path');
 const os = require('os');
 
-const { renumberUp, renumberSequential, reorder, updateCategoryPosition } = require('../../cli/renumber');
+const {
+  renumberUp,
+  renumberSequential,
+  reorder,
+  updateCategoryPosition,
+} = require('../../cli/renumber');
 
 /**
  * Create a subsection directory holding a _category_.json with the given position.
@@ -15,12 +20,14 @@ function createSubsectionDir(parent, name, position) {
   fs.writeFileSync(
     path.join(dir, '_category_.json'),
     JSON.stringify({ label: name, position }, null, 2) + '\n',
-    'utf8'
+    'utf8',
   );
 }
 
 function readCategoryPosition(dir, name) {
-  return JSON.parse(fs.readFileSync(path.join(dir, name, '_category_.json'), 'utf8')).position;
+  return JSON.parse(
+    fs.readFileSync(path.join(dir, name, '_category_.json'), 'utf8'),
+  ).position;
 }
 
 /**
@@ -54,7 +61,10 @@ function buildItems(entries) {
  * Return sorted list of entry names in a directory (excluding dotfiles).
  */
 function listEntries(dir) {
-  return fs.readdirSync(dir).filter((n) => !n.startsWith('.')).sort();
+  return fs
+    .readdirSync(dir)
+    .filter((n) => !n.startsWith('.'))
+    .sort();
 }
 
 /**
@@ -94,10 +104,18 @@ describe('renumberUp', () => {
     const renames = renumberUp(tmpDir, buildItems(entries), 2);
 
     const files = listEntries(tmpDir);
-    assert.deepStrictEqual(files, ['01-intro.md', '03-setup.md', '04-usage.md']);
+    assert.deepStrictEqual(files, [
+      '01-intro.md',
+      '03-setup.md',
+      '04-usage.md',
+    ]);
     assert.ok(renames.length >= 2);
-    assert.ok(renames.some((r) => r.from === '02-setup.md' && r.to === '03-setup.md'));
-    assert.ok(renames.some((r) => r.from === '03-usage.md' && r.to === '04-usage.md'));
+    assert.ok(
+      renames.some((r) => r.from === '02-setup.md' && r.to === '03-setup.md'),
+    );
+    assert.ok(
+      renames.some((r) => r.from === '03-usage.md' && r.to === '04-usage.md'),
+    );
   });
 
   it('does not affect items below the given position', () => {
@@ -140,9 +158,17 @@ describe('renumberSequential', () => {
     const renames = renumberSequential(tmpDir, makeGetEntries(entries));
 
     const files = listEntries(tmpDir);
-    assert.deepStrictEqual(files, ['01-intro.md', '02-setup.md', '03-usage.md']);
-    assert.ok(renames.some((r) => r.from === '03-setup.md' && r.to === '02-setup.md'));
-    assert.ok(renames.some((r) => r.from === '05-usage.md' && r.to === '03-usage.md'));
+    assert.deepStrictEqual(files, [
+      '01-intro.md',
+      '02-setup.md',
+      '03-usage.md',
+    ]);
+    assert.ok(
+      renames.some((r) => r.from === '03-setup.md' && r.to === '02-setup.md'),
+    );
+    assert.ok(
+      renames.some((r) => r.from === '05-usage.md' && r.to === '03-usage.md'),
+    );
   });
 
   it('is a no-op when items are already sequential', () => {
@@ -156,7 +182,11 @@ describe('renumberSequential', () => {
     const renames = renumberSequential(tmpDir, makeGetEntries(entries));
 
     const files = listEntries(tmpDir);
-    assert.deepStrictEqual(files, ['01-intro.md', '02-setup.md', '03-usage.md']);
+    assert.deepStrictEqual(files, [
+      '01-intro.md',
+      '02-setup.md',
+      '03-usage.md',
+    ]);
     assert.equal(renames.length, 0);
   });
 });
@@ -184,7 +214,11 @@ describe('reorder', () => {
     const renames = reorder(tmpDir, buildItems(entries), 1, 3);
 
     const files = listEntries(tmpDir);
-    assert.deepStrictEqual(files, ['01-setup.md', '02-usage.md', '03-intro.md']);
+    assert.deepStrictEqual(files, [
+      '01-setup.md',
+      '02-usage.md',
+      '03-intro.md',
+    ]);
     assert.ok(renames.length > 0);
   });
 
@@ -200,7 +234,11 @@ describe('reorder', () => {
     const renames = reorder(tmpDir, buildItems(entries), 3, 1);
 
     const files = listEntries(tmpDir);
-    assert.deepStrictEqual(files, ['01-usage.md', '02-intro.md', '03-setup.md']);
+    assert.deepStrictEqual(files, [
+      '01-usage.md',
+      '02-intro.md',
+      '03-setup.md',
+    ]);
     assert.ok(renames.length > 0);
   });
 
@@ -215,7 +253,11 @@ describe('reorder', () => {
     const renames = reorder(tmpDir, buildItems(entries), 2, 2);
 
     const files = listEntries(tmpDir);
-    assert.deepStrictEqual(files, ['01-intro.md', '02-setup.md', '03-usage.md']);
+    assert.deepStrictEqual(files, [
+      '01-intro.md',
+      '02-setup.md',
+      '03-usage.md',
+    ]);
     assert.equal(renames.length, 0);
   });
 
@@ -233,7 +275,11 @@ describe('reorder', () => {
     // Move the last subsection to the front.
     reorder(tmpDir, items, 3, 1);
 
-    assert.deepStrictEqual(listEntries(tmpDir), ['01-gamma', '02-alpha', '03-beta']);
+    assert.deepStrictEqual(listEntries(tmpDir), [
+      '01-gamma',
+      '02-alpha',
+      '03-beta',
+    ]);
     assert.equal(readCategoryPosition(tmpDir, '01-gamma'), 1);
     assert.equal(readCategoryPosition(tmpDir, '02-alpha'), 2);
     assert.equal(readCategoryPosition(tmpDir, '03-beta'), 3);

@@ -2,7 +2,12 @@ const fs = require('fs');
 const path = require('path');
 const matter = require('gray-matter');
 const { prompt, pad, toSlug, createRL } = require('./module-utils');
-const { getItems, printItems, selectModule, selectTargetDir } = require('./item-utils');
+const {
+  getItems,
+  printItems,
+  selectModule,
+  selectTargetDir,
+} = require('./item-utils');
 const { renumberUp } = require('./renumber');
 
 /**
@@ -37,7 +42,7 @@ function _splitFile(filePath, bodyLine, newTitle, targetDir) {
 
   if (bodyLine < 1 || bodyLine >= bodyLines.length) {
     console.error(
-      `[split-item] Error: Line number must be between 1 and ${bodyLines.length - 1}.`
+      `[split-item] Error: Line number must be between 1 and ${bodyLines.length - 1}.`,
     );
     process.exit(1);
   }
@@ -48,7 +53,9 @@ function _splitFile(filePath, bodyLine, newTitle, targetDir) {
   // Write first part back to original file
   const firstResult = matter.stringify('\n' + firstPart + '\n', parsed.data);
   fs.writeFileSync(filePath, firstResult, 'utf8');
-  console.log(`[split-item] Updated ${path.basename(filePath)} (lines 1-${bodyLine})`);
+  console.log(
+    `[split-item] Updated ${path.basename(filePath)} (lines 1-${bodyLine})`,
+  );
 
   // Determine position for new file
   const fileName = path.basename(filePath);
@@ -74,7 +81,10 @@ function _splitFile(filePath, bodyLine, newTitle, targetDir) {
   const slug = toSlug(newTitle);
   const newFileName = `${pad(newPosition)}-${slug}.md`;
   const newFilePath = path.join(targetDir, newFileName);
-  const secondResult = matter.stringify('\n' + secondPart + '\n', newFrontmatter);
+  const secondResult = matter.stringify(
+    '\n' + secondPart + '\n',
+    newFrontmatter,
+  );
   fs.writeFileSync(newFilePath, secondResult, 'utf8');
   console.log(`[split-item] Created ${newFileName} (remaining lines)`);
 }
@@ -115,7 +125,9 @@ async function splitItem(options) {
     const blankAfterFm = fmLines > 0 && lines[fmLines] === '' ? 1 : 0;
     const bodyLine = rawLine - fmLines - blankAfterFm;
     if (bodyLine < 1) {
-      console.error('[split-item] Error: Split line falls before the body content.');
+      console.error(
+        '[split-item] Error: Split line falls before the body content.',
+      );
       process.exit(1);
     }
     const targetDir = path.dirname(filePath);
@@ -168,7 +180,9 @@ async function splitItem(options) {
   // Remove leading empty line that gray-matter sometimes adds
   const displayLines = bodyLines[0] === '' ? bodyLines.slice(1) : bodyLines;
 
-  console.log(`\nFile has ${displayLines.length} body lines (after frontmatter).\n`);
+  console.log(
+    `\nFile has ${displayLines.length} body lines (after frontmatter).\n`,
+  );
 
   const lineStr = await prompt(rl, 'Split after line number (body line)');
   const bodyLine = parseInt(lineStr, 10);
@@ -176,7 +190,7 @@ async function splitItem(options) {
   if (isNaN(bodyLine) || bodyLine < 1 || bodyLine >= displayLines.length) {
     rl.close();
     console.error(
-      `[split-item] Error: Line number must be between 1 and ${displayLines.length - 1}.`
+      `[split-item] Error: Line number must be between 1 and ${displayLines.length - 1}.`,
     );
     process.exit(1);
   }

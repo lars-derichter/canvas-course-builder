@@ -79,29 +79,43 @@ describe('rewriteImagePaths', () => {
       '01-mod/01-page.md',
       courseDir,
     );
-    assert.equal(out, `![alt](${path.resolve('/course/01-mod/_files/img.svg')})`);
+    assert.equal(
+      out,
+      `![alt](${path.resolve('/course/01-mod/_files/img.svg')})`,
+    );
   });
 
   it('leaves http and absolute urls untouched', () => {
     const input = '![a](https://x/y.png)\n![b](/abs.png)';
-    assert.equal(rewriteImagePaths(input, '01-mod/01-page.md', courseDir), input);
+    assert.equal(
+      rewriteImagePaths(input, '01-mod/01-page.md', courseDir),
+      input,
+    );
   });
 
   it('does not rewrite images inside code', () => {
     const input = '```\n![a](./_files/img.svg)\n```';
-    assert.equal(rewriteImagePaths(input, '01-mod/01-page.md', courseDir), input);
+    assert.equal(
+      rewriteImagePaths(input, '01-mod/01-page.md', courseDir),
+      input,
+    );
   });
 });
 
 describe('rewriteCrossLinks', () => {
-  const anchorFor = (p) => 'item-' + p.replace(/[^a-z0-9]+/gi, '-').toLowerCase();
+  const anchorFor = (p) =>
+    'item-' + p.replace(/[^a-z0-9]+/gi, '-').toLowerCase();
 
   it('rewrites a link to an included item as an internal anchor', () => {
     const ctx = {
       includedPaths: new Set(['01-mod/02-other.md']),
       anchorFor,
     };
-    const out = rewriteCrossLinks('[Other](02-other.md)', '01-mod/01-page.md', ctx);
+    const out = rewriteCrossLinks(
+      '[Other](02-other.md)',
+      '01-mod/01-page.md',
+      ctx,
+    );
     assert.equal(out, `[Other](#${anchorFor('01-mod/02-other.md')})`);
   });
 

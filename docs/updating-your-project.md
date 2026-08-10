@@ -1,8 +1,8 @@
 # Updating your project
 
-The original Canvas Course Builder project may receive bug fixes, new features, or
-improved documentation over time. This guide shows you how to pull those updates
-into your project.
+The original Canvas Course Builder project may receive bug fixes, new features,
+or improved documentation over time. This guide shows you how to pull those
+updates into your project.
 
 > [!TIP]
 >
@@ -11,8 +11,8 @@ into your project.
 
 ## One-time setup
 
-Add the original Canvas Course Builder project as a remote called `upstream`. You only
-need to do this once:
+Add the original Canvas Course Builder project as a remote called `upstream`.
+You only need to do this once:
 
 ```bash
 git remote add upstream https://github.com/lars-derichter/canvas-course-builder.git
@@ -87,44 +87,44 @@ upstream_remote = upstream
 upstream_branch = main
 ```
 
-- **`protected_dirs`**: directories whose local content is always kept.
-  Anything upstream adds inside them is dropped.
+- **`protected_dirs`**: directories whose local content is always kept. Anything
+  upstream adds inside them is dropped.
 - **`protected_files`**: individual files always kept. The config file lists
-  itself here, so your edits to it survive future updates. Add any tooling
-  file you've customised and don't want upstream to touch.
+  itself here, so your edits to it survive future updates. Add any tooling file
+  you've customised and don't want upstream to touch.
 - **`upstream_remote`** / **`upstream_branch`**: where to merge from.
 
 > [!NOTE]
 >
 > When upstream introduces a new file that belongs in `protected_files`, the
-> script handles it in two steps: the first update brings the file in, and
-> the next run registers it in your `protected_files` automatically. Don't
-> add a file to `protected_files` by hand before it exists in your project;
-> the protection step deletes protected files that are absent from your
-> history, which would eat the incoming file.
+> script handles it in two steps: the first update brings the file in, and the
+> next run registers it in your `protected_files` automatically. Don't add a
+> file to `protected_files` by hand before it exists in your project; the
+> protection step deletes protected files that are absent from your history,
+> which would eat the incoming file.
 
 Because the config file is itself protected, edits you make here are never
 overwritten. Commit the file after changing it.
 
 > [!TIP]
 >
-> `export-styles/` and `src/css/themes/` ship unprotected on purpose: they
-> hold defaults you copy out of, not edit in place. Keep your own export
-> style or theme under `sources/` and point `export.style:` / `theme:` in
-> `course.config.yml` at it — `sources/` is protected and
-> `course.config.yml` is too. If you would rather edit a shipped file in
-> place, add it to `protected_files`, or choose `a` at the conflict prompt.
-> See [Customization](customization.md#branding).
+> `export-styles/` and `src/css/themes/` ship unprotected on purpose: they hold
+> defaults you copy out of, not edit in place. Keep your own export style or
+> theme under `sources/` and point `export.style:` / `theme:` in
+> `course.config.yml` at it — `sources/` is protected and `course.config.yml` is
+> too. If you would rather edit a shipped file in place, add it to
+> `protected_files`, or choose `a` at the conflict prompt. See
+> [Customization](customization.md#branding).
 
 ### Renamed files and folders
 
-Upstream occasionally renames a skill folder or a docs file. A squash merge
-does not delete the old path in your project, so the update script prunes
-known old paths automatically, but it can only do that from the run *after*
-the one that brought it the new list. After an update that renames files,
-either run the update once more or remove the old paths yourself with
-`git rm -r`. If you customised one of the old files, re-apply your edits to
-the renamed successor; the old content stays in your git history.
+Upstream occasionally renames a skill folder or a docs file. A squash merge does
+not delete the old path in your project, so the update script prunes known old
+paths automatically, but it can only do that from the run _after_ the one that
+brought it the new list. After an update that renames files, either run the
+update once more or remove the old paths yourself with `git rm -r`. If you
+customised one of the old files, re-apply your edits to the renamed successor;
+the old content stays in your git history.
 
 ## Resolving conflicts
 
@@ -139,16 +139,16 @@ Conflict: docusaurus.config.js
   [l]ocal  [u]pstream  [m]erge in editor  [a]lways keep local   (default: upstream = most recent)
 ```
 
-| Choice | What it does |
-| --- | --- |
-| `l` | Keep your version of the file. |
-| `u` | Take the upstream version. |
-| `m` | Open the conflict-marked file in your editor so you can merge by hand. The script waits, then checks that no conflict markers remain. |
-| `a` | Keep your version **and** add the file to `protected_files` in the config, so it stops conflicting on future updates. |
-| Enter | Apply the default — whichever side was committed most recently (ties go to upstream). |
+| Choice | What it does                                                                                                                          |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `l`    | Keep your version of the file.                                                                                                        |
+| `u`    | Take the upstream version.                                                                                                            |
+| `m`    | Open the conflict-marked file in your editor so you can merge by hand. The script waits, then checks that no conflict markers remain. |
+| `a`    | Keep your version **and** add the file to `protected_files` in the config, so it stops conflicting on future updates.                 |
+| Enter  | Apply the default — whichever side was committed most recently (ties go to upstream).                                                 |
 
-If the script runs without a terminal (e.g. from another script), it applies
-the default automatically for every conflict.
+If the script runs without a terminal (e.g. from another script), it applies the
+default automatically for every conflict.
 
 The `a` option is the clean way to "pin" a tooling file you've customised: the
 next update restores it from your version before the resolver ever runs, so you
@@ -181,8 +181,8 @@ git checkout HEAD~1 -- path/to/file
 
 > [!TIP]
 >
-> To stop being asked about a file you always want to keep, choose `a`
-> (always keep local) at the prompt, or add it to `protected_files` yourself.
+> To stop being asked about a file you always want to keep, choose `a` (always
+> keep local) at the prompt, or add it to `protected_files` yourself.
 
 ## Manual workflow
 
@@ -203,12 +203,12 @@ If you prefer to run the steps yourself instead of using the script:
    git merge upstream/main --allow-unrelated-histories --squash
    ```
 
-3. **Restore your content from HEAD**, then resolve any remaining conflicts.
-   A squash merge only flags conflicts when both sides modify the same file —
+3. **Restore your content from HEAD**, then resolve any remaining conflicts. A
+   squash merge only flags conflicts when both sides modify the same file —
    files that exist upstream but not locally are added silently as staged
-   additions. `git checkout HEAD --` will not unstage them (they are absent
-   from HEAD), so first reset the index for those paths, then check out from
-   HEAD, then clean the working tree:
+   additions. `git checkout HEAD --` will not unstage them (they are absent from
+   HEAD), so first reset the index for those paths, then check out from HEAD,
+   then clean the working tree:
 
    ```bash
    # Unstage upstream-only additions in your content paths

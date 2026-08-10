@@ -1,7 +1,12 @@
 const { describe, it } = require('node:test');
 const assert = require('node:assert/strict');
 
-const { toFolderName, toFileName, toFileSlug, computeRelativePath } = require('../../cli/naming');
+const {
+  toFolderName,
+  toFileName,
+  toFileSlug,
+  computeRelativePath,
+} = require('../../cli/naming');
 
 describe('toFolderName', () => {
   it('creates a numbered folder name from name and position', () => {
@@ -31,7 +36,10 @@ describe('toFileName', () => {
   });
 
   it('handles multi-word titles', () => {
-    assert.equal(toFileName('Getting Started Guide', 5), '05-getting-started-guide.md');
+    assert.equal(
+      toFileName('Getting Started Guide', 5),
+      '05-getting-started-guide.md',
+    );
   });
 
   it('replaces special characters', () => {
@@ -61,12 +69,18 @@ describe('computeRelativePath', () => {
   it('computes posix-style relative path within a module folder', () => {
     const courseDir = '/abs/course';
     const filePath = '/abs/course/01-intro/01-page.md';
-    assert.equal(computeRelativePath('01-intro', filePath, courseDir), '01-intro/01-page.md');
+    assert.equal(
+      computeRelativePath('01-intro', filePath, courseDir),
+      '01-intro/01-page.md',
+    );
   });
 
   it('handles subfolder paths', () => {
     const courseDir = '/abs/course';
     const filePath = '/abs/course/01-intro/02-sub/01-file.md';
-    assert.equal(computeRelativePath('01-intro', filePath, courseDir), '01-intro/02-sub/01-file.md');
+    assert.equal(
+      computeRelativePath('01-intro', filePath, courseDir),
+      '01-intro/02-sub/01-file.md',
+    );
   });
 });

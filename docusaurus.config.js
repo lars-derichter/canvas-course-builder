@@ -15,7 +15,9 @@ const { language, labels } = loadCourseConfig(__dirname);
 
 // The selected theme declares the --ccb-* colour and font tokens that
 // custom.css maps onto Infima's variables, so it has to load first.
-const themeCss = './' + path.relative(__dirname, loadTheme(__dirname).file).split(path.sep).join('/');
+const themeCss =
+  './' +
+  path.relative(__dirname, loadTheme(__dirname).file).split(path.sep).join('/');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {

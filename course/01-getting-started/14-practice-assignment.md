@@ -9,8 +9,8 @@ published: true
 
 # Practice assignment
 
-You have made it through the Getting Started module — well done! Now it is
-time to try things out for yourself.
+You have made it through the Getting Started module — well done! Now it is time
+to try things out for yourself.
 
 ## Instructions
 
@@ -31,9 +31,8 @@ time to try things out for yourself.
    - A list (numbered or bulleted)
    - One alert (e.g., `> [!TIP]`)
 
-4. **Preview your page** locally by running `npm start` or clicking the
-   Preview button in the VS Code sidebar. Check that everything looks the way
-   you want.
+4. **Preview your page** locally by running `npm start` or clicking the Preview
+   button in the VS Code sidebar. Check that everything looks the way you want.
 
 5. When you are happy with it, **push your changes** to Canvas:
 

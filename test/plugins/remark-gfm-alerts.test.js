@@ -14,9 +14,7 @@ function makeAlertBlockquote(type, bodyText) {
     children: [
       {
         type: 'paragraph',
-        children: [
-          { type: 'text', value: `[!${type}]\n${bodyText}` },
-        ],
+        children: [{ type: 'text', value: `[!${type}]\n${bodyText}` }],
       },
     ],
   };
@@ -48,7 +46,10 @@ function assertAlertDiv(node, expectedCssType, expectedTitle) {
   // Check className attribute
   const classAttr = node.attributes.find((a) => a.name === 'className');
   assert.ok(classAttr, 'wrapper div should have className attribute');
-  assert.equal(classAttr.value, `markdown-alert markdown-alert-${expectedCssType}`);
+  assert.equal(
+    classAttr.value,
+    `markdown-alert markdown-alert-${expectedCssType}`,
+  );
 
   // First child should be the title paragraph
   const titleP = node.children[0];
@@ -62,7 +63,10 @@ function assertAlertDiv(node, expectedCssType, expectedTitle) {
   assert.equal(iconImg.type, 'mdxJsxTextElement');
   assert.equal(iconImg.name, 'img');
   const srcAttr = iconImg.attributes.find((a) => a.name === 'src');
-  assert.ok(srcAttr.value.startsWith('data:image/svg+xml,'), 'icon src should be a data URI');
+  assert.ok(
+    srcAttr.value.startsWith('data:image/svg+xml,'),
+    'icon src should be a data URI',
+  );
 
   const titleText = titleP.children[1];
   assert.equal(titleText.type, 'text');
@@ -127,7 +131,10 @@ describe('remarkGfmAlerts', () => {
 
     assert.equal(tree.children.length, 1);
     assert.equal(tree.children[0].type, 'blockquote');
-    assert.equal(tree.children[0].children[0].children[0].value, 'Just a normal quote.');
+    assert.equal(
+      tree.children[0].children[0].children[0].value,
+      'Just a normal quote.',
+    );
   });
 
   it('preserves body content inside the alert', () => {
@@ -191,7 +198,9 @@ describe('remarkGfmAlerts', () => {
       children: [
         {
           type: 'paragraph',
-          children: [{ type: 'emphasis', children: [{ type: 'text', value: 'italic' }] }],
+          children: [
+            { type: 'emphasis', children: [{ type: 'text', value: 'italic' }] },
+          ],
         },
       ],
     };
@@ -203,9 +212,7 @@ describe('remarkGfmAlerts', () => {
   it('does not transform blockquote with empty first paragraph', () => {
     const bq = {
       type: 'blockquote',
-      children: [
-        { type: 'paragraph', children: [] },
-      ],
+      children: [{ type: 'paragraph', children: [] }],
     };
     const tree = transform(makeTree(bq));
 
@@ -249,7 +256,9 @@ describe('remarkGfmAlerts', () => {
       ['ATTENTION', 'caution', 'Opgelet'],
     ];
     for (const [marker, cssType, title] of cases) {
-      const tree = transform(makeTree(makeAlertBlockquote(marker, 'x')), { titles });
+      const tree = transform(makeTree(makeAlertBlockquote(marker, 'x')), {
+        titles,
+      });
       assertAlertDiv(tree.children[0], cssType, title);
     }
   });
@@ -268,7 +277,9 @@ describe('remarkGfmAlerts', () => {
     const titleP = tree.children[0].children[0];
     const iconImg = titleP.children[0];
 
-    const attrs = Object.fromEntries(iconImg.attributes.map((a) => [a.name, a.value]));
+    const attrs = Object.fromEntries(
+      iconImg.attributes.map((a) => [a.name, a.value]),
+    );
     assert.equal(attrs.alt, '');
     assert.equal(attrs.className, 'markdown-alert-icon');
     assert.equal(attrs.width, '16');

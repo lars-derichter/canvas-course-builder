@@ -257,7 +257,11 @@ async function buildGlossary(options = {}) {
         continue;
       }
 
-      const output = serializePage(data, renderBody(terms, lesson, config), config);
+      const output = serializePage(
+        data,
+        renderBody(terms, lesson, config),
+        config,
+      );
 
       if (output === raw) {
         unchanged += 1;

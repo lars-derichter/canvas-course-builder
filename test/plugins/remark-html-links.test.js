@@ -13,7 +13,10 @@ let pagePath;
 before(() => {
   fixtureDir = fs.mkdtempSync(path.join(os.tmpdir(), 'html-links-'));
   fs.mkdirSync(path.join(fixtureDir, '_files'));
-  fs.writeFileSync(path.join(fixtureDir, '_files', 'example.html'), '<h1>hi</h1>');
+  fs.writeFileSync(
+    path.join(fixtureDir, '_files', 'example.html'),
+    '<h1>hi</h1>',
+  );
   fs.writeFileSync(path.join(fixtureDir, '_files', 'report.docx'), 'binary');
   fs.writeFileSync(path.join(fixtureDir, 'other.md'), '# other');
   pagePath = path.join(fixtureDir, 'page.md');
@@ -74,7 +77,10 @@ describe('remarkHtmlLinks', () => {
   });
 
   it('forces download under the original filename with frontmatter download: true', () => {
-    const { tree, getLink } = treeWithLink({ url: './_files/example.html', text: 'click here' });
+    const { tree, getLink } = treeWithLink({
+      url: './_files/example.html',
+      text: 'click here',
+    });
     transform(tree, { frontMatter: { download: true } });
 
     const node = getLink(tree);
@@ -99,7 +105,10 @@ describe('remarkHtmlLinks', () => {
 
     const href = attr(getLink(tree), 'href');
     assert.equal(href.value.type, 'mdxJsxAttributeValueExpression');
-    assert.match(href.value.value, /^require\(".*file-loader.*example\.html"\)\.default$/);
+    assert.match(
+      href.value.value,
+      /^require\(".*file-loader.*example\.html"\)\.default$/,
+    );
     // The estree must carry the same require string for MDX to compile it.
     assert.equal(href.value.data.estree.type, 'Program');
   });
@@ -112,7 +121,10 @@ describe('remarkHtmlLinks', () => {
   });
 
   it('preserves the link title', () => {
-    const { tree, getLink } = treeWithLink({ url: './_files/example.html', title: 'My file' });
+    const { tree, getLink } = treeWithLink({
+      url: './_files/example.html',
+      title: 'My file',
+    });
     transform(tree);
 
     assert.equal(attr(getLink(tree), 'title').value, 'My file');
@@ -133,14 +145,19 @@ describe('remarkHtmlLinks', () => {
   });
 
   it('leaves external links untouched', () => {
-    const { tree, getLink } = treeWithLink({ url: 'https://example.com/page.html' });
+    const { tree, getLink } = treeWithLink({
+      url: 'https://example.com/page.html',
+    });
     transform(tree);
 
     assert.equal(getLink(tree).type, 'link');
   });
 
   it('leaves @site/ and absolute links untouched', () => {
-    for (const url of ['@site/course/_files/example.html', '/files/example.html']) {
+    for (const url of [
+      '@site/course/_files/example.html',
+      '/files/example.html',
+    ]) {
       const { tree, getLink } = treeWithLink({ url });
       transform(tree);
       assert.equal(getLink(tree).type, 'link', `should skip ${url}`);
@@ -148,7 +165,9 @@ describe('remarkHtmlLinks', () => {
   });
 
   it('leaves .html links with an anchor hash as navigation', () => {
-    const { tree, getLink } = treeWithLink({ url: './_files/example.html#top' });
+    const { tree, getLink } = treeWithLink({
+      url: './_files/example.html#top',
+    });
     transform(tree);
 
     assert.equal(getLink(tree).type, 'link');

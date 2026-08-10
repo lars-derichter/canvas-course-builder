@@ -1,6 +1,9 @@
 const { describe, it } = require('node:test');
 const assert = require('node:assert/strict');
-const { htmlToMarkdown, canvasItemToMarkdown } = require('../../lib/convert/html-to-markdown');
+const {
+  htmlToMarkdown,
+  canvasItemToMarkdown,
+} = require('../../lib/convert/html-to-markdown');
 
 describe('htmlToMarkdown', () => {
   it('converts basic HTML to markdown', () => {
@@ -16,7 +19,9 @@ describe('htmlToMarkdown', () => {
   });
 
   it('converts bold and italic', () => {
-    const md = htmlToMarkdown('<p><strong>bold</strong> and <em>italic</em></p>');
+    const md = htmlToMarkdown(
+      '<p><strong>bold</strong> and <em>italic</em></p>',
+    );
     assert.ok(md.includes('**bold**'), 'Expected bold markdown');
     assert.ok(md.includes('_italic_'), 'Expected italic markdown');
   });
@@ -52,8 +57,9 @@ describe('htmlToMarkdown', () => {
 
 describe('htmlToMarkdown tables', () => {
   it('converts a table with a header row to a GFM pipe table', () => {
-    const html = '<table><thead><tr><th>Name</th><th>Score</th></tr></thead>'
-      + '<tbody><tr><td>Alice</td><td>10</td></tr></tbody></table>';
+    const html =
+      '<table><thead><tr><th>Name</th><th>Score</th></tr></thead>' +
+      '<tbody><tr><td>Alice</td><td>10</td></tr></tbody></table>';
     const md = htmlToMarkdown(html);
     assert.match(md, /\| Name \| Score \|/);
     assert.match(md, /\| ---/, 'Expected header separator row');
@@ -61,9 +67,10 @@ describe('htmlToMarkdown tables', () => {
   });
 
   it('converts a headerless table (Canvas RCE style)', () => {
-    const html = '<table style="border-collapse: collapse;"><tbody>'
-      + '<tr><td><p>a</p></td><td><p>b</p></td></tr>'
-      + '<tr><td>1</td><td>2</td></tr></tbody></table>';
+    const html =
+      '<table style="border-collapse: collapse;"><tbody>' +
+      '<tr><td><p>a</p></td><td><p>b</p></td></tr>' +
+      '<tr><td>1</td><td>2</td></tr></tbody></table>';
     const md = htmlToMarkdown(html);
     assert.match(md, /\| a\s+\| b\s+\|/);
     assert.match(md, /\| ---/, 'Expected header separator row');
@@ -72,7 +79,8 @@ describe('htmlToMarkdown tables', () => {
 
   it('round-trips a pipe table through push and pull conversion', () => {
     const { markdownToHtml } = require('../../lib/convert/markdown-to-html');
-    const source = '| Name | Score |\n| --- | --- |\n| Alice | 10 |\n| Bob | 7 |';
+    const source =
+      '| Name | Score |\n| --- | --- |\n| Alice | 10 |\n| Bob | 7 |';
     const md = htmlToMarkdown(markdownToHtml(source));
     assert.match(md, /\| Name \| Score \|/);
     assert.match(md, /\| ---/, 'Expected header separator row');
@@ -81,11 +89,13 @@ describe('htmlToMarkdown tables', () => {
   });
 
   it('resolves Canvas links inside table cells', () => {
-    const html = '<table><thead><tr><th>Link</th></tr></thead><tbody><tr>'
-      + '<td><a href="/courses/42/pages/welcome">Welcome</a></td>'
-      + '</tr></tbody></table>';
+    const html =
+      '<table><thead><tr><th>Link</th></tr></thead><tbody><tr>' +
+      '<td><a href="/courses/42/pages/welcome">Welcome</a></td>' +
+      '</tr></tbody></table>';
     const md = htmlToMarkdown(html, {
-      linkResolver: (href) => href === '/courses/42/pages/welcome' ? './01-welcome.md' : null,
+      linkResolver: (href) =>
+        href === '/courses/42/pages/welcome' ? './01-welcome.md' : null,
     });
     assert.match(md, /\[Welcome\]\(.\/01-welcome\.md\)/);
     assert.match(md, /\| Link \|/);
@@ -142,7 +152,8 @@ describe('htmlToMarkdown link resolution', () => {
   it('resolves Canvas page links via linkResolver', () => {
     const html = '<a href="/courses/42/pages/welcome">Welcome</a>';
     const md = htmlToMarkdown(html, {
-      linkResolver: (href) => href === '/courses/42/pages/welcome' ? './01-welcome.md' : null,
+      linkResolver: (href) =>
+        href === '/courses/42/pages/welcome' ? './01-welcome.md' : null,
     });
     assert.match(md, /\[Welcome\]\(.\/01-welcome\.md\)/);
   });
@@ -150,7 +161,8 @@ describe('htmlToMarkdown link resolution', () => {
   it('resolves Canvas assignment links', () => {
     const html = '<a href="/courses/42/assignments/300">Assignment</a>';
     const md = htmlToMarkdown(html, {
-      linkResolver: (href) => href === '/courses/42/assignments/300' ? '../02-mod/01-hw.md' : null,
+      linkResolver: (href) =>
+        href === '/courses/42/assignments/300' ? '../02-mod/01-hw.md' : null,
     });
     assert.match(md, /\[Assignment\]\(\.\.\/02-mod\/01-hw\.md\)/);
   });
@@ -168,7 +180,8 @@ describe('htmlToMarkdown file resolution', () => {
   it('resolves Canvas file images via fileResolver', () => {
     const html = '<img src="/courses/42/files/500/preview" alt="diagram">';
     const md = htmlToMarkdown(html, {
-      fileResolver: (src) => src === '/courses/42/files/500/preview' ? './_files/diagram.png' : null,
+      fileResolver: (src) =>
+        src === '/courses/42/files/500/preview' ? './_files/diagram.png' : null,
     });
     assert.match(md, /!\[diagram\]\(\.\/_files\/diagram\.png\)/);
   });
@@ -176,7 +189,8 @@ describe('htmlToMarkdown file resolution', () => {
   it('resolves Canvas file links via fileResolver', () => {
     const html = '<a href="/courses/42/files/600/download">PDF</a>';
     const md = htmlToMarkdown(html, {
-      fileResolver: (href) => href === '/courses/42/files/600/download' ? './_files/guide.pdf' : null,
+      fileResolver: (href) =>
+        href === '/courses/42/files/600/download' ? './_files/guide.pdf' : null,
     });
     assert.match(md, /\[PDF\]\(\.\/_files\/guide\.pdf\)/);
   });
@@ -227,8 +241,14 @@ describe('canvasItemToMarkdown', () => {
 
     assert.match(md, /title: Resource/);
     assert.match(md, /canvas_type: external_url/);
-    assert.ok(md.includes('external_url:'), 'Expected external_url in frontmatter');
-    assert.ok(md.includes('https://example.com/resource'), 'Expected URL in frontmatter');
+    assert.ok(
+      md.includes('external_url:'),
+      'Expected external_url in frontmatter',
+    );
+    assert.ok(
+      md.includes('https://example.com/resource'),
+      'Expected URL in frontmatter',
+    );
   });
 
   it('handles items with no body', () => {

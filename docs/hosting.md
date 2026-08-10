@@ -42,8 +42,8 @@ duplicating them.
 
 After running it, two manual steps remain:
 
-1. On GitHub, go to **Settings > Pages** and set **Source** to
-   **GitHub Actions**.
+1. On GitHub, go to **Settings > Pages** and set **Source** to **GitHub
+   Actions**.
 2. Commit and push your changes:
 
    ```bash

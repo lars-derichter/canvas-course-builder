@@ -2,14 +2,23 @@ const fs = require('fs');
 const path = require('path');
 const readline = require('readline');
 const log = require('./logger');
-const { parseFrontmatter, serializeFrontmatter } = require('../lib/convert/frontmatter');
+const {
+  parseFrontmatter,
+  serializeFrontmatter,
+} = require('../lib/convert/frontmatter');
 const { COURSE_DIR } = require('./module-utils');
 const { SYNC_FILE } = require('./sync-utils');
 
 async function resetSyncState() {
-  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+  const rl = readline.createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
   const answer = await new Promise((resolve) => {
-    rl.question('[reset] This will remove all canvas_id fields and delete .canvas-sync.json. Continue? (y/N) ', resolve);
+    rl.question(
+      '[reset] This will remove all canvas_id fields and delete .canvas-sync.json. Continue? (y/N) ',
+      resolve,
+    );
   });
   rl.close();
 
@@ -33,7 +42,9 @@ async function resetSyncState() {
     if (data.canvas_id != null) {
       delete data.canvas_id;
       fs.writeFileSync(filePath, serializeFrontmatter(data, content), 'utf8');
-      log.info(`[reset] Removed canvas_id from ${path.relative(process.cwd(), filePath)}`);
+      log.info(
+        `[reset] Removed canvas_id from ${path.relative(process.cwd(), filePath)}`,
+      );
       count++;
     }
   }
@@ -56,7 +67,9 @@ async function resetSyncState() {
         delete cat.customProps.canvas_module_id;
         if (Object.keys(cat.customProps).length === 0) delete cat.customProps;
         fs.writeFileSync(catFile, JSON.stringify(cat, null, 2) + '\n', 'utf8');
-        log.info(`[reset] Removed canvas_module_id from ${path.relative(process.cwd(), catFile)}`);
+        log.info(
+          `[reset] Removed canvas_module_id from ${path.relative(process.cwd(), catFile)}`,
+        );
       }
     } catch (err) {
       log.warn(`[reset] Could not update ${catFile}: ${err.message}`);

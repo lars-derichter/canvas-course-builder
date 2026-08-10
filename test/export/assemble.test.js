@@ -52,7 +52,10 @@ describe('buildMetaBlock', () => {
     const block = buildMetaBlock({
       labels: { note: 'Info', attachment: 'Bijlage:' },
     });
-    assert.match(block, /labels:\n {2}note: "Info"\n {2}attachment: "Bijlage:"/);
+    assert.match(
+      block,
+      /labels:\n {2}note: "Info"\n {2}attachment: "Bijlage:"/,
+    );
   });
 
   it('escapes quotes in label values', () => {
@@ -68,17 +71,32 @@ describe('buildMetaBlock', () => {
 
 describe('injectAnchorOrGenerate', () => {
   it('injects the anchor into an existing leading heading', () => {
-    const out = injectAnchorOrGenerate('# Title\n\nBody', page('m/p.md', 'Title'), 1, 'sec-x');
+    const out = injectAnchorOrGenerate(
+      '# Title\n\nBody',
+      page('m/p.md', 'Title'),
+      1,
+      'sec-x',
+    );
     assert.equal(out, '# Title {#sec-x}\n\nBody');
   });
 
   it('generates a heading when the body has none', () => {
-    const out = injectAnchorOrGenerate('Just body', page('m/p.md', 'Title'), 2, 'sec-x');
+    const out = injectAnchorOrGenerate(
+      'Just body',
+      page('m/p.md', 'Title'),
+      2,
+      'sec-x',
+    );
     assert.equal(out, '## Title {#sec-x}\n\nJust body');
   });
 
   it('does not double-inject when an id is already present', () => {
-    const out = injectAnchorOrGenerate('# Title {#keep}\n', page('m/p.md', 'Title'), 1, 'sec-x');
+    const out = injectAnchorOrGenerate(
+      '# Title {#keep}\n',
+      page('m/p.md', 'Title'),
+      1,
+      'sec-x',
+    );
     assert.equal(out.split('\n')[0], '# Title {#keep}');
   });
 });
@@ -91,7 +109,11 @@ describe('buildCombinedMarkdown', () => {
   };
 
   it('flat regime: items are H1, no module heading', () => {
-    const md = buildCombinedMarkdown([groupA], { regime: 'flat', toc: true, title: 'X' }, ctx);
+    const md = buildCombinedMarkdown(
+      [groupA],
+      { regime: 'flat', toc: true, title: 'X' },
+      ctx,
+    );
     assert.match(md, /# One \{#sec-01-a-01-one\}/);
     assert.doesNotMatch(md, /# Module A/);
     assert.match(md, /toc: true/);
@@ -136,7 +158,10 @@ describe('buildCombinedMarkdown', () => {
       ctx,
     );
     assert.match(md, /# A Link \{#sec-01-a-02-link\}/);
-    assert.match(md, /::: \{\.link-card title="A Link" url="https:\/\/example\.com"\}/);
+    assert.match(
+      md,
+      /::: \{\.link-card title="A Link" url="https:\/\/example\.com"\}/,
+    );
   });
 
   it('renders file items as attachments using the referenced basename', () => {
@@ -168,7 +193,10 @@ describe('buildCombinedMarkdown', () => {
             folderName: '02-sub',
             title: 'Sub Section',
             items: [
-              { ...page('01-a/02-sub/01-c.md', 'Child', '# Child\n\nc.'), indent: 1 },
+              {
+                ...page('01-a/02-sub/01-c.md', 'Child', '# Child\n\nc.'),
+                indent: 1,
+              },
             ],
           },
         ],

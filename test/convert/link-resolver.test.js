@@ -61,21 +61,31 @@ describe('buildLinkMap', () => {
     });
 
     // Reverse: canvas URL path -> relative path
-    assert.equal(canvasToRelative.get('/courses/42/pages/welcome'), '01-intro/01-welcome.md');
-    assert.equal(canvasToRelative.get('/courses/42/assignments/300'), '02-advanced/01-deep-dive.md');
+    assert.equal(
+      canvasToRelative.get('/courses/42/pages/welcome'),
+      '01-intro/01-welcome.md',
+    );
+    assert.equal(
+      canvasToRelative.get('/courses/42/assignments/300'),
+      '02-advanced/01-deep-dive.md',
+    );
   });
 
   it('skips items without canvas_id', () => {
     const syncData = {
       course_id: 1,
-      modules: { 1: { items: { 'page:x': { path: 'file.md', canvas_type: 'page' } } } },
+      modules: {
+        1: { items: { 'page:x': { path: 'file.md', canvas_type: 'page' } } },
+      },
     };
     const { relativeToCanvas } = buildLinkMap(syncData);
     assert.equal(relativeToCanvas.size, 0);
   });
 
   it('handles empty sync data', () => {
-    const { relativeToCanvas, canvasToRelative } = buildLinkMap({ course_id: 1 });
+    const { relativeToCanvas, canvasToRelative } = buildLinkMap({
+      course_id: 1,
+    });
     assert.equal(relativeToCanvas.size, 0);
     assert.equal(canvasToRelative.size, 0);
   });
@@ -91,7 +101,7 @@ describe('resolveRelativeLink', () => {
       './02-setup.md',
       '01-intro/01-welcome.md',
       relativeToCanvas,
-      42
+      42,
     );
     assert.equal(result.resolved, '/courses/42/pages/setup');
     assert.equal(result.wasInternal, false);
@@ -102,7 +112,7 @@ describe('resolveRelativeLink', () => {
       '../02-advanced/01-deep-dive.md',
       '01-intro/01-welcome.md',
       relativeToCanvas,
-      42
+      42,
     );
     assert.equal(result.resolved, '/courses/42/assignments/300');
   });
@@ -112,7 +122,7 @@ describe('resolveRelativeLink', () => {
       './02-setup.md#installation',
       '01-intro/01-welcome.md',
       relativeToCanvas,
-      42
+      42,
     );
     assert.equal(result.resolved, '/courses/42/pages/setup#installation');
   });
@@ -122,20 +132,30 @@ describe('resolveRelativeLink', () => {
       'https://example.com/page.md',
       '01-intro/01-welcome.md',
       relativeToCanvas,
-      42
+      42,
     );
     assert.equal(result.resolved, null);
     assert.equal(result.wasInternal, false);
   });
 
   it('skips fragment-only links', () => {
-    const result = resolveRelativeLink('#section', '01-intro/01-welcome.md', relativeToCanvas, 42);
+    const result = resolveRelativeLink(
+      '#section',
+      '01-intro/01-welcome.md',
+      relativeToCanvas,
+      42,
+    );
     assert.equal(result.resolved, null);
     assert.equal(result.wasInternal, false);
   });
 
   it('skips non-.md links', () => {
-    const result = resolveRelativeLink('./image.png', '01-intro/01-welcome.md', relativeToCanvas, 42);
+    const result = resolveRelativeLink(
+      './image.png',
+      '01-intro/01-welcome.md',
+      relativeToCanvas,
+      42,
+    );
     assert.equal(result.resolved, null);
     assert.equal(result.wasInternal, false);
   });
@@ -145,14 +165,19 @@ describe('resolveRelativeLink', () => {
       './nonexistent.md',
       '01-intro/01-welcome.md',
       relativeToCanvas,
-      42
+      42,
     );
     assert.equal(result.resolved, null);
     assert.equal(result.wasInternal, true);
   });
 
   it('handles empty href', () => {
-    const result = resolveRelativeLink('', '01-intro/01-welcome.md', relativeToCanvas, 42);
+    const result = resolveRelativeLink(
+      '',
+      '01-intro/01-welcome.md',
+      relativeToCanvas,
+      42,
+    );
     assert.equal(result.resolved, null);
     assert.equal(result.wasInternal, false);
   });
@@ -167,7 +192,7 @@ describe('resolveCanvasLink', () => {
     const result = resolveCanvasLink(
       '/courses/42/pages/welcome',
       '01-intro/02-setup.md',
-      canvasToRelative
+      canvasToRelative,
     );
     assert.equal(result, './01-welcome.md');
   });
@@ -176,7 +201,7 @@ describe('resolveCanvasLink', () => {
     const result = resolveCanvasLink(
       '/courses/42/assignments/300',
       '01-intro/01-welcome.md',
-      canvasToRelative
+      canvasToRelative,
     );
     assert.equal(result, '../02-advanced/01-deep-dive.md');
   });
@@ -185,7 +210,7 @@ describe('resolveCanvasLink', () => {
     const result = resolveCanvasLink(
       '/courses/42/pages/welcome#section',
       '01-intro/02-setup.md',
-      canvasToRelative
+      canvasToRelative,
     );
     assert.equal(result, './01-welcome.md#section');
   });
@@ -194,25 +219,42 @@ describe('resolveCanvasLink', () => {
     const result = resolveCanvasLink(
       'https://canvas.example.com/courses/42/pages/welcome',
       '01-intro/02-setup.md',
-      canvasToRelative
+      canvasToRelative,
     );
     assert.equal(result, './01-welcome.md');
   });
 
   it('returns null for non-Canvas links', () => {
-    assert.equal(resolveCanvasLink('/other/path', '01-intro/01-welcome.md', canvasToRelative), null);
-    assert.equal(resolveCanvasLink('https://example.com', '01-intro/01-welcome.md', canvasToRelative), null);
+    assert.equal(
+      resolveCanvasLink(
+        '/other/path',
+        '01-intro/01-welcome.md',
+        canvasToRelative,
+      ),
+      null,
+    );
+    assert.equal(
+      resolveCanvasLink(
+        'https://example.com',
+        '01-intro/01-welcome.md',
+        canvasToRelative,
+      ),
+      null,
+    );
   });
 
   it('returns null for empty href', () => {
-    assert.equal(resolveCanvasLink('', '01-intro/01-welcome.md', canvasToRelative), null);
+    assert.equal(
+      resolveCanvasLink('', '01-intro/01-welcome.md', canvasToRelative),
+      null,
+    );
   });
 
   it('returns null for unknown Canvas URLs', () => {
     const result = resolveCanvasLink(
       '/courses/42/pages/nonexistent',
       '01-intro/01-welcome.md',
-      canvasToRelative
+      canvasToRelative,
     );
     assert.equal(result, null);
   });
@@ -258,7 +300,10 @@ describe('extractFileReferences', () => {
   });
 
   it('returns empty array for content without references', () => {
-    const refs = extractFileReferences('Just plain text.', '01-intro/01-welcome.md');
+    const refs = extractFileReferences(
+      'Just plain text.',
+      '01-intro/01-welcome.md',
+    );
     assert.deepEqual(refs, []);
   });
 
@@ -306,8 +351,10 @@ describe('buildFileMap', () => {
       canvas_url: 'https://canvas.example.com/courses/42/files/500/preview',
     });
     assert.equal(
-      canvasToLocal.get('https://canvas.example.com/courses/42/files/500/preview'),
-      '01-intro/_files/diagram.png'
+      canvasToLocal.get(
+        'https://canvas.example.com/courses/42/files/500/preview',
+      ),
+      '01-intro/_files/diagram.png',
     );
   });
 

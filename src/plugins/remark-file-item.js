@@ -37,7 +37,8 @@ function remarkFileItem(options = {}) {
     let url = fileRef;
     if (siteDir && vfile.path) {
       const absPath = path.resolve(path.dirname(vfile.path), fileRef);
-      url = '@site/' + path.relative(siteDir, absPath).split(path.sep).join('/');
+      url =
+        '@site/' + path.relative(siteDir, absPath).split(path.sep).join('/');
     }
 
     // Build: <div class="file-item-card">
@@ -56,7 +57,11 @@ function remarkFileItem(options = {}) {
       type: 'mdxJsxFlowElement',
       name: 'p',
       attributes: [
-        { type: 'mdxJsxAttribute', name: 'className', value: 'file-item-label' },
+        {
+          type: 'mdxJsxAttribute',
+          name: 'className',
+          value: 'file-item-label',
+        },
       ],
       children: [{ type: 'text', value: labelText }],
     };

@@ -15,17 +15,21 @@ function createSubsection(parent, name, position, label = 'Sub') {
   fs.writeFileSync(
     path.join(dir, '_category_.json'),
     JSON.stringify({ label, position }, null, 2) + '\n',
-    'utf8'
+    'utf8',
   );
   return dir;
 }
 
 function readPosition(dir) {
-  return JSON.parse(fs.readFileSync(path.join(dir, '_category_.json'), 'utf8')).position;
+  return JSON.parse(fs.readFileSync(path.join(dir, '_category_.json'), 'utf8'))
+    .position;
 }
 
 function listEntries(dir) {
-  return fs.readdirSync(dir).filter((n) => !n.startsWith('.')).sort();
+  return fs
+    .readdirSync(dir)
+    .filter((n) => !n.startsWith('.'))
+    .sort();
 }
 
 describe('moveEntry (movetomodule-item)', () => {
@@ -62,7 +66,10 @@ describe('moveEntry (movetomodule-item)', () => {
 
     _moveEntry(sourceDir, '01-incoming', destDir, 1);
 
-    assert.deepStrictEqual(listEntries(destDir), ['01-incoming', '02-existing']);
+    assert.deepStrictEqual(listEntries(destDir), [
+      '01-incoming',
+      '02-existing',
+    ]);
     assert.equal(readPosition(path.join(destDir, '01-incoming')), 1);
     assert.equal(readPosition(path.join(destDir, '02-existing')), 2);
   });

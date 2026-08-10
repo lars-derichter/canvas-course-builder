@@ -1,46 +1,54 @@
 const { describe, it } = require('node:test');
 const assert = require('node:assert/strict');
 
-const { parseGitHubRemote, rewriteDocusaurusConfig } = require('../../cli/setup-pages');
+const {
+  parseGitHubRemote,
+  rewriteDocusaurusConfig,
+} = require('../../cli/setup-pages');
 
 describe('parseGitHubRemote', () => {
   it('parses an SSH remote with .git suffix', () => {
     assert.deepEqual(
-      parseGitHubRemote('git@github.com:lars-derichter/canvas-course-builder.git'),
-      { owner: 'lars-derichter', repo: 'canvas-course-builder' }
+      parseGitHubRemote(
+        'git@github.com:lars-derichter/canvas-course-builder.git',
+      ),
+      { owner: 'lars-derichter', repo: 'canvas-course-builder' },
     );
   });
 
   it('parses an SSH remote without .git suffix', () => {
-    assert.deepEqual(
-      parseGitHubRemote('git@github.com:acme/my-course'),
-      { owner: 'acme', repo: 'my-course' }
-    );
+    assert.deepEqual(parseGitHubRemote('git@github.com:acme/my-course'), {
+      owner: 'acme',
+      repo: 'my-course',
+    });
   });
 
   it('parses an HTTPS remote with .git suffix', () => {
     assert.deepEqual(
       parseGitHubRemote('https://github.com/acme/my-course.git'),
-      { owner: 'acme', repo: 'my-course' }
+      { owner: 'acme', repo: 'my-course' },
     );
   });
 
   it('parses an HTTPS remote without .git suffix or trailing slash', () => {
-    assert.deepEqual(
-      parseGitHubRemote('https://github.com/acme/my-course/'),
-      { owner: 'acme', repo: 'my-course' }
-    );
+    assert.deepEqual(parseGitHubRemote('https://github.com/acme/my-course/'), {
+      owner: 'acme',
+      repo: 'my-course',
+    });
   });
 
   it('parses an ssh:// scheme remote', () => {
     assert.deepEqual(
       parseGitHubRemote('ssh://git@github.com/acme/my-course.git'),
-      { owner: 'acme', repo: 'my-course' }
+      { owner: 'acme', repo: 'my-course' },
     );
   });
 
   it('throws on a non-github remote', () => {
-    assert.throws(() => parseGitHubRemote('git@gitlab.com:acme/my-course.git'), /github\.com/);
+    assert.throws(
+      () => parseGitHubRemote('git@gitlab.com:acme/my-course.git'),
+      /github\.com/,
+    );
   });
 });
 

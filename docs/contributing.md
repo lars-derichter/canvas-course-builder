@@ -35,7 +35,8 @@ but describe:
 
 - **What you'd like** — the feature or change you have in mind
 - **Why it would help** — the use case or problem it solves
-- **How you use Canvas Course Builder today** — this helps prioritise what matters most
+- **How you use Canvas Course Builder today** — this helps prioritise what
+  matters most
 
 Check the [ideas list](roadmap.md) first — your idea may already be there.
 
@@ -43,8 +44,9 @@ Check the [ideas list](roadmap.md) first — your idea may already be there.
 
 If you'd like to contribute a fix or improvement yourself, follow these steps:
 
-1. **Fork** the original Canvas Course Builder project — on the project page, click the
-   **Fork** button in the top-right corner to create a copy under your account.
+1. **Fork** the original Canvas Course Builder project — on the project page,
+   click the **Fork** button in the top-right corner to create a copy under your
+   account.
 
 2. **Create a branch** for your change:
 
@@ -100,27 +102,27 @@ your contribution is released under the same licence.
 ## Contributing a skill
 
 Skills follow a shared template, described in
-[Creating your own skills](ai-assistants.md#creating-your-own-skills). A
-skill that would help other courses is welcome as a pull request; keep it
-course-agnostic — course facts come from `course-context.md` at runtime,
-never hardcoded.
+[Creating your own skills](ai-assistants.md#creating-your-own-skills). A skill
+that would help other courses is welcome as a pull request; keep it
+course-agnostic — course facts come from `course-context.md` at runtime, never
+hardcoded.
 
 If your change renames or removes a skill folder or a docs file, add the old
-path as it exists in downstream projects (e.g. `.agents/skills/<old-name>`)
-to `STALE_PATHS` in [update-from-upstream.sh](../update-from-upstream.sh),
-so downstream projects prune it on their next update.
+path as it exists in downstream projects (e.g. `.agents/skills/<old-name>`) to
+`STALE_PATHS` in [update-from-upstream.sh](../update-from-upstream.sh), so
+downstream projects prune it on their next update.
 
 ## Documentation style
 
-The project's own docs (`docs/`, the README, and the getting-started module)
-are written in English with UK spelling (customise, colour), sentence-case
-headings, and lines wrapped at 80 characters. `docs/style.md` is not the
-guide for these docs; it is the per-course style guide for course content.
+The project's own docs (`docs/`, the README, and the getting-started module) are
+written in English with UK spelling (customise, colour), sentence-case headings,
+and lines wrapped at 80 characters. `docs/style.md` is not the guide for these
+docs; it is the per-course style guide for course content.
 
-The style baselines in `templates/` are the deliberate exception. Each one
-is written in the language it prescribes, so two of the three are in Dutch,
-and `style-generic-en.md` uses title-case headings because it states a
-title-case rule and applies it to itself. Leave them that way.
+The style baselines in `templates/` are the deliberate exception. Each one is
+written in the language it prescribes, so two of the three are in Dutch, and
+`style-generic-en.md` uses title-case headings because it states a title-case
+rule and applies it to itself. Leave them that way.
 
 ## Understanding the codebase
 

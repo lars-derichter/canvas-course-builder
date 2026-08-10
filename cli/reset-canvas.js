@@ -2,7 +2,10 @@ const log = require('./logger');
 const { createRL, prompt } = require('./module-utils');
 const { listModules, deleteModule } = require('../lib/canvas/modules');
 const { listPages, deletePage } = require('../lib/canvas/pages');
-const { listAssignments, deleteAssignment } = require('../lib/canvas/assignments');
+const {
+  listAssignments,
+  deleteAssignment,
+} = require('../lib/canvas/assignments');
 const { listFiles, deleteFile } = require('../lib/canvas/files');
 
 async function resetCanvas() {
@@ -13,7 +16,10 @@ async function resetCanvas() {
   }
 
   const rl = createRL();
-  const answer = await prompt(rl, `Are you sure you want to delete all content on the Canvas course with id ${courseId}? (y/n) `);
+  const answer = await prompt(
+    rl,
+    `Are you sure you want to delete all content on the Canvas course with id ${courseId}? (y/n) `,
+  );
   rl.close();
 
   if (answer.toLowerCase() !== 'y') {
@@ -57,7 +63,9 @@ async function resetCanvas() {
       await deleteAssignment(courseId, assignment.id);
       log.verbose(`  Deleted assignment: ${assignment.name}`);
     } catch (err) {
-      log.error(`  Failed to delete assignment "${assignment.name}": ${err.message}`);
+      log.error(
+        `  Failed to delete assignment "${assignment.name}": ${err.message}`,
+      );
       errors.push(`assignment "${assignment.name}"`);
     }
   }
@@ -70,7 +78,9 @@ async function resetCanvas() {
       await deleteFile(file.id);
       log.verbose(`  Deleted file: ${file.display_name}`);
     } catch (err) {
-      log.error(`  Failed to delete file "${file.display_name}": ${err.message}`);
+      log.error(
+        `  Failed to delete file "${file.display_name}": ${err.message}`,
+      );
       errors.push(`file "${file.display_name}"`);
     }
   }

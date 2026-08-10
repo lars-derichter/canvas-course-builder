@@ -2,7 +2,13 @@ const fs = require('fs');
 const path = require('path');
 const matter = require('gray-matter');
 const { prompt, createRL, COURSE_DIR } = require('./module-utils');
-const { getItems, printItems, selectModule, selectTargetDir, removeFromSyncState } = require('./item-utils');
+const {
+  getItems,
+  printItems,
+  selectModule,
+  selectTargetDir,
+  removeFromSyncState,
+} = require('./item-utils');
 const { renumberSequential } = require('./renumber');
 
 /**
@@ -61,19 +67,30 @@ async function mergeItems(options) {
     const targetPath = path.resolve(opts.target);
 
     if (!fs.existsSync(sourcePath)) {
-      console.error(`[merge-items] Error: Source file not found: ${sourcePath}`);
+      console.error(
+        `[merge-items] Error: Source file not found: ${sourcePath}`,
+      );
       process.exit(1);
     }
     if (!fs.existsSync(targetPath)) {
-      console.error(`[merge-items] Error: Target file not found: ${targetPath}`);
+      console.error(
+        `[merge-items] Error: Target file not found: ${targetPath}`,
+      );
       process.exit(1);
     }
     if (sourcePath === targetPath) {
-      console.error('[merge-items] Error: Source and target must be different files.');
+      console.error(
+        '[merge-items] Error: Source and target must be different files.',
+      );
       process.exit(1);
     }
-    if (path.extname(sourcePath) !== '.md' || path.extname(targetPath) !== '.md') {
-      console.error('[merge-items] Error: Both files must be markdown (.md) files.');
+    if (
+      path.extname(sourcePath) !== '.md' ||
+      path.extname(targetPath) !== '.md'
+    ) {
+      console.error(
+        '[merge-items] Error: Both files must be markdown (.md) files.',
+      );
       process.exit(1);
     }
 
@@ -103,13 +120,18 @@ async function mergeItems(options) {
 
   printItems(items);
 
-  const targetStr = await prompt(rl, 'Target item (keeps frontmatter, receives content) (number)');
+  const targetStr = await prompt(
+    rl,
+    'Target item (keeps frontmatter, receives content) (number)',
+  );
   const targetPrefix = parseInt(targetStr, 10);
   const targetItem = items.find((i) => i.prefix === targetPrefix);
 
   if (!targetItem) {
     rl.close();
-    console.error(`[merge-items] Error: No item found with number ${targetStr}.`);
+    console.error(
+      `[merge-items] Error: No item found with number ${targetStr}.`,
+    );
     process.exit(1);
   }
   if (targetItem.isDirectory || path.extname(targetItem.name) !== '.md') {
@@ -118,13 +140,18 @@ async function mergeItems(options) {
     process.exit(1);
   }
 
-  const sourceStr = await prompt(rl, 'Source item (content appended, then deleted) (number)');
+  const sourceStr = await prompt(
+    rl,
+    'Source item (content appended, then deleted) (number)',
+  );
   const sourcePrefix = parseInt(sourceStr, 10);
   const sourceItem = items.find((i) => i.prefix === sourcePrefix);
 
   if (!sourceItem) {
     rl.close();
-    console.error(`[merge-items] Error: No item found with number ${sourceStr}.`);
+    console.error(
+      `[merge-items] Error: No item found with number ${sourceStr}.`,
+    );
     process.exit(1);
   }
   if (sourceItem.isDirectory || path.extname(sourceItem.name) !== '.md') {
@@ -134,14 +161,16 @@ async function mergeItems(options) {
   }
   if (sourcePrefix === targetPrefix) {
     rl.close();
-    console.error('[merge-items] Error: Source and target must be different items.');
+    console.error(
+      '[merge-items] Error: Source and target must be different items.',
+    );
     process.exit(1);
   }
 
   const confirm = await prompt(
     rl,
     `Merge ${sourceItem.name} into ${targetItem.name}? (y/N)`,
-    'N'
+    'N',
   );
   rl.close();
 

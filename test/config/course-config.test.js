@@ -53,7 +53,9 @@ describe('loadCourseConfig', () => {
 
   it('merges label overrides over the language set', () => {
     writeConfig(
-      ['language: nl', 'labels:', '  alerts:', '    caution: Let op', ''].join('\n'),
+      ['language: nl', 'labels:', '  alerts:', '    caution: Let op', ''].join(
+        '\n',
+      ),
     );
     const config = loadCourseConfig(tmpDir);
     assert.equal(config.labels.alerts.caution, 'Let op');
@@ -62,7 +64,9 @@ describe('loadCourseConfig', () => {
 
   it('warns and falls back to en for an unknown language, keeping overrides', () => {
     writeConfig(
-      ['language: xx', 'labels:', '  cards:', '    file: Dossier', ''].join('\n'),
+      ['language: xx', 'labels:', '  cards:', '    file: Dossier', ''].join(
+        '\n',
+      ),
     );
     const config = loadCourseConfig(tmpDir);
     assert.equal(config.language, 'en');
@@ -72,13 +76,14 @@ describe('loadCourseConfig', () => {
   });
 
   it('warns about unknown label keys and ignores them', () => {
-    writeConfig(
-      ['labels:', '  alerts:', '    typo: Oops', ''].join('\n'),
-    );
+    writeConfig(['labels:', '  alerts:', '    typo: Oops', ''].join('\n'));
     const config = loadCourseConfig(tmpDir);
     assert.equal(config.labels.alerts.typo, undefined);
     assert.equal(warnMock.mock.callCount(), 1);
-    assert.match(warnMock.mock.calls[0].arguments[0], /unknown label "alerts\.typo"/);
+    assert.match(
+      warnMock.mock.calls[0].arguments[0],
+      /unknown label "alerts\.typo"/,
+    );
   });
 
   it('warns about unknown top-level keys', () => {
@@ -90,7 +95,10 @@ describe('loadCourseConfig', () => {
 
   it('throws on malformed YAML', () => {
     writeConfig('language: [unclosed\n');
-    assert.throws(() => loadCourseConfig(tmpDir), /Cannot parse course\.config\.yml/);
+    assert.throws(
+      () => loadCourseConfig(tmpDir),
+      /Cannot parse course\.config\.yml/,
+    );
   });
 
   it('throws on a non-mapping root', () => {

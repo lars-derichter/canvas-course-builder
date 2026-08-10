@@ -5,112 +5,110 @@ description: Work through the open issues in sources/issues.md. Phase A verifies
 
 # Fix issues
 
-Work through the issue queue that `/report-issue` — and the author's own
-hand — filled in `sources/issues.md`.
+Work through the issue queue that `/report-issue` — and the author's own hand —
+filled in `sources/issues.md`.
 
 ## Input
 
-`$ARGUMENTS` may limit the scope: a date or date range, a file or module, a
-type tag (e.g. `alleen [error]`), or free text matched against the entries.
-Empty means every entry under `## Open`.
+`$ARGUMENTS` may limit the scope: a date or date range, a file or module, a type
+tag (e.g. `alleen [error]`), or free text matched against the entries. Empty
+means every entry under `## Open`.
 
 ## Steps
 
 ### Phase A — Triage (writes nothing)
 
-1. **Read the fixed inputs**: `sources/issues.md` in full — `## Open` *and*
+1. **Read the fixed inputs**: `sources/issues.md` in full — `## Open` _and_
    `## Resolved` —, [`docs/style.md`](../../../docs/style.md), and
-   [`docs/course-context.md`](../../../docs/course-context.md). If the
-   queue file is absent or `## Open` is empty, say so, mention
-   `/report-issue`, and stop. Never create the queue file here.
+   [`docs/course-context.md`](../../../docs/course-context.md). If the queue
+   file is absent or `## Open` is empty, say so, mention `/report-issue`, and
+   stop. Never create the queue file here.
 
-2. **Verify every entry in scope** against the current files: find the
-   quoted passage. Number the entries 1..N for the plan. A passage that is
-   already corrected or gone becomes the proposed action "already fixed —
-   move to Resolved". An entry marked `location unverified`, or whose quote
-   no longer matches anything, goes to the question round.
+2. **Verify every entry in scope** against the current files: find the quoted
+   passage. Number the entries 1..N for the plan. A passage that is already
+   corrected or gone becomes the proposed action "already fixed — move to
+   Resolved". An entry marked `location unverified`, or whose quote no longer
+   matches anything, goes to the question round.
 
-3. **Group related entries.** Same file, same term, same style rule, same
-   root cause. Groups, not individual entries, are the fix units in the
-   plan. Expand multi-file entries (glob or description in the path field)
-   to concrete files here.
+3. **Group related entries.** Same file, same term, same style rule, same root
+   cause. Groups, not individual entries, are the fix units in the plan. Expand
+   multi-file entries (glob or description in the path field) to concrete files
+   here.
 
-4. **Check wider implications per group.** Every claim backed by a grep hit
-   or a file path — a hunch is a question, not a plan item:
-   - **Same defect elsewhere.** Grep `course/` and `evaluations/` for the
-     same wrong text or pattern; list the extra hits.
+4. **Check wider implications per group.** Every claim backed by a grep hit or a
+   file path — a hunch is a question, not a plan item:
+   - **Same defect elsewhere.** Grep `course/` and `evaluations/` for the same
+     wrong text or pattern; list the extra hits.
    - **Style rule.** Does the fix encode a durable writing preference that
-     `docs/style.md` does not have yet? Mark the group for an
-     `/style-update` offer — never edit `style.md` here — and grep for
-     other pages that would violate the would-be rule.
-   - **Glossary.** Does the fix change or rename a term? Check the
-     canonical glossary (default `sources/reference-materials/glossary.yml`;
-     path per `course-context.md`) and note whether
-     `npx course build-glossary` must be re-run afterwards.
+     `docs/style.md` does not have yet? Mark the group for an `/style-update`
+     offer — never edit `style.md` here — and grep for other pages that would
+     violate the would-be rule.
+   - **Glossary.** Does the fix change or rename a term? Check the canonical
+     glossary (default `sources/reference-materials/glossary.yml`; path per
+     `course-context.md`) and note whether `npx course build-glossary` must be
+     re-run afterwards.
    - **Course context.** Does the fix contradict a fact recorded in
      `docs/course-context.md`?
    - **Lesson plans.** Grep `sources/lessons/` and `sources/lesson-plans/`:
-     would the fixed student page now contradict the plan it was built
-     from? Flag it — the plan edit belongs to `/lesson-retro` or the
-     author, not this skill.
-   - **Evaluations.** Does anything under `evaluations/` test or restate
-     the pre-fix version?
-   - **Inbound links.** If a fix renames a heading or a file, grep for
-     relative links pointing at it.
+     would the fixed student page now contradict the plan it was built from?
+     Flag it — the plan edit belongs to `/lesson-retro` or the author, not this
+     skill.
+   - **Evaluations.** Does anything under `evaluations/` test or restate the
+     pre-fix version?
+   - **Inbound links.** If a fix renames a heading or a file, grep for relative
+     links pointing at it.
 
-5. **Bundle every clarifying question into one question round**:
-   unverifiable locations, entries that are really author decisions rather
-   than defects, whether an approved fix should extend to the
-   same-defect-elsewhere hits. A question that surfaces later goes into a
-   plan revision, never a second ad-hoc round.
+5. **Bundle every clarifying question into one question round**: unverifiable
+   locations, entries that are really author decisions rather than defects,
+   whether an approved fix should extend to the same-defect-elsewhere hits. A
+   question that surfaces later goes into a plan revision, never a second ad-hoc
+   round.
 
-6. **Present one fix plan in chat**, per group and numbered entry: the
-   proposed action — fix as described / already fixed, move only / not a
-   defect, close as author decision / route to `/style-update` or
-   `/lesson-retro` / defer —, the files it touches, and the follow-ups from
-   step 4. Add a separate list of what will *not* be fixed and why.
+6. **Present one fix plan in chat**, per group and numbered entry: the proposed
+   action — fix as described / already fixed, move only / not a defect, close as
+   author decision / route to `/style-update` or `/lesson-retro` / defer —, the
+   files it touches, and the follow-ups from step 4. Add a separate list of what
+   will _not_ be fixed and why.
 
-7. Adjust the plan on request and stay in Phase A until the author
-   explicitly approves. Stop. Wait for explicit approval before starting
-   Phase B.
+7. Adjust the plan on request and stay in Phase A until the author explicitly
+   approves. Stop. Wait for explicit approval before starting Phase B.
 
 ### Phase B — Fix (only after approval)
 
-8. **Apply the fixes serially**, group by group: minimal edits, one
-   concern per edit, including the approved same-defect-elsewhere hits.
-   Re-grep after each fix to confirm it landed.
+8. **Apply the fixes serially**, group by group: minimal edits, one concern per
+   edit, including the approved same-defect-elsewhere hits. Re-grep after each
+   fix to confirm it landed.
 
 9. **Style pass on the touched passages.** Check every edited passage in
    `course/` and `evaluations/` against the student-facing checklist of
-   `docs/style.md`. Passages only — no whole-file rewrites; a heavily
-   edited file gets a `/proofread` recommendation in the report instead.
+   `docs/style.md`. Passages only — no whole-file rewrites; a heavily edited
+   file gets a `/proofread` recommendation in the report instead.
 
 10. **Carry out the approved side effects**: glossary edits (then
-    `npx course build-glossary` if the course keeps generated glossary
-    pages), link fixes from the inbound-link check.
+    `npx course build-glossary` if the course keeps generated glossary pages),
+    link fixes from the inbound-link check.
 
 11. **Move every handled entry to `## Resolved`**, keeping its text and
-    appending `→ resolved YYYY-MM-DD: what fixed it (files touched)` — or
-    the non-fix outcome: already fixed, author decision, routed to
-    `/style-update`. Deferred entries stay under `## Open` with a dated
-    `deferred:` note. Never delete an entry; Resolved is the dedupe memory
-    for `/report-issue`.
+    appending `→ resolved YYYY-MM-DD: what fixed it (files touched)` — or the
+    non-fix outcome: already fixed, author decision, routed to `/style-update`.
+    Deferred entries stay under `## Open` with a dated `deferred:` note. Never
+    delete an entry; Resolved is the dedupe memory for `/report-issue`.
 
-12. **Report and offer follow-ups, do not run them**: `/style-update` for
-    the style preferences that surfaced; `/proofread` for heavily edited
-    files; `/commit` for the changes; and the reminder that Canvas keeps
-    serving the old text until `npx course push` — never run the push.
+12. **Report and offer follow-ups, do not run them**: `/style-update` for the
+    style preferences that surfaced; `/proofread` for heavily edited files;
+    `/commit` for the changes; and the reminder that Canvas keeps serving the
+    old text until `npx course push` — never run the push.
 
 ## Rules
 
-- Never fix silently: `[style]` preferences route through the
-  `/style-update` offer, design decisions and scope changes go back to the
-  author, anything unclear goes into the question round.
-- Fix only what the queue and the approved plan cover — no drive-by
-  rewrites of surrounding prose.
+- Never fix silently: `[style]` preferences route through the `/style-update`
+  offer, design decisions and scope changes go back to the author, anything
+  unclear goes into the question round.
+- Fix only what the queue and the approved plan cover — no drive-by rewrites of
+  surrounding prose.
 - Every Resolved move states what changed, or why nothing had to.
-- Course specifics (glossary path, conventions) come from
-  `course-context.md` at runtime; hardcode nothing.
+- Course specifics (glossary path, conventions) come from `course-context.md` at
+  runtime; hardcode nothing.
 - No commits, no pushes, no staging; never run `npx course push`.
 
 $ARGUMENTS

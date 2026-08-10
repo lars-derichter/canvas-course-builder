@@ -21,8 +21,8 @@ module.
 npx course new-module
 ```
 
-You will be asked for a name and a position. The command creates the folder
-with the correct numeric prefix and a `_category_.json` file inside it.
+You will be asked for a name and a position. The command creates the folder with
+the correct numeric prefix and a `_category_.json` file inside it.
 
 ### Reordering modules
 
@@ -30,8 +30,8 @@ with the correct numeric prefix and a `_category_.json` file inside it.
 npx course move-module
 ```
 
-Select the module you want to move and pick its new position. All other
-modules are renumbered to make room.
+Select the module you want to move and pick its new position. All other modules
+are renumbered to make room.
 
 ### Renaming a module
 
@@ -57,8 +57,8 @@ close the gap.
 
 ## Working with items
 
-Items are the files inside a module folder: pages, assignments, external
-links, file uploads, and subsections.
+Items are the files inside a module folder: pages, assignments, external links,
+file uploads, and subsections.
 
 ### Creating an item
 
@@ -74,8 +74,8 @@ The command walks you through picking:
 3. The **type**: page, assignment, url, subsection, or file
 4. A **name** and position
 
-For assignments, you will also be asked for the number of points. For URLs,
-you provide the link.
+For assignments, you will also be asked for the number of points. For URLs, you
+provide the link.
 
 ### Moving items
 
@@ -87,8 +87,8 @@ npx course movetomodule-item  # move to a different module entirely
 Both commands handle renumbering in the source and destination locations.
 `movetomodule-item` can also place the item inside a subsection of the
 destination module, and it works on subsections themselves: a subsection can
-move to another module, but always into the module root — subsections are
-never nested.
+move to another module, but always into the module root — subsections are never
+nested.
 
 ### Renaming an item
 
@@ -108,8 +108,8 @@ Removes the file and renumbers the remaining items to close the gap.
 
 ### Merging two items
 
-Sometimes you realise that two separate pages would work better as one.
-Instead of copying and pasting manually:
+Sometimes you realise that two separate pages would work better as one. Instead
+of copying and pasting manually:
 
 ```bash
 npx course merge-items
@@ -121,8 +121,7 @@ automatically.
 
 ### Splitting an item
 
-The opposite situation — a page has grown too long and you want to break it
-up:
+The opposite situation — a page has grown too long and you want to break it up:
 
 ```bash
 npx course split-item

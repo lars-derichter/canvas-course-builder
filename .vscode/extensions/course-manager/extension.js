@@ -3,7 +3,12 @@ const path = require('path');
 const fs = require('fs');
 const cp = require('child_process');
 const http = require('http');
-const { CourseTreeProvider, getCanvasId, readFrontmatter, displayTitle } = require('./CourseTreeProvider');
+const {
+  CourseTreeProvider,
+  getCanvasId,
+  readFrontmatter,
+  displayTitle,
+} = require('./CourseTreeProvider');
 
 // Long-running / streaming commands run in a shared terminal. Structural
 // commands (new/rename/move/delete) run silently via runCli and report
@@ -33,14 +38,16 @@ function getWorkspaceRoot() {
 function validateWorkspace() {
   const root = getWorkspaceRoot();
   if (!root) {
-    vscode.window.showErrorMessage('Canvas Course Builder: No workspace folder open.');
+    vscode.window.showErrorMessage(
+      'Canvas Course Builder: No workspace folder open.',
+    );
     return null;
   }
 
   const courseDir = path.join(root, 'course');
   if (!fs.existsSync(courseDir)) {
     vscode.window.showWarningMessage(
-      'Canvas Course Builder: No course/ directory found. Run "Course: Init" first.'
+      'Canvas Course Builder: No course/ directory found. Run "Course: Init" first.',
     );
   }
 
@@ -50,9 +57,14 @@ function validateWorkspace() {
 // --- Terminal runner (for streaming commands like push/pull) ---
 
 function getSharedTerminal() {
-  let terminal = vscode.window.terminals.find((t) => t.name === 'Canvas Course Builder');
+  let terminal = vscode.window.terminals.find(
+    (t) => t.name === 'Canvas Course Builder',
+  );
   if (!terminal) {
-    terminal = vscode.window.createTerminal({ name: 'Canvas Course Builder', cwd: workspaceRoot });
+    terminal = vscode.window.createTerminal({
+      name: 'Canvas Course Builder',
+      cwd: workspaceRoot,
+    });
   }
   return terminal;
 }
@@ -82,14 +94,22 @@ function runCli(args) {
       if (stdout) outputChannel.appendLine(stdout.trimEnd());
       if (stderr) outputChannel.appendLine(stderr.trimEnd());
       if (err) {
-        const firstError = (stderr || stdout || err.message).trim().split('\n')[0];
-        vscode.window.showErrorMessage(`Canvas Course Builder: ${firstError}`, 'Show Log').then((choice) => {
-          if (choice === 'Show Log') outputChannel.show();
-        });
+        const firstError = (stderr || stdout || err.message)
+          .trim()
+          .split('\n')[0];
+        vscode.window
+          .showErrorMessage(`Canvas Course Builder: ${firstError}`, 'Show Log')
+          .then((choice) => {
+            if (choice === 'Show Log') outputChannel.show();
+          });
         resolve(false);
       } else {
         const lastLine = stdout.trim().split('\n').filter(Boolean).pop();
-        if (lastLine) vscode.window.setStatusBarMessage(`Canvas Course Builder: ${lastLine.replace(/^\[[^\]]+\]\s*/, '')}`, 5000);
+        if (lastLine)
+          vscode.window.setStatusBarMessage(
+            `Canvas Course Builder: ${lastLine.replace(/^\[[^\]]+\]\s*/, '')}`,
+            5000,
+          );
         courseTreeProvider.refresh();
         resolve(true);
       }
@@ -102,7 +122,8 @@ function runCli(args) {
 function listModuleFolders() {
   const courseDir = path.join(workspaceRoot, 'course');
   if (!fs.existsSync(courseDir)) return [];
-  return fs.readdirSync(courseDir, { withFileTypes: true })
+  return fs
+    .readdirSync(courseDir, { withFileTypes: true })
     .filter((e) => e.isDirectory() && !e.name.startsWith('_'))
     .map((e) => e.name)
     .sort();
@@ -111,11 +132,15 @@ function listModuleFolders() {
 async function pickModuleFolder(placeHolder) {
   const folders = listModuleFolders();
   if (folders.length === 0) {
-    vscode.window.showErrorMessage('Canvas Course Builder: No modules found in course/.');
+    vscode.window.showErrorMessage(
+      'Canvas Course Builder: No modules found in course/.',
+    );
     return null;
   }
   const items = folders.map((f) => {
-    const label = readCategoryLabel(path.join(workspaceRoot, 'course', f)) || displayTitle(f);
+    const label =
+      readCategoryLabel(path.join(workspaceRoot, 'course', f)) ||
+      displayTitle(f);
     return { label, description: f, folder: f };
   });
   const picked = await vscode.window.showQuickPick(items, { placeHolder });
@@ -124,8 +149,12 @@ async function pickModuleFolder(placeHolder) {
 
 function readCategoryLabel(folderPath) {
   try {
-    const cat = JSON.parse(fs.readFileSync(path.join(folderPath, '_category_.json'), 'utf8'));
-    return typeof cat.label === 'string' && cat.label.length > 0 ? cat.label : null;
+    const cat = JSON.parse(
+      fs.readFileSync(path.join(folderPath, '_category_.json'), 'utf8'),
+    );
+    return typeof cat.label === 'string' && cat.label.length > 0
+      ? cat.label
+      : null;
   } catch {
     return null;
   }
@@ -133,7 +162,8 @@ function readCategoryLabel(folderPath) {
 
 function listEntries(dir, { filesOnly = false } = {}) {
   if (!fs.existsSync(dir)) return [];
-  return fs.readdirSync(dir, { withFileTypes: true })
+  return fs
+    .readdirSync(dir, { withFileTypes: true })
     .filter((e) => !e.name.startsWith('_') && /^\d+/.test(e.name))
     .filter((e) => (filesOnly ? e.isFile() : true))
     .map((e) => ({ name: e.name, isDirectory: e.isDirectory() }))
@@ -151,12 +181,18 @@ async function pickItemPath(placeHolder) {
 
   const entries = listEntries(moduleDir);
   if (entries.length === 0) {
-    vscode.window.showErrorMessage('Canvas Course Builder: No items in this module.');
+    vscode.window.showErrorMessage(
+      'Canvas Course Builder: No items in this module.',
+    );
     return null;
   }
   const picked = await vscode.window.showQuickPick(
-    entries.map((e) => ({ label: e.name, description: e.isDirectory ? 'subsection' : '', entry: e })),
-    { placeHolder }
+    entries.map((e) => ({
+      label: e.name,
+      description: e.isDirectory ? 'subsection' : '',
+      entry: e,
+    })),
+    { placeHolder },
   );
   if (!picked) return null;
 
@@ -164,9 +200,10 @@ async function pickItemPath(placeHolder) {
     const subDir = path.join(moduleDir, picked.entry.name);
     const subEntries = listEntries(subDir, { filesOnly: true });
     const sub = await vscode.window.showQuickPick(
-      [{ label: `(the subsection ${picked.entry.name} itself)`, entry: null }]
-        .concat(subEntries.map((e) => ({ label: e.name, entry: e }))),
-      { placeHolder }
+      [
+        { label: `(the subsection ${picked.entry.name} itself)`, entry: null },
+      ].concat(subEntries.map((e) => ({ label: e.name, entry: e }))),
+      { placeHolder },
     );
     if (!sub) return null;
     return sub.entry ? path.join(subDir, sub.entry.name) : subDir;
@@ -186,7 +223,11 @@ async function resolveItemPath(treeItem, placeHolder) {
 }
 
 async function resolveModuleFolder(treeItem, placeHolder) {
-  if (treeItem && treeItem.contextValue === 'module' && treeItem.moduleFolderName) {
+  if (
+    treeItem &&
+    treeItem.contextValue === 'module' &&
+    treeItem.moduleFolderName
+  ) {
     return treeItem.moduleFolderName;
   }
   return pickModuleFolder(placeHolder);
@@ -199,7 +240,7 @@ async function pickFormat() {
       { label: 'PDF', format: 'pdf' },
       { label: 'Word (DOCX)', format: 'docx' },
     ],
-    { placeHolder: 'Output format' }
+    { placeHolder: 'Output format' },
   );
   return picked ? picked.format : null;
 }
@@ -231,7 +272,7 @@ function activate(context) {
   if (workspaceRoot) {
     const coursePattern = new vscode.RelativePattern(
       path.join(workspaceRoot, 'course'),
-      '**/*'
+      '**/*',
     );
     const watcher = vscode.workspace.createFileSystemWatcher(coursePattern);
     let refreshTimer;
@@ -295,9 +336,14 @@ function activate(context) {
 
   register('course.renameModule', async (treeItem) => {
     if (!validateWorkspace()) return;
-    const folder = await resolveModuleFolder(treeItem, 'Select module to rename');
+    const folder = await resolveModuleFolder(
+      treeItem,
+      'Select module to rename',
+    );
     if (!folder) return;
-    const currentLabel = readCategoryLabel(path.join(workspaceRoot, 'course', folder)) || displayTitle(folder);
+    const currentLabel =
+      readCategoryLabel(path.join(workspaceRoot, 'course', folder)) ||
+      displayTitle(folder);
     const name = await vscode.window.showInputBox({
       prompt: `New name for "${currentLabel}"`,
       value: currentLabel,
@@ -322,12 +368,15 @@ function activate(context) {
 
   register('course.deleteModule', async (treeItem) => {
     if (!validateWorkspace()) return;
-    const folder = await resolveModuleFolder(treeItem, 'Select module to delete');
+    const folder = await resolveModuleFolder(
+      treeItem,
+      'Select module to delete',
+    );
     if (!folder) return;
     const choice = await vscode.window.showWarningMessage(
       `Delete module "${folder}" and all its contents?`,
       { modal: true },
-      'Delete'
+      'Delete',
     );
     if (choice !== 'Delete') return;
     await runCli(['delete-module', '--module', folder, '--yes']);
@@ -339,7 +388,10 @@ function activate(context) {
     if (!validateWorkspace()) return;
 
     let moduleFolder = treeItem?.moduleFolderName;
-    let subsection = treeItem?.contextValue === 'subheader' ? path.basename(treeItem.folderPath) : null;
+    let subsection =
+      treeItem?.contextValue === 'subheader'
+        ? path.basename(treeItem.folderPath)
+        : null;
     if (!moduleFolder) {
       moduleFolder = await pickModuleFolder('Select module for the new item');
       if (!moduleFolder) return;
@@ -350,15 +402,21 @@ function activate(context) {
         { label: 'Page', type: 'page' },
         { label: 'Assignment', type: 'assignment' },
         { label: 'External URL', type: 'url' },
-        { label: 'Subsection', type: 'subsection', description: 'module root only' },
+        {
+          label: 'Subsection',
+          type: 'subsection',
+          description: 'module root only',
+        },
         { label: 'File', type: 'file' },
       ],
-      { placeHolder: 'Type of the new item' }
+      { placeHolder: 'Type of the new item' },
     );
     if (!type) return;
 
     if (type.type === 'subsection' && subsection) {
-      vscode.window.showErrorMessage('Canvas Course Builder: Subsections can only be created at module root level.');
+      vscode.window.showErrorMessage(
+        'Canvas Course Builder: Subsections can only be created at module root level.',
+      );
       return;
     }
 
@@ -366,7 +424,10 @@ function activate(context) {
     if (subsection) args.push('--subsection', subsection);
 
     if (type.type === 'file') {
-      const picked = await vscode.window.showOpenDialog({ canSelectMany: false, openLabel: 'Add file' });
+      const picked = await vscode.window.showOpenDialog({
+        canSelectMany: false,
+        openLabel: 'Add file',
+      });
       if (!picked || picked.length === 0) return;
       args.push('--file', picked[0].fsPath);
     } else {
@@ -381,13 +442,21 @@ function activate(context) {
         const url = await vscode.window.showInputBox({
           prompt: 'URL',
           validateInput: (v) => {
-            try { new URL(v); return null; } catch { return 'Enter a valid URL'; }
+            try {
+              new URL(v);
+              return null;
+            } catch {
+              return 'Enter a valid URL';
+            }
           },
         });
         if (!url) return;
         args.push('--url', url);
       } else if (type.type === 'assignment') {
-        const points = await vscode.window.showInputBox({ prompt: 'Points possible', value: '100' });
+        const points = await vscode.window.showInputBox({
+          prompt: 'Points possible',
+          value: '100',
+        });
         if (points === undefined) return;
         args.push('--points', points || '100');
       }
@@ -400,7 +469,10 @@ function activate(context) {
     if (!validateWorkspace()) return;
     const itemPath = await resolveItemPath(treeItem, 'Select item to rename');
     if (!itemPath) return;
-    const currentLabel = typeof treeItem?.label === 'string' ? treeItem.label : path.basename(itemPath);
+    const currentLabel =
+      typeof treeItem?.label === 'string'
+        ? treeItem.label
+        : path.basename(itemPath);
     const name = await vscode.window.showInputBox({
       prompt: `New name for "${currentLabel}"`,
       value: currentLabel,
@@ -430,19 +502,30 @@ function activate(context) {
     const destModule = await pickModuleFolder('Move to which module?');
     if (!destModule) return;
 
-    const args = ['movetomodule-item', '--path', itemPath, '--to-module', destModule];
+    const args = [
+      'movetomodule-item',
+      '--path',
+      itemPath,
+      '--to-module',
+      destModule,
+    ];
 
     // A subsection can't be nested inside another subsection — move it to the
     // module root and skip the sub-section prompt.
-    const isSubsection = fs.existsSync(itemPath) && fs.statSync(itemPath).isDirectory();
+    const isSubsection =
+      fs.existsSync(itemPath) && fs.statSync(itemPath).isDirectory();
 
     // Offer subsections of the destination module, when there are any
     const destDir = path.join(workspaceRoot, 'course', destModule);
-    const subsections = isSubsection ? [] : listEntries(destDir).filter((e) => e.isDirectory);
+    const subsections = isSubsection
+      ? []
+      : listEntries(destDir).filter((e) => e.isDirectory);
     if (subsections.length > 0) {
       const sub = await vscode.window.showQuickPick(
-        [{ label: '(module root)', name: null }].concat(subsections.map((s) => ({ label: s.name, name: s.name }))),
-        { placeHolder: 'Where in the module?' }
+        [{ label: '(module root)', name: null }].concat(
+          subsections.map((s) => ({ label: s.name, name: s.name })),
+        ),
+        { placeHolder: 'Where in the module?' },
       );
       if (!sub) return;
       if (sub.name) args.push('--to-subsection', sub.name);
@@ -455,12 +538,14 @@ function activate(context) {
     if (!validateWorkspace()) return;
     const itemPath = await resolveItemPath(treeItem, 'Select item to delete');
     if (!itemPath) return;
-    const isDir = fs.existsSync(itemPath) && fs.statSync(itemPath).isDirectory();
-    const label = path.basename(itemPath) + (isDir ? '/ and all its contents' : '');
+    const isDir =
+      fs.existsSync(itemPath) && fs.statSync(itemPath).isDirectory();
+    const label =
+      path.basename(itemPath) + (isDir ? '/ and all its contents' : '');
     const choice = await vscode.window.showWarningMessage(
       `Delete ${label}?`,
       { modal: true },
-      'Delete'
+      'Delete',
     );
     if (choice !== 'Delete') return;
     await runCli(['delete-item', '--path', itemPath, '--yes']);
@@ -474,7 +559,7 @@ function activate(context) {
     mergeSource = treeItem;
     vscode.commands.executeCommand('setContext', 'course.mergeSourceSet', true);
     vscode.window.showInformationMessage(
-      `Canvas Course Builder: Merge source set to "${path.basename(treeItem.filePath)}". Now right-click the target item.`
+      `Canvas Course Builder: Merge source set to "${path.basename(treeItem.filePath)}". Now right-click the target item.`,
     );
   });
 
@@ -485,18 +570,38 @@ function activate(context) {
     const sourcePath = mergeSource.filePath;
     const targetPath = treeItem.filePath;
     mergeSource = null;
-    vscode.commands.executeCommand('setContext', 'course.mergeSourceSet', false);
+    vscode.commands.executeCommand(
+      'setContext',
+      'course.mergeSourceSet',
+      false,
+    );
 
-    await runCli(['merge-items', '--source', sourcePath, '--target', targetPath]);
+    await runCli([
+      'merge-items',
+      '--source',
+      sourcePath,
+      '--target',
+      targetPath,
+    ]);
   });
 
   register('course.mergeItems', async () => {
     if (!validateWorkspace()) return;
-    const sourcePath = await pickItemPath('Source item (appended, then deleted)');
+    const sourcePath = await pickItemPath(
+      'Source item (appended, then deleted)',
+    );
     if (!sourcePath) return;
-    const targetPath = await pickItemPath('Target item (keeps frontmatter, receives content)');
+    const targetPath = await pickItemPath(
+      'Target item (keeps frontmatter, receives content)',
+    );
     if (!targetPath) return;
-    await runCli(['merge-items', '--source', sourcePath, '--target', targetPath]);
+    await runCli([
+      'merge-items',
+      '--source',
+      sourcePath,
+      '--target',
+      targetPath,
+    ]);
   });
 
   // --- Split at cursor ---
@@ -504,7 +609,9 @@ function activate(context) {
     if (!validateWorkspace()) return;
     const editor = vscode.window.activeTextEditor;
     if (!editor || !editor.document.fileName.endsWith('.md')) {
-      vscode.window.showErrorMessage('Canvas Course Builder: Open a markdown file and place the cursor on the split line.');
+      vscode.window.showErrorMessage(
+        'Canvas Course Builder: Open a markdown file and place the cursor on the split line.',
+      );
       return;
     }
     if (editor.document.isDirty) {
@@ -521,8 +628,15 @@ function activate(context) {
   // the full tree selection when several items are highlighted.
   register('course.exportItem', async (item, selected) => {
     if (!validateWorkspace()) return;
-    const chosen = Array.isArray(selected) && selected.length ? selected : item ? [item] : [];
-    let paths = [...new Set(chosen.map((t) => t && t.filePath).filter(Boolean))];
+    const chosen =
+      Array.isArray(selected) && selected.length
+        ? selected
+        : item
+          ? [item]
+          : [];
+    let paths = [
+      ...new Set(chosen.map((t) => t && t.filePath).filter(Boolean)),
+    ];
     if (paths.length === 0) {
       const single = await resolveItemPath(item, 'Select item to export');
       if (!single) return;
@@ -536,7 +650,10 @@ function activate(context) {
 
   register('course.exportModule', async (treeItem) => {
     if (!validateWorkspace()) return;
-    const folder = await resolveModuleFolder(treeItem, 'Select module to export');
+    const folder = await resolveModuleFolder(
+      treeItem,
+      'Select module to export',
+    );
     if (!folder) return;
     const format = await pickFormat();
     if (!format) return;
@@ -548,10 +665,18 @@ function activate(context) {
     const scope = await vscode.window.showQuickPick(
       [
         { label: 'Full course', scope: 'full' },
-        { label: 'Only flagged items', description: 'frontmatter export: true', scope: 'flagged' },
-        { label: 'Via table of contents…', description: 'curate a list first', scope: 'toc' },
+        {
+          label: 'Only flagged items',
+          description: 'frontmatter export: true',
+          scope: 'flagged',
+        },
+        {
+          label: 'Via table of contents…',
+          description: 'curate a list first',
+          scope: 'toc',
+        },
       ],
-      { placeHolder: 'What to export' }
+      { placeHolder: 'What to export' },
     );
     if (!scope) return;
 
@@ -569,7 +694,7 @@ function activate(context) {
       }
       vscode.commands.executeCommand('setContext', 'course.tocReady', true);
       vscode.window.showInformationMessage(
-        'Canvas Course Builder: Delete the item lines you do not want, then run "Course: Export via TOC" from the view menu.'
+        'Canvas Course Builder: Delete the item lines you do not want, then run "Course: Export via TOC" from the view menu.',
       );
       return;
     }
@@ -584,7 +709,9 @@ function activate(context) {
     if (!validateWorkspace()) return;
     const format = await pickFormat();
     if (!format) return;
-    runInTerminal(`npx course export --toc "exports/toc.md" --format ${format}`);
+    runInTerminal(
+      `npx course export --toc "exports/toc.md" --format ${format}`,
+    );
     vscode.commands.executeCommand('setContext', 'course.tocReady', false);
   });
 
@@ -597,7 +724,7 @@ function activate(context) {
 
     if (!apiUrl || !courseId) {
       vscode.window.showWarningMessage(
-        'Canvas Course Builder: No Canvas API configuration found. Run "Course: Init" first.'
+        'Canvas Course Builder: No Canvas API configuration found. Run "Course: Init" first.',
       );
       return;
     }
@@ -607,7 +734,7 @@ function activate(context) {
 
     if (treeItem?.contextValue === 'module') {
       vscode.env.openExternal(
-        vscode.Uri.parse(`${baseUrl}/courses/${courseId}/modules`)
+        vscode.Uri.parse(`${baseUrl}/courses/${courseId}/modules`),
       );
       return;
     }
@@ -626,7 +753,7 @@ function activate(context) {
     const canvasId = getCanvasId(treeItem.filePath);
     if (!canvasId) {
       vscode.window.showInformationMessage(
-        'Canvas Course Builder: This item has not been pushed to Canvas yet.'
+        'Canvas Course Builder: This item has not been pushed to Canvas yet.',
       );
       return;
     }
@@ -656,7 +783,7 @@ function activate(context) {
     }
 
     let previewTerminal = vscode.window.terminals.find(
-      (t) => t.name === 'Canvas Course Builder: Preview'
+      (t) => t.name === 'Canvas Course Builder: Preview',
     );
     if (!previewTerminal) {
       previewTerminal = vscode.window.createTerminal({
@@ -669,7 +796,10 @@ function activate(context) {
 
     // Poll until the dev server answers (cold starts take a while), then open
     vscode.window.withProgress(
-      { location: vscode.ProgressLocation.Window, title: 'Canvas Course Builder: starting preview…' },
+      {
+        location: vscode.ProgressLocation.Window,
+        title: 'Canvas Course Builder: starting preview…',
+      },
       async () => {
         for (let i = 0; i < 60; i++) {
           await new Promise((r) => setTimeout(r, 2000));
@@ -678,8 +808,10 @@ function activate(context) {
             return;
           }
         }
-        vscode.window.showWarningMessage('Canvas Course Builder: Preview server did not start within 2 minutes. Check the Preview terminal.');
-      }
+        vscode.window.showWarningMessage(
+          'Canvas Course Builder: Preview server did not start within 2 minutes. Check the Preview terminal.',
+        );
+      },
     );
   });
 }

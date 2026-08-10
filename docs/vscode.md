@@ -20,8 +20,8 @@ icon on the left). It shows a tree view of all modules and items in the
 
 ### Tree structure
 
-- **Modules** — shown as folders, labelled from `_category_.json` or derived from
-  the folder name. The numeric prefix is shown as a description.
+- **Modules** — shown as folders, labelled from `_category_.json` or derived
+  from the folder name. The numeric prefix is shown as a description.
 - **Subheaders** — subfolders within a module, shown as collapsible groups.
 - **Items** — course pages, assignments, external URLs, and files. Each type has
   a distinct icon. Labels come from the frontmatter `title` (the same name
@@ -44,10 +44,10 @@ view, and external URL items open the URL itself.
 
 ### Context menu
 
-Right-click a module or item to access management commands. The command acts
-on the element you clicked — names, positions, and confirmation are collected
-through native VS Code dialogs, and the operation runs the CLI in the
-background (no terminal pops up):
+Right-click a module or item to access management commands. The command acts on
+the element you clicked — names, positions, and confirmation are collected
+through native VS Code dialogs, and the operation runs the CLI in the background
+(no terminal pops up):
 
 - **New Item / New Module** — create items or modules
 - **Rename / Move** — rename or reorder items and modules (rename pre-fills the
@@ -65,8 +65,8 @@ background (no terminal pops up):
 The same commands also work from the command palette; you then pick the module
 or item from a quick-pick list instead. Either way the actual work is done by
 the `npx course` CLI with non-interactive flags, so renumbering and Canvas sync
-state behave exactly like the terminal commands. Full output is available in
-the **Canvas Course Builder** output channel (View → Output).
+state behave exactly like the terminal commands. Full output is available in the
+**Canvas Course Builder** output channel (View → Output).
 
 ### Drag and drop
 
@@ -78,15 +78,15 @@ Drag tree items to reorder them:
   different module or subheader to move it there. Both source and target
   directories are renumbered automatically.
 - **Subsections** — drag a subheader onto another module to move it there, or
-  onto a sibling subheader / top-level item to reorder it within the module root.
-  Subsections are never nested, so dropping one onto an item that lives inside a
-  subsection is ignored.
+  onto a sibling subheader / top-level item to reorder it within the module
+  root. Subsections are never nested, so dropping one onto an item that lives
+  inside a subsection is ignored.
 - **External files** — drag files from Finder or Explorer onto a module,
   subheader, or item to add them as file items at that location.
 
 Drops are translated into the corresponding CLI commands (`move-module`,
-`move-item`, `movetomodule-item`, `new-item --type file`), so Canvas sync
-state stays correct and the next push picks the changes up cleanly.
+`move-item`, `movetomodule-item`, `new-item --type file`), so Canvas sync state
+stays correct and the next push picks the changes up cleanly.
 
 ### Auto-refresh
 
@@ -98,12 +98,12 @@ or modified. Use the refresh button in the view title bar to manually refresh.
 The title bar has a **Search** button that asks for a word or phrase and shows
 all matches (with context) in the terminal, and a **Preview** button that starts
 the Docusaurus dev server (if not already running) and opens the course in the
-browser. The dropdown includes
-**Push to Canvas**, **Pull from Canvas**, **Status**, **Diff**, and **Validate**
-for quick access to sync commands, plus **Export** — a quick pick to export the
-full course, only flagged items, or a curated selection via a table of contents.
-Choosing the TOC option opens the generated list for editing and reveals an
-**Export via TOC** action once it is ready.
+browser. The dropdown includes **Push to Canvas**, **Pull from Canvas**,
+**Status**, **Diff**, and **Validate** for quick access to sync commands, plus
+**Export** — a quick pick to export the full course, only flagged items, or a
+curated selection via a table of contents. Choosing the TOC option opens the
+generated list for editing and reveals an **Export via TOC** action once it is
+ready.
 
 ## Commands
 
@@ -115,15 +115,15 @@ Choosing the TOC option opens the generated list for editing and reveals an
 
 ### Sync
 
-| Command                          | Description                            |
-| -------------------------------- | -------------------------------------- |
-| Course: Push to Canvas           | Push all modules to Canvas             |
-| Course: Push to Canvas (Dry Run) | Preview push without making changes    |
-| Course: Push Module to Canvas    | Pick a module from a list and push it  |
-| Course: Pull from Canvas         | Pull Canvas course into local markdown |
-| Course: Status                   | Compare local vs Canvas state          |
+| Command                          | Description                               |
+| -------------------------------- | ----------------------------------------- |
+| Course: Push to Canvas           | Push all modules to Canvas                |
+| Course: Push to Canvas (Dry Run) | Preview push without making changes       |
+| Course: Push Module to Canvas    | Pick a module from a list and push it     |
+| Course: Pull from Canvas         | Pull Canvas course into local markdown    |
+| Course: Status                   | Compare local vs Canvas state             |
 | Course: Diff                     | Show what changed locally since last sync |
-| Course: Validate                 | Check course content for errors          |
+| Course: Validate                 | Check course content for errors           |
 
 ### Module management
 
@@ -136,45 +136,47 @@ Choosing the TOC option opens the generated list for editing and reveals an
 
 ### Item management
 
-| Command                     | Description                                               |
-| --------------------------- | --------------------------------------------------------- |
-| Course: New Item            | Create a page, assignment, url, subsection, or add a file |
-| Course: Move Item           | Reorder an item within its module                         |
-| Course: Move Item to Module | Move an item to a different module                        |
-| Course: Rename Item         | Rename an item                                            |
-| Course: Delete Item           | Delete an item and renumber remaining                     |
-| Course: Merge Items           | Merge two items into one                                  |
-| Course: Split Item at Cursor  | Split the active file at the cursor into two files        |
+| Command                      | Description                                               |
+| ---------------------------- | --------------------------------------------------------- |
+| Course: New Item             | Create a page, assignment, url, subsection, or add a file |
+| Course: Move Item            | Reorder an item within its module                         |
+| Course: Move Item to Module  | Move an item to a different module                        |
+| Course: Rename Item          | Rename an item                                            |
+| Course: Delete Item          | Delete an item and renumber remaining                     |
+| Course: Merge Items          | Merge two items into one                                  |
+| Course: Split Item at Cursor | Split the active file at the cursor into two files        |
 
 ### Search
 
-| Command          | Description                                        |
-| ---------------- | -------------------------------------------------- |
-| Course: Search...  | Find a word or phrase across course files          |
+| Command           | Description                               |
+| ----------------- | ----------------------------------------- |
+| Course: Search... | Find a word or phrase across course files |
 
 ### Export
 
-| Command                     | Description                                               |
-| --------------------------- | --------------------------------------------------------- |
-| Export to PDF/DOCX          | Export the selected item(s) — multi-select combines them  |
-| Export Module to PDF/DOCX   | Export a whole module                                     |
-| Course: Export to PDF/DOCX  | Export the full course, only flagged items, or via a TOC  |
-| Course: Export via TOC      | Render the curated `exports/toc.md` after editing it      |
+| Command                    | Description                                              |
+| -------------------------- | -------------------------------------------------------- |
+| Export to PDF/DOCX         | Export the selected item(s) — multi-select combines them |
+| Export Module to PDF/DOCX  | Export a whole module                                    |
+| Course: Export to PDF/DOCX | Export the full course, only flagged items, or via a TOC |
+| Course: Export via TOC     | Render the curated `exports/toc.md` after editing it     |
 
 See [export styling](export-styling.md) for customising fonts, colours, and
 margins.
 
 ## How it works
 
-- Long-running sync commands (push, pull, status, diff, validate, init) run in
-  a single shared **Canvas Course Builder** terminal so you can follow their output.
+- Long-running sync commands (push, pull, status, diff, validate, init) run in a
+  single shared **Canvas Course Builder** terminal so you can follow their
+  output.
 - Structural commands (new/rename/move/delete, merge, split) run the CLI
   silently in the background; results appear as notifications and in the
-  **Canvas Course Builder** output channel, and the tree refreshes automatically.
+  **Canvas Course Builder** output channel, and the tree refreshes
+  automatically.
 - Most commands validate that a `course/` directory exists in the workspace
   before running. The Init command is exempt from this check.
 - **Push Module** presents a quick-pick list of all module folders so you can
   select which one to push.
 - **Preview** checks whether the Docusaurus dev server is already running. If
-  not, it starts `npm start` in a Preview terminal and opens the browser as
-  soon as the server responds.
+  not, it starts `npm start` in a Preview terminal and opens the browser as soon
+  as the server responds.

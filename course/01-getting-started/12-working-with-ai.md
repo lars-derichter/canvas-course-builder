@@ -5,10 +5,10 @@ canvas_type: page
 
 # Working with an AI assistant
 
-Writing a course is a lot of small, repetitive jobs: drafting pages, keeping your
-style consistent, building quizzes, checking for broken links. An AI assistant
-that works inside your editor can take on much of that, and this project is set
-up to make it easy.
+Writing a course is a lot of small, repetitive jobs: drafting pages, keeping
+your style consistent, building quizzes, checking for broken links. An AI
+assistant that works inside your editor can take on much of that, and this
+project is set up to make it easy.
 
 The project works with AI coding assistants that run in your terminal or inside
 VS Code — Claude Code, OpenAI Codex, and other agentic tools. You talk to them
@@ -32,19 +32,19 @@ what each one does and adjust it to fit how you work.
 
 ## What you can do with it
 
-Beyond everyday help — "draft a page about X", "move these three items to another
-module", "why did my push fail?" — this project ships a set of skills built for
-course authoring. The main families:
+Beyond everyday help — "draft a page about X", "move these three items to
+another module", "why did my push fail?" — this project ships a set of skills
+built for course authoring. The main families:
 
 - **Writing style** — `/style-init` adapts the style guide to your voice,
   `/style-update` folds in new preferences, and `/proofread` checks a page
   against it.
 - **Lessons** — `/design-lesson` helps you plan a lesson, `/summarize-lesson`
   makes a one-page class version, and `/build-lesson-module` turns the plan into
-  finished student pages. After teaching, `/lesson-retro` debriefs the lesson and
-  folds your notes back in.
-- **Evaluation** — `/design-evaluation` blueprints an exam, `/build-quiz` turns a
-  question list into a Canvas quiz, and `/rubric` writes a grading rubric.
+  finished student pages. After teaching, `/lesson-retro` debriefs the lesson
+  and folds your notes back in.
+- **Evaluation** — `/design-evaluation` blueprints an exam, `/build-quiz` turns
+  a question list into a Canvas quiz, and `/rubric` writes a grading rubric.
 - **Quality** — `/consistency-check` sweeps the whole course for dead links and
   drift, `/coverage-map` checks which learning goals are taught and tested, and
   `/image-todos` lists the artwork you still owe.
@@ -69,8 +69,8 @@ suggest the right one.
 > [!TIP]
 >
 > You stay in control. The assistant works on your local files and runs the same
-> `npx course` commands you would, and it asks before doing anything you have not
-> already allowed, like pushing to Canvas or committing to git.
+> `npx course` commands you would, and it asks before doing anything you have
+> not already allowed, like pushing to Canvas or committing to git.
 
 ## Choosing a tool
 
@@ -78,12 +78,11 @@ You are not locked in. Claude Code and Codex read the same `AGENTS.md`
 instructions and the same skills, so you can switch tools — or work next to a
 colleague who uses a different one — without changing anything in the project.
 The skills follow the open Agent Skills format, plain markdown files: if your
-assistant does not support skills, you can still open a skill file and paste
-its instructions, or simply describe the task yourself.
+assistant does not support skills, you can still open a skill file and paste its
+instructions, or simply describe the task yourself.
 
 > [!NOTE]
 >
 > For the full list of skills and what each one does, see the AI assistants
 > guide (`docs/ai-assistants.md`) and the lesson workflow guide
-> (`docs/lesson-workflow.md`) in your project folder, also readable on
-> GitHub.
+> (`docs/lesson-workflow.md`) in your project folder, also readable on GitHub.

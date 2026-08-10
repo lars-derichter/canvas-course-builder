@@ -9,7 +9,12 @@ const {
   printModules,
   readModuleCanvasId,
 } = require('./module-utils');
-const { loadSyncFile, saveSyncFile, itemKey, findModuleEntryByFolder } = require('./sync-utils');
+const {
+  loadSyncFile,
+  saveSyncFile,
+  itemKey,
+  findModuleEntryByFolder,
+} = require('./sync-utils');
 
 const SKIP_FILES = new Set(['_category_.json']);
 
@@ -71,7 +76,6 @@ function detectModule() {
 }
 
 function detectModuleFrom(resolved, courseDir) {
-
   // Check if we're inside a module folder under course/
   if (!resolved.startsWith(courseDir + path.sep)) return null;
 
@@ -81,7 +85,8 @@ function detectModuleFrom(resolved, courseDir) {
   if (!moduleFolderName) return null;
 
   const modulePath = path.join(courseDir, moduleFolderName);
-  if (!fs.existsSync(modulePath) || !fs.statSync(modulePath).isDirectory()) return null;
+  if (!fs.existsSync(modulePath) || !fs.statSync(modulePath).isDirectory())
+    return null;
 
   return { modulePath, folderName: moduleFolderName };
 }
@@ -175,12 +180,16 @@ function removeFromSyncState(folderName, absItemPath) {
   if (!syncData || !syncData.modules) return null;
 
   const catId = readModuleCanvasId(path.join(COURSE_DIR, folderName));
-  const moduleEntry = (catId != null && syncData.modules[String(catId)])
-    ? syncData.modules[String(catId)]
-    : (findModuleEntryByFolder(syncData, folderName) || [])[1];
+  const moduleEntry =
+    catId != null && syncData.modules[String(catId)]
+      ? syncData.modules[String(catId)]
+      : (findModuleEntryByFolder(syncData, folderName) || [])[1];
   if (!moduleEntry || !moduleEntry.items) return null;
 
-  const relativePath = path.relative(COURSE_DIR, absItemPath).split(path.sep).join('/');
+  const relativePath = path
+    .relative(COURSE_DIR, absItemPath)
+    .split(path.sep)
+    .join('/');
   const keysToRemove = [];
 
   if (fs.existsSync(absItemPath) && fs.statSync(absItemPath).isDirectory()) {

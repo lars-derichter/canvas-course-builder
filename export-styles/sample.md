@@ -20,14 +20,14 @@ labels:
 
 # First chapter
 
-An ordinary paragraph with **bold**, *italic* and a [link to
-example.com](https://example.com), so you can judge how running text sits in
-the style. Typst handles the line breaking and hyphenation itself.
+An ordinary paragraph with **bold**, _italic_ and a
+[link to example.com](https://example.com), so you can judge how running text
+sits in the style. Typst handles the line breaking and hyphenation itself.
 
 ## A subheading
 
-A second paragraph, to show the vertical rhythm between headings and text.
-Here is some `inline code` in the middle of a sentence.
+A second paragraph, to show the vertical rhythm between headings and text. Here
+is some `inline code` in the middle of a sentence.
 
 ### A sub-subheading
 
@@ -52,11 +52,9 @@ A block quotation:
 
 A definition list:
 
-Selector
-: A pattern that decides which elements a CSS rule applies to.
+Selector : A pattern that decides which elements a CSS rule applies to.
 
-Markup
-: The structure of a document, expressed in tags.
+Markup : The structure of a document, expressed in tags.
 
 A horizontal rule as a separator:
 
@@ -68,29 +66,17 @@ A horizontal rule as a separator:
 
 ## Alerts
 
-::: {.alert .note}
-A note alert, for context and background.
-:::
+::: {.alert .note} A note alert, for context and background. :::
 
-::: {.alert .tip}
-A tip alert with a useful suggestion.
-:::
+::: {.alert .tip} A tip alert with a useful suggestion. :::
 
-::: {.alert .important}
-An important alert that asks for attention.
-:::
+::: {.alert .important} An important alert that asks for attention. :::
 
-::: {.alert .warning}
-A warning alert.
-:::
+::: {.alert .warning} A warning alert. :::
 
-::: {.alert .caution}
-A caution alert, for risks.
-:::
+::: {.alert .caution} A caution alert, for risks. :::
 
-::: {.alert .check}
-A check alert, for a checkpoint or a self-test.
-:::
+::: {.alert .check} A check alert, for a checkpoint or a self-test. :::
 
 ## Code
 
@@ -126,14 +112,11 @@ An ordered list:
 
 ## Special blocks
 
-::: {.link-card title="External resource" url="https://example.com/article"}
-:::
+::: {.link-card title="External resource" url="https://example.com/article"} :::
 
-::: {.attachment name="example-document.pdf"}
-:::
+::: {.attachment name="example-document.pdf"} :::
 
-::: {.page-break}
-:::
+::: {.page-break} :::
 
 # Second chapter
 

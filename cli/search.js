@@ -121,7 +121,9 @@ function collectFiles(options) {
 
   // Loose markdown at the top of course/ (e.g. index.md, the Docusaurus
   // landing page) is not part of any module, so the scanner skips it.
-  for (const entry of fs.readdirSync(COURSE_DIR, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name))) {
+  for (const entry of fs
+    .readdirSync(COURSE_DIR, { withFileTypes: true })
+    .sort((a, b) => a.name.localeCompare(b.name))) {
     if (!entry.isFile() || !entry.name.endsWith('.md')) continue;
     if (entry.name.startsWith('_') || entry.name.startsWith('.')) continue;
     files.push({
@@ -196,7 +198,9 @@ async function searchCmd(keyword, options = {}) {
     }
     scanned++;
 
-    const { lines, matchedLines } = findMatches(text, keyword, { caseSensitive });
+    const { lines, matchedLines } = findMatches(text, keyword, {
+      caseSensitive,
+    });
     if (matchedLines.length === 0) continue;
 
     const windows = buildWindows(matchedLines, context, lines.length);
@@ -207,7 +211,12 @@ async function searchCmd(keyword, options = {}) {
     // Results go through console.log (not log.info) so --quiet still shows
     // them; same convention as validate's findings.
     if (matchedFiles > 0) console.log('');
-    for (const line of renderFileResult(header, lines, windows, new Set(matchedLines))) {
+    for (const line of renderFileResult(
+      header,
+      lines,
+      windows,
+      new Set(matchedLines),
+    )) {
       console.log(line);
     }
 
@@ -220,7 +229,9 @@ async function searchCmd(keyword, options = {}) {
   if (matchedFiles === 0) {
     console.log(`[search] No matches for "${keyword}".`);
     if (!options.evaluations && !options.sources) {
-      log.info('[search] Tip: add --evaluations or --sources to search more folders.');
+      log.info(
+        '[search] Tip: add --evaluations or --sources to search more folders.',
+      );
     }
     return;
   }
@@ -228,7 +239,9 @@ async function searchCmd(keyword, options = {}) {
   console.log('');
   const lineWord = matchingLines === 1 ? 'matching line' : 'matching lines';
   const fileWord = matchedFiles === 1 ? 'file' : 'files';
-  console.log(`[search] ${matchingLines} ${lineWord} in ${matchedFiles} ${fileWord}.`);
+  console.log(
+    `[search] ${matchingLines} ${lineWord} in ${matchedFiles} ${fileWord}.`,
+  );
 }
 
 module.exports = searchCmd;

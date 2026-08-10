@@ -15,11 +15,16 @@ const {
 // a style that has been moved, renamed or left incomplete.
 describe('resolveStyleDir', () => {
   it('treats a bare name as a built-in style', () => {
-    assert.strictEqual(resolveStyleDir('generic'), path.join(STYLES_DIR, 'generic'));
+    assert.strictEqual(
+      resolveStyleDir('generic'),
+      path.join(STYLES_DIR, 'generic'),
+    );
   });
 
   it('treats a path as relative to the project root', () => {
-    assert.ok(resolveStyleDir('sources/mine').endsWith(path.join('sources', 'mine')));
+    assert.ok(
+      resolveStyleDir('sources/mine').endsWith(path.join('sources', 'mine')),
+    );
   });
 });
 
@@ -55,8 +60,17 @@ describe('resolveStyle', () => {
     for (const name of ['generic', 'thomas-more']) {
       const style = resolveStyle({ style: name });
       assert.strictEqual(style.name, name);
-      for (const key of ['template', 'referenceDoc', 'filter', 'defaultsFile', 'sample']) {
-        assert.ok(fs.existsSync(style[key]), `${name}: missing ${key} at ${style[key]}`);
+      for (const key of [
+        'template',
+        'referenceDoc',
+        'filter',
+        'defaultsFile',
+        'sample',
+      ]) {
+        assert.ok(
+          fs.existsSync(style[key]),
+          `${name}: missing ${key} at ${style[key]}`,
+        );
       }
     }
   });
@@ -74,6 +88,9 @@ describe('resolveStyle', () => {
   });
 
   it('throws on an unknown style', () => {
-    assert.throws(() => resolveStyle({ style: 'no-such-style' }), /Unknown export style/);
+    assert.throws(
+      () => resolveStyle({ style: 'no-such-style' }),
+      /Unknown export style/,
+    );
   });
 });

@@ -28,7 +28,10 @@ function transform(tree, frontMatter, options) {
 describe('remarkFileItem', () => {
   it('replaces document body with a file card for file items', () => {
     const tree = makeTree([
-      { type: 'paragraph', children: [{ type: 'text', value: 'Some body text.' }] },
+      {
+        type: 'paragraph',
+        children: [{ type: 'text', value: 'Some body text.' }],
+      },
     ]);
     transform(tree, {
       canvas_type: 'file',
@@ -99,19 +102,27 @@ describe('remarkFileItem', () => {
     const plugin = remarkFileItem({ siteDir: '/site' });
     plugin(tree, {
       path: '/site/course/01-getting-started/05-workflow-diagram.md',
-      data: { frontMatter: { canvas_type: 'file', file_ref: '_files/example.html' } },
+      data: {
+        frontMatter: { canvas_type: 'file', file_ref: '_files/example.html' },
+      },
     });
 
     const link = tree.children[0].children[1].children[0];
     assert.equal(link.type, 'link');
     // @site/ aliasing makes transformLinks bundle the asset regardless of
     // extension (.html, .md, extension-less), bypassing its extension heuristic.
-    assert.equal(link.url, '@site/course/01-getting-started/_files/example.html');
+    assert.equal(
+      link.url,
+      '@site/course/01-getting-started/_files/example.html',
+    );
     assert.equal(link.children[0].value, 'example.html');
   });
 
   it('leaves non-file pages unchanged', () => {
-    const body = { type: 'paragraph', children: [{ type: 'text', value: 'Hello.' }] };
+    const body = {
+      type: 'paragraph',
+      children: [{ type: 'text', value: 'Hello.' }],
+    };
     const tree = makeTree([body]);
     transform(tree, { canvas_type: 'page' });
 
@@ -121,7 +132,10 @@ describe('remarkFileItem', () => {
   });
 
   it('leaves pages without canvas_type unchanged', () => {
-    const body = { type: 'paragraph', children: [{ type: 'text', value: 'Hello.' }] };
+    const body = {
+      type: 'paragraph',
+      children: [{ type: 'text', value: 'Hello.' }],
+    };
     const tree = makeTree([body]);
     transform(tree, { title: 'Some page' });
 
@@ -130,7 +144,10 @@ describe('remarkFileItem', () => {
   });
 
   it('leaves pages without frontmatter unchanged', () => {
-    const body = { type: 'paragraph', children: [{ type: 'text', value: 'Hello.' }] };
+    const body = {
+      type: 'paragraph',
+      children: [{ type: 'text', value: 'Hello.' }],
+    };
     const tree = makeTree([body]);
 
     const plugin = remarkFileItem();
@@ -141,7 +158,10 @@ describe('remarkFileItem', () => {
   });
 
   it('skips file pages missing the file_ref field', () => {
-    const body = { type: 'paragraph', children: [{ type: 'text', value: 'Hello.' }] };
+    const body = {
+      type: 'paragraph',
+      children: [{ type: 'text', value: 'Hello.' }],
+    };
     const tree = makeTree([body]);
     transform(tree, { canvas_type: 'file' });
 
@@ -153,7 +173,11 @@ describe('remarkFileItem', () => {
     const tree = makeTree([
       { type: 'paragraph', children: [{ type: 'text', value: 'First.' }] },
       { type: 'paragraph', children: [{ type: 'text', value: 'Second.' }] },
-      { type: 'heading', depth: 2, children: [{ type: 'text', value: 'Heading' }] },
+      {
+        type: 'heading',
+        depth: 2,
+        children: [{ type: 'text', value: 'Heading' }],
+      },
     ]);
     transform(tree, {
       canvas_type: 'file',

@@ -1,7 +1,7 @@
 # User guide
 
-Canvas Course Builder lets you write course materials as markdown files on
-your own computer, preview them on a local website
+Canvas Course Builder lets you write course materials as markdown files on your
+own computer, preview them on a local website
 ([Docusaurus](https://docusaurus.io/)), and sync them with
 [Canvas LMS](https://www.instructure.com/canvas) in one command. This guide
 covers setup and the daily workflow; the [docs index](README.md) lists every
@@ -66,8 +66,8 @@ other guide. If anything fails along the way, check
 
    > [!NOTE]
    >
-   > `npm start` keeps running while the preview is open — the terminal is
-   > busy until you stop it with **Ctrl+C**. Open a second terminal for other
+   > `npm start` keeps running while the preview is open — the terminal is busy
+   > until you stop it with **Ctrl+C**. Open a second terminal for other
    > commands. Those other commands start with `npx course`: `npx` runs the
    > `course` tool that ships with the project, no extra installation needed.
 
@@ -245,8 +245,8 @@ npx course search "Flexbox" --case-sensitive         # match upper/lower case ex
 ```
 
 Results are grouped per file with the module and item they belong to, line
-numbers, and a few lines of context around each match. By default only
-`course/` is searched; `--evaluations` and `--sources` widen the scope.
+numbers, and a few lines of context around each match. By default only `course/`
+is searched; `--evaluations` and `--sources` widen the scope.
 
 ### Docusaurus preview
 
@@ -299,8 +299,8 @@ npx course export -m 01-intro -f docx             # Word instead of PDF
 npx course export --flagged                       # only items with export: true
 ```
 
-Multiple items combine into one document with a title page, a generated table
-of contents, and a page break between chapters. Output lands in `exports/`
+Multiple items combine into one document with a title page, a generated table of
+contents, and a page break between chapters. Output lands in `exports/`
 (gitignored). Non-markdown items become link cards (external URLs) or attachment
 references (files) in the combined document.
 
@@ -335,13 +335,13 @@ operations.
 
 ## Further guides
 
-| Guide | What it covers |
-| --- | --- |
-| [VS Code integration](vscode.md) | The sidebar and command palette |
-| [AI assistants](ai-assistants.md) | Assistant setup, the bundled skills, creating your own |
-| [Lesson workflow](lesson-workflow.md) | From lesson idea to published module with the skills |
-| [Customization](customization.md) | README, language, branding, and licence |
-| [Hosting](hosting.md) | Publishing the preview site on GitHub Pages |
-| [Updating your project](updating-your-project.md) | Pulling in upstream improvements |
-| [Troubleshooting](troubleshooting.md) | Common errors and their fixes |
-| [Contributing](contributing.md) | Issues, ideas, and pull requests |
+| Guide                                             | What it covers                                         |
+| ------------------------------------------------- | ------------------------------------------------------ |
+| [VS Code integration](vscode.md)                  | The sidebar and command palette                        |
+| [AI assistants](ai-assistants.md)                 | Assistant setup, the bundled skills, creating your own |
+| [Lesson workflow](lesson-workflow.md)             | From lesson idea to published module with the skills   |
+| [Customization](customization.md)                 | README, language, branding, and licence                |
+| [Hosting](hosting.md)                             | Publishing the preview site on GitHub Pages            |
+| [Updating your project](updating-your-project.md) | Pulling in upstream improvements                       |
+| [Troubleshooting](troubleshooting.md)             | Common errors and their fixes                          |
+| [Contributing](contributing.md)                   | Issues, ideas, and pull requests                       |

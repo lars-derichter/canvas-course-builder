@@ -2,13 +2,13 @@
 
 > [!TIP]
 >
-> This is the README template for your course repository. Copy this file
-> over the `README.md` in your project root (which describes the Canvas
-> Course Builder tooling), change `Course name` to the name of your course,
-> fill in the sections below, and delete this tip.
+> This is the README template for your course repository. Copy this file over
+> the `README.md` in your project root (which describes the Canvas Course
+> Builder tooling), change `Course name` to the name of your course, fill in the
+> sections below, and delete this tip.
 
-Course materials for **Course name**, written in markdown and synced with
-Canvas LMS using
+Course materials for **Course name**, written in markdown and synced with Canvas
+LMS using
 [Canvas Course Builder](https://github.com/lars-derichter/canvas-course-builder).
 
 ## Course overview
@@ -33,8 +33,8 @@ This course covers ...
 The course content in `course/` is licensed under
 [CC BY-NC-SA 4.0](course/LICENSE.md) unless stated otherwise.
 
-The Canvas Course Builder tooling is [MIT licensed](LICENSE); keep that file
-and this line in place.
+The Canvas Course Builder tooling is [MIT licensed](LICENSE); keep that file and
+this line in place.
 
 ## Useful links
 
@@ -49,8 +49,8 @@ and this line in place.
 
 ---
 
-> **About this README:** this file is yours. It will not be overwritten
-> when you [update from upstream](docs/updating-your-project.md). A good
-> README helps colleagues and future-you understand what the project
-> contains: consider a course description, learning objectives, a module
-> overview, prerequisites, and local setup notes.
+> **About this README:** this file is yours. It will not be overwritten when you
+> [update from upstream](docs/updating-your-project.md). A good README helps
+> colleagues and future-you understand what the project contains: consider a
+> course description, learning objectives, a module overview, prerequisites, and
+> local setup notes.

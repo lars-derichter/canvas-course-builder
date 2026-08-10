@@ -1,8 +1,24 @@
 const fs = require('fs');
 const path = require('path');
-const { prompt, pad, createRL, getExistingModules, printModules, COURSE_DIR } = require('./module-utils');
-const { getItems, printItems, selectModule, selectTargetDir } = require('./item-utils');
-const { renumberSequential, renumberUp, updateCategoryPosition } = require('./renumber');
+const {
+  prompt,
+  pad,
+  createRL,
+  getExistingModules,
+  printModules,
+  COURSE_DIR,
+} = require('./module-utils');
+const {
+  getItems,
+  printItems,
+  selectModule,
+  selectTargetDir,
+} = require('./item-utils');
+const {
+  renumberSequential,
+  renumberUp,
+  updateCategoryPosition,
+} = require('./renumber');
 
 /**
  * Core move: shift destination items to make room, move the file, renumber
@@ -21,7 +37,9 @@ function moveEntry(sourceDir, entryName, destDir, position) {
   const destPath = path.join(destDir, newName);
 
   if (fs.existsSync(destPath)) {
-    console.error(`[movetomodule] Error: ${newName} already exists in the destination.`);
+    console.error(
+      `[movetomodule] Error: ${newName} already exists in the destination.`,
+    );
     process.exit(1);
   }
 
@@ -36,7 +54,9 @@ function moveEntry(sourceDir, entryName, destDir, position) {
   // Renumber source to close gap
   const sourceRenames = renumberSequential(sourceDir, getItems);
 
-  console.log(`[movetomodule] Moved ${entryName} -> ${path.relative(process.cwd(), destPath)}`);
+  console.log(
+    `[movetomodule] Moved ${entryName} -> ${path.relative(process.cwd(), destPath)}`,
+  );
   if (sourceRenames.length > 0) {
     console.log('[movetomodule] Renumbered source:');
     for (const r of sourceRenames) {
@@ -55,24 +75,38 @@ async function moveToModule(options = {}) {
     }
     let destDir = path.join(COURSE_DIR, options.toModule);
     if (!fs.existsSync(destDir) || !fs.statSync(destDir).isDirectory()) {
-      console.error(`[movetomodule] Error: Destination module not found: ${options.toModule}`);
+      console.error(
+        `[movetomodule] Error: Destination module not found: ${options.toModule}`,
+      );
       process.exit(1);
     }
     if (options.toSubsection) {
       destDir = path.join(destDir, options.toSubsection);
       if (!fs.existsSync(destDir) || !fs.statSync(destDir).isDirectory()) {
-        console.error(`[movetomodule] Error: Destination subsection not found: ${options.toSubsection}`);
+        console.error(
+          `[movetomodule] Error: Destination subsection not found: ${options.toSubsection}`,
+        );
         process.exit(1);
       }
     }
     const destItems = getItems(destDir);
-    const defaultPos = destItems.length > 0 ? destItems[destItems.length - 1].prefix + 1 : 1;
-    const position = options.position ? parseInt(options.position, 10) : defaultPos;
+    const defaultPos =
+      destItems.length > 0 ? destItems[destItems.length - 1].prefix + 1 : 1;
+    const position = options.position
+      ? parseInt(options.position, 10)
+      : defaultPos;
     if (isNaN(position) || position < 1 || position > 99) {
-      console.error('[movetomodule] Error: Position must be a number between 1 and 99.');
+      console.error(
+        '[movetomodule] Error: Position must be a number between 1 and 99.',
+      );
       process.exit(1);
     }
-    moveEntry(path.dirname(itemPath), path.basename(itemPath), destDir, position);
+    moveEntry(
+      path.dirname(itemPath),
+      path.basename(itemPath),
+      destDir,
+      position,
+    );
     return;
   }
 
@@ -100,7 +134,9 @@ async function moveToModule(options = {}) {
 
   if (!item) {
     rl.close();
-    console.error(`[movetomodule] Error: No item found with number ${itemStr}.`);
+    console.error(
+      `[movetomodule] Error: No item found with number ${itemStr}.`,
+    );
     process.exit(1);
   }
 
@@ -115,7 +151,9 @@ async function moveToModule(options = {}) {
 
   if (!destMod) {
     rl.close();
-    console.error(`[movetomodule] Error: No module found with number ${destModuleStr}.`);
+    console.error(
+      `[movetomodule] Error: No module found with number ${destModuleStr}.`,
+    );
     process.exit(1);
   }
 
@@ -123,13 +161,16 @@ async function moveToModule(options = {}) {
   const destDir = await selectTargetDir(rl, destModulePath);
   const destItems = getItems(destDir);
 
-  const defaultPos = destItems.length > 0 ? destItems[destItems.length - 1].prefix + 1 : 1;
+  const defaultPos =
+    destItems.length > 0 ? destItems[destItems.length - 1].prefix + 1 : 1;
   let position;
   while (true) {
     const posStr = await prompt(rl, 'Position in destination', pad(defaultPos));
     position = parseInt(posStr, 10);
     if (!isNaN(position) && position >= 1 && position <= 99) break;
-    console.log('  Position must be a number between 1 and 99. Please try again.');
+    console.log(
+      '  Position must be a number between 1 and 99. Please try again.',
+    );
   }
   rl.close();
 

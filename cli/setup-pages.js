@@ -22,9 +22,7 @@ function parseGitHubRemote(remoteUrl) {
   // SSH: git@github.com:owner/repo(.git)
   // Also handles ssh://git@github.com/owner/repo(.git)
   // HTTPS: https://github.com/owner/repo(.git)
-  const match = url.match(
-    /github\.com[/:]([^/]+)\/(.+?)(?:\.git)?\/?$/
-  );
+  const match = url.match(/github\.com[/:]([^/]+)\/(.+?)(?:\.git)?\/?$/);
 
   if (!match) {
     throw new Error(`Not a recognizable github.com remote URL: ${url}`);
@@ -47,13 +45,13 @@ function rewriteDocusaurusConfig(source, values) {
   // Replace url: '...'
   out = out.replace(
     /^(\s*)url:\s*['"][^'"]*['"]\s*,?\s*$/m,
-    `$1url: '${values.url}',`
+    `$1url: '${values.url}',`,
   );
 
   // Replace baseUrl: '...'
   out = out.replace(
     /^(\s*)baseUrl:\s*['"][^'"]*['"]\s*,?\s*$/m,
-    `$1baseUrl: '${values.baseUrl}',`
+    `$1baseUrl: '${values.baseUrl}',`,
   );
 
   // Insert organizationName / projectName / trailingSlash after baseUrl
@@ -75,7 +73,7 @@ function rewriteDocusaurusConfig(source, values) {
   if (additions.length && baseUrlLine) {
     out = out.replace(
       baseUrlLine[0],
-      `${baseUrlLine[0]}\n${additions.join('\n')}`
+      `${baseUrlLine[0]}\n${additions.join('\n')}`,
     );
   }
 
@@ -152,12 +150,14 @@ function getOriginUrl() {
 
 function getDefaultBranch() {
   try {
-    return execSync('git symbolic-ref --short HEAD', {
-      cwd: process.cwd(),
-      stdio: ['ignore', 'pipe', 'ignore'],
-    })
-      .toString()
-      .trim() || 'main';
+    return (
+      execSync('git symbolic-ref --short HEAD', {
+        cwd: process.cwd(),
+        stdio: ['ignore', 'pipe', 'ignore'],
+      })
+        .toString()
+        .trim() || 'main'
+    );
   } catch {
     return 'main';
   }
@@ -182,8 +182,12 @@ async function setupPages(options = {}) {
     remoteUrl = getOriginUrl();
   } catch {
     log.error('[setup-pages] Error: no "origin" git remote found.');
-    log.error('[setup-pages]   Create a GitHub repo and add it as origin first, e.g.:');
-    log.error('[setup-pages]   git remote add origin git@github.com:<owner>/<repo>.git');
+    log.error(
+      '[setup-pages]   Create a GitHub repo and add it as origin first, e.g.:',
+    );
+    log.error(
+      '[setup-pages]   git remote add origin git@github.com:<owner>/<repo>.git',
+    );
     return finish(1);
   }
 
@@ -192,7 +196,9 @@ async function setupPages(options = {}) {
     ({ owner, repo } = parseGitHubRemote(remoteUrl));
   } catch (err) {
     log.error(`[setup-pages] Error: ${err.message}`);
-    log.error('[setup-pages]   GitHub Pages setup requires a github.com origin remote.');
+    log.error(
+      '[setup-pages]   GitHub Pages setup requires a github.com origin remote.',
+    );
     return finish(1);
   }
 
@@ -201,8 +207,18 @@ async function setupPages(options = {}) {
   // 2. Compute the hosting values.
   const domain = options.domain;
   const values = domain
-    ? { url: `https://${domain}`, baseUrl: '/', organizationName: owner, projectName: repo }
-    : { url: `https://${owner}.github.io`, baseUrl: `/${repo}/`, organizationName: owner, projectName: repo };
+    ? {
+        url: `https://${domain}`,
+        baseUrl: '/',
+        organizationName: owner,
+        projectName: repo,
+      }
+    : {
+        url: `https://${owner}.github.io`,
+        baseUrl: `/${repo}/`,
+        organizationName: owner,
+        projectName: repo,
+      };
 
   const siteUrl = domain
     ? `https://${domain}`
@@ -223,13 +239,16 @@ async function setupPages(options = {}) {
     log.info('[setup-pages] docusaurus.config.js already up to date.');
   } else {
     // Prompt before overwriting an existing non-placeholder url.
-    const currentUrl = (original.match(/^\s*url:\s*['"]([^'"]*)['"]/m) || [])[1];
+    const currentUrl = (original.match(/^\s*url:\s*['"]([^'"]*)['"]/m) ||
+      [])[1];
     const looksCustomised =
-      currentUrl && currentUrl !== 'https://example.com' && currentUrl !== values.url;
+      currentUrl &&
+      currentUrl !== 'https://example.com' &&
+      currentUrl !== values.url;
     if (looksCustomised) {
       const ok = await confirm(
         rl,
-        `[setup-pages] docusaurus.config.js has a custom url (${currentUrl}). Overwrite url/baseUrl?`
+        `[setup-pages] docusaurus.config.js has a custom url (${currentUrl}). Overwrite url/baseUrl?`,
       );
       if (!ok) {
         log.info('[setup-pages] Skipped docusaurus.config.js.');
@@ -246,7 +265,8 @@ async function setupPages(options = {}) {
   async function finishAfterWorkflow() {
     // CNAME for custom domains.
     if (domain) {
-      if (!fs.existsSync(STATIC_DIR)) fs.mkdirSync(STATIC_DIR, { recursive: true });
+      if (!fs.existsSync(STATIC_DIR))
+        fs.mkdirSync(STATIC_DIR, { recursive: true });
       fs.writeFileSync(CNAME_FILE, `${domain}\n`, 'utf8');
       log.info(`[setup-pages] Wrote ${CNAME_FILE}`);
     }
@@ -257,11 +277,12 @@ async function setupPages(options = {}) {
     if (fs.existsSync(WORKFLOW_FILE)) {
       writeWorkflow = await confirm(
         rl,
-        `[setup-pages] ${WORKFLOW_FILE} exists. Overwrite?`
+        `[setup-pages] ${WORKFLOW_FILE} exists. Overwrite?`,
       );
     }
     if (writeWorkflow) {
-      if (!fs.existsSync(WORKFLOW_DIR)) fs.mkdirSync(WORKFLOW_DIR, { recursive: true });
+      if (!fs.existsSync(WORKFLOW_DIR))
+        fs.mkdirSync(WORKFLOW_DIR, { recursive: true });
       fs.writeFileSync(WORKFLOW_FILE, workflowContents(defaultBranch), 'utf8');
       log.info(`[setup-pages] Wrote ${WORKFLOW_FILE}`);
     } else {
@@ -272,11 +293,17 @@ async function setupPages(options = {}) {
     log.info('\n[setup-pages] Almost done. Remaining manual steps:');
     log.info('  1. On GitHub: Settings → Pages → Source → "GitHub Actions".');
     log.info('  2. Private repo? GitHub Pages needs a paid plan (Pro/Team).');
-    log.info('     Teachers and students get Pro for free via GitHub Education:');
+    log.info(
+      '     Teachers and students get Pro for free via GitHub Education:',
+    );
     log.info('     https://education.github.com');
-    log.info(`  3. Commit and push to "${defaultBranch}" — the workflow deploys on every push.`);
+    log.info(
+      `  3. Commit and push to "${defaultBranch}" — the workflow deploys on every push.`,
+    );
     if (domain) {
-      log.info('  4. Point your domain\'s DNS at GitHub Pages, then set the custom');
+      log.info(
+        "  4. Point your domain's DNS at GitHub Pages, then set the custom",
+      );
       log.info('     domain under Settings → Pages.');
     }
     log.info(`\n[setup-pages] Your site will be live at: ${siteUrl}`);

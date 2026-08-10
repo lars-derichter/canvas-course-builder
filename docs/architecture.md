@@ -89,7 +89,7 @@ Key properties:
 
 ### Prune semantics
 
-`push --prune` deletes a Canvas resource only when no local file *claims* its
+`push --prune` deletes a Canvas resource only when no local file _claims_ its
 identity: a markdown file claims `canvas_id` (and `external_url`) via its
 frontmatter, a module folder claims its id via `_category_.json`. Identity
 claims are collected over the whole course, so items moved to another module —
@@ -226,12 +226,12 @@ normal page) broken. The `remark-html-links` plugin
 (`src/plugins/remark-html-links.js`) runs before the default plugins and
 rewrites such links — relative, to an existing local `.html`/`.htm` file — into
 an `<a href={require(...)}>` anchor. Webpack then bundles the file. By default
-the anchor gets `target="_blank"`, so the browser renders the file in a new
-tab; with `download: true` in the page's frontmatter it gets a `download`
-attribute instead and the browser saves the file under its original name.
-External, absolute, `@site/`, anchor-only (`.html#…`), and non-existent targets
-are left untouched, as is the Canvas sync path (the source markdown keeps its
-plain relative link).
+the anchor gets `target="_blank"`, so the browser renders the file in a new tab;
+with `download: true` in the page's frontmatter it gets a `download` attribute
+instead and the browser saves the file under its original name. External,
+absolute, `@site/`, anchor-only (`.html#…`), and non-existent targets are left
+untouched, as is the Canvas sync path (the source markdown keeps its plain
+relative link).
 
 ## Error recovery
 

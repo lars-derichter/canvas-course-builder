@@ -1,7 +1,11 @@
 const { describe, it } = require('node:test');
 const assert = require('node:assert/strict');
 
-const { generateToc, parseToc, validateTocPaths } = require('../../lib/export/toc');
+const {
+  generateToc,
+  parseToc,
+  validateTocPaths,
+} = require('../../lib/export/toc');
 
 /** A minimal scanned module for TOC generation. */
 function mod(folderName, moduleName, items) {
@@ -39,9 +43,14 @@ describe('generateToc', () => {
 describe('parseToc', () => {
   it('round-trips generated output back to the same paths', () => {
     const modules = [
-      mod('01-a', 'A', [item('01-a/01-one.md', 'One'), item('01-a/02-two.md', 'Two')]),
+      mod('01-a', 'A', [
+        item('01-a/01-one.md', 'One'),
+        item('01-a/02-two.md', 'Two'),
+      ]),
     ];
-    const { paths, meta } = parseToc(generateToc(modules, { title: 'T', subtitle: 'S' }));
+    const { paths, meta } = parseToc(
+      generateToc(modules, { title: 'T', subtitle: 'S' }),
+    );
     assert.deepEqual(paths, ['01-a/01-one.md', '01-a/02-two.md']);
     assert.equal(meta.title, 'T');
     assert.equal(meta.subtitle, 'S');

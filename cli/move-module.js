@@ -21,8 +21,14 @@ async function moveModule(options = {}) {
       process.exit(1);
     }
     targetPosition = parseInt(options.position, 10);
-    if (isNaN(targetPosition) || targetPosition < 1 || targetPosition > modules.length) {
-      console.error(`[move-module] Error: Position must be between 1 and ${modules.length}.`);
+    if (
+      isNaN(targetPosition) ||
+      targetPosition < 1 ||
+      targetPosition > modules.length
+    ) {
+      console.error(
+        `[move-module] Error: Position must be between 1 and ${modules.length}.`,
+      );
       process.exit(1);
     }
   } else {
@@ -45,14 +51,23 @@ async function moveModule(options = {}) {
       const prefix = parseInt(sourceStr, 10);
       sourceModule = modules.find((m) => m.prefix === prefix);
       if (sourceModule) break;
-      console.log(`  No module found with number ${sourceStr}. Please try again.`);
+      console.log(
+        `  No module found with number ${sourceStr}. Please try again.`,
+      );
     }
 
     while (true) {
       const targetStr = await prompt(rl, 'New position');
       targetPosition = parseInt(targetStr, 10);
-      if (!isNaN(targetPosition) && targetPosition >= 1 && targetPosition <= modules.length) break;
-      console.log(`  Position must be between 1 and ${modules.length}. Please try again.`);
+      if (
+        !isNaN(targetPosition) &&
+        targetPosition >= 1 &&
+        targetPosition <= modules.length
+      )
+        break;
+      console.log(
+        `  Position must be between 1 and ${modules.length}. Please try again.`,
+      );
     }
     rl.close();
   }
@@ -69,7 +84,12 @@ async function moveModule(options = {}) {
     isDirectory: true,
   }));
 
-  const renames = reorder(COURSE_DIR, entries, sourceModule.prefix, targetPosition);
+  const renames = reorder(
+    COURSE_DIR,
+    entries,
+    sourceModule.prefix,
+    targetPosition,
+  );
 
   if (renames.length > 0) {
     console.log('[move-module] Reordered modules:');

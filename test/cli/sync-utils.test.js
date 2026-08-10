@@ -18,8 +18,11 @@ describe('itemKey', () => {
 
   it('keys external URLs on the URL (module-item ids change every push)', () => {
     assert.equal(
-      itemKey('external_url', { canvasId: 42, externalUrl: 'https://example.com' }),
-      'external_url:https://example.com'
+      itemKey('external_url', {
+        canvasId: 42,
+        externalUrl: 'https://example.com',
+      }),
+      'external_url:https://example.com',
     );
   });
 
@@ -37,9 +40,17 @@ describe('migrateV2toV3', () => {
       '01-intro': {
         canvas_module_id: 100,
         items: {
-          '01-intro/01-welcome.md': { canvas_id: 'welcome', canvas_type: 'page', page_url: 'welcome' },
+          '01-intro/01-welcome.md': {
+            canvas_id: 'welcome',
+            canvas_type: 'page',
+            page_url: 'welcome',
+          },
           '01-intro/02-hw.md': { canvas_id: 500, canvas_type: 'assignment' },
-          '01-intro/03-link.md': { canvas_id: 7, canvas_type: 'external_url', external_url: 'https://example.com' },
+          '01-intro/03-link.md': {
+            canvas_id: 7,
+            canvas_type: 'external_url',
+            external_url: 'https://example.com',
+          },
         },
       },
       '02-empty-shell': {
@@ -49,7 +60,12 @@ describe('migrateV2toV3', () => {
       },
     },
     icons: { note: { canvas_file_id: 1 } },
-    files: { '01-intro/_files/a.png': { canvas_file_id: 9, canvas_url: '/courses/42/files/9/preview' } },
+    files: {
+      '01-intro/_files/a.png': {
+        canvas_file_id: 9,
+        canvas_url: '/courses/42/files/9/preview',
+      },
+    },
     last_sync: '2026-01-01T00:00:00Z',
   };
 
@@ -66,7 +82,10 @@ describe('migrateV2toV3', () => {
     assert.equal(items['page:welcome'].path, '01-intro/01-welcome.md');
     assert.equal(items['page:welcome'].page_url, 'welcome');
     assert.equal(items['assignment:500'].path, '01-intro/02-hw.md');
-    assert.equal(items['external_url:https://example.com'].path, '01-intro/03-link.md');
+    assert.equal(
+      items['external_url:https://example.com'].path,
+      '01-intro/03-link.md',
+    );
   });
 
   it('drops module entries without canvas_module_id', () => {

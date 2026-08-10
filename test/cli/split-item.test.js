@@ -44,17 +44,26 @@ describe('_splitFile', () => {
   });
 
   it('splits file at the given body line', () => {
-    createMdFile(tmpDir, '01-original.md', { title: 'Original' }, 'Line 1\nLine 2\nLine 3\nLine 4');
+    createMdFile(
+      tmpDir,
+      '01-original.md',
+      { title: 'Original' },
+      'Line 1\nLine 2\nLine 3\nLine 4',
+    );
 
     _splitFile(path.join(tmpDir, '01-original.md'), 2, 'Part Two', tmpDir);
 
-    const original = matter(fs.readFileSync(path.join(tmpDir, '01-original.md'), 'utf8'));
+    const original = matter(
+      fs.readFileSync(path.join(tmpDir, '01-original.md'), 'utf8'),
+    );
     const originalBody = original.content.trim();
     assert.ok(originalBody.includes('Line 1'));
     assert.ok(originalBody.includes('Line 2'));
     assert.ok(!originalBody.includes('Line 3'));
 
-    const newFile = matter(fs.readFileSync(path.join(tmpDir, '02-part-two.md'), 'utf8'));
+    const newFile = matter(
+      fs.readFileSync(path.join(tmpDir, '02-part-two.md'), 'utf8'),
+    );
     const newBody = newFile.content.trim();
     assert.ok(newBody.includes('Line 3'));
     assert.ok(newBody.includes('Line 4'));
@@ -66,12 +75,14 @@ describe('_splitFile', () => {
       tmpDir,
       '01-original.md',
       { title: 'Original', canvas_type: 'page', canvas_id: 'original-page' },
-      'Line 1\nLine 2\nLine 3'
+      'Line 1\nLine 2\nLine 3',
     );
 
     _splitFile(path.join(tmpDir, '01-original.md'), 1, 'Part Two', tmpDir);
 
-    const original = matter(fs.readFileSync(path.join(tmpDir, '01-original.md'), 'utf8'));
+    const original = matter(
+      fs.readFileSync(path.join(tmpDir, '01-original.md'), 'utf8'),
+    );
     assert.equal(original.data.title, 'Original');
     assert.equal(original.data.canvas_type, 'page');
     assert.equal(original.data.canvas_id, 'original-page');
@@ -82,12 +93,14 @@ describe('_splitFile', () => {
       tmpDir,
       '01-original.md',
       { title: 'Original', canvas_type: 'page', canvas_id: 'original-page' },
-      'Line 1\nLine 2\nLine 3'
+      'Line 1\nLine 2\nLine 3',
     );
 
     _splitFile(path.join(tmpDir, '01-original.md'), 1, 'New Title', tmpDir);
 
-    const newFile = matter(fs.readFileSync(path.join(tmpDir, '02-new-title.md'), 'utf8'));
+    const newFile = matter(
+      fs.readFileSync(path.join(tmpDir, '02-new-title.md'), 'utf8'),
+    );
     assert.equal(newFile.data.title, 'New Title');
     assert.equal(newFile.data.canvas_type, 'page');
     assert.equal(newFile.data.canvas_id, undefined);
@@ -110,15 +123,24 @@ describe('_splitFile', () => {
   });
 
   it('handles split at last line minus one', () => {
-    createMdFile(tmpDir, '01-original.md', { title: 'Original' }, 'Line 1\nLine 2\nLine 3');
+    createMdFile(
+      tmpDir,
+      '01-original.md',
+      { title: 'Original' },
+      'Line 1\nLine 2\nLine 3',
+    );
 
     _splitFile(path.join(tmpDir, '01-original.md'), 2, 'Last Line', tmpDir);
 
-    const original = matter(fs.readFileSync(path.join(tmpDir, '01-original.md'), 'utf8'));
+    const original = matter(
+      fs.readFileSync(path.join(tmpDir, '01-original.md'), 'utf8'),
+    );
     assert.ok(original.content.trim().includes('Line 2'));
     assert.ok(!original.content.trim().includes('Line 3'));
 
-    const newFile = matter(fs.readFileSync(path.join(tmpDir, '02-last-line.md'), 'utf8'));
+    const newFile = matter(
+      fs.readFileSync(path.join(tmpDir, '02-last-line.md'), 'utf8'),
+    );
     assert.ok(newFile.content.trim().includes('Line 3'));
   });
 });

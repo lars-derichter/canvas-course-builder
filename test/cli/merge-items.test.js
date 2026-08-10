@@ -45,13 +45,13 @@ describe('_mergeFiles', () => {
       tmpDir,
       '01-first.md',
       { title: 'First', canvas_type: 'page', canvas_id: 'first-page' },
-      'Content A'
+      'Content A',
     );
     createMdFile(
       tmpDir,
       '02-second.md',
       { title: 'Second', canvas_type: 'assignment', canvas_id: 42 },
-      'Content B'
+      'Content B',
     );
 
     const targetPath = path.join(tmpDir, '01-first.md');
@@ -71,7 +71,7 @@ describe('_mergeFiles', () => {
       tmpDir,
       '02-second.md',
       { title: 'Second', canvas_id: 'second-page' },
-      'Content B'
+      'Content B',
     );
 
     const targetPath = path.join(tmpDir, '01-first.md');
@@ -81,7 +81,9 @@ describe('_mergeFiles', () => {
 
     const parsed = matter(fs.readFileSync(targetPath, 'utf8'));
     assert.equal(parsed.data.title, 'First');
-    assert.ok(!parsed.data.canvas_id || parsed.data.canvas_id !== 'second-page');
+    assert.ok(
+      !parsed.data.canvas_id || parsed.data.canvas_id !== 'second-page',
+    );
   });
 
   it('deletes the source file', () => {

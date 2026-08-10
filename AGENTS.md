@@ -86,18 +86,18 @@ Three layers:
   `lib/config/course-config.js`:
   - `language` drives every generated student-facing label (alert titles,
     link/file cards, export labels, glossary) and the Docusaurus locale;
-    built-in `en`/`nl` label sets live in `lib/config/labels.js`, with
-    optional per-label `labels:` overrides. Also the machine-readable answer
-    to "what language is this course in".
-  - `theme` selects a CSS file of `--ccb-*` design tokens from
-    `src/css/themes/` (or a path). It is the **single source of truth for
-    colour**: `lib/config/theme.js` parses it, and the preview site, Canvas
-    HTML (`lib/convert/markdown-to-html.js`), the alert icons
-    (`lib/canvas/icons.js`, `src/plugins/remark-gfm-alerts.js`) and PDF
-    exports all read it. Never hardcode a colour in those files. DOCX is the
-    exception — its colours live in the style's `reference.docx`.
-  - `export.style` selects a folder from `export-styles/` (or a path) that
-    owns PDF/DOCX typography, margins, cover and bundled fonts. Resolved by
+    built-in `en`/`nl` label sets live in `lib/config/labels.js`, with optional
+    per-label `labels:` overrides. Also the machine-readable answer to "what
+    language is this course in".
+  - `theme` selects a CSS file of `--ccb-*` design tokens from `src/css/themes/`
+    (or a path). It is the **single source of truth for colour**:
+    `lib/config/theme.js` parses it, and the preview site, Canvas HTML
+    (`lib/convert/markdown-to-html.js`), the alert icons (`lib/canvas/icons.js`,
+    `src/plugins/remark-gfm-alerts.js`) and PDF exports all read it. Never
+    hardcode a colour in those files. DOCX is the exception — its colours live
+    in the style's `reference.docx`.
+  - `export.style` selects a folder from `export-styles/` (or a path) that owns
+    PDF/DOCX typography, margins, cover and bundled fonts. Resolved by
     `lib/export/style-resolver.js`, which also honours per-file overrides in
     `sources/export-style/` and a `--style` flag.
 

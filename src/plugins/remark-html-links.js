@@ -99,7 +99,8 @@ function remarkHtmlLinks() {
     const frontMatter = (vfile.data && vfile.data.frontMatter) || {};
     const forceDownload = frontMatter.download === true;
     const isServer = vfile.data && vfile.data.compilerName === 'server';
-    const fileLoader = getFileLoaderUtils(isServer).loaders.inlineMarkdownLinkFileLoader;
+    const fileLoader =
+      getFileLoaderUtils(isServer).loaders.inlineMarkdownLinkFileLoader;
     const sourceDir = path.dirname(vfile.path);
 
     const links = [];
@@ -126,23 +127,43 @@ function remarkHtmlLinks() {
       const fileName = path.basename(pathname);
 
       const attributes = [
-        { type: 'mdxJsxAttribute', name: 'href', value: requireAttributeValue(requireString) },
+        {
+          type: 'mdxJsxAttribute',
+          name: 'href',
+          value: requireAttributeValue(requireString),
+        },
         // Assets are required through webpack, not routes — don't flag them.
-        { type: 'mdxJsxAttribute', name: 'data-noBrokenLinkCheck', value: 'true' },
+        {
+          type: 'mdxJsxAttribute',
+          name: 'data-noBrokenLinkCheck',
+          value: 'true',
+        },
       ];
       if (forceDownload) {
         // A named download forces the browser to save the file (rather than
         // render the HTML) and preserves the original filename instead of the
         // content-hashed one file-loader emits.
-        attributes.push({ type: 'mdxJsxAttribute', name: 'download', value: fileName });
+        attributes.push({
+          type: 'mdxJsxAttribute',
+          name: 'download',
+          value: fileName,
+        });
       } else {
         attributes.push(
           { type: 'mdxJsxAttribute', name: 'target', value: '_blank' },
-          { type: 'mdxJsxAttribute', name: 'rel', value: 'noopener noreferrer' },
+          {
+            type: 'mdxJsxAttribute',
+            name: 'rel',
+            value: 'noopener noreferrer',
+          },
         );
       }
       if (node.title) {
-        attributes.push({ type: 'mdxJsxAttribute', name: 'title', value: node.title });
+        attributes.push({
+          type: 'mdxJsxAttribute',
+          name: 'title',
+          value: node.title,
+        });
       }
 
       parent.children[index] = {

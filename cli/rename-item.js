@@ -1,8 +1,19 @@
 const fs = require('fs');
 const path = require('path');
 const matter = require('gray-matter');
-const { prompt, pad, toSlug, createRL, safeReadJSON } = require('./module-utils');
-const { getItems, printItems, selectModule, selectTargetDir } = require('./item-utils');
+const {
+  prompt,
+  pad,
+  toSlug,
+  createRL,
+  safeReadJSON,
+} = require('./module-utils');
+const {
+  getItems,
+  printItems,
+  selectModule,
+  selectTargetDir,
+} = require('./item-utils');
 
 /**
  * Core rename: renames a file or subsection folder inside targetDir,
@@ -65,8 +76,14 @@ async function renameItem(options = {}) {
       process.exit(1);
     }
     const targetDir = path.dirname(itemPath);
-    const newEntryName = renameEntry(targetDir, path.basename(itemPath), options.name);
-    console.log(`[rename-item] Renamed ${path.basename(itemPath)} -> ${newEntryName}`);
+    const newEntryName = renameEntry(
+      targetDir,
+      path.basename(itemPath),
+      options.name,
+    );
+    console.log(
+      `[rename-item] Renamed ${path.basename(itemPath)} -> ${newEntryName}`,
+    );
     return;
   }
 
@@ -92,7 +109,9 @@ async function renameItem(options = {}) {
 
   if (!item) {
     rl.close();
-    console.error(`[rename-item] Error: No item found with number ${sourceStr}.`);
+    console.error(
+      `[rename-item] Error: No item found with number ${sourceStr}.`,
+    );
     process.exit(1);
   }
 

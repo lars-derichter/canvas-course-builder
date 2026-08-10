@@ -28,7 +28,10 @@ function transform(tree, frontMatter, options) {
 describe('remarkExternalUrl', () => {
   it('replaces document body with a link card for external_url pages', () => {
     const tree = makeTree([
-      { type: 'paragraph', children: [{ type: 'text', value: 'Some body text.' }] },
+      {
+        type: 'paragraph',
+        children: [{ type: 'text', value: 'Some body text.' }],
+      },
     ]);
     transform(tree, {
       canvas_type: 'external_url',
@@ -101,7 +104,10 @@ describe('remarkExternalUrl', () => {
   });
 
   it('leaves non-external_url pages unchanged', () => {
-    const body = { type: 'paragraph', children: [{ type: 'text', value: 'Hello.' }] };
+    const body = {
+      type: 'paragraph',
+      children: [{ type: 'text', value: 'Hello.' }],
+    };
     const tree = makeTree([body]);
     transform(tree, { canvas_type: 'page' });
 
@@ -111,7 +117,10 @@ describe('remarkExternalUrl', () => {
   });
 
   it('leaves pages without canvas_type unchanged', () => {
-    const body = { type: 'paragraph', children: [{ type: 'text', value: 'Hello.' }] };
+    const body = {
+      type: 'paragraph',
+      children: [{ type: 'text', value: 'Hello.' }],
+    };
     const tree = makeTree([body]);
     transform(tree, { title: 'Some page' });
 
@@ -120,7 +129,10 @@ describe('remarkExternalUrl', () => {
   });
 
   it('leaves pages without frontmatter unchanged', () => {
-    const body = { type: 'paragraph', children: [{ type: 'text', value: 'Hello.' }] };
+    const body = {
+      type: 'paragraph',
+      children: [{ type: 'text', value: 'Hello.' }],
+    };
     const tree = makeTree([body]);
 
     const plugin = remarkExternalUrl();
@@ -131,7 +143,10 @@ describe('remarkExternalUrl', () => {
   });
 
   it('skips external_url pages missing the external_url field', () => {
-    const body = { type: 'paragraph', children: [{ type: 'text', value: 'Hello.' }] };
+    const body = {
+      type: 'paragraph',
+      children: [{ type: 'text', value: 'Hello.' }],
+    };
     const tree = makeTree([body]);
     transform(tree, { canvas_type: 'external_url' });
 
@@ -143,7 +158,11 @@ describe('remarkExternalUrl', () => {
     const tree = makeTree([
       { type: 'paragraph', children: [{ type: 'text', value: 'First.' }] },
       { type: 'paragraph', children: [{ type: 'text', value: 'Second.' }] },
-      { type: 'heading', depth: 2, children: [{ type: 'text', value: 'Heading' }] },
+      {
+        type: 'heading',
+        depth: 2,
+        children: [{ type: 'text', value: 'Heading' }],
+      },
     ]);
     transform(tree, {
       canvas_type: 'external_url',

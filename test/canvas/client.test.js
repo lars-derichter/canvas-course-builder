@@ -5,7 +5,13 @@ const assert = require('node:assert/strict');
 process.env.CANVAS_API_URL = 'https://canvas.example.com';
 process.env.CANVAS_API_TOKEN = 'test-token-123';
 
-const { canvasRequest, get, post, put, del } = require('../../lib/canvas/client');
+const {
+  canvasRequest,
+  get,
+  post,
+  put,
+  del,
+} = require('../../lib/canvas/client');
 
 /**
  * Helper: create a fake Response object compatible with the fetch API.
@@ -38,7 +44,7 @@ describe('canvasRequest', () => {
   describe('successful requests', () => {
     it('makes a GET request with correct URL and headers', async () => {
       fetchMock = mock.method(global, 'fetch', async () =>
-        fakeResponse({ id: 1, name: 'Test' })
+        fakeResponse({ id: 1, name: 'Test' }),
       );
 
       const result = await canvasRequest('GET', '/api/v1/courses/42');
@@ -57,11 +63,15 @@ describe('canvasRequest', () => {
 
     it('makes a POST request with JSON body', async () => {
       fetchMock = mock.method(global, 'fetch', async () =>
-        fakeResponse({ id: 99, title: 'New Page' }, { status: 201 })
+        fakeResponse({ id: 99, title: 'New Page' }, { status: 201 }),
       );
 
       const body = { wiki_page: { title: 'New Page', body: '<p>Hello</p>' } };
-      const result = await canvasRequest('POST', '/api/v1/courses/42/pages', body);
+      const result = await canvasRequest(
+        'POST',
+        '/api/v1/courses/42/pages',
+        body,
+      );
 
       assert.deepEqual(result, { id: 99, title: 'New Page' });
       assert.equal(fetchMock.mock.calls.length, 1);
@@ -74,10 +84,12 @@ describe('canvasRequest', () => {
 
     it('makes a PUT request with JSON body', async () => {
       fetchMock = mock.method(global, 'fetch', async () =>
-        fakeResponse({ id: 99, title: 'Updated' })
+        fakeResponse({ id: 99, title: 'Updated' }),
       );
 
-      const result = await put('/api/v1/courses/42/pages/slug', { wiki_page: { title: 'Updated' } });
+      const result = await put('/api/v1/courses/42/pages/slug', {
+        wiki_page: { title: 'Updated' },
+      });
       assert.deepEqual(result, { id: 99, title: 'Updated' });
 
       const [, opts] = fetchMock.mock.calls[0].arguments;
@@ -86,7 +98,7 @@ describe('canvasRequest', () => {
 
     it('returns null for 204 No Content (DELETE)', async () => {
       fetchMock = mock.method(global, 'fetch', async () =>
-        fakeResponse(null, { status: 204 })
+        fakeResponse(null, { status: 204 }),
       );
 
       const result = await del('/api/v1/courses/42/pages/slug');
@@ -95,7 +107,7 @@ describe('canvasRequest', () => {
 
     it('uses full URL when path starts with http', async () => {
       fetchMock = mock.method(global, 'fetch', async () =>
-        fakeResponse({ id: 1 })
+        fakeResponse({ id: 1 }),
       );
 
       await canvasRequest('GET', 'https://other.example.com/api/v1/courses/1');
@@ -157,7 +169,7 @@ describe('canvasRequest', () => {
   describe('max retries exceeded', () => {
     it('throws after exhausting all retry attempts on 5xx', async () => {
       fetchMock = mock.method(global, 'fetch', async () =>
-        fakeResponse('Service Unavailable', { status: 503 })
+        fakeResponse('Service Unavailable', { status: 503 }),
       );
 
       await assert.rejects(
@@ -165,7 +177,7 @@ describe('canvasRequest', () => {
         (err) => {
           assert.match(err.message, /failed with status 503/);
           return true;
-        }
+        },
       );
       // 1 initial + 3 retries = 4 attempts
       assert.equal(fetchMock.mock.calls.length, 4);
@@ -173,7 +185,7 @@ describe('canvasRequest', () => {
 
     it('throws after exhausting all retry attempts on 429', async () => {
       fetchMock = mock.method(global, 'fetch', async () =>
-        fakeResponse('Too Many Requests', { status: 429 })
+        fakeResponse('Too Many Requests', { status: 429 }),
       );
 
       await assert.rejects(
@@ -181,7 +193,7 @@ describe('canvasRequest', () => {
         (err) => {
           assert.match(err.message, /failed with status 429/);
           return true;
-        }
+        },
       );
       assert.equal(fetchMock.mock.calls.length, 4);
     });
@@ -197,7 +209,7 @@ describe('canvasRequest', () => {
           assert.match(err.message, /failed after 4 attempt/);
           assert.match(err.message, /ECONNRESET/);
           return true;
-        }
+        },
       );
       assert.equal(fetchMock.mock.calls.length, 4);
     });
@@ -208,12 +220,13 @@ describe('canvasRequest', () => {
       });
 
       await assert.rejects(
-        () => canvasRequest('POST', '/api/v1/courses/42/pages', { wiki_page: {} }),
+        () =>
+          canvasRequest('POST', '/api/v1/courses/42/pages', { wiki_page: {} }),
         (err) => {
           assert.match(err.message, /failed after 1 attempt/);
           assert.match(err.message, /ECONNRESET/);
           return true;
-        }
+        },
       );
       assert.equal(fetchMock.mock.calls.length, 1);
     });
@@ -222,7 +235,7 @@ describe('canvasRequest', () => {
   describe('non-retryable errors', () => {
     it('throws immediately on 404', async () => {
       fetchMock = mock.method(global, 'fetch', async () =>
-        fakeResponse('Not Found', { status: 404 })
+        fakeResponse('Not Found', { status: 404 }),
       );
 
       await assert.rejects(
@@ -230,7 +243,7 @@ describe('canvasRequest', () => {
         (err) => {
           assert.match(err.message, /failed with status 404/);
           return true;
-        }
+        },
       );
       // No retries for 404
       assert.equal(fetchMock.mock.calls.length, 1);
@@ -238,7 +251,7 @@ describe('canvasRequest', () => {
 
     it('throws immediately on 401', async () => {
       fetchMock = mock.method(global, 'fetch', async () =>
-        fakeResponse('Unauthorized', { status: 401 })
+        fakeResponse('Unauthorized', { status: 401 }),
       );
 
       await assert.rejects(
@@ -246,7 +259,7 @@ describe('canvasRequest', () => {
         (err) => {
           assert.match(err.message, /failed with status 401/);
           return true;
-        }
+        },
       );
       assert.equal(fetchMock.mock.calls.length, 1);
     });
@@ -276,20 +289,32 @@ describe('canvasRequest', () => {
       });
 
       const result = await canvasRequest('GET', '/api/v1/courses/42/modules');
-      assert.deepEqual(result, [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }, { id: 5 }]);
+      assert.deepEqual(result, [
+        { id: 1 },
+        { id: 2 },
+        { id: 3 },
+        { id: 4 },
+        { id: 5 },
+      ]);
       assert.equal(fetchMock.mock.calls.length, 3);
     });
 
     it('does not paginate when response is not an array', async () => {
       fetchMock = mock.method(global, 'fetch', async () =>
-        fakeResponse({ id: 1, name: 'Single Object' }, {
-          headers: {
-            link: '<https://canvas.example.com/api/v1/next>; rel="next"',
+        fakeResponse(
+          { id: 1, name: 'Single Object' },
+          {
+            headers: {
+              link: '<https://canvas.example.com/api/v1/next>; rel="next"',
+            },
           },
-        })
+        ),
       );
 
-      const result = await canvasRequest('GET', '/api/v1/courses/42/pages/slug');
+      const result = await canvasRequest(
+        'GET',
+        '/api/v1/courses/42/pages/slug',
+      );
       assert.deepEqual(result, { id: 1, name: 'Single Object' });
       // Only 1 call — no pagination for non-array responses
       assert.equal(fetchMock.mock.calls.length, 1);
@@ -297,7 +322,7 @@ describe('canvasRequest', () => {
 
     it('does not paginate when no Link header is present', async () => {
       fetchMock = mock.method(global, 'fetch', async () =>
-        fakeResponse([{ id: 1 }])
+        fakeResponse([{ id: 1 }]),
       );
 
       const result = await canvasRequest('GET', '/api/v1/courses/42/modules');
@@ -333,9 +358,12 @@ describe('canvasRequest', () => {
   describe('rate limit awareness', () => {
     it('does not delay when rate limit remaining is above threshold', async () => {
       fetchMock = mock.method(global, 'fetch', async () =>
-        fakeResponse({ id: 1 }, {
-          headers: { 'x-rate-limit-remaining': '100' },
-        })
+        fakeResponse(
+          { id: 1 },
+          {
+            headers: { 'x-rate-limit-remaining': '100' },
+          },
+        ),
       );
 
       const start = Date.now();
@@ -348,9 +376,12 @@ describe('canvasRequest', () => {
 
     it('delays when rate limit remaining is below threshold', async () => {
       fetchMock = mock.method(global, 'fetch', async () =>
-        fakeResponse({ id: 1 }, {
-          headers: { 'x-rate-limit-remaining': '10' },
-        })
+        fakeResponse(
+          { id: 1 },
+          {
+            headers: { 'x-rate-limit-remaining': '10' },
+          },
+        ),
       );
 
       const start = Date.now();
@@ -358,14 +389,17 @@ describe('canvasRequest', () => {
       const elapsed = Date.now() - start;
 
       // Should have slept ~1000ms due to rate limit
-      assert.ok(elapsed >= 900, `Expected rate limit delay but only took ${elapsed}ms`);
+      assert.ok(
+        elapsed >= 900,
+        `Expected rate limit delay but only took ${elapsed}ms`,
+      );
     });
   });
 
   describe('convenience wrappers', () => {
     it('get() calls canvasRequest with GET', async () => {
       fetchMock = mock.method(global, 'fetch', async () =>
-        fakeResponse({ id: 1 })
+        fakeResponse({ id: 1 }),
       );
 
       const result = await get('/api/v1/courses/42');
@@ -377,7 +411,7 @@ describe('canvasRequest', () => {
 
     it('post() calls canvasRequest with POST', async () => {
       fetchMock = mock.method(global, 'fetch', async () =>
-        fakeResponse({ id: 1 })
+        fakeResponse({ id: 1 }),
       );
 
       await post('/api/v1/courses/42/pages', { title: 'Test' });
@@ -389,7 +423,7 @@ describe('canvasRequest', () => {
 
     it('del() calls canvasRequest with DELETE', async () => {
       fetchMock = mock.method(global, 'fetch', async () =>
-        fakeResponse(null, { status: 204 })
+        fakeResponse(null, { status: 204 }),
       );
 
       const result = await del('/api/v1/courses/42/pages/slug');
@@ -406,7 +440,7 @@ describe('canvasRequest', () => {
       process.env.CANVAS_API_URL = 'https://canvas.example.com///';
 
       fetchMock = mock.method(global, 'fetch', async () =>
-        fakeResponse({ id: 1 })
+        fakeResponse({ id: 1 }),
       );
 
       await canvasRequest('GET', '/api/v1/courses/42');

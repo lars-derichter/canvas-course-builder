@@ -73,10 +73,10 @@
   /* --- Typography -------------------------------------------------------- */
   /* Site only. PDF and DOCX typography belongs to the export style — see
      export-styles/<style>/template.typ. */
-  --ccb-font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica,
-    Arial, sans-serif;
-  --ccb-font-mono: ui-monospace, Menlo, Consolas, 'DejaVu Sans Mono',
-    'Courier New', monospace;
+  --ccb-font-sans:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+  --ccb-font-mono:
+    ui-monospace, Menlo, Consolas, 'DejaVu Sans Mono', 'Courier New', monospace;
   --ccb-font-size-base: 1.05rem;
   --ccb-font-weight-base: 400;
   --ccb-heading-font-weight: 600;

@@ -39,7 +39,10 @@ function toFileSlug(name) {
 function computeRelativePath(folderName, filePath, courseDir) {
   return path.posix.join(
     folderName,
-    path.relative(path.join(courseDir, folderName), filePath).split(path.sep).join('/')
+    path
+      .relative(path.join(courseDir, folderName), filePath)
+      .split(path.sep)
+      .join('/'),
   );
 }
 

@@ -15,19 +15,18 @@ below come from elsewhere and keep the licence of their own authors.
   from [GitHub Octicons](https://primer.style/octicons/), © GitHub, Inc., under
   the MIT licence. Full text in `src/svg-icons/LICENSE-octicons.txt`.
 - `src/svg-icons/check.svg` — the `task_alt` symbol from
-  [Google Material Symbols](https://fonts.google.com/icons), © Google, under
-  the Apache License 2.0. Full text in
-  `src/svg-icons/LICENSE-material-symbols.txt`. It covers this project's own
-  `[!CHECK]` alert, which GitHub has no icon for.
+  [Google Material Symbols](https://fonts.google.com/icons), © Google, under the
+  Apache License 2.0. Full text in `src/svg-icons/LICENSE-material-symbols.txt`.
+  It covers this project's own `[!CHECK]` alert, which GitHub has no icon for.
 
-The alert icons are uploaded to your Canvas course as files and embedded in
-PDF exports, so those notices travel with the icons.
+The alert icons are uploaded to your Canvas course as files and embedded in PDF
+exports, so those notices travel with the icons.
 
 ## Property of their owners
 
-These ship as a worked example of institutional branding, in the
-`thomas-more` export style and theme. They are covered by **neither** of this
-repository's licences.
+These ship as a worked example of institutional branding, in the `thomas-more`
+export style and theme. They are covered by **neither** of this repository's
+licences.
 
 - `export-styles/thomas-more/logo.png` — the logo of Thomas More University of
   Applied Sciences, a trademark of Thomas More. Used as the example cover mark
@@ -46,11 +45,11 @@ repository's licences.
   from Google Fonts for the preview site. Both are licensed under the SIL Open
   Font License 1.1 and are fetched at runtime rather than bundled here.
 
-Neither the `thomas-more` style nor the `thomas-more` theme is the default —
-the shipped defaults (`generic` and `github`) are brand-neutral. When you
-build your own course, point `theme:` and `export.style:` in
-`course.config.yml` at your institution's colours, fonts and logo;
+Neither the `thomas-more` style nor the `thomas-more` theme is the default — the
+shipped defaults (`generic` and `github`) are brand-neutral. When you build your
+own course, point `theme:` and `export.style:` in `course.config.yml` at your
+institution's colours, fonts and logo;
 [docs/customization.md](docs/customization.md) explains how.
 
-If you add a font or logo of your own to a style, check that its licence
-permits redistribution before committing it, and record it here.
+If you add a font or logo of your own to a style, check that its licence permits
+redistribution before committing it, and record it here.

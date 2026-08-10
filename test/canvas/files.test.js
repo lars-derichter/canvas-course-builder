@@ -14,9 +14,18 @@ describe('detectContentType', () => {
 
   it('detects document types', () => {
     assert.equal(detectContentType('doc.pdf'), 'application/pdf');
-    assert.equal(detectContentType('doc.docx'), 'application/vnd.openxmlformats-officedocument.wordprocessingml.document');
-    assert.equal(detectContentType('sheet.xlsx'), 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    assert.equal(detectContentType('slides.pptx'), 'application/vnd.openxmlformats-officedocument.presentationml.presentation');
+    assert.equal(
+      detectContentType('doc.docx'),
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    );
+    assert.equal(
+      detectContentType('sheet.xlsx'),
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+    assert.equal(
+      detectContentType('slides.pptx'),
+      'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+    );
   });
 
   it('detects text and code types', () => {
@@ -52,16 +61,35 @@ describe('detectContentType', () => {
 
   it('handles full paths', () => {
     assert.equal(detectContentType('/path/to/file.png'), 'image/png');
-    assert.equal(detectContentType('some/nested/dir/doc.pdf'), 'application/pdf');
+    assert.equal(
+      detectContentType('some/nested/dir/doc.pdf'),
+      'application/pdf',
+    );
   });
 });
 
 describe('MIME_TYPES', () => {
   it('contains entries for all common extensions', () => {
     const expectedExtensions = [
-      '.pdf', '.png', '.jpg', '.jpeg', '.gif', '.svg',
-      '.doc', '.docx', '.xls', '.xlsx', '.ppt', '.pptx',
-      '.mp4', '.mp3', '.zip', '.json', '.csv', '.txt', '.html',
+      '.pdf',
+      '.png',
+      '.jpg',
+      '.jpeg',
+      '.gif',
+      '.svg',
+      '.doc',
+      '.docx',
+      '.xls',
+      '.xlsx',
+      '.ppt',
+      '.pptx',
+      '.mp4',
+      '.mp3',
+      '.zip',
+      '.json',
+      '.csv',
+      '.txt',
+      '.html',
     ];
     for (const ext of expectedExtensions) {
       assert.ok(MIME_TYPES[ext], `Missing MIME type for ${ext}`);

@@ -1,7 +1,13 @@
 const fs = require('fs');
 const path = require('path');
 const { prompt, createRL, COURSE_DIR } = require('./module-utils');
-const { getItems, printItems, selectModule, selectTargetDir, removeFromSyncState } = require('./item-utils');
+const {
+  getItems,
+  printItems,
+  selectModule,
+  selectTargetDir,
+  removeFromSyncState,
+} = require('./item-utils');
 const { renumberSequential } = require('./renumber');
 
 /**
@@ -50,7 +56,9 @@ async function deleteItem(options = {}) {
   // there is no prompt to confirm.
   if (options.path) {
     if (!options.yes) {
-      console.error('[delete-item] Error: --path requires --yes to confirm deletion.');
+      console.error(
+        '[delete-item] Error: --path requires --yes to confirm deletion.',
+      );
       process.exit(1);
     }
     const itemPath = path.resolve(options.path);
@@ -60,7 +68,9 @@ async function deleteItem(options = {}) {
     }
     const folderName = moduleFolderOf(itemPath);
     if (!folderName) {
-      console.error('[delete-item] Error: Path is not inside the course/ directory.');
+      console.error(
+        '[delete-item] Error: Path is not inside the course/ directory.',
+      );
       process.exit(1);
     }
     deleteEntry(path.dirname(itemPath), path.basename(itemPath), folderName);
@@ -89,11 +99,15 @@ async function deleteItem(options = {}) {
 
   if (!item) {
     rl.close();
-    console.error(`[delete-item] Error: No item found with number ${sourceStr}.`);
+    console.error(
+      `[delete-item] Error: No item found with number ${sourceStr}.`,
+    );
     process.exit(1);
   }
 
-  const label = item.isDirectory ? `${item.name}/ and all its contents` : item.name;
+  const label = item.isDirectory
+    ? `${item.name}/ and all its contents`
+    : item.name;
   const confirm = await prompt(rl, `Delete ${label}? (y/N)`, 'N');
   rl.close();
 

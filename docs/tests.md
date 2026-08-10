@@ -1,7 +1,8 @@
 # Tests
 
-The project uses the built-in [Node.js test runner](https://nodejs.org/api/test.html)
-(`node:test` + `node:assert`) — no extra dependencies required.
+The project uses the built-in
+[Node.js test runner](https://nodejs.org/api/test.html) (`node:test` +
+`node:assert`) — no extra dependencies required.
 
 ## Running tests
 
@@ -12,22 +13,21 @@ npm test
 ## Test structure
 
 Tests live in `test/` and mirror the layout of the source directories they
-cover: `test/canvas/` for `lib/canvas/`, `test/cli/` for `cli/`,
-`test/config/` for `lib/config/`, `test/convert/` for `lib/convert/`,
-`test/export/` for `lib/export/`, `test/plugins/` for `src/plugins/`, and
-`test/vscode/` for the bundled VS Code extension. Each file is named after
-what it covers, e.g. `test/convert/course-scanner.test.js` or
-`test/cli/push-helpers.test.js`.
+cover: `test/canvas/` for `lib/canvas/`, `test/cli/` for `cli/`, `test/config/`
+for `lib/config/`, `test/convert/` for `lib/convert/`, `test/export/` for
+`lib/export/`, `test/plugins/` for `src/plugins/`, and `test/vscode/` for the
+bundled VS Code extension. Each file is named after what it covers, e.g.
+`test/convert/course-scanner.test.js` or `test/cli/push-helpers.test.js`.
 
 Coverage spans the config layer (`lib/config/`), the conversion layer
-(`lib/convert/`), the export layer
-(`lib/export/`), the Canvas HTTP client and helpers (`lib/canvas/`), CLI command
-helpers (`cli/`), the Docusaurus remark plugins (`src/plugins/`), and the local
-VS Code extension (`.vscode/extensions/course-manager/`). Tests that exercise
-filesystem behaviour (`course-scanner`, `merge-items`, `split-item`, `renumber`,
-`pull-helpers`) create a temporary directory with fixture files and clean it up
-afterwards. The export tests stay CI-safe by never spawning pandoc or Typst —
-`preflight` takes an injectable exec, and the rest operate on strings.
+(`lib/convert/`), the export layer (`lib/export/`), the Canvas HTTP client and
+helpers (`lib/canvas/`), CLI command helpers (`cli/`), the Docusaurus remark
+plugins (`src/plugins/`), and the local VS Code extension
+(`.vscode/extensions/course-manager/`). Tests that exercise filesystem behaviour
+(`course-scanner`, `merge-items`, `split-item`, `renumber`, `pull-helpers`)
+create a temporary directory with fixture files and clean it up afterwards. The
+export tests stay CI-safe by never spawning pandoc or Typst — `preflight` takes
+an injectable exec, and the rest operate on strings.
 
 ## Manual end-to-end checks
 

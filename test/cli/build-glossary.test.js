@@ -12,8 +12,20 @@ const {
 const { getLabels } = require('../../lib/config/labels');
 
 const TERMS = [
-  { term: 'variable', lesson: 1, kind: 'concept', synonyms: [], definition: 'A named box.' },
-  { term: 'Scanner', lesson: 1, kind: 'code', synonyms: [], definition: 'Reads input.' },
+  {
+    term: 'variable',
+    lesson: 1,
+    kind: 'concept',
+    synonyms: [],
+    definition: 'A named box.',
+  },
+  {
+    term: 'Scanner',
+    lesson: 1,
+    kind: 'code',
+    synonyms: [],
+    definition: 'Reads input.',
+  },
   {
     term: 'instance variable',
     lesson: 2,
@@ -22,8 +34,20 @@ const TERMS = [
     definition: 'Data on an object.',
     note: 'A local variable never is.',
   },
-  { term: 'boolean', lesson: 2, kind: 'code', synonyms: [], definition: 'true or false.' },
-  { term: '&&', lesson: 2, kind: 'operator', synonyms: [], definition: 'Logical and.' },
+  {
+    term: 'boolean',
+    lesson: 2,
+    kind: 'code',
+    synonyms: [],
+    definition: 'true or false.',
+  },
+  {
+    term: '&&',
+    lesson: 2,
+    kind: 'operator',
+    synonyms: [],
+    definition: 'Logical and.',
+  },
 ];
 
 describe('renderLemma', () => {
@@ -71,9 +95,16 @@ describe('renderBody', () => {
     const body = renderBody(TERMS, 2);
     // Use the unique bolded lemma tokens to avoid substring collisions
     // (e.g. "variable" is a substring of "instance variable").
-    const order = ['**`boolean`**', '**instance variable**', '**`Scanner`**', '**variable**']
-      .map((t) => body.indexOf(t));
-    assert.ok(order.every((i) => i !== -1), 'all lemmas present');
+    const order = [
+      '**`boolean`**',
+      '**instance variable**',
+      '**`Scanner`**',
+      '**variable**',
+    ].map((t) => body.indexOf(t));
+    assert.ok(
+      order.every((i) => i !== -1),
+      'all lemmas present',
+    );
     const sorted = [...order].sort((a, b) => a - b);
     assert.deepEqual(order, sorted);
   });
@@ -94,7 +125,10 @@ describe('renderBody', () => {
 describe('serializePage', () => {
   it('forces the quoted emoji title and defaults canvas_type', () => {
     const page = serializePage({}, 'BODY');
-    assert.match(page, /^---\ntitle: "📘 Glossary"\ncanvas_type: "page"\n---\n\nBODY\n$/);
+    assert.match(
+      page,
+      /^---\ntitle: "📘 Glossary"\ncanvas_type: "page"\n---\n\nBODY\n$/,
+    );
   });
 
   it('preserves existing frontmatter such as canvas_id', () => {
@@ -115,7 +149,10 @@ describe('serializePage', () => {
 
 describe('resolveLesson', () => {
   it('prefers a lesson frontmatter key on the page', () => {
-    assert.equal(resolveLesson('05-anything', { lesson: 3 }, DEFAULT_CONFIG), 3);
+    assert.equal(
+      resolveLesson('05-anything', { lesson: 3 }, DEFAULT_CONFIG),
+      3,
+    );
   });
 
   it('falls back to the module numeric prefix by default', () => {

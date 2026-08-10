@@ -40,7 +40,10 @@ function renumberSequential(dirPath, getEntries) {
     const item = items[i];
     const newPrefix = i + 1;
     const newName = item.name.replace(/^\d+/, pad(newPrefix));
-    fs.renameSync(path.join(dirPath, item._tempName), path.join(dirPath, newName));
+    fs.renameSync(
+      path.join(dirPath, item._tempName),
+      path.join(dirPath, newName),
+    );
 
     if (item.isDirectory) {
       updateCategoryPosition(dirPath, newName, newPrefix);
@@ -114,7 +117,10 @@ function reorder(dirPath, entries, sourcePrefix, targetPosition) {
     const entry = remaining[i];
     const newPrefix = i + 1;
     const newName = entry.name.replace(/^\d+/, pad(newPrefix));
-    fs.renameSync(path.join(dirPath, entry._tempName), path.join(dirPath, newName));
+    fs.renameSync(
+      path.join(dirPath, entry._tempName),
+      path.join(dirPath, newName),
+    );
 
     if (entry.isDirectory !== false) {
       updateCategoryPosition(dirPath, newName, newPrefix);

@@ -112,7 +112,11 @@ function collectIncludedPaths(groups) {
   const set = new Set();
   for (const group of groups) {
     for (const node of flattenItems(group.items)) {
-      if (node.type === 'item' && node.canvasType !== 'file' && node.canvasType !== 'external_url') {
+      if (
+        node.type === 'item' &&
+        node.canvasType !== 'file' &&
+        node.canvasType !== 'external_url'
+      ) {
         set.add(toPosix(node.relativePath));
       }
     }
@@ -156,7 +160,8 @@ function resolvePositional(p, byPath) {
 function resolveMode(paths, options, index, labels = getLabels()) {
   const { modules, byPath } = index;
   const flagged = (entry) =>
-    !options.flagged || (entry.item.frontmatter && entry.item.frontmatter.export === true);
+    !options.flagged ||
+    (entry.item.frontmatter && entry.item.frontmatter.export === true);
 
   // --toc <file>: export exactly the items listed in a TOC file, in order.
   if (options.toc) {
@@ -168,12 +173,15 @@ function resolveMode(paths, options, index, labels = getLabels()) {
     }
     const { meta, paths: tocPaths } = parseToc(text);
     const { valid, missing } = validateTocPaths(tocPaths, byPath);
-    for (const m of missing) log.warn(`[export] TOC path not found, skipping: ${m}`);
-    if (valid.length === 0) throw new Error('The TOC file lists no valid course items.');
+    for (const m of missing)
+      log.warn(`[export] TOC path not found, skipping: ${m}`);
+    if (valid.length === 0)
+      throw new Error('The TOC file lists no valid course items.');
 
     let entries = valid.map((p) => byPath.get(p));
     if (options.flagged) entries = entries.filter(flagged);
-    if (entries.length === 0) throw new Error('No TOC items matched the export.');
+    if (entries.length === 0)
+      throw new Error('No TOC items matched the export.');
 
     const groups = groupByModule(entries, modules);
     return {
@@ -197,14 +205,17 @@ function resolveMode(paths, options, index, labels = getLabels()) {
     let items = mod.items;
     if (options.flagged) {
       items = flattenItems(items).filter(
-        (n) => n.type === 'item' && n.frontmatter && n.frontmatter.export === true,
+        (n) =>
+          n.type === 'item' && n.frontmatter && n.frontmatter.export === true,
       );
     }
     if (flattenItems(items).every((n) => n.type !== 'item')) {
       throw new Error(`No items to export in module ${moduleFolder}.`);
     }
     return {
-      groups: [{ moduleTitle: mod.moduleName, moduleFolder: mod.folderName, items }],
+      groups: [
+        { moduleTitle: mod.moduleName, moduleFolder: mod.folderName, items },
+      ],
       regime: 'flat',
       defaultSlug: mod.folderName,
       defaultTitle: mod.moduleName,
@@ -226,7 +237,13 @@ function resolveMode(paths, options, index, labels = getLabels()) {
     if (entries.length === 1 && !options.flagged) {
       const e = entries[0];
       return {
-        groups: [{ moduleTitle: e.moduleName, moduleFolder: e.moduleFolder, items: [e.item] }],
+        groups: [
+          {
+            moduleTitle: e.moduleName,
+            moduleFolder: e.moduleFolder,
+            items: [e.item],
+          },
+        ],
         regime: 'bare',
         defaultSlug: path.basename(e.item.relativePath).replace(/\.md$/i, ''),
         defaultTitle: e.item.title,
@@ -245,10 +262,16 @@ function resolveMode(paths, options, index, labels = getLabels()) {
   // Nothing specified -> full course (optionally filtered by --flagged).
   let entries = [...byPath.values()];
   if (options.flagged) {
-    entries = entries.filter((e) => e.item.frontmatter && e.item.frontmatter.export === true);
+    entries = entries.filter(
+      (e) => e.item.frontmatter && e.item.frontmatter.export === true,
+    );
   }
   if (entries.length === 0) {
-    throw new Error(options.flagged ? 'No items are flagged with export: true.' : 'No course items found.');
+    throw new Error(
+      options.flagged
+        ? 'No items are flagged with export: true.'
+        : 'No course items found.',
+    );
   }
 
   if (options.flagged) {
@@ -264,7 +287,11 @@ function resolveMode(paths, options, index, labels = getLabels()) {
   // Full course: keep each module's original items (subheaders intact).
   const groups = modules
     .filter((m) => flattenItems(m.items).some((n) => n.type === 'item'))
-    .map((m) => ({ moduleTitle: m.moduleName, moduleFolder: m.folderName, items: m.items }));
+    .map((m) => ({
+      moduleTitle: m.moduleName,
+      moduleFolder: m.folderName,
+      items: m.items,
+    }));
   return {
     groups,
     regime: 'course',
@@ -286,7 +313,8 @@ async function exportCmd(paths = [], options = {}) {
   try {
     const versions = await preflight({ format });
     log.verbose(
-      `[export] pandoc ${versions.pandoc}` + (versions.typst ? `, typst ${versions.typst}` : ''),
+      `[export] pandoc ${versions.pandoc}` +
+        (versions.typst ? `, typst ${versions.typst}` : ''),
     );
   } catch (err) {
     log.error(`[export] ${err.message}`);
@@ -311,7 +339,9 @@ async function exportCmd(paths = [], options = {}) {
   log.verbose(`[export] style ${style.name}, theme ${theme.name}`);
   if (format === 'pdf') {
     const fontPaths = typstFontPaths(style.fontsDir);
-    log.verbose(`[export] font paths: ${fontPaths.join(path.delimiter) || '(system only)'}`);
+    log.verbose(
+      `[export] font paths: ${fontPaths.join(path.delimiter) || '(system only)'}`,
+    );
   }
 
   fs.mkdirSync(EXPORTS_DIR, { recursive: true });
@@ -320,9 +350,20 @@ async function exportCmd(paths = [], options = {}) {
   // every style, so pandoc needs both its own directory and the selected
   // style's on the resource path to find `![](logo.png)`.
   if (options.sample) {
-    const output = options.output || path.join(EXPORTS_DIR, `style-sample.${format}`);
-    const resourcePath = [path.dirname(style.sample), style.dir].join(path.delimiter);
-    await run(style, theme, style.sample, output, format, options, resourcePath);
+    const output =
+      options.output || path.join(EXPORTS_DIR, `style-sample.${format}`);
+    const resourcePath = [path.dirname(style.sample), style.dir].join(
+      path.delimiter,
+    );
+    await run(
+      style,
+      theme,
+      style.sample,
+      output,
+      format,
+      options,
+      resourcePath,
+    );
     log.info(`[export] Wrote ${path.relative(process.cwd(), output)}`);
     return;
   }
@@ -390,7 +431,9 @@ async function exportCmd(paths = [], options = {}) {
 
   log.info(`[export] Wrote ${path.relative(process.cwd(), output)}`);
   if (options.keepMarkdown) {
-    log.info(`[export] Kept combined markdown at ${path.relative(process.cwd(), mdPath)}`);
+    log.info(
+      `[export] Kept combined markdown at ${path.relative(process.cwd(), mdPath)}`,
+    );
   }
 }
 

@@ -6,8 +6,8 @@ with Canvas Course Builder. No prior experience required.
 ## What are Git and GitHub?
 
 **Git** is a version control tool that keeps track of every change you make to
-your files. Think of it as an unlimited undo history for your entire project.
-If you make a mistake or want to go back to an earlier version, Git makes that
+your files. Think of it as an unlimited undo history for your entire project. If
+you make a mistake or want to go back to an earlier version, Git makes that
 easy.
 
 **GitHub** is a website that hosts Git projects online. It lets you store a
@@ -42,8 +42,9 @@ installed and you can skip to [Creating your project](#creating-your-project).
 
 ### Windows
 
-Download and run the installer from [git-scm.com/downloads](https://git-scm.com/downloads).
-The default settings work fine — just click through the installer.
+Download and run the installer from
+[git-scm.com/downloads](https://git-scm.com/downloads). The default settings
+work fine — just click through the installer.
 
 After installing, open a new **Command Prompt** or **PowerShell** window and
 verify with `git --version`.
@@ -85,9 +86,9 @@ sudo dnf install git
 
 ## Creating your project
 
-Canvas Course Builder is a **template repository** — you create your own independent copy
-from it. Your project won't affect the original, and you can create as many
-copies as you need (one per course, for example).
+Canvas Course Builder is a **template repository** — you create your own
+independent copy from it. Your project won't affect the original, and you can
+create as many copies as you need (one per course, for example).
 
 1. Make sure you're logged in to GitHub.
 2. Go to the Canvas Course Builder project page.
@@ -99,11 +100,11 @@ copies as you need (one per course, for example).
 ## Keeping your project private
 
 If you plan to store evaluation materials (exams, tests) in the `evaluations/`
-folder, make sure your project is **private** — otherwise students can find
-your materials on GitHub.
+folder, make sure your project is **private** — otherwise students can find your
+materials on GitHub.
 
-You can change your project's visibility in GitHub under **Settings >
-General > Danger Zone > Change repository visibility**.
+You can change your project's visibility in GitHub under **Settings > General >
+Danger Zone > Change repository visibility**.
 
 Educators are eligible for a **free GitHub Pro account**, which includes
 unlimited private repositories and other benefits. You can apply at
@@ -177,5 +178,6 @@ changes:
 
 ## Next steps
 
-With Git and GitHub set up, head back to the [Getting Started](user-guide.md#getting-started)
-section to continue with installing Node.js and setting up the project.
+With Git and GitHub set up, head back to the
+[Getting Started](user-guide.md#getting-started) section to continue with
+installing Node.js and setting up the project.

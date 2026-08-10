@@ -1,10 +1,14 @@
 const { describe, it } = require('node:test');
 const assert = require('node:assert/strict');
-const { parseFrontmatter, serializeFrontmatter } = require('../../lib/convert/frontmatter');
+const {
+  parseFrontmatter,
+  serializeFrontmatter,
+} = require('../../lib/convert/frontmatter');
 
 describe('parseFrontmatter', () => {
   it('parses YAML frontmatter and body content', () => {
-    const input = '---\ntitle: Hello\ncanvas_type: page\n---\n\nBody text here.';
+    const input =
+      '---\ntitle: Hello\ncanvas_type: page\n---\n\nBody text here.';
     const { data, content } = parseFrontmatter(input);
 
     assert.equal(data.title, 'Hello');
@@ -42,7 +46,10 @@ describe('parseFrontmatter', () => {
 
     const { data } = parseFrontmatter(input);
     assert.equal(data.points_possible, 10);
-    assert.deepEqual(data.submission_types, ['online_upload', 'online_text_entry']);
+    assert.deepEqual(data.submission_types, [
+      'online_upload',
+      'online_text_entry',
+    ]);
     assert.equal(data.published, true);
   });
 });
@@ -61,7 +68,8 @@ describe('serializeFrontmatter', () => {
   });
 
   it('round-trips through parse and serialize', () => {
-    const original = '---\ntitle: Round Trip\ncanvas_type: assignment\n---\n\nSome body.\n';
+    const original =
+      '---\ntitle: Round Trip\ncanvas_type: assignment\n---\n\nSome body.\n';
     const { data, content } = parseFrontmatter(original);
     const serialized = serializeFrontmatter(data, content);
     const reparsed = parseFrontmatter(serialized);

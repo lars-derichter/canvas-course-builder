@@ -99,7 +99,10 @@ describe('renderFileResult', () => {
     const out = renderFileResult(
       'file.md',
       lines,
-      [{ start: 1, end: 2 }, { start: 6, end: 7 }],
+      [
+        { start: 1, end: 2 },
+        { start: 6, end: 7 },
+      ],
       new Set([1, 6]),
     );
     assert.deepEqual(out, [

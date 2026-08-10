@@ -40,14 +40,14 @@ due_at: "2026-03-20T23:59:00Z"
 
 Supported fields:
 
-| Field              | Description                                        |
-| ------------------ | -------------------------------------------------- |
-| `points_possible`  | Maximum score                                      |
-| `submission_types` | How students submit (upload, text, url)            |
-| `due_at`           | Deadline in ISO 8601 format                        |
-| `unlock_at`        | Date when the assignment becomes available         |
+| Field              | Description                                         |
+| ------------------ | --------------------------------------------------- |
+| `points_possible`  | Maximum score                                       |
+| `submission_types` | How students submit (upload, text, url)             |
+| `due_at`           | Deadline in ISO 8601 format                         |
+| `unlock_at`        | Date when the assignment becomes available          |
 | `lock_at`          | Date after which submissions are no longer accepted |
-| `published`        | Whether the assignment is visible to students      |
+| `published`        | Whether the assignment is visible to students       |
 
 ## External URL
 
@@ -94,6 +94,6 @@ This module contains three live examples: the
 
 > [!NOTE]
 >
-> Over 35 file types are supported, including PDF, PNG, JPG, SVG, MP4, DOCX,
-> and many more. When you pull a course from Canvas, file items are
-> automatically converted to this wrapper format.
+> Over 35 file types are supported, including PDF, PNG, JPG, SVG, MP4, DOCX, and
+> many more. When you pull a course from Canvas, file items are automatically
+> converted to this wrapper format.

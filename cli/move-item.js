@@ -1,7 +1,12 @@
 const fs = require('fs');
 const path = require('path');
 const { prompt, createRL } = require('./module-utils');
-const { getItems, printItems, selectModule, selectTargetDir } = require('./item-utils');
+const {
+  getItems,
+  printItems,
+  selectModule,
+  selectTargetDir,
+} = require('./item-utils');
 const { reorder } = require('./renumber');
 
 async function moveItem(options = {}) {
@@ -17,15 +22,28 @@ async function moveItem(options = {}) {
     const entryName = path.basename(itemPath);
     const sourceItem = items.find((i) => i.name === entryName);
     if (!sourceItem) {
-      console.error(`[move-item] Error: ${entryName} has no numeric prefix or is not a course item.`);
+      console.error(
+        `[move-item] Error: ${entryName} has no numeric prefix or is not a course item.`,
+      );
       process.exit(1);
     }
     const targetPosition = parseInt(options.position, 10);
-    if (isNaN(targetPosition) || targetPosition < 1 || targetPosition > items.length) {
-      console.error(`[move-item] Error: Position must be between 1 and ${items.length}.`);
+    if (
+      isNaN(targetPosition) ||
+      targetPosition < 1 ||
+      targetPosition > items.length
+    ) {
+      console.error(
+        `[move-item] Error: Position must be between 1 and ${items.length}.`,
+      );
       process.exit(1);
     }
-    const renames = reorder(targetDir, items, sourceItem.prefix, targetPosition);
+    const renames = reorder(
+      targetDir,
+      items,
+      sourceItem.prefix,
+      targetPosition,
+    );
     if (renames.length > 0) {
       console.log('[move-item] Reordered items:');
       for (const r of renames) {
@@ -66,8 +84,15 @@ async function moveItem(options = {}) {
   while (true) {
     const targetStr = await prompt(rl, 'New position');
     targetPosition = parseInt(targetStr, 10);
-    if (!isNaN(targetPosition) && targetPosition >= 1 && targetPosition <= items.length) break;
-    console.log(`  Position must be between 1 and ${items.length}. Please try again.`);
+    if (
+      !isNaN(targetPosition) &&
+      targetPosition >= 1 &&
+      targetPosition <= items.length
+    )
+      break;
+    console.log(
+      `  Position must be between 1 and ${items.length}. Please try again.`,
+    );
   }
   rl.close();
 

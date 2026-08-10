@@ -3,7 +3,11 @@ const assert = require('node:assert/strict');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
-const { scanCourse, extractPosition, displayTitle } = require('../../lib/convert/course-scanner');
+const {
+  scanCourse,
+  extractPosition,
+  displayTitle,
+} = require('../../lib/convert/course-scanner');
 
 describe('extractPosition', () => {
   it('extracts numeric prefix from folder/file names', () => {
@@ -57,11 +61,11 @@ describe('scanCourse', () => {
     fs.mkdirSync(mod1);
     fs.writeFileSync(
       path.join(mod1, '01-welcome.md'),
-      '---\ntitle: Welcome\ncanvas_type: page\n---\n\nHello!'
+      '---\ntitle: Welcome\ncanvas_type: page\n---\n\nHello!',
     );
     fs.writeFileSync(
       path.join(mod1, '02-setup.md'),
-      '---\ntitle: Setup\n---\n\nSetup instructions.'
+      '---\ntitle: Setup\n---\n\nSetup instructions.',
     );
 
     // Module 1 _files directory (should be skipped)
@@ -74,7 +78,7 @@ describe('scanCourse', () => {
     fs.mkdirSync(introSub);
     fs.writeFileSync(
       path.join(introSub, '01-summary.md'),
-      '---\ntitle: Summary\n---\n\nRecap.'
+      '---\ntitle: Summary\n---\n\nRecap.',
     );
 
     // Module 2 with an assignment and a subfolder.
@@ -84,11 +88,11 @@ describe('scanCourse', () => {
     fs.mkdirSync(mod2);
     fs.writeFileSync(
       path.join(mod2, '_category_.json'),
-      JSON.stringify({ label: 'Advanced Topics', position: 2 }) + '\n'
+      JSON.stringify({ label: 'Advanced Topics', position: 2 }) + '\n',
     );
     fs.writeFileSync(
       path.join(mod2, '01-homework.md'),
-      '---\ntitle: Homework\ncanvas_type: assignment\npoints_possible: 10\n---\n\nDo it.'
+      '---\ntitle: Homework\ncanvas_type: assignment\npoints_possible: 10\n---\n\nDo it.',
     );
 
     // Subfolder inside module 2 with a custom _category_.json label.
@@ -96,11 +100,11 @@ describe('scanCourse', () => {
     fs.mkdirSync(sub);
     fs.writeFileSync(
       path.join(sub, '_category_.json'),
-      JSON.stringify({ label: 'Hands-on Practice', position: 1 }) + '\n'
+      JSON.stringify({ label: 'Hands-on Practice', position: 1 }) + '\n',
     );
     fs.writeFileSync(
       path.join(sub, '01-exercise-a.md'),
-      '---\ntitle: Exercise A\n---\n\nFirst exercise.'
+      '---\ntitle: Exercise A\n---\n\nFirst exercise.',
     );
 
     // Module 2 with a non-markdown file
@@ -109,13 +113,13 @@ describe('scanCourse', () => {
     // Module 2 with a markdown file wrapper for a file item
     fs.writeFileSync(
       path.join(mod2, '03-diagram.md'),
-      '---\ntitle: Diagram\ncanvas_type: file\ncanvas_id: 999\nfile_ref: _files/diagram.svg\n---\n'
+      '---\ntitle: Diagram\ncanvas_type: file\ncanvas_id: 999\nfile_ref: _files/diagram.svg\n---\n',
     );
 
     // Module 2: frontmatter title that differs from the filename-derived title
     fs.writeFileSync(
       path.join(mod2, '04-api.md'),
-      '---\ntitle: REST API Reference\n---\n\nAPI docs.'
+      '---\ntitle: REST API Reference\n---\n\nAPI docs.',
     );
   });
 
@@ -162,14 +166,18 @@ describe('scanCourse', () => {
     const introItems = modules[0].items;
 
     // _files directory should not appear as an item
-    const fileItem = introItems.find((i) => i.title === 'Files' || (i.file && i.file.includes('_files')));
+    const fileItem = introItems.find(
+      (i) => i.title === 'Files' || (i.file && i.file.includes('_files')),
+    );
     assert.equal(fileItem, undefined);
   });
 
   it('detects assignment type from frontmatter', () => {
     const modules = scanCourse(tmpDir);
     const advItems = modules[1].items;
-    const hw = advItems.find((i) => i.type === 'item' && i.canvasType === 'assignment');
+    const hw = advItems.find(
+      (i) => i.type === 'item' && i.canvasType === 'assignment',
+    );
     assert.ok(hw);
     assert.equal(hw.title, 'Homework');
     assert.equal(hw.frontmatter.points_possible, 10);
@@ -212,7 +220,9 @@ describe('scanCourse', () => {
   it('treats markdown wrappers with canvas_type file as file items', () => {
     const modules = scanCourse(tmpDir);
     const advItems = modules[1].items;
-    const fileWrapper = advItems.find((i) => i.file === '03-diagram.md' && i.canvasType === 'file');
+    const fileWrapper = advItems.find(
+      (i) => i.file === '03-diagram.md' && i.canvasType === 'file',
+    );
 
     assert.ok(fileWrapper);
     assert.equal(fileWrapper.canvasType, 'file');
@@ -231,6 +241,9 @@ describe('scanCourse', () => {
   it('builds correct relative paths', () => {
     const modules = scanCourse(tmpDir);
     const introItems = modules[0].items;
-    assert.equal(introItems[0].relativePath, path.join('01-intro', '01-welcome.md'));
+    assert.equal(
+      introItems[0].relativePath,
+      path.join('01-intro', '01-welcome.md'),
+    );
   });
 });

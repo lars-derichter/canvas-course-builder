@@ -54,7 +54,7 @@ function createModuleFolder(modules, name, position) {
   fs.writeFileSync(
     path.join(folderPath, '_category_.json'),
     JSON.stringify(category, null, 2) + '\n',
-    'utf8'
+    'utf8',
   );
 
   // Summary
@@ -71,10 +71,15 @@ async function newModule(options = {}) {
   // Non-interactive mode (VS Code): --name provided
   if (options.name) {
     const modules = getExistingModules();
-    const nextAvailable = modules.length > 0 ? modules[modules.length - 1].prefix + 1 : 1;
-    const position = options.position ? parseInt(options.position, 10) : nextAvailable;
+    const nextAvailable =
+      modules.length > 0 ? modules[modules.length - 1].prefix + 1 : 1;
+    const position = options.position
+      ? parseInt(options.position, 10)
+      : nextAvailable;
     if (isNaN(position) || position < 1 || position > 99) {
-      console.error('[new-module] Error: Position must be a number between 1 and 99.');
+      console.error(
+        '[new-module] Error: Position must be a number between 1 and 99.',
+      );
       process.exit(1);
     }
     createModuleFolder(modules, options.name, position);
@@ -95,16 +100,17 @@ async function newModule(options = {}) {
     console.log('  Module name is required. Please try again.');
   }
 
-  const nextAvailable = modules.length > 0
-    ? modules[modules.length - 1].prefix + 1
-    : 1;
+  const nextAvailable =
+    modules.length > 0 ? modules[modules.length - 1].prefix + 1 : 1;
 
   let position;
   while (true) {
     const positionStr = await prompt(rl, 'Position number', pad(nextAvailable));
     position = parseInt(positionStr, 10);
     if (!isNaN(position) && position >= 1 && position <= 99) break;
-    console.log('  Position must be a number between 1 and 99. Please try again.');
+    console.log(
+      '  Position must be a number between 1 and 99. Please try again.',
+    );
   }
   rl.close();
 

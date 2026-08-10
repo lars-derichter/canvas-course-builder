@@ -6,117 +6,114 @@ Common issues and how to resolve them.
 
 ### "CANVAS_COURSE_ID is not set"
 
-Run `npx course init` to configure your Canvas API credentials. This
-creates a `.env` file with your API URL, token, and course ID.
+Run `npx course init` to configure your Canvas API credentials. This creates a
+`.env` file with your API URL, token, and course ID.
 
 ### "fetch failed" or network timeout
 
 - Verify your Canvas instance is reachable in a browser.
-- Check that `CANVAS_API_URL` in `.env` is the bare domain
-  (e.g. `https://your-school.instructure.com`), without `/api/v1` or any
-  other path after it; the CLI appends `/api/v1` itself.
-- If behind a VPN or firewall, ensure it allows outbound HTTPS to
-  your Canvas instance.
+- Check that `CANVAS_API_URL` in `.env` is the bare domain (e.g.
+  `https://your-school.instructure.com`), without `/api/v1` or any other path
+  after it; the CLI appends `/api/v1` itself.
+- If behind a VPN or firewall, ensure it allows outbound HTTPS to your Canvas
+  instance.
 
 ### 401 Unauthorized
 
-Your API token is invalid or expired. Generate a new token in Canvas
-under **Account > Settings > New Access Token** and update `.env`.
+Your API token is invalid or expired. Generate a new token in Canvas under
+**Account > Settings > New Access Token** and update `.env`.
 
 ### 403 Forbidden
 
-Your token lacks permissions for the target course. Verify you have a
-Teacher or Admin role in the Canvas course.
+Your token lacks permissions for the target course. Verify you have a Teacher or
+Admin role in the Canvas course.
 
 ## Push issues
 
 ### Stale canvas_id (404 on update)
 
-If a page or assignment was deleted directly in Canvas, the local
-`canvas_id` becomes stale. Push detects this automatically via a 404
-response and re-creates the resource. No manual action needed.
+If a page or assignment was deleted directly in Canvas, the local `canvas_id`
+becomes stale. Push detects this automatically via a 404 response and re-creates
+the resource. No manual action needed.
 
 ### "Module not found in course/ directory"
 
-Check the `--module` flag value matches a folder name in `course/`
-(e.g. `--module 01-introduction`, not the display name).
+Check the `--module` flag value matches a folder name in `course/` (e.g.
+`--module 01-introduction`, not the display name).
 
 ### Unresolved internal links
 
-When pushing a course for the first time, pages that reference each
-other can't all resolve on the first pass. Push automatically runs a
-second pass to update links to newly-created pages. Use `--verbose`
-to see which items needed re-resolution.
+When pushing a course for the first time, pages that reference each other can't
+all resolve on the first pass. Push automatically runs a second pass to update
+links to newly-created pages. Use `--verbose` to see which items needed
+re-resolution.
 
-In `--dry-run` mode, unresolved links are reported as warnings since
-the second pass can't run without creating real pages.
+In `--dry-run` mode, unresolved links are reported as warnings since the second
+pass can't run without creating real pages.
 
 ### File upload failures
 
 - Verify the file exists at the path shown in the error.
 - Check that the file isn't too large (Canvas has per-file limits).
-- Ensure the MIME type is supported — see `lib/canvas/files.js` for
-  the full list.
+- Ensure the MIME type is supported — see `lib/canvas/files.js` for the full
+  list.
 
 ## Pull issues
 
 ### "SKIPPED (locally modified since last sync)"
 
-Pull detects files changed after the last sync and skips them to
-avoid overwriting your work. Use `--force` to overwrite anyway, or
-push your local changes first.
+Pull detects files changed after the last sync and skips them to avoid
+overwriting your work. Use `--force` to overwrite anyway, or push your local
+changes first.
 
 ### Missing content after pull
 
-- Items of type Discussion, Quiz, or ExternalTool are not supported
-  by pull and are skipped with a warning.
+- Items of type Discussion, Quiz, or ExternalTool are not supported by pull and
+  are skipped with a warning.
 - Empty pages on Canvas produce empty markdown files — this is normal.
 
 ## Sync state
 
 ### Corrupted .canvas-sync.json
 
-If the sync file becomes corrupted (e.g. partial write during a
-crash), delete it and run `npx course push` to regenerate it. Items
-with `canvas_id` in their frontmatter will be matched to existing
-Canvas resources.
+If the sync file becomes corrupted (e.g. partial write during a crash), delete
+it and run `npx course push` to regenerate it. Items with `canvas_id` in their
+frontmatter will be matched to existing Canvas resources.
 
 ### Starting fresh
 
-Run `npx course reset-sync-state` to remove all sync artifacts. The
-next push creates everything from scratch on Canvas.
+Run `npx course reset-sync-state` to remove all sync artifacts. The next push
+creates everything from scratch on Canvas.
 
 ### Switching Canvas courses
 
-See [New academic year](new-academic-year.md) for the full workflow.
-In short: run `npx course reset-sync-state`, update `.env` with the
-new course ID, then `npx course push`.
+See [New academic year](new-academic-year.md) for the full workflow. In short:
+run `npx course reset-sync-state`, update `.env` with the new course ID, then
+`npx course push`.
 
 ## Docusaurus issues
 
 ### Build fails with broken links
 
-Docusaurus is configured to throw on broken links. Check that all
-relative `.md` links point to existing files. Run `npm run build` to
-see the exact error location.
+Docusaurus is configured to throw on broken links. Check that all relative `.md`
+links point to existing files. Run `npm run build` to see the exact error
+location.
 
 ### Alerts not rendering
 
-The custom remark plugin (`src/plugins/remark-gfm-alerts.js`)
-requires the exact syntax `> [!TYPE]` on a new line inside a
-blockquote. Make sure there's no space before the `[` and the type
-is one of: NOTE, TIP, IMPORTANT, WARNING, ATTENTION (or its synonym
-CAUTION), CHECK.
+The custom remark plugin (`src/plugins/remark-gfm-alerts.js`) requires the exact
+syntax `> [!TYPE]` on a new line inside a blockquote. Make sure there's no space
+before the `[` and the type is one of: NOTE, TIP, IMPORTANT, WARNING, ATTENTION
+(or its synonym CAUTION), CHECK.
 
 ## AI assistant issues
 
 ### Skills not found on Windows
 
-`.claude/skills` is a git symlink, and git on Windows only creates
-real symlinks when `core.symlinks` is `true`, which requires
-Developer Mode (or admin rights). Without it, the checkout silently
-turns the symlink into a small text file, and Claude Code finds no
-skills; no error is shown anywhere.
+`.claude/skills` is a git symlink, and git on Windows only creates real symlinks
+when `core.symlinks` is `true`, which requires Developer Mode (or admin rights).
+Without it, the checkout silently turns the symlink into a small text file, and
+Claude Code finds no skills; no error is shown anywhere.
 
 To fix:
 
@@ -124,6 +121,5 @@ To fix:
 2. Run `git config core.symlinks true` in the repo.
 3. Restore the checkout: `git checkout -- .claude` (or re-clone).
 
-Working inside WSL2 avoids the problem entirely; symlinks always
-work there. `AGENTS.md` and `CLAUDE.md` are plain files and are
-unaffected either way.
+Working inside WSL2 avoids the problem entirely; symlinks always work there.
+`AGENTS.md` and `CLAUDE.md` are plain files and are unaffected either way.

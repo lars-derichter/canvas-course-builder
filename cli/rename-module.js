@@ -20,7 +20,9 @@ async function renameModule(options = {}) {
     const modules = getExistingModules();
     sourceModule = modules.find((m) => m.folderName === options.module);
     if (!sourceModule) {
-      console.error(`[rename-module] Error: Module not found: ${options.module}`);
+      console.error(
+        `[rename-module] Error: Module not found: ${options.module}`,
+      );
       process.exit(1);
     }
     newName = options.name;
@@ -45,7 +47,9 @@ async function renameModule(options = {}) {
 
     if (!sourceModule) {
       rl.close();
-      console.error(`[rename-module] Error: No module found with number ${sourceStr}.`);
+      console.error(
+        `[rename-module] Error: No module found with number ${sourceStr}.`,
+      );
       process.exit(1);
     }
 
@@ -73,13 +77,23 @@ async function renameModule(options = {}) {
   if (fs.existsSync(categoryFile)) {
     const category = safeReadJSON(categoryFile);
     category.label = newName;
-    fs.writeFileSync(categoryFile, JSON.stringify(category, null, 2) + '\n', 'utf8');
+    fs.writeFileSync(
+      categoryFile,
+      JSON.stringify(category, null, 2) + '\n',
+      'utf8',
+    );
   } else {
     const category = { label: newName, position: sourceModule.prefix };
-    fs.writeFileSync(categoryFile, JSON.stringify(category, null, 2) + '\n', 'utf8');
+    fs.writeFileSync(
+      categoryFile,
+      JSON.stringify(category, null, 2) + '\n',
+      'utf8',
+    );
   }
 
-  console.log(`[rename-module] Renamed ${sourceModule.folderName} -> ${newFolderName}`);
+  console.log(
+    `[rename-module] Renamed ${sourceModule.folderName} -> ${newFolderName}`,
+  );
 }
 
 module.exports = renameModule;

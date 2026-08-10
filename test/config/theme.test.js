@@ -15,7 +15,10 @@ const {
   themeFingerprint,
   _clearCache,
 } = require('../../lib/config/theme');
-const { CONFIG_FILENAME, _clearCache: clearConfigCache } = require('../../lib/config/course-config');
+const {
+  CONFIG_FILENAME,
+  _clearCache: clearConfigCache,
+} = require('../../lib/config/course-config');
 
 const MINIMAL_THEME = `
 :root {
@@ -68,7 +71,10 @@ describe('loadTheme', () => {
   beforeEach(() => {
     tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'theme-test-'));
     fs.mkdirSync(path.join(tmpDir, THEMES_SUBDIR), { recursive: true });
-    fs.writeFileSync(path.join(tmpDir, THEMES_SUBDIR, `${DEFAULT_THEME}.css`), MINIMAL_THEME);
+    fs.writeFileSync(
+      path.join(tmpDir, THEMES_SUBDIR, `${DEFAULT_THEME}.css`),
+      MINIMAL_THEME,
+    );
     warnMock = mock.method(console, 'warn', () => {});
     _clearCache();
     clearConfigCache();

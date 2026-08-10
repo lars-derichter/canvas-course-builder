@@ -39,7 +39,11 @@ function remarkExternalUrl(options = {}) {
       type: 'mdxJsxFlowElement',
       name: 'p',
       attributes: [
-        { type: 'mdxJsxAttribute', name: 'className', value: 'external-url-label' },
+        {
+          type: 'mdxJsxAttribute',
+          name: 'className',
+          value: 'external-url-label',
+        },
       ],
       children: [{ type: 'text', value: labelText }],
     };
@@ -48,7 +52,11 @@ function remarkExternalUrl(options = {}) {
       type: 'mdxJsxFlowElement',
       name: 'p',
       attributes: [
-        { type: 'mdxJsxAttribute', name: 'className', value: 'external-url-link' },
+        {
+          type: 'mdxJsxAttribute',
+          name: 'className',
+          value: 'external-url-link',
+        },
       ],
       children: [linkNode],
     };
@@ -57,7 +65,11 @@ function remarkExternalUrl(options = {}) {
       type: 'mdxJsxFlowElement',
       name: 'div',
       attributes: [
-        { type: 'mdxJsxAttribute', name: 'className', value: 'external-url-card' },
+        {
+          type: 'mdxJsxAttribute',
+          name: 'className',
+          value: 'external-url-card',
+        },
       ],
       children: [label, linkParagraph],
     };

@@ -3,9 +3,17 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 
-const extDir = path.resolve(__dirname, '../../.vscode/extensions/course-manager');
-const extensionSource = fs.readFileSync(path.join(extDir, 'extension.js'), 'utf-8');
-const packageJson = JSON.parse(fs.readFileSync(path.join(extDir, 'package.json'), 'utf-8'));
+const extDir = path.resolve(
+  __dirname,
+  '../../.vscode/extensions/course-manager',
+);
+const extensionSource = fs.readFileSync(
+  path.join(extDir, 'extension.js'),
+  'utf-8',
+);
+const packageJson = JSON.parse(
+  fs.readFileSync(path.join(extDir, 'package.json'), 'utf-8'),
+);
 
 // Extract the commands object from extension.js source using a regex.
 // Captures the block: const commands = { ... };
@@ -36,7 +44,10 @@ function parseExtraRegisteredCommands(source) {
 
 const commandsMap = parseCommandsObject(extensionSource);
 const extraRegistered = parseExtraRegisteredCommands(extensionSource);
-const allRegisteredIds = [...Object.keys(commandsMap), ...extraRegistered.filter((id) => !commandsMap[id])];
+const allRegisteredIds = [
+  ...Object.keys(commandsMap),
+  ...extraRegistered.filter((id) => !commandsMap[id]),
+];
 const packageCommands = packageJson.contributes.commands;
 
 describe('VS Code extension: package.json', () => {
@@ -58,7 +69,10 @@ describe('VS Code extension: package.json', () => {
 
   it('every declared command ID starts with "course."', () => {
     for (const cmd of packageCommands) {
-      assert.ok(cmd.command.startsWith('course.'), `unexpected prefix: ${cmd.command}`);
+      assert.ok(
+        cmd.command.startsWith('course.'),
+        `unexpected prefix: ${cmd.command}`,
+      );
     }
   });
 });
@@ -70,7 +84,7 @@ describe('VS Code extension: command registry consistency', () => {
     for (const id of packageCommandIds) {
       assert.ok(
         allRegisteredIds.includes(id),
-        `package.json declares "${id}" but extension.js does not register it`
+        `package.json declares "${id}" but extension.js does not register it`,
       );
     }
   });
@@ -79,7 +93,7 @@ describe('VS Code extension: command registry consistency', () => {
     for (const id of allRegisteredIds) {
       assert.ok(
         packageCommandIds.includes(id),
-        `extension.js registers "${id}" but package.json does not declare it`
+        `extension.js registers "${id}" but package.json does not declare it`,
       );
     }
   });
@@ -92,7 +106,10 @@ describe('VS Code extension: command registry consistency', () => {
 describe('VS Code extension: commands map', () => {
   it('maps each command to a valid npx course CLI invocation', () => {
     for (const [id, cmd] of Object.entries(commandsMap)) {
-      assert.ok(cmd.startsWith('npx course '), `command "${id}" does not start with "npx course ": ${cmd}`);
+      assert.ok(
+        cmd.startsWith('npx course '),
+        `command "${id}" does not start with "npx course ": ${cmd}`,
+      );
     }
   });
 
@@ -117,14 +134,31 @@ describe('VS Code extension: commands map', () => {
 
 describe('VS Code extension: context-aware commands', () => {
   it('registers all module management commands individually', () => {
-    for (const id of ['course.newModule', 'course.moveModule', 'course.renameModule', 'course.deleteModule']) {
-      assert.ok(extraRegistered.includes(id), `${id} should be registered via registerCommand`);
+    for (const id of [
+      'course.newModule',
+      'course.moveModule',
+      'course.renameModule',
+      'course.deleteModule',
+    ]) {
+      assert.ok(
+        extraRegistered.includes(id),
+        `${id} should be registered via registerCommand`,
+      );
     }
   });
 
   it('registers all item management commands individually', () => {
-    for (const id of ['course.newItem', 'course.moveItem', 'course.moveItemToModule', 'course.renameItem', 'course.deleteItem']) {
-      assert.ok(extraRegistered.includes(id), `${id} should be registered via registerCommand`);
+    for (const id of [
+      'course.newItem',
+      'course.moveItem',
+      'course.moveItemToModule',
+      'course.renameItem',
+      'course.deleteItem',
+    ]) {
+      assert.ok(
+        extraRegistered.includes(id),
+        `${id} should be registered via registerCommand`,
+      );
     }
   });
 
@@ -138,7 +172,12 @@ describe('VS Code extension: context-aware commands', () => {
   });
 
   it('deletes require explicit confirmation dialogs', () => {
-    assert.match(extensionSource, new RegExp('showWarningMessage\\([\\s\\S]{0,200}modal: true[\\s\\S]{0,100}\'Delete\''));
+    assert.match(
+      extensionSource,
+      new RegExp(
+        "showWarningMessage\\([\\s\\S]{0,200}modal: true[\\s\\S]{0,100}'Delete'",
+      ),
+    );
   });
 });
 
@@ -147,32 +186,52 @@ describe('VS Code extension: export commands', () => {
   const viewTitleMenus = packageJson.contributes.menus['view/title'];
 
   it('registers all export commands individually', () => {
-    for (const id of ['course.exportItem', 'course.exportModule', 'course.exportCourse', 'course.exportCourseToc']) {
-      assert.ok(extraRegistered.includes(id), `${id} should be registered via registerCommand`);
+    for (const id of [
+      'course.exportItem',
+      'course.exportModule',
+      'course.exportCourse',
+      'course.exportCourseToc',
+    ]) {
+      assert.ok(
+        extraRegistered.includes(id),
+        `${id} should be registered via registerCommand`,
+      );
     }
   });
 
   it('streams export output through the shared terminal', () => {
     assert.match(extensionSource, /runInTerminal\(`npx course export /);
-    assert.match(extensionSource, /npx course export --module \$\{folder\} --format/);
+    assert.match(
+      extensionSource,
+      /npx course export --module \$\{folder\} --format/,
+    );
   });
 
   it('exportItem supports multi-select via the second handler argument', () => {
-    assert.match(extensionSource, /register\('course\.exportItem',\s*async \(item, selected\)/);
+    assert.match(
+      extensionSource,
+      /register\('course\.exportItem',\s*async \(item, selected\)/,
+    );
     assert.match(extensionSource, /Array\.isArray\(selected\)/);
   });
 
   it('offers Export on item and module context menus', () => {
-    const exportItem = itemContextMenus.find((m) => m.command === 'course.exportItem');
+    const exportItem = itemContextMenus.find(
+      (m) => m.command === 'course.exportItem',
+    );
     assert.ok(exportItem, 'course.exportItem needs a context menu entry');
     assert.match(exportItem.when, /page\|assignment\|external_url\|file/);
-    const exportModule = itemContextMenus.find((m) => m.command === 'course.exportModule');
+    const exportModule = itemContextMenus.find(
+      (m) => m.command === 'course.exportModule',
+    );
     assert.ok(exportModule, 'course.exportModule needs a context menu entry');
     assert.match(exportModule.when, /module/);
   });
 
   it('gates the TOC export action behind a context key', () => {
-    const tocEntry = viewTitleMenus.find((m) => m.command === 'course.exportCourseToc');
+    const tocEntry = viewTitleMenus.find(
+      (m) => m.command === 'course.exportCourseToc',
+    );
     assert.ok(tocEntry, 'course.exportCourseToc needs a view/title entry');
     assert.match(tocEntry.when, /course\.tocReady/);
     assert.match(extensionSource, /setContext', 'course\.tocReady', true/);
@@ -199,13 +258,19 @@ describe('VS Code extension: subsection move support', () => {
   it('skips the sub-section prompt when the moved item is itself a subsection', () => {
     // The moveItemToModule handler must not offer destination subsections for a
     // directory source — subsections cannot be nested.
-    assert.match(extensionSource, /isSubsection\s*=[\s\S]*?statSync\([^)]*\)\.isDirectory\(\)/);
+    assert.match(
+      extensionSource,
+      /isSubsection\s*=[\s\S]*?statSync\([^)]*\)\.isDirectory\(\)/,
+    );
     assert.match(extensionSource, /isSubsection\s*\?\s*\[\]\s*:/);
   });
 });
 
 describe('VS Code extension: drag and drop', () => {
-  const providerSource = fs.readFileSync(path.join(extDir, 'CourseTreeProvider.js'), 'utf-8');
+  const providerSource = fs.readFileSync(
+    path.join(extDir, 'CourseTreeProvider.js'),
+    'utf-8',
+  );
 
   it('routes module reordering through the CLI', () => {
     assert.match(providerSource, /'move-module',\s*'--module'/);
@@ -217,13 +282,24 @@ describe('VS Code extension: drag and drop', () => {
   });
 
   it('routes external file drops through new-item --type file', () => {
-    assert.match(providerSource, /'new-item',\s*'--module',[^\]]*'--type',\s*'file'/);
+    assert.match(
+      providerSource,
+      /'new-item',\s*'--module',[^\]]*'--type',\s*'file'/,
+    );
   });
 
   it('no longer renames files directly during drops', () => {
-    const dropSection = providerSource.slice(providerSource.indexOf('handleDrop'));
-    assert.ok(!dropSection.includes('renameSync'), 'drag-and-drop must not bypass the CLI with fs.renameSync');
-    assert.ok(!dropSection.includes('copyFileSync'), 'drag-and-drop must not bypass the CLI with fs.copyFileSync');
+    const dropSection = providerSource.slice(
+      providerSource.indexOf('handleDrop'),
+    );
+    assert.ok(
+      !dropSection.includes('renameSync'),
+      'drag-and-drop must not bypass the CLI with fs.renameSync',
+    );
+    assert.ok(
+      !dropSection.includes('copyFileSync'),
+      'drag-and-drop must not bypass the CLI with fs.copyFileSync',
+    );
   });
 
   it('routes subsection drags to a dedicated handler', () => {
@@ -234,9 +310,15 @@ describe('VS Code extension: drag and drop', () => {
 
   it('never nests a subsection inside another subsection during a drop', () => {
     const start = providerSource.indexOf('async _handleSubsectionDrop(');
-    const subsectionHandler = providerSource.slice(start, providerSource.indexOf('async _handleExternalFileDrop(', start));
+    const subsectionHandler = providerSource.slice(
+      start,
+      providerSource.indexOf('async _handleExternalFileDrop(', start),
+    );
     assert.ok(start !== -1, '_handleSubsectionDrop should exist');
-    assert.ok(!subsectionHandler.includes('--to-subsection'), 'moving a subsection must not pass --to-subsection');
+    assert.ok(
+      !subsectionHandler.includes('--to-subsection'),
+      'moving a subsection must not pass --to-subsection',
+    );
   });
 });
 
@@ -244,7 +326,7 @@ describe('VS Code extension: pushModule command', () => {
   it('registers course.pushModule as a separate command', () => {
     assert.ok(
       extraRegistered.includes('course.pushModule'),
-      'course.pushModule should be registered via registerCommand'
+      'course.pushModule should be registered via registerCommand',
     );
   });
 
@@ -257,7 +339,7 @@ describe('VS Code extension: search command', () => {
   it('registers course.search as a separate command', () => {
     assert.ok(
       extraRegistered.includes('course.search'),
-      'course.search should be registered via registerCommand'
+      'course.search should be registered via registerCommand',
     );
   });
 
@@ -270,7 +352,7 @@ describe('VS Code extension: search command', () => {
 
   it('appears as a navigation icon on the courseTree title bar', () => {
     const entry = packageJson.contributes.menus['view/title'].find(
-      (m) => m.command === 'course.search'
+      (m) => m.command === 'course.search',
     );
     assert.ok(entry, 'course.search needs a view/title entry');
     assert.equal(entry.group, 'navigation');
@@ -316,7 +398,10 @@ describe('VS Code extension: workspace validation', () => {
   });
 
   it('shows warning when course/ directory is missing', () => {
-    assert.match(extensionSource, new RegExp('showWarningMessage[\\s\\S]*No course/ directory found'));
+    assert.match(
+      extensionSource,
+      new RegExp('showWarningMessage[\\s\\S]*No course/ directory found'),
+    );
   });
 });
 
@@ -328,6 +413,9 @@ describe('VS Code extension: CLI runner', () => {
 
   it('reuses a single shared terminal for streaming commands', () => {
     assert.match(extensionSource, /function getSharedTerminal\(\)/);
-    assert.match(extensionSource, /terminals\.find\(\s*\(t\) => t\.name === 'Canvas Course Builder',?\s*\)/);
+    assert.match(
+      extensionSource,
+      /terminals\.find\(\s*\(t\) => t\.name === 'Canvas Course Builder',?\s*\)/,
+    );
   });
 });

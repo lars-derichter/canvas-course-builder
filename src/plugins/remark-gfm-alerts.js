@@ -41,16 +41,17 @@ function visit(tree, type, visitor) {
 }
 
 const ALERT_TYPES = {
-  NOTE:      { cssType: 'note' },
-  TIP:       { cssType: 'tip' },
+  NOTE: { cssType: 'note' },
+  TIP: { cssType: 'tip' },
   IMPORTANT: { cssType: 'important' },
-  WARNING:   { cssType: 'warning' },
-  CAUTION:   { cssType: 'caution' },
+  WARNING: { cssType: 'warning' },
+  CAUTION: { cssType: 'caution' },
   ATTENTION: { cssType: 'caution' },
-  CHECK:     { cssType: 'check' },
+  CHECK: { cssType: 'check' },
 };
 
-const ALERT_PATTERN = /^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION|ATTENTION|CHECK)\]\s*\n?/;
+const ALERT_PATTERN =
+  /^\[!(NOTE|TIP|IMPORTANT|WARNING|CAUTION|ATTENTION|CHECK)\]\s*\n?/;
 
 /**
  * SVG icons per type as data URIs for MDX-compatible img elements.
@@ -127,7 +128,11 @@ function remarkGfmAlerts(options = {}) {
         attributes: [
           { type: 'mdxJsxAttribute', name: 'src', value: iconDataUri },
           { type: 'mdxJsxAttribute', name: 'alt', value: '' },
-          { type: 'mdxJsxAttribute', name: 'className', value: 'markdown-alert-icon' },
+          {
+            type: 'mdxJsxAttribute',
+            name: 'className',
+            value: 'markdown-alert-icon',
+          },
           { type: 'mdxJsxAttribute', name: 'width', value: '16' },
           { type: 'mdxJsxAttribute', name: 'height', value: '16' },
         ],
@@ -139,12 +144,13 @@ function remarkGfmAlerts(options = {}) {
         type: 'mdxJsxFlowElement',
         name: 'p',
         attributes: [
-          { type: 'mdxJsxAttribute', name: 'className', value: 'markdown-alert-title' },
+          {
+            type: 'mdxJsxAttribute',
+            name: 'className',
+            value: 'markdown-alert-title',
+          },
         ],
-        children: [
-          iconImg,
-          { type: 'text', value: ` ${title}` },
-        ],
+        children: [iconImg, { type: 'text', value: ` ${title}` }],
       };
 
       // Build the replacement wrapper div as an mdxJsxFlowElement
@@ -152,7 +158,11 @@ function remarkGfmAlerts(options = {}) {
         type: 'mdxJsxFlowElement',
         name: 'div',
         attributes: [
-          { type: 'mdxJsxAttribute', name: 'className', value: `markdown-alert markdown-alert-${cssType}` },
+          {
+            type: 'mdxJsxAttribute',
+            name: 'className',
+            value: `markdown-alert markdown-alert-${cssType}`,
+          },
         ],
         children: [titleParagraph, ...node.children],
       };

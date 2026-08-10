@@ -6,9 +6,9 @@ canvas_type: page
 # Exporting to PDF or Word
 
 Sometimes you need your course materials on paper or as a file you can hand out:
-an exam, a handout, or something to read offline. Canvas Course Builder can turn any
-page, a whole module, or your entire course into a polished PDF or an editable
-Word document.
+an exam, a handout, or something to read offline. Canvas Course Builder can turn
+any page, a whole module, or your entire course into a polished PDF or an
+editable Word document.
 
 This is optional. If you only ever publish to Canvas, you can skip it.
 
@@ -95,8 +95,8 @@ With the Course Manager sidebar you do not have to type anything:
 - **The title bar dropdown** has an **Export** option for the whole course:
   everything, only the flagged pages, or a curated table of contents.
 
-You choose PDF or Word each time. Export runs in the Canvas Course Builder terminal so
-you can follow its progress.
+You choose PDF or Word each time. Export runs in the Canvas Course Builder
+terminal so you can follow its progress.
 
 ## Where your files go
 
@@ -108,11 +108,11 @@ git, so your documents never end up in your repository or on Canvas.
 Out of the box, exports use a clean, neutral style. Two settings in
 `course.config.yml` decide the look:
 
-- **`export.style`** picks the layout: fonts, margins, and the cover. There is
-  a second style, `thomas-more`, that shows what full institutional branding
-  looks like.
-- **`theme`** picks the colours, and it does so everywhere at once — the
-  preview site, your Canvas pages, and the PDF.
+- **`export.style`** picks the layout: fonts, margins, and the cover. There is a
+  second style, `thomas-more`, that shows what full institutional branding looks
+  like.
+- **`theme`** picks the colours, and it does so everywhere at once — the preview
+  site, your Canvas pages, and the PDF.
 
 Two ready-made skills do the work for you:
 

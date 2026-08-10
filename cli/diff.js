@@ -41,7 +41,9 @@ async function diff() {
   const syncData = loadSyncFile({ allowNull: true });
 
   if (!syncData) {
-    console.log('[diff] No .canvas-sync.json found. Nothing has been synced yet.');
+    console.log(
+      '[diff] No .canvas-sync.json found. Nothing has been synced yet.',
+    );
     return;
   }
 
@@ -128,7 +130,8 @@ async function diff() {
       if (item.type === 'subheader' || !item.frontmatter) continue;
       if (item.frontmatter.canvas_id != null) {
         claimedIds.add(`${item.canvasType}:${item.frontmatter.canvas_id}`);
-        if (item.canvasType === 'page') claimedIds.add(`page_url:${item.frontmatter.canvas_id}`);
+        if (item.canvasType === 'page')
+          claimedIds.add(`page_url:${item.frontmatter.canvas_id}`);
       }
       if (item.canvasType === 'external_url' && item.frontmatter.external_url) {
         claimedIds.add(`external_url:${item.frontmatter.external_url}`);
@@ -136,10 +139,17 @@ async function diff() {
     }
     for (const entry of Object.values(syncItems)) {
       const claimed =
-        (entry.canvas_id != null && claimedIds.has(`${entry.canvas_type}:${entry.canvas_id}`)) ||
-        (entry.canvas_type === 'page' && entry.page_url != null && claimedIds.has(`page_url:${entry.page_url}`)) ||
-        (entry.canvas_type === 'external_url' && entry.external_url && claimedIds.has(`external_url:${entry.external_url}`)) ||
-        (entry.canvas_type === 'file' && entry.path && fs.existsSync(path.join(COURSE_DIR, entry.path)));
+        (entry.canvas_id != null &&
+          claimedIds.has(`${entry.canvas_type}:${entry.canvas_id}`)) ||
+        (entry.canvas_type === 'page' &&
+          entry.page_url != null &&
+          claimedIds.has(`page_url:${entry.page_url}`)) ||
+        (entry.canvas_type === 'external_url' &&
+          entry.external_url &&
+          claimedIds.has(`external_url:${entry.external_url}`)) ||
+        (entry.canvas_type === 'file' &&
+          entry.path &&
+          fs.existsSync(path.join(COURSE_DIR, entry.path)));
       if (!claimed) {
         if (!moduleHasChanges) {
           console.log(`  ~ module: ${mod.folderName}`);
@@ -166,7 +176,12 @@ async function diff() {
   console.log(`  Modified items:   ${modifiedItems}`);
   console.log(`  Unchanged items:  ${unchangedItems}`);
 
-  if (newModules === 0 && deletedModules === 0 && newItems === 0 && modifiedItems === 0) {
+  if (
+    newModules === 0 &&
+    deletedModules === 0 &&
+    newItems === 0 &&
+    modifiedItems === 0
+  ) {
     console.log('\n  No changes detected since last sync.');
   }
 }

@@ -1,16 +1,16 @@
 # Course context
 
-This document describes *your course* — its subject, pedagogy, and conventions
-— so the lesson skills (`/design-lesson`, `/summarize-lesson`,
+This document describes _your course_ — its subject, pedagogy, and conventions —
+so the lesson skills (`/design-lesson`, `/summarize-lesson`,
 `/build-lesson-module`) can work with your material instead of guessing. It is
 the course-design companion to [style.md](style.md), which covers writing style
 only. Both files are consumed by AI tools, so write them in whichever language
 you and your assistant work in, and keep the two consistent.
 
 This file ships as a template. Run `/initialize-course-context` to fill it in
-(the skill reads your repo and interviews you for the rest), or edit it by
-hand. Sections still marked `TODO` are treated as unanswered: a skill that
-needs one will gather the information itself and offer to save it here.
+(the skill reads your repo and interviews you for the rest), or edit it by hand.
+Sections still marked `TODO` are treated as unanswered: a skill that needs one
+will gather the information itself and offer to save it here.
 
 Keep this file in `protected_files` in `update-from-upstream.conf` so upstream
 updates never overwrite your version.

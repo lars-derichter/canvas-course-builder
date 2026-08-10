@@ -3,7 +3,10 @@ const path = require('path');
 
 const { scanCourse, flattenItems } = require('../lib/convert/course-scanner');
 const { parseFrontmatter } = require('../lib/convert/frontmatter');
-const { extractFileReferences, maskCodeRegions } = require('../lib/convert/link-resolver');
+const {
+  extractFileReferences,
+  maskCodeRegions,
+} = require('../lib/convert/link-resolver');
 const { COURSE_DIR } = require('./module-utils');
 
 const VALID_CANVAS_TYPES = new Set(['page', 'assignment', 'external_url']);
@@ -34,7 +37,9 @@ async function validate() {
   for (const mod of modules) {
     // Check module naming convention
     if (!mod.folderName.match(/^\d{2}-/)) {
-      warnings.push(`${mod.folderName}: folder name should start with a two-digit prefix (e.g. 01-)`);
+      warnings.push(
+        `${mod.folderName}: folder name should start with a two-digit prefix (e.g. 01-)`,
+      );
     }
 
     const flatItems = flattenItems(mod.items);
@@ -47,7 +52,9 @@ async function validate() {
 
       // Check naming convention
       if (!item.file.match(/^\d{2}-/)) {
-        warnings.push(`${item.relativePath}: filename should start with a two-digit prefix`);
+        warnings.push(
+          `${item.relativePath}: filename should start with a two-digit prefix`,
+        );
       }
 
       // Validate frontmatter
@@ -63,18 +70,24 @@ async function validate() {
       try {
         ({ data } = parseFrontmatter(raw));
       } catch (err) {
-        errors.push(`${item.relativePath}: invalid frontmatter YAML: ${err.message}`);
+        errors.push(
+          `${item.relativePath}: invalid frontmatter YAML: ${err.message}`,
+        );
         continue;
       }
 
       // Check canvas_type
       if (data.canvas_type && !VALID_CANVAS_TYPES.has(data.canvas_type)) {
-        errors.push(`${item.relativePath}: unknown canvas_type "${data.canvas_type}" (expected: ${[...VALID_CANVAS_TYPES].join(', ')})`);
+        errors.push(
+          `${item.relativePath}: unknown canvas_type "${data.canvas_type}" (expected: ${[...VALID_CANVAS_TYPES].join(', ')})`,
+        );
       }
 
       // Check external_url has a URL
       if (data.canvas_type === 'external_url' && !data.external_url) {
-        errors.push(`${item.relativePath}: external_url type requires an external_url field`);
+        errors.push(
+          `${item.relativePath}: external_url type requires an external_url field`,
+        );
       }
 
       // Validate external_url format
@@ -82,7 +95,9 @@ async function validate() {
         try {
           new URL(data.external_url);
         } catch {
-          errors.push(`${item.relativePath}: invalid external_url "${data.external_url}"`);
+          errors.push(
+            `${item.relativePath}: invalid external_url "${data.external_url}"`,
+          );
         }
       }
 
@@ -93,17 +108,26 @@ async function validate() {
       let match;
       while ((match = linkRegex.exec(scannable)) !== null) {
         const href = match[2].split(/\s+/)[0]; // Strip title
-        if (href.startsWith('http://') || href.startsWith('https://') || href.startsWith('#') || href.startsWith('//')) {
+        if (
+          href.startsWith('http://') ||
+          href.startsWith('https://') ||
+          href.startsWith('#') ||
+          href.startsWith('//')
+        ) {
           continue;
         }
         if (!href.endsWith('.md')) continue;
 
         // Resolve relative to the item's directory
         const itemDir = path.dirname(item.relativePath);
-        const resolved = path.posix.normalize(path.posix.join(itemDir, href.split('#')[0]));
+        const resolved = path.posix.normalize(
+          path.posix.join(itemDir, href.split('#')[0]),
+        );
 
         if (!allPaths.has(resolved)) {
-          errors.push(`${item.relativePath}: broken link to "${href}" (resolved: ${resolved})`);
+          errors.push(
+            `${item.relativePath}: broken link to "${href}" (resolved: ${resolved})`,
+          );
         }
       }
 
@@ -113,7 +137,9 @@ async function validate() {
         for (const ref of refs) {
           const refPath = path.resolve(COURSE_DIR, ref);
           if (!fs.existsSync(refPath)) {
-            errors.push(`${item.relativePath}: referenced file not found: ${ref}`);
+            errors.push(
+              `${item.relativePath}: referenced file not found: ${ref}`,
+            );
           }
         }
       } catch {
@@ -137,7 +163,9 @@ async function validate() {
       console.log(`  ✗ ${e}`);
     }
     console.log();
-    console.log(`[validate] Found ${errors.length} error(s) and ${warnings.length} warning(s).`);
+    console.log(
+      `[validate] Found ${errors.length} error(s) and ${warnings.length} warning(s).`,
+    );
     process.exit(1);
   }
 

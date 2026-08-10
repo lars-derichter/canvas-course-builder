@@ -1,7 +1,10 @@
 #!/usr/bin/env node
 
 const { PROJECT_ROOT } = require('./project-root');
-require('dotenv').config({ path: require('path').join(PROJECT_ROOT, '.env'), quiet: true });
+require('dotenv').config({
+  path: require('path').join(PROJECT_ROOT, '.env'),
+  quiet: true,
+});
 
 const { Command } = require('commander');
 const pkg = require('../package.json');
@@ -27,8 +30,13 @@ program
 
 program
   .command('setup-pages')
-  .description('Configure GitHub Pages hosting (Docusaurus config + deploy workflow)')
-  .option('--domain <domain>', 'Use a custom domain instead of the github.io subpath')
+  .description(
+    'Configure GitHub Pages hosting (Docusaurus config + deploy workflow)',
+  )
+  .option(
+    '--domain <domain>',
+    'Use a custom domain instead of the github.io subpath',
+  )
   .action(require('./setup-pages'));
 
 program
@@ -36,7 +44,10 @@ program
   .description('Push local course content to Canvas')
   .option('-m, --module <name>', 'Only push a specific module folder name')
   .option('--dry-run', 'Show what would happen without making API calls')
-  .option('--prune', 'Delete Canvas modules and items that no longer exist locally')
+  .option(
+    '--prune',
+    'Delete Canvas modules and items that no longer exist locally',
+  )
   .action(require('./push'));
 
 program
@@ -55,36 +66,62 @@ program
   .command('new-module')
   .description('Create a new course module folder with _category_.json')
   .option('-n, --name <name>', 'Module name (skips the interactive prompt)')
-  .option('-p, --position <number>', 'Position number (default: after the last module)')
+  .option(
+    '-p, --position <number>',
+    'Position number (default: after the last module)',
+  )
   .action(require('./new-module'));
 
 program
   .command('move-module')
   .description('Move a course module to a different position')
-  .option('-m, --module <folder>', 'Module folder name (skips the interactive prompt)')
+  .option(
+    '-m, --module <folder>',
+    'Module folder name (skips the interactive prompt)',
+  )
   .option('-p, --position <number>', 'New position')
   .action(require('./move-module'));
 
 program
   .command('rename-module')
   .description('Rename a course module')
-  .option('-m, --module <folder>', 'Module folder name (skips the interactive prompt)')
+  .option(
+    '-m, --module <folder>',
+    'Module folder name (skips the interactive prompt)',
+  )
   .option('-n, --name <name>', 'New module name')
   .action(require('./rename-module'));
 
 program
   .command('delete-module')
   .description('Delete a course module and renumber remaining modules')
-  .option('-m, --module <folder>', 'Module folder name (skips the interactive prompt)')
-  .option('-y, --yes', 'Confirm deletion without prompting (required with --module)')
+  .option(
+    '-m, --module <folder>',
+    'Module folder name (skips the interactive prompt)',
+  )
+  .option(
+    '-y, --yes',
+    'Confirm deletion without prompting (required with --module)',
+  )
   .action(require('./delete-module'));
 
 program
   .command('new-item')
-  .description('Create a new item (page, assignment, url, subsection, file) in a module')
-  .option('-m, --module <folder>', 'Module folder name (skips the interactive prompts)')
-  .option('-s, --subsection <folder>', 'Subsection folder name within the module')
-  .option('-t, --type <type>', 'Item type: page, assignment, url, subsection, file')
+  .description(
+    'Create a new item (page, assignment, url, subsection, file) in a module',
+  )
+  .option(
+    '-m, --module <folder>',
+    'Module folder name (skips the interactive prompts)',
+  )
+  .option(
+    '-s, --subsection <folder>',
+    'Subsection folder name within the module',
+  )
+  .option(
+    '-t, --type <type>',
+    'Item type: page, assignment, url, subsection, file',
+  )
   .option('-n, --name <name>', 'Item name')
   .option('-p, --position <number>', 'Position (default: after the last item)')
   .option('--url <url>', 'External URL (for type url)')
@@ -105,7 +142,10 @@ program
   .option('--path <path>', 'Path to the item (skips the interactive prompts)')
   .option('--to-module <folder>', 'Destination module folder name')
   .option('--to-subsection <folder>', 'Destination subsection folder name')
-  .option('-p, --position <number>', 'Position in the destination (default: last)')
+  .option(
+    '-p, --position <number>',
+    'Position in the destination (default: last)',
+  )
   .action(require('./movetomodule-item'));
 
 program
@@ -119,7 +159,10 @@ program
   .command('delete-item')
   .description('Delete an item from a module and renumber remaining items')
   .option('--path <path>', 'Path to the item (skips the interactive prompts)')
-  .option('-y, --yes', 'Confirm deletion without prompting (required with --path)')
+  .option(
+    '-y, --yes',
+    'Confirm deletion without prompting (required with --path)',
+  )
   .action(require('./delete-item'));
 
 program
@@ -150,7 +193,11 @@ program
 program
   .command('search <keyword>')
   .description('Find a word or phrase in your course markdown files')
-  .option('-C, --context <lines>', 'Lines of context to show around each match', '2')
+  .option(
+    '-C, --context <lines>',
+    'Lines of context to show around each match',
+    '2',
+  )
   .option('--evaluations', 'Also search the evaluations/ directory')
   .option('--sources', 'Also search the sources/ directory')
   .option('--case-sensitive', 'Match upper/lower case exactly')
@@ -158,7 +205,9 @@ program
 
 program
   .command('build-glossary')
-  .description('Regenerate module glossary pages from the canonical glossary YAML')
+  .description(
+    'Regenerate module glossary pages from the canonical glossary YAML',
+  )
   .option('-m, --module <name>', 'Only rebuild a specific module folder name')
   .option(
     '-g, --glossary <path>',
@@ -170,7 +219,9 @@ program
 
 program
   .command('export [paths...]')
-  .description('Export course materials to PDF or DOCX (needs pandoc and typst)')
+  .description(
+    'Export course materials to PDF or DOCX (needs pandoc and typst)',
+  )
   .option('-m, --module <folder>', 'Export one full module')
   .option('--toc <file>', 'Export the items listed in a TOC file')
   .option('--flagged', 'Only include items with frontmatter export: true')
@@ -178,10 +229,18 @@ program
   .option('-o, --output <path>', 'Output file path')
   .option('--title <text>', 'Title-page title')
   .option('--subtitle <text>', 'Title-page subtitle')
-  .option('--style <name|path>', 'Export style to use, overriding course.config.yml')
+  .option(
+    '--style <name|path>',
+    'Export style to use, overriding course.config.yml',
+  )
   .option('--template <path>', 'Override the Typst template')
   .option('--reference-doc <path>', 'Override the reference.docx')
-  .option('--var <key=value>', 'Pandoc variable (repeatable)', require('./export').collectVar, {})
+  .option(
+    '--var <key=value>',
+    'Pandoc variable (repeatable)',
+    require('./export').collectVar,
+    {},
+  )
   .option('--keep-markdown', 'Also write the intermediate combined markdown')
   .option('--sample', 'Export the kitchen-sink style sample')
   .action(require('./export'));
@@ -198,12 +257,16 @@ program
 
 program
   .command('reset-sync-state')
-  .description('Remove all canvas_id fields from course files and delete .canvas-sync.json')
+  .description(
+    'Remove all canvas_id fields from course files and delete .canvas-sync.json',
+  )
   .action(require('./reset-sync-state'));
 
 program
   .command('reset-canvas')
-  .description('Delete all modules, pages, assignments, and files from the Canvas course')
+  .description(
+    'Delete all modules, pages, assignments, and files from the Canvas course',
+  )
   .action(require('./reset-canvas'));
 
 // Parse argv explicitly rather than letting commander auto-detect the runtime.

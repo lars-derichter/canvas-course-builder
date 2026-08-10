@@ -19,7 +19,10 @@ describe('collectDeletedModules', () => {
         300: { folder: '03-deleted', items: {} },
       },
     };
-    const localModules = [{ folderName: '01-intro' }, { folderName: '02-setup' }];
+    const localModules = [
+      { folderName: '01-intro' },
+      { folderName: '02-setup' },
+    ];
 
     const result = collectDeletedModules(syncData, localModules);
 
@@ -62,8 +65,16 @@ describe('collectLocalClaims', () => {
       {
         folderName: '01-intro',
         items: [
-          { relativePath: '01-intro/01-a.md', canvasType: 'page', frontmatter: { canvas_id: 'welcome' } },
-          { relativePath: '01-intro/02-b.md', canvasType: 'assignment', frontmatter: { canvas_id: 500 } },
+          {
+            relativePath: '01-intro/01-a.md',
+            canvasType: 'page',
+            frontmatter: { canvas_id: 'welcome' },
+          },
+          {
+            relativePath: '01-intro/02-b.md',
+            canvasType: 'assignment',
+            frontmatter: { canvas_id: 500 },
+          },
         ],
       },
     ];
@@ -103,7 +114,11 @@ describe('collectLocalClaims', () => {
             type: 'subheader',
             title: 'Sub',
             items: [
-              { relativePath: '01-intro/01-sub/01-n.md', canvasType: 'page', frontmatter: { canvas_id: 'nested' } },
+              {
+                relativePath: '01-intro/01-sub/01-n.md',
+                canvasType: 'page',
+                frontmatter: { canvas_id: 'nested' },
+              },
             ],
           },
         ],
@@ -118,12 +133,22 @@ describe('collectLocalClaims', () => {
 
 describe('isItemClaimed', () => {
   it('matches a page entry by canvas_id', () => {
-    const entry = { canvas_id: 123, canvas_type: 'page', page_url: 'welcome', path: 'x.md' };
+    const entry = {
+      canvas_id: 123,
+      canvas_type: 'page',
+      page_url: 'welcome',
+      path: 'x.md',
+    };
     assert.equal(isItemClaimed(entry, new Set(['page:123'])), true);
   });
 
   it('matches a page entry by page_url when frontmatter holds the slug', () => {
-    const entry = { canvas_id: 123, canvas_type: 'page', page_url: 'welcome', path: 'x.md' };
+    const entry = {
+      canvas_id: 123,
+      canvas_type: 'page',
+      page_url: 'welcome',
+      path: 'x.md',
+    };
     assert.equal(isItemClaimed(entry, new Set(['page:welcome'])), true);
   });
 
@@ -134,11 +159,19 @@ describe('isItemClaimed', () => {
       external_url: 'http://example.com',
       path: 'x.md',
     };
-    assert.equal(isItemClaimed(entry, new Set(['external_url:http://example.com'])), true);
+    assert.equal(
+      isItemClaimed(entry, new Set(['external_url:http://example.com'])),
+      true,
+    );
   });
 
   it('does not match when nothing claims the identity', () => {
-    const entry = { canvas_id: 123, canvas_type: 'page', page_url: 'welcome', path: 'x.md' };
+    const entry = {
+      canvas_id: 123,
+      canvas_type: 'page',
+      page_url: 'welcome',
+      path: 'x.md',
+    };
     assert.equal(isItemClaimed(entry, new Set(['page:999'])), false);
   });
 });
@@ -150,9 +183,23 @@ describe('collectDeletedItems', () => {
         100: {
           folder: '01-intro',
           items: {
-            'page:welcome-page': { path: '01-intro/01-welcome.md', canvas_id: 'welcome-page', canvas_type: 'page', page_url: 'welcome-page' },
-            'page:deleted-page': { path: '01-intro/02-deleted.md', canvas_id: 'deleted-page', canvas_type: 'page', page_url: 'deleted-page' },
-            'assignment:500': { path: '01-intro/03-assignment.md', canvas_id: 500, canvas_type: 'assignment' },
+            'page:welcome-page': {
+              path: '01-intro/01-welcome.md',
+              canvas_id: 'welcome-page',
+              canvas_type: 'page',
+              page_url: 'welcome-page',
+            },
+            'page:deleted-page': {
+              path: '01-intro/02-deleted.md',
+              canvas_id: 'deleted-page',
+              canvas_type: 'page',
+              page_url: 'deleted-page',
+            },
+            'assignment:500': {
+              path: '01-intro/03-assignment.md',
+              canvas_id: 500,
+              canvas_type: 'assignment',
+            },
           },
         },
       },
@@ -161,7 +208,12 @@ describe('collectDeletedItems', () => {
       {
         folderName: '01-intro',
         items: [
-          { relativePath: '01-intro/01-welcome.md', title: 'Welcome', canvasType: 'page', frontmatter: { canvas_id: 'welcome-page' } },
+          {
+            relativePath: '01-intro/01-welcome.md',
+            title: 'Welcome',
+            canvasType: 'page',
+            frontmatter: { canvas_id: 'welcome-page' },
+          },
         ],
       },
     ];
@@ -170,7 +222,10 @@ describe('collectDeletedItems', () => {
 
     assert.equal(result.length, 2);
     const paths = result.map((r) => r.relativePath).sort();
-    assert.deepStrictEqual(paths, ['01-intro/02-deleted.md', '01-intro/03-assignment.md']);
+    assert.deepStrictEqual(paths, [
+      '01-intro/02-deleted.md',
+      '01-intro/03-assignment.md',
+    ]);
   });
 
   it('does NOT flag an item that was renamed locally (identity still claimed)', () => {
@@ -179,7 +234,12 @@ describe('collectDeletedItems', () => {
         100: {
           folder: '01-intro',
           items: {
-            'page:welcome-page': { path: '01-intro/01-welcome.md', canvas_id: 'welcome-page', canvas_type: 'page', page_url: 'welcome-page' },
+            'page:welcome-page': {
+              path: '01-intro/01-welcome.md',
+              canvas_id: 'welcome-page',
+              canvas_type: 'page',
+              page_url: 'welcome-page',
+            },
           },
         },
       },
@@ -189,7 +249,12 @@ describe('collectDeletedItems', () => {
       {
         folderName: '01-intro',
         items: [
-          { relativePath: '01-intro/05-hello.md', title: 'Hello', canvasType: 'page', frontmatter: { canvas_id: 'welcome-page' } },
+          {
+            relativePath: '01-intro/05-hello.md',
+            title: 'Hello',
+            canvasType: 'page',
+            frontmatter: { canvas_id: 'welcome-page' },
+          },
         ],
       },
     ];
@@ -218,8 +283,18 @@ describe('collectDeletedItems', () => {
         100: {
           folder: '01-intro',
           items: {
-            'page:nested': { path: '01-intro/01-sub/01-nested.md', canvas_id: 'nested', canvas_type: 'page', page_url: 'nested' },
-            'page:gone': { path: '01-intro/01-sub/02-gone.md', canvas_id: 'gone', canvas_type: 'page', page_url: 'gone' },
+            'page:nested': {
+              path: '01-intro/01-sub/01-nested.md',
+              canvas_id: 'nested',
+              canvas_type: 'page',
+              page_url: 'nested',
+            },
+            'page:gone': {
+              path: '01-intro/01-sub/02-gone.md',
+              canvas_id: 'gone',
+              canvas_type: 'page',
+              page_url: 'gone',
+            },
           },
         },
       },
@@ -231,7 +306,14 @@ describe('collectDeletedItems', () => {
           {
             type: 'subheader',
             title: 'Sub',
-            items: [{ relativePath: '01-intro/01-sub/01-nested.md', title: 'Nested', canvasType: 'page', frontmatter: { canvas_id: 'nested' } }],
+            items: [
+              {
+                relativePath: '01-intro/01-sub/01-nested.md',
+                title: 'Nested',
+                canvasType: 'page',
+                frontmatter: { canvas_id: 'nested' },
+              },
+            ],
           },
         ],
       },
@@ -249,10 +331,28 @@ describe('collectDeletedItems', () => {
         100: {
           folder: '01-mod',
           items: {
-            'page:slug': { path: '01-mod/01-page.md', canvas_id: 'slug', canvas_type: 'page', page_url: 'slug' },
-            'assignment:200': { path: '01-mod/02-assign.md', canvas_id: 200, canvas_type: 'assignment' },
-            'external_url:http://example.com': { path: '01-mod/03-link.md', canvas_id: 42, canvas_type: 'external_url', external_url: 'http://example.com' },
-            'file:400': { path: '01-mod/04-doc.pdf', canvas_id: 400, canvas_type: 'file' },
+            'page:slug': {
+              path: '01-mod/01-page.md',
+              canvas_id: 'slug',
+              canvas_type: 'page',
+              page_url: 'slug',
+            },
+            'assignment:200': {
+              path: '01-mod/02-assign.md',
+              canvas_id: 200,
+              canvas_type: 'assignment',
+            },
+            'external_url:http://example.com': {
+              path: '01-mod/03-link.md',
+              canvas_id: 42,
+              canvas_type: 'external_url',
+              external_url: 'http://example.com',
+            },
+            'file:400': {
+              path: '01-mod/04-doc.pdf',
+              canvas_id: 400,
+              canvas_type: 'file',
+            },
           },
         },
       },
@@ -263,7 +363,12 @@ describe('collectDeletedItems', () => {
 
     assert.equal(result.length, 4);
     const types = result.map((r) => r.canvasType).sort();
-    assert.deepStrictEqual(types, ['assignment', 'external_url', 'file', 'page']);
+    assert.deepStrictEqual(types, [
+      'assignment',
+      'external_url',
+      'file',
+      'page',
+    ]);
   });
 });
 
@@ -274,7 +379,12 @@ describe('collectDeletedItems per type', () => {
         100: {
           folder: '01-mod',
           items: {
-            'page:my-page': { path: '01-mod/01-page.md', canvas_id: 'my-page', canvas_type: 'page', page_url: 'my-page' },
+            'page:my-page': {
+              path: '01-mod/01-page.md',
+              canvas_id: 'my-page',
+              canvas_type: 'page',
+              page_url: 'my-page',
+            },
           },
         },
       },
@@ -295,7 +405,11 @@ describe('collectDeletedItems per type', () => {
         100: {
           folder: '01-mod',
           items: {
-            'assignment:999': { path: '01-mod/01-hw.md', canvas_id: 999, canvas_type: 'assignment' },
+            'assignment:999': {
+              path: '01-mod/01-hw.md',
+              canvas_id: 999,
+              canvas_type: 'assignment',
+            },
           },
         },
       },
@@ -315,7 +429,11 @@ describe('collectDeletedItems per type', () => {
         100: {
           folder: '01-mod',
           items: {
-            'file:777': { path: '01-mod/doc.pdf', canvas_id: 777, canvas_type: 'file' },
+            'file:777': {
+              path: '01-mod/doc.pdf',
+              canvas_id: 777,
+              canvas_type: 'file',
+            },
           },
         },
       },
@@ -335,7 +453,12 @@ describe('collectDeletedItems per type', () => {
         100: {
           folder: '01-mod',
           items: {
-            'external_url:http://example.com': { path: '01-mod/01-link.md', canvas_id: 42, canvas_type: 'external_url', external_url: 'http://example.com' },
+            'external_url:http://example.com': {
+              path: '01-mod/01-link.md',
+              canvas_id: 42,
+              canvas_type: 'external_url',
+              external_url: 'http://example.com',
+            },
           },
         },
       },
@@ -358,15 +481,31 @@ describe('collectDeletedItems with multiple modules', () => {
         100: {
           folder: '01-intro',
           items: {
-            'page:page-1': { path: '01-intro/01-page.md', canvas_id: 'page-1', canvas_type: 'page' },
-            'page:page-2': { path: '01-intro/02-deleted.md', canvas_id: 'page-2', canvas_type: 'page' },
+            'page:page-1': {
+              path: '01-intro/01-page.md',
+              canvas_id: 'page-1',
+              canvas_type: 'page',
+            },
+            'page:page-2': {
+              path: '01-intro/02-deleted.md',
+              canvas_id: 'page-2',
+              canvas_type: 'page',
+            },
           },
         },
         200: {
           folder: '02-setup',
           items: {
-            'page:install': { path: '02-setup/01-install.md', canvas_id: 'install', canvas_type: 'page' },
-            'assignment:300': { path: '02-setup/02-gone.md', canvas_id: 300, canvas_type: 'assignment' },
+            'page:install': {
+              path: '02-setup/01-install.md',
+              canvas_id: 'install',
+              canvas_type: 'page',
+            },
+            'assignment:300': {
+              path: '02-setup/02-gone.md',
+              canvas_id: 300,
+              canvas_type: 'assignment',
+            },
           },
         },
       },
@@ -374,11 +513,25 @@ describe('collectDeletedItems with multiple modules', () => {
     const localModules = [
       {
         folderName: '01-intro',
-        items: [{ relativePath: '01-intro/01-page.md', title: 'Page', canvasType: 'page', frontmatter: { canvas_id: 'page-1' } }],
+        items: [
+          {
+            relativePath: '01-intro/01-page.md',
+            title: 'Page',
+            canvasType: 'page',
+            frontmatter: { canvas_id: 'page-1' },
+          },
+        ],
       },
       {
         folderName: '02-setup',
-        items: [{ relativePath: '02-setup/01-install.md', title: 'Install', canvasType: 'page', frontmatter: { canvas_id: 'install' } }],
+        items: [
+          {
+            relativePath: '02-setup/01-install.md',
+            title: 'Install',
+            canvasType: 'page',
+            frontmatter: { canvas_id: 'install' },
+          },
+        ],
       },
     ];
 
@@ -395,13 +548,21 @@ describe('collectDeletedItems with multiple modules', () => {
         100: {
           folder: '01-intro',
           items: {
-            'page:page-1': { path: '01-intro/01-deleted.md', canvas_id: 'page-1', canvas_type: 'page' },
+            'page:page-1': {
+              path: '01-intro/01-deleted.md',
+              canvas_id: 'page-1',
+              canvas_type: 'page',
+            },
           },
         },
         200: {
           folder: '02-setup',
           items: {
-            'page:page-2': { path: '02-setup/01-deleted.md', canvas_id: 'page-2', canvas_type: 'page' },
+            'page:page-2': {
+              path: '02-setup/01-deleted.md',
+              canvas_id: 'page-2',
+              canvas_type: 'page',
+            },
           },
         },
       },

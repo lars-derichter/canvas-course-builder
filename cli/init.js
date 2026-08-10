@@ -24,7 +24,9 @@ async function init() {
   });
 
   console.log('[init] Canvas LMS setup');
-  console.log('[init] This will create .env and .canvas-sync.json in the project root.\n');
+  console.log(
+    '[init] This will create .env and .canvas-sync.json in the project root.\n',
+  );
 
   // Read existing .env values if present
   let existingUrl = '';
@@ -40,7 +42,11 @@ async function init() {
     if (courseMatch) existingCourseId = courseMatch[1].trim();
   }
 
-  const canvasUrl = await prompt(rl, 'Canvas URL (e.g. https://school.instructure.com)', existingUrl);
+  const canvasUrl = await prompt(
+    rl,
+    'Canvas URL (e.g. https://school.instructure.com)',
+    existingUrl,
+  );
   const apiToken = await prompt(rl, 'Canvas API token', existingToken);
   const courseId = await prompt(rl, 'Canvas course ID', existingCourseId);
 
@@ -91,8 +97,12 @@ async function init() {
   fs.writeFileSync(SYNC_FILE, JSON.stringify(syncData, null, 2) + '\n', 'utf8');
   console.log(`[init] Wrote ${SYNC_FILE}`);
 
-  console.log('\n[init] ⚠ Security reminder: .env contains your Canvas API token.');
-  console.log('[init]   Make sure .env is listed in .gitignore and never committed to version control.');
+  console.log(
+    '\n[init] ⚠ Security reminder: .env contains your Canvas API token.',
+  );
+  console.log(
+    '[init]   Make sure .env is listed in .gitignore and never committed to version control.',
+  );
 
   console.log('\n[init] Setup complete. You can now run:');
   console.log('  npx course push   - push local content to Canvas');
