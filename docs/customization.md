@@ -194,3 +194,43 @@ The licences also follow the tooling/content split:
   [`course/LICENSE.md`](../course/LICENSE.md). That file is yours: edit it to
   change or replace the licence for your own material, and update the licence
   section of your README to match.
+
+## Files that belong to the tooling project
+
+"Use this template" copies the whole repository, so your course starts out with
+a handful of files that govern the upstream project rather than your course:
+
+- [`CODE_OF_CONDUCT.md`](../CODE_OF_CONDUCT.md) and
+  [`SECURITY.md`](../SECURITY.md)
+- `.github/ISSUE_TEMPLATE/` and `.github/PULL_REQUEST_TEMPLATE.md`
+- [`CONTRIBUTING.md`](../CONTRIBUTING.md), which forwards to
+  [contributing.md](contributing.md)
+- [`CHANGELOG.md`](../CHANGELOG.md), the tooling's changelog
+
+Each one says up front which project it applies to, so leaving them in place
+costs nothing and keeps the bug-report route to the upstream project open for
+whoever works on your course with you. Most people leave them.
+
+If you would rather not carry them, deleting the files is only half the job:
+[upstream updates](updating-your-project.md) deliver them again. Delete them,
+then list them in `update-from-upstream.conf`:
+
+```ini
+protected_dirs = course evaluations sources .github/ISSUE_TEMPLATE
+protected_files = README.md AGENTS.md CLAUDE.md docs/style.md docs/course-context.md update-from-upstream.conf course.config.yml CODE_OF_CONDUCT.md SECURITY.md .github/PULL_REQUEST_TEMPLATE.md
+```
+
+Protection restores a path from your own history, and a protected path that is
+absent from your history gets removed instead — which is exactly what you want
+here. Commit the deletions first, so "absent from your history" is true by the
+time the next update runs.
+
+> [!WARNING]
+>
+> Protect the individual paths, not `.github` as a whole. That directory also
+> holds the CI workflow and, if you publish with [GitHub Pages](hosting.md), the
+> deploy workflow; protecting it wholesale would freeze both at the version you
+> happen to have today.
+
+`LICENSE` and `THIRD-PARTY.md` are a different case: they cover code that stays
+in your repository, so leave them alone.

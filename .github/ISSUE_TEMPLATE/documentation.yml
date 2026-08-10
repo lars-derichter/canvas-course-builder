@@ -1,0 +1,27 @@
+name: Documentation problem
+description: Something in the docs is wrong, missing, or hard to follow
+labels: ["documentation"]
+body:
+  - type: input
+    id: page
+    attributes:
+      label: Which page
+      description:
+        The file or the link, for example `docs/canvas-setup.md` or the README.
+      placeholder: docs/user-guide.md
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: What is wrong or missing
+      description: Quote the passage if it is a small thing.
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected to find
+      description: What would have answered your question at that point?
+    validations:
+      required: false

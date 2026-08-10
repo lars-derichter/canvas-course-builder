@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- **Issue forms, a pull-request template, a security policy and a code of
+  conduct.** Reporting a bug on the upstream project now walks you through the
+  fields that make a report useful, and security problems have a private channel
+  instead of a public issue. Because GitHub copies the whole template, these
+  files also land in your course repository; each says which project it applies
+  to, and
+  [Files that belong to the tooling project](docs/customization.md#files-that-belong-to-the-tooling-project)
+  explains how to drop them if you would rather not carry them.
 - **Prettier and ESLint.** `npm run format` formats the repo and `npm run lint`
   reports defects; both are checked in CI. Formatting now includes markdown, so
   `npm run format` will also rewrap your own course prose at 80 characters — see

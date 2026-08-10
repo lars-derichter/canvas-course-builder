@@ -1,0 +1,88 @@
+name: Bug report
+description:
+  Something in the Canvas Course Builder tooling does not work as expected
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting this. Two things worth checking first:
+
+        - [Troubleshooting](https://github.com/lars-derichter/canvas-course-builder/blob/main/docs/troubleshooting.md)
+          covers the most common push, pull, preview and AI-assistant problems.
+        - If the problem is a security vulnerability, do not open an issue.
+          Follow the [security policy](https://github.com/lars-derichter/canvas-course-builder/blob/main/SECURITY.md)
+          instead.
+
+        Not sure whether what you found is a bug? Report it anyway. It might
+        reveal a documentation gap or an edge case worth handling.
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected
+      description: What did you think would happen?
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: What actually happened
+      description: Describe the result you got instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description:
+        Which commands did you run, in what order? Mention anything unusual
+        about the files involved.
+      placeholder: |
+        1. Ran `npx course push`
+        2. ...
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Error output
+      description:
+        Copy the full output from the terminal. Rerunning with `--verbose` often
+        shows more.
+      render: text
+    validations:
+      required: false
+  - type: input
+    id: os
+    attributes:
+      label: Operating system
+      placeholder: macOS 15.5, Windows 11, Ubuntu 24.04
+    validations:
+      required: true
+  - type: input
+    id: node
+    attributes:
+      label: Node.js version
+      description: The output of `node --version`.
+      placeholder: v24.19.0
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Canvas Course Builder version
+      description:
+        The `version` field in `package.json`, or the commit you are on (`git
+        rev-parse --short HEAD`).
+    validations:
+      required: false
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: Before you submit
+      options:
+        - label:
+            This is about the tooling, not about the content of my own course.
+          required: true
+        - label: My Canvas API token does not appear anywhere in this report.
+          required: true

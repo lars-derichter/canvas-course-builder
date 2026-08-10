@@ -71,8 +71,3 @@ accordingly.
 `docusaurus.config.js` hardcodes the preview site title "Canvas Course Builder".
 Derive it from a course title field in `course.config.yml` so every course names
 its own site.
-
-### Tooling polish
-
-- GitHub community templates: issue and pull-request templates, `SECURITY.md`, a
-  code of conduct.

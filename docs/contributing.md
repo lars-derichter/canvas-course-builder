@@ -2,6 +2,8 @@
 
 Found a bug? Have an idea for an improvement? Contributions are welcome —
 whether that's a bug report, a feature suggestion, or a pull request with a fix.
+Everyone taking part is expected to follow the
+[code of conduct](../CODE_OF_CONDUCT.md).
 
 ## Reporting an issue
 
@@ -10,7 +12,10 @@ If something isn't working as expected, open an issue on GitHub:
 1. Go to the **Issues** tab on
    [the original Canvas Course Builder project page.](https://github.com/lars-derichter/canvas-course-builder)
 2. Click **New issue**.
-3. Fill in a clear title and description.
+3. Pick the form that fits — bug report, idea, or documentation problem — and
+   fill it in. The forms ask for exactly what's listed below, so you don't have
+   to remember it. "Open a blank issue" is still there for anything that fits
+   none of them.
 
 A good issue report includes:
 
@@ -27,6 +32,13 @@ A good issue report includes:
 >
 > Even if you're not sure whether something is a bug, feel free to open an
 > issue. It might reveal a documentation gap or an edge case worth handling.
+
+> [!WARNING]
+>
+> One exception: if what you found is a security vulnerability, don't open a
+> public issue. Report it privately as described in the
+> [security policy](../SECURITY.md). The same page explains how to handle your
+> Canvas API token — never paste it into an issue or a log excerpt.
 
 ## Suggesting improvements
 
@@ -81,7 +93,9 @@ If you'd like to contribute a fix or improvement yourself, follow these steps:
    ```
 
 6. **Open a pull request** — go to your fork on GitHub, and you'll see a banner
-   offering to create a pull request. Click **Compare & pull request**.
+   offering to create a pull request. Click **Compare & pull request**. The
+   description comes prefilled with a short template; write over the prompts and
+   tick the checklist.
 
 ### What makes a good pull request
 

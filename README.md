@@ -71,4 +71,6 @@ The [docs folder](docs/README.md) has the full map. Start with:
 
 Bug reports, ideas and pull requests are welcome: see the
 [contributing guide](docs/contributing.md) and the
-[ideas list](docs/roadmap.md).
+[ideas list](docs/roadmap.md). Taking part means following the
+[code of conduct](CODE_OF_CONDUCT.md); security problems have their own
+[private reporting route](SECURITY.md).

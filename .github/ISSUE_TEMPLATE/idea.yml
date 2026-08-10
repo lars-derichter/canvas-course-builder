@@ -1,0 +1,43 @@
+name: Idea or improvement
+description: Suggest a feature, a skill, or a better workflow
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Ideas are welcome, including half-formed ones. If you would rather
+        discuss before writing it up, an issue is still the right place.
+  - type: textarea
+    id: what
+    attributes:
+      label: What you would like
+      description: The feature, skill or change you have in mind.
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Why it would help
+      description:
+        The use case or the problem it solves. Concrete beats general.
+    validations:
+      required: true
+  - type: textarea
+    id: today
+    attributes:
+      label: How you use Canvas Course Builder today
+      description:
+        What your course looks like, which commands you lean on, what you work
+        around by hand. This helps decide what matters most.
+    validations:
+      required: false
+  - type: checkboxes
+    id: confirmations
+    attributes:
+      label: Before you submit
+      options:
+        - label:
+            I checked the [ideas
+            list](https://github.com/lars-derichter/canvas-course-builder/blob/main/docs/roadmap.md)
+            and this is not already on it.
+          required: true
