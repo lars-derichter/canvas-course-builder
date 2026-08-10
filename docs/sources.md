@@ -12,7 +12,7 @@ Create subfolders as needed. Suggested structure:
 sources/
   articles/             # Research papers, blog posts, bookmarks
   code-examples/        # Code snippets, demos, prototypes
-  export-style/         # Your export style overrides (see export-styling.md)
+  export-style/         # Per-file export style overrides (see export-styling.md)
   images/               # Diagrams, screenshots, figures
   ideas/                # Rough notes and drafts
   lessons/              # Full lesson plans (lesson-NN.md)

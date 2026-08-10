@@ -32,13 +32,14 @@ All guides for Canvas Course Builder. New here? Start with the
 - [VS Code extension](vscode.md): sidebar and command-palette reference
 - [AI assistants](ai-assistants.md): setup, the bundled skills, and
   creating your own
-- [Export styling](export-styling.md): the PDF/DOCX pipeline and how styles
-  resolve
+- [Export styling](export-styling.md): the PDF/DOCX pipeline, and how the
+  export style and theme resolve
 - [Hosting](hosting.md): publishing the preview site to GitHub Pages
 
 ## Making it yours
 
-- [Customization](customization.md): README, language, branding, and licence
+- [Customization](customization.md): README, language, colours and fonts,
+  branding, and licence
 - [Updating your project](updating-your-project.md): pulling tooling
   improvements from upstream
 - [New academic year](new-academic-year.md): pointing your course at a

@@ -65,8 +65,9 @@ The [docs folder](docs/README.md) has the full map. Start with:
 - **Course content** (`course/`): [CC BY-NC-SA 4.0](course/LICENSE.md) by
   default. Content you write in your own course is yours to license as you
   wish.
-- **Example branding assets** (the fonts and logo in `templates/export/`):
-  property of their respective owners, see [THIRD-PARTY.md](THIRD-PARTY.md).
+- **Example branding assets** (the fonts and logo in
+  `export-styles/thomas-more/`): property of their respective owners, see
+  [THIRD-PARTY.md](THIRD-PARTY.md).
 
 ## Contributing
 

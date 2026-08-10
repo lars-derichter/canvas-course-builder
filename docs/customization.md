@@ -1,11 +1,11 @@
 # Making the template yours
 
 The template ships as a working example: a README about the tooling,
-English student-facing labels, an English writing style guide, and an
-export style that imitates the Thomas More course template. Together they
-show what a fully configured course looks like, but they are starting
-points, not requirements. This page covers replacing each of them with your
-own README, language, branding, and licence.
+English student-facing labels, an English writing style guide, and a neutral
+look for the preview site and the exports. Together they show what a fully
+configured course looks like, but they are starting points, not
+requirements. This page covers replacing each of them with your own README,
+language, branding, and licence.
 
 ## The README
 
@@ -26,7 +26,8 @@ template mark the sections that need writing.
 `README.md` is protected during [upstream updates](updating-your-project.md),
 so your version is never overwritten. `templates/` is not, by design: it
 holds shipped defaults you copy out of, never edit in place. The same goes
-for the style baselines and export defaults below.
+for the style baselines below and for `export-styles/` and
+`src/css/themes/`.
 
 ## Language
 
@@ -76,41 +77,111 @@ Two other things track the language you write in:
 
 ## Branding
 
-### The preview site
+Branding splits along two axes, both set in `course.config.yml`:
 
-The local preview uses a Thomas More-inspired palette defined in
-[`src/css/custom.css`](../src/css/custom.css). Change the colour variables
-at the top of that file to restyle the site. The site title and navbar
-label are set in [`docusaurus.config.js`](../docusaurus.config.js).
+```yml
+theme: github        # colour everywhere, plus the site's fonts
+export:
+  style: generic     # PDF and DOCX layout, fonts and cover
+```
 
-### PDF and DOCX exports
+The shipped defaults are deliberately neutral. `thomas-more` is available
+for both keys as a worked example of full institutional branding; set both
+to it for the complete house style.
 
-The shipped export style imitates the Thomas More course template, fonts
-and logo included, as an example of a fully branded style. The bundled
-fonts and logo belong to their owners (see
-[THIRD-PARTY.md](../THIRD-PARTY.md)); replace them with your institution's
-assets for your own course.
+### Colour: the theme
 
-Exports resolve every style asset per file: anything you place in
-`sources/export-style/` wins over the shipped default in
-`templates/export/`, and `sources/` is protected during upstream updates.
+A theme is a CSS file of custom properties, and it is the single source of
+truth for colour. The preview site, the alert colours in Canvas pages, the
+alert icons uploaded to Canvas, and PDF exports all read the same file — so
+a colour you change in one place changes everywhere.
 
-The comfortable route is AI-assisted:
+Built-in themes live in [`src/css/themes/`](../src/css/themes/):
+
+| Theme | Look |
+| --- | --- |
+| [`github.css`](../src/css/themes/github.css) | The default. GitHub's light-mode palette, near-black headings, a blue accent, and a system font stack with no web-font request. |
+| [`thomas-more.css`](../src/css/themes/thomas-more.css) | Orange accent, navy secondary, Nunito and Inconsolata from Google Fonts, and the pastel alert set. |
+
+The tokens, all prefixed `--ccb-`:
+
+| Token | What it colours |
+| --- | --- |
+| `--ccb-accent`, and `-dark` / `-darker` / `-darkest` / `-light` / `-lighter` / `-lightest` | Links, active navigation, and the ramp Docusaurus derives its UI from |
+| `--ccb-secondary` | Bold text, the site footer, file cards — the "weight" colour |
+| `--ccb-fg`, `--ccb-fg-muted` | Body text and secondary text |
+| `--ccb-border` | Rules, table lines, card outlines |
+| `--ccb-surface`, `--ccb-surface-subtle`, `--ccb-surface-sunken` | Page, sidebar and code-block backgrounds |
+| `--ccb-code-bg` | Inline code |
+| `--ccb-heading`, `--ccb-link` | Headings and links |
+| `--ccb-alert-<kind>-fg` / `-bg` | The six alert kinds: `note`, `tip`, `important`, `warning`, `caution`, `check`. `fg` is the left rule and the title, `bg` fills the box |
+| `--ccb-font-sans`, `--ccb-font-mono`, and the size / weight / line-height tokens | The preview site's typography. Export typography belongs to the export style, not here |
+
+To make a theme of your own, copy one into `sources/` — which is protected
+during upstream updates — and point `theme:` at the path:
+
+```bash
+cp src/css/themes/github.css sources/my-theme.css
+```
+
+```yml
+theme: sources/my-theme.css
+```
+
+Then edit the colours. Restart `npm start` to see the site change; exports
+and Canvas pages pick it up on the next run.
+
+> [!NOTE]
+>
+> One surface does not follow the theme: **Word output**. Colours in DOCX
+> exports are baked into the export style's `reference.docx` and cannot be
+> injected. Use `/export-style-edit` to recolour it to match.
+
+[`src/css/custom.css`](../src/css/custom.css) holds no colours of its own —
+it maps the `--ccb-*` tokens onto Docusaurus's `--ifm-*` variables and
+styles the components. The site title and navbar label are set in
+[`docusaurus.config.js`](../docusaurus.config.js).
+
+### Layout: the export style
+
+An export style decides how a PDF or Word document is laid out:
+typography, margins, the cover, and any fonts it ships. Built-in styles
+live in [`export-styles/`](../export-styles/):
+
+| Style | Look |
+| --- | --- |
+| `generic` | The default. Helvetica/Arial, near-black headings, A4 with 2.5 cm margins, and a "Built with Canvas Course Builder" watermark on the cover. |
+| `thomas-more` | Century Gothic headings, the Thomas More logo, and the fonts bundled so the PDF renders the same anywhere. The fonts and logo belong to their owners — see [THIRD-PARTY.md](../THIRD-PARTY.md). |
+
+`npx course export --style thomas-more` overrides the config for one run.
+
+The comfortable route to a style of your own is AI-assisted:
 
 - `/export-style-create` derives a complete style from a reference you
   give it: a Word template, a PDF, a website URL, or a CSS file.
 - `/export-style-edit` makes plain-language tweaks ("headings dark blue",
   "bigger margins") to an existing style.
 
-By hand, the pieces are:
+By hand, copy the closest style out and point `export.style` at it:
 
-- `sources/export-style/template.typ` styles PDF exports (Typst).
-- `sources/export-style/reference.docx` styles DOCX exports (Word styles).
-- `sources/export-style/logo.png` is the cover logo. The filename is
-  fixed; put your own logo there under that name, or delete the shipped
-  one for a logo-less cover.
-- `sources/export-style/fonts/` holds fonts to embed in PDF exports;
-  without it, exports fall back to fonts installed on your machine.
+```bash
+cp -r export-styles/generic sources/my-style
+```
+
+The pieces inside are:
+
+- `template.typ` styles PDF exports (Typst).
+- `reference.docx` styles DOCX exports (Word styles).
+- `logo.png` is the cover logo. The filename is fixed; put your own logo
+  there under that name, or delete it for a logo-less cover. The shipped
+  watermark is generated from `logo.typ` next to it, which carries the
+  command to regenerate it.
+- `fonts/` holds fonts to embed in PDF exports; without it, exports fall
+  back to fonts installed on your machine.
+
+To change one file without forking a whole style, drop it in
+`sources/export-style/` — that path wins per file over whatever style is
+selected, and `sources/` is protected during upstream updates.
 
 See [export-styling.md](export-styling.md) for the full export pipeline.
 

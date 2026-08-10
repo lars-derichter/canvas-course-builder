@@ -35,6 +35,9 @@ Some paths need the real pandoc/Typst toolchain (and, for the sidebar, VS Code),
 so they are verified by hand rather than in the automated suite:
 
 - `npx course export --sample -f pdf` and `-f docx` — the style sample renders.
+- `npx course export --sample -f pdf --style thomas-more`, then the same with
+  `theme: thomas-more` in `course.config.yml` — style and theme change the
+  output independently.
 - `npx course export -m 01-getting-started` — a module with alerts, an SVG file
   item, an external URL, and a subfolder renders as one document.
 - The two-step TOC flow: `npx course export-toc`, delete some lines, then

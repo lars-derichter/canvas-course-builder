@@ -314,10 +314,14 @@ npx course export --toc exports/toc.md
 ```
 
 All of this is also available from the VS Code sidebar, including multi-select
-export of highlighted items. To change how exports look — fonts, colours,
-margins, a house style from a Word template — see
-[export styling](export-styling.md) and the `/export-style-create` and
-`/export-style-edit` skills.
+export of highlighted items.
+
+To change how exports look, `course.config.yml` picks the layout with
+`export.style` and the colours with `theme`; `--style <name>` overrides the
+layout for one run. See [export styling](export-styling.md) for the pipeline,
+[Customization](customization.md#branding) for the colour tokens, and the
+`/export-style-create` and `/export-style-edit` skills for deriving a house
+style from a Word template.
 
 ## Advanced commands
 

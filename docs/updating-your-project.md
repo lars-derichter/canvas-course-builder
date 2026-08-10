@@ -106,6 +106,16 @@ upstream_branch = main
 Because the config file is itself protected, edits you make here are never
 overwritten. Commit the file after changing it.
 
+> [!TIP]
+>
+> `export-styles/` and `src/css/themes/` ship unprotected on purpose: they
+> hold defaults you copy out of, not edit in place. Keep your own export
+> style or theme under `sources/` and point `export.style:` / `theme:` in
+> `course.config.yml` at it — `sources/` is protected and
+> `course.config.yml` is too. If you would rather edit a shipped file in
+> place, add it to `protected_files`, or choose `a` at the conflict prompt.
+> See [Customization](customization.md#branding).
+
 ### Renamed files and folders
 
 Upstream occasionally renames a skill folder or a docs file. A squash merge

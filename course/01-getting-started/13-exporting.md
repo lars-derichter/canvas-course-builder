@@ -105,19 +105,31 @@ git, so your documents never end up in your repository or on Canvas.
 
 ## Changing how exports look
 
-Out of the box, exports use the shipped example style, modelled on the
-Thomas More course template. You can change the fonts, colours, margins, and
-more, or match your own institution's house style from a Word template. Two
-ready-made skills make this easy:
+Out of the box, exports use a clean, neutral style. Two settings in
+`course.config.yml` decide the look:
+
+- **`export.style`** picks the layout: fonts, margins, and the cover. There is
+  a second style, `thomas-more`, that shows what full institutional branding
+  looks like.
+- **`theme`** picks the colours, and it does so everywhere at once — the
+  preview site, your Canvas pages, and the PDF.
+
+Two ready-made skills do the work for you:
 
 - **`/export-style-create`** builds a style from a reference — a Word document,
   a PDF, a website, or a CSS file
 - **`/export-style-edit`** makes a plain-language tweak, like "headings dark
   blue" or "bigger margins"
 
+To try another style for a single export, add `--style`:
+
+```bash
+npx course export --sample --style thomas-more
+```
+
 > [!NOTE]
 >
 > For the full picture of how styling works — what each template file controls
 > and how to tweak the PDF with `--var` — see the export styling guide
 > (`docs/export-styling.md` in your project folder, also readable on GitHub),
-> and `docs/customization.md` for swapping in your own branding.
+> and `docs/customization.md` for the colour tokens and your own branding.

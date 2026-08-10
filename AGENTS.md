@@ -66,6 +66,9 @@ Three layers:
   `2526/`). Not served by Docusaurus.
 - `sources/` — Reference materials and notes. Not served by Docusaurus or synced
   to Canvas.
+- `export-styles/` — Shipped PDF/DOCX styles, one folder per style, plus the
+  shared pandoc pipeline files (`filter.lua`, `defaults.yml`, `sample.md`).
+- `src/css/themes/` — Shipped colour themes, one CSS file each.
 - `lib/canvas/` — Canvas REST API client and resource-specific modules
 - `lib/convert/` — Bidirectional markdown ↔ Canvas HTML conversion and link
   resolution
@@ -79,12 +82,24 @@ Three layers:
 
 ### Course configuration
 
-- `course.config.yml` — Committed, per-course settings: the course `language`
-  (drives every generated student-facing label — alert titles, link/file cards,
-  export labels, glossary — and the Docusaurus locale) plus optional per-label
-  `labels:` overrides. Loaded via `lib/config/course-config.js`; built-in
-  `en`/`nl` label sets live in `lib/config/labels.js`. Also the machine-readable
-  answer to "what language is this course in".
+- `course.config.yml` — Committed, per-course settings, loaded via
+  `lib/config/course-config.js`:
+  - `language` drives every generated student-facing label (alert titles,
+    link/file cards, export labels, glossary) and the Docusaurus locale;
+    built-in `en`/`nl` label sets live in `lib/config/labels.js`, with
+    optional per-label `labels:` overrides. Also the machine-readable answer
+    to "what language is this course in".
+  - `theme` selects a CSS file of `--ccb-*` design tokens from
+    `src/css/themes/` (or a path). It is the **single source of truth for
+    colour**: `lib/config/theme.js` parses it, and the preview site, Canvas
+    HTML (`lib/convert/markdown-to-html.js`), the alert icons
+    (`lib/canvas/icons.js`, `src/plugins/remark-gfm-alerts.js`) and PDF
+    exports all read it. Never hardcode a colour in those files. DOCX is the
+    exception — its colours live in the style's `reference.docx`.
+  - `export.style` selects a folder from `export-styles/` (or a path) that
+    owns PDF/DOCX typography, margins, cover and bundled fonts. Resolved by
+    `lib/export/style-resolver.js`, which also honours per-file overrides in
+    `sources/export-style/` and a `--style` flag.
 
 ### Naming conventions
 

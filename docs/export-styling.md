@@ -28,54 +28,92 @@ DOCX through pandoc's Word writer using `reference.docx`. A single Lua filter
 translates the exporter's fenced divs (alerts, link cards, attachments, page
 breaks) into the right thing for each renderer.
 
-## The shipped example style
+## Two axes: style and theme
 
-The shipped defaults are a worked example of a fully branded style, modelled
-on the Thomas More course template (Cursussjabloon A4): Century Gothic
-headings in orange (`#FA6432`) and navy (`#00283C`), Arial 12 pt body text,
-headings auto-numbered `1.` / `1.1.`, every H1 on a new page, A4 with 2.5 cm
-margins (2.3 cm bottom), a centred page number with a small orange rule in
-the footer, and a typographic cover with the institution's logo. Both
-formats carry the same look; the DOCX also uses the same colours as its Word
-theme.
+What an export looks like is decided by two settings in `course.config.yml`,
+on purpose kept apart:
 
-The bundled fonts and logo belong to their respective owners (see
-[THIRD-PARTY.md](../THIRD-PARTY.md)). For your own course, swap in your
-institution's branding; [Customization](customization.md) walks through it.
+```yml
+theme: github        # colour, shared with the site and Canvas
+export:
+  style: generic     # PDF/DOCX typography, margins, cover, bundled fonts
+```
+
+- The **export style** is a folder in [`export-styles/`](../export-styles/).
+  It owns everything about layout. `generic` is the default: Helvetica/Arial,
+  near-black headings, A4 with 2.5 cm margins, headings auto-numbered `1.` /
+  `1.1.`, every H1 on a new page, a muted centred page number, and a cover
+  carrying a "Built with Canvas Course Builder" watermark. `thomas-more`
+  ships alongside it as a worked example of institutional branding — Century
+  Gothic headings, the institution's logo, and the fonts bundled so the PDF
+  renders identically anywhere. Its fonts and logo belong to their respective
+  owners (see [THIRD-PARTY.md](../THIRD-PARTY.md)).
+- The **theme** is a CSS file in [`src/css/themes/`](../src/css/themes/) and
+  owns colour. The exporter parses it and passes every colour to Typst as a
+  pandoc variable, so the PDF, the preview site, Canvas pages and the alert
+  icons all read one file. [Customization](customization.md#branding) lists
+  every token.
+
+The two combine freely: `theme: thomas-more` with `export.style: generic`
+gives the institution's colours in the neutral layout. `npx course export
+--style <name|path>` overrides the style for a single run.
+
+> [!IMPORTANT]
+>
+> **DOCX does not follow the theme.** Word styles are baked into
+> `reference.docx` and cannot be injected at export time, so switching
+> `theme:` recolours the site, Canvas and the PDF but leaves Word output
+> alone. `/export-style-edit` rewrites `reference.docx` to match.
 
 ## The style files
 
-The shipped defaults live in `templates/export/`. Your overrides live in
-`sources/export-style/`; that folder is protected during
-[upstream updates](updating-your-project.md), so a custom style survives
-them. To override a file, drop a file of the same name into
-`sources/export-style/`; the resolver prefers it over the shipped default. A
-`--template` or `--reference-doc` CLI flag wins over both.
+Each style folder holds the files that decide the look. The three files at
+the root of `export-styles/` drive the pandoc pipeline rather than the look,
+so every style shares one copy of each.
 
-| File | Renderer | Controls |
-| --- | --- | --- |
-| `template.typ` | PDF (Typst) | Fonts, sizes, margins, colours, title page, TOC, alert/link-card/attachment styling, page-break behaviour. |
-| `reference.docx` | DOCX (Word) | All Word paragraph and character styles: `Normal`, `Heading 1/2/3`, `Hyperlink`, and the custom styles listed below. |
-| `defaults.yml` | both | Pandoc defaults shared by every export (TOC depth). Layout defaults deliberately live in `template.typ` instead, so `--var` can override them. Heading numbering is native to both templates, so `number-sections` stays `false`. |
-| `filter.lua` | both | Maps the exporter's `.alert`, `.link-card`, `.attachment`, and `.page-break` divs onto Typst function calls (PDF) or custom-style paragraphs (DOCX). Rarely needs editing. |
-| `logo.png` | PDF (Typst) | Cover logo. Resolved like the other files; delete or override it in `sources/export-style/` to change the cover mark. Optional — without it the cover simply has no logo. |
-| `fonts/` | PDF (Typst) | Fonts shipped with the style (Century Gothic). The exporter points Typst at this directory via `TYPST_FONT_PATHS`, so the PDF renders identically on machines where the font is not installed. |
+Resolution is per file: a `--template` or `--reference-doc` CLI flag wins,
+then `sources/export-style/<file>`, then the selected style (or, for the
+shared files, the root of `export-styles/`). `sources/` is protected during
+[upstream updates](updating-your-project.md), so a file you put there
+survives them — which is how you change one part of a shipped style without
+forking the rest.
+
+| File | Where | Renderer | Controls |
+| --- | --- | --- | --- |
+| `template.typ` | per style | PDF (Typst) | Fonts, sizes, margins, title page, TOC, alert/link-card/attachment styling, page-break behaviour. Reads its colours from the theme. |
+| `reference.docx` | per style | DOCX (Word) | All Word paragraph and character styles: `Normal`, `Heading 1/2/3`, `Hyperlink`, and the custom styles listed below — including their colours. |
+| `logo.png` | per style | PDF (Typst) | Cover logo. The filename is fixed. Optional — without it the cover simply has no logo. |
+| `fonts/` | per style | PDF (Typst) | Fonts shipped with the style. The exporter points Typst at this directory via `TYPST_FONT_PATHS`, so the PDF renders identically on machines where the font is not installed. `generic` has none and relies on Helvetica/Arial. |
+| `defaults.yml` | shared | both | Pandoc defaults shared by every export (TOC depth). Layout defaults deliberately live in `template.typ` instead, so `--var` can override them. Heading numbering is native to both templates, so `number-sections` stays `false`. |
+| `filter.lua` | shared | both | Maps the exporter's `.alert`, `.link-card`, `.attachment`, and `.page-break` divs onto Typst function calls (PDF) or custom-style paragraphs (DOCX). Rarely needs editing. |
+| `sample.md` | shared | both | The kitchen-sink preview document (see [Previewing a style](#previewing-a-style)). |
 
 The custom Word styles `reference.docx` must define (pandoc matches on the
 spaced display names): `Alert Title <Kind>` and `Alert Body <Kind>` for each of
 Note, Tip, Important, Warning, Caution, and Check, plus `Link Card Title`,
 `Link Card`, `Attachment`, and `Source Code`.
 
-> [!IMPORTANT]
+### How a colour reaches the PDF
+
+`template.typ` never hardcodes a palette. The exporter reads the theme file,
+keeps every token whose value is a plain hex colour, and passes them to
+pandoc as variables named after the token — `--ccb-alert-note-fg` becomes
+`ccb-alert-note-fg`. The template reads them through a small `pick()` helper
+that falls back to a literal when the variable is absent, so the file still
+compiles on its own:
+
+```typst
+#let fg = pick("$ccb-fg$", "#1f2328")
+```
+
+> [!NOTE]
 >
-> Alert titles and the attachment label are single-sourced from
-> `lib/config/labels.js`: the exporter passes them to pandoc as `labels:`
-> metadata, which `filter.lua` and `template.typ` read (with English
-> fallbacks). Only the alert *kinds and colours* still appear in three places
-> that must stay in sync: `ALERT_CONFIG` in `lib/convert/markdown-to-html.js`,
-> the `alert-colors` map in `template.typ`, and the twelve per-kind
-> `Alert Title/Body <Kind>` styles in `reference.docx`. Change a kind or
-> colour in one, change it in all three.
+> Alert titles and the attachment label are single-sourced the same way from
+> `lib/config/labels.js`: the exporter passes them as `labels:` metadata,
+> which `filter.lua` and `template.typ` read (with English fallbacks). The
+> alert *kinds* are listed in `ALERT_KINDS` in `lib/config/theme.js`. That
+> leaves `reference.docx` as the one place holding its own copy of the alert
+> colours — everything else derives from the theme.
 
 ## Overriding layout with `--var`
 
@@ -99,10 +137,16 @@ typst fonts
 
 Typst renders with installed **system fonts**, plus whatever the style ships in
 its `fonts/` directory (the exporter passes that directory to Typst via
-`TYPST_FONT_PATHS` — this is how Century Gothic works out of the box). If you
-set `mainfont` to something you have not installed, Typst falls back and the
-result will not match. Install the font, drop its files in
-`sources/export-style/fonts/`, or pick one `typst fonts` lists.
+`TYPST_FONT_PATHS` — this is how the `thomas-more` style gets Century Gothic
+on a machine that has never seen it). If you set `mainfont` to something you
+have not installed, Typst falls back and the result will not match. Install the
+font, drop its files in `sources/export-style/fonts/`, or pick one
+`typst fonts` lists.
+
+The `generic` style bundles no fonts and asks for Helvetica, then Arial. On a
+machine without one of them, Typst prints a `unknown font family` warning and
+uses the next in the list; that is informational, not an error. Silence it with
+`--var mainfont=Arial`, or drop font files into `sources/export-style/fonts/`.
 
 ## Deriving a style from a reference
 
@@ -127,7 +171,24 @@ alert kinds, code, tables, lists, a link card, an attachment, a page break):
 ```bash
 npx course export --sample -f pdf
 npx course export --sample -f docx
+npx course export --sample -f pdf --style thomas-more   # compare styles
 ```
+
+The sample is shared by every style, so pandoc gets both its directory and the
+selected style's on the resource path — that is what lets `![](logo.png)`
+inside it resolve to whichever style's cover logo is active.
+
+### Regenerating the watermark logo
+
+`export-styles/generic/logo.png` is generated from `logo.typ` beside it, using
+the Typst binary the PDF export already needs:
+
+```bash
+typst compile export-styles/generic/logo.typ export-styles/generic/logo.png --ppi 600
+```
+
+The source sets `fill: none` and an auto-sized page, so the PNG comes out
+transparent and cropped to the wordmark.
 
 ## DOCX degradations
 
@@ -138,6 +199,8 @@ DOCX is a lossy target next to the Typst PDF. These are known and accepted:
   Heading numbers need no such step — they are native Word numbering.
 - **`--var` font/margin variables** affect the PDF only. Style the DOCX through
   `reference.docx`.
+- **The theme** recolours the site, Canvas and the PDF, but not the DOCX: Word
+  styles are baked into `reference.docx`. `/export-style-edit` rewrites them.
 - **Cover logo** appears in the PDF only; the DOCX cover is typographic
   (Title/Subtitle styles).
 - **Alerts** keep their per-kind coloured border and localised title but
