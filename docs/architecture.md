@@ -86,6 +86,10 @@ Key properties:
   content hash used to re-upload files when their content changes.
 - **last_sync** — timestamp of last push or pull. Used to detect locally
   modified files.
+- **schema_version** — the loader reads version 3 only. A file written by any
+  other version is refused with an error rather than guessed at, because
+  misreading the mapping would create duplicates on Canvas; rebuild it with
+  [`reset-sync-state`](advanced-commands.md).
 
 ### Prune semantics
 

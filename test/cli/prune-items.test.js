@@ -44,7 +44,7 @@ describe('collectDeletedModules', () => {
     assert.equal(result.length, 0);
   });
 
-  it('keeps a module claimed by folder name even after the sync entry was migrated', () => {
+  it('keeps a module claimed by folder name when it has no _category_ id', () => {
     const syncData = {
       modules: {
         200: { folder: '02-renamed-locally', items: {} },

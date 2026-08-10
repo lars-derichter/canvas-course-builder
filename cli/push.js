@@ -240,7 +240,7 @@ async function push(options) {
 /**
  * Resolve the sync-state module entry for a local folder.
  * Prefers the canvas_module_id stored in the folder's _category_.json
- * (rename-proof), falling back to the stored folder name (migrated states).
+ * (rename-proof), falling back to the stored folder name.
  * Returns [moduleIdKey, entry] or null when the folder is not yet on Canvas.
  */
 function resolveModuleEntry(syncData, folderName) {
@@ -311,7 +311,7 @@ async function pushModule(
 ) {
   const moduleDir = path.join(COURSE_DIR, mod.folderName);
   // The id in _category_.json is authoritative even when the sync file was
-  // lost; the sync entry (matched by folder) covers migrated v2 states.
+  // lost; the sync entry (matched by folder) covers a missing _category_ id.
   const catId = readModuleCanvasId(moduleDir);
   const resolved = resolveModuleEntry(syncData, mod.folderName);
   const existingModuleId =

@@ -3,7 +3,6 @@ const assert = require('node:assert/strict');
 
 const {
   itemKey,
-  migrateV2toV3,
   ensureModuleEntry,
   findModuleEntryByFolder,
   removeItemFromOtherModules,
@@ -28,77 +27,6 @@ describe('itemKey', () => {
 
   it('falls back to canvas_id for external_url without a URL', () => {
     assert.equal(itemKey('external_url', { canvasId: 42 }), 'external_url:42');
-  });
-});
-
-describe('migrateV2toV3', () => {
-  const V2 = {
-    schema_version: 2,
-    canvas_base_url: 'https://canvas.example.com',
-    course_id: 42,
-    modules: {
-      '01-intro': {
-        canvas_module_id: 100,
-        items: {
-          '01-intro/01-welcome.md': {
-            canvas_id: 'welcome',
-            canvas_type: 'page',
-            page_url: 'welcome',
-          },
-          '01-intro/02-hw.md': { canvas_id: 500, canvas_type: 'assignment' },
-          '01-intro/03-link.md': {
-            canvas_id: 7,
-            canvas_type: 'external_url',
-            external_url: 'https://example.com',
-          },
-        },
-      },
-      '02-empty-shell': {
-        items: {
-          '02-empty-shell/01-x.md': { canvas_id: 'x', canvas_type: 'page' },
-        },
-      },
-    },
-    icons: { note: { canvas_file_id: 1 } },
-    files: {
-      '01-intro/_files/a.png': {
-        canvas_file_id: 9,
-        canvas_url: '/courses/42/files/9/preview',
-      },
-    },
-    last_sync: '2026-01-01T00:00:00Z',
-  };
-
-  it('re-keys modules by canvas_module_id with folder as value', () => {
-    const v3 = migrateV2toV3(V2);
-    assert.equal(v3.schema_version, 3);
-    assert.ok(v3.modules['100']);
-    assert.equal(v3.modules['100'].folder, '01-intro');
-  });
-
-  it('re-keys items by identity with path as value', () => {
-    const v3 = migrateV2toV3(V2);
-    const items = v3.modules['100'].items;
-    assert.equal(items['page:welcome'].path, '01-intro/01-welcome.md');
-    assert.equal(items['page:welcome'].page_url, 'welcome');
-    assert.equal(items['assignment:500'].path, '01-intro/02-hw.md');
-    assert.equal(
-      items['external_url:https://example.com'].path,
-      '01-intro/03-link.md',
-    );
-  });
-
-  it('drops module entries without canvas_module_id', () => {
-    const v3 = migrateV2toV3(V2);
-    assert.equal(Object.keys(v3.modules).length, 1);
-  });
-
-  it('preserves icons, files, and base fields', () => {
-    const v3 = migrateV2toV3(V2);
-    assert.deepEqual(v3.icons, V2.icons);
-    assert.deepEqual(v3.files, V2.files);
-    assert.equal(v3.course_id, 42);
-    assert.equal(v3.last_sync, '2026-01-01T00:00:00Z');
   });
 });
 

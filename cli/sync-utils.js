@@ -3,6 +3,7 @@ const path = require('path');
 const { PROJECT_ROOT } = require('./project-root');
 
 const SYNC_FILE = path.join(PROJECT_ROOT, '.canvas-sync.json');
+const SCHEMA_VERSION = 3;
 
 /**
  * Schema v3: items are keyed by their stable Canvas identity instead of
@@ -41,62 +42,36 @@ function itemKey(canvasType, { canvasId, externalUrl } = {}) {
 }
 
 /**
- * Migrate a v2 sync structure (modules keyed by folder, items keyed by
- * relative path) to v3. Module entries without a canvas_module_id are
- * dropped — they carry no Canvas state and push re-derives them from
- * frontmatter.
- */
-function migrateV2toV3(data) {
-  const migrated = {
-    ...data,
-    schema_version: 3,
-    modules: {},
-  };
-
-  for (const [folder, modData] of Object.entries(data.modules || {})) {
-    const moduleId = modData.canvas_module_id;
-    if (!moduleId) continue;
-
-    const items = {};
-    for (const [relPath, itemData] of Object.entries(modData.items || {})) {
-      if (itemData.canvas_id == null) continue;
-      const key = itemKey(itemData.canvas_type, {
-        canvasId: itemData.canvas_id,
-        externalUrl: itemData.external_url,
-      });
-      items[key] = { path: relPath, ...itemData };
-    }
-
-    migrated.modules[String(moduleId)] = { folder, items };
-  }
-
-  return migrated;
-}
-
-/**
  * Load the sync state file. Returns the parsed object, or a default empty
  * structure when the file is missing or corrupt.  Pass `{ allowNull: true }`
  * to return null instead of the default (used by status to detect first run).
- * Older v2 files are migrated to v3 in memory; the migrated form is written
- * out the next time the caller saves.
+ * A file written by an older schema is refused rather than guessed at:
+ * misreading it would push duplicates to Canvas.
  */
 function loadSyncFile(options) {
   if (fs.existsSync(SYNC_FILE)) {
+    let data = null;
     try {
-      const data = JSON.parse(fs.readFileSync(SYNC_FILE, 'utf8'));
-      if ((data.schema_version || 0) < 3) {
-        return migrateV2toV3(data);
+      data = JSON.parse(fs.readFileSync(SYNC_FILE, 'utf8'));
+    } catch {
+      // Corrupt file: fall through to the default structure.
+    }
+    if (data) {
+      if (data.schema_version !== SCHEMA_VERSION) {
+        throw new Error(
+          `${SYNC_FILE} has schema_version ${JSON.stringify(data.schema_version)}, ` +
+            `but this version only reads ${SCHEMA_VERSION}. ` +
+            'Run `npx course reset-sync-state` and push again to rebuild it.',
+        );
       }
       return data;
-    } catch {
-      // Fall through
     }
   }
 
   if (options && options.allowNull) return null;
 
   return {
-    schema_version: 3,
+    schema_version: SCHEMA_VERSION,
     canvas_base_url: process.env.CANVAS_API_URL || '',
     course_id: Number(process.env.CANVAS_COURSE_ID) || 0,
     modules: {},
@@ -131,8 +106,8 @@ function ensureModuleEntry(syncData, canvasModuleId, folder) {
 
 /**
  * Find a module entry by its locally stored folder name.
- * Returns [moduleIdKey, entry] or null. Used to re-associate folders that
- * have no canvas_module_id in their _category_.json yet (migrated states).
+ * Returns [moduleIdKey, entry] or null. Used to re-associate folders whose
+ * _category_.json has no canvas_module_id (deleted or never written).
  */
 function findModuleEntryByFolder(syncData, folder) {
   for (const [id, entry] of Object.entries(syncData.modules || {})) {
@@ -157,10 +132,10 @@ function removeItemFromOtherModules(syncData, key, currentModuleId) {
 
 module.exports = {
   SYNC_FILE,
+  SCHEMA_VERSION,
   loadSyncFile,
   saveSyncFile,
   itemKey,
-  migrateV2toV3,
   ensureModuleEntry,
   findModuleEntryByFolder,
   removeItemFromOtherModules,

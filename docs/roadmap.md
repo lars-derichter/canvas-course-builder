@@ -76,5 +76,3 @@ its own site.
 
 - GitHub community templates: issue and pull-request templates, `SECURITY.md`, a
   code of conduct.
-- Drop the legacy sync-state migration path in the sync-state loader; no
-  template-created project needs it.

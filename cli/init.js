@@ -3,7 +3,7 @@ const path = require('path');
 const readline = require('readline');
 
 const { PROJECT_ROOT } = require('./project-root');
-const { loadSyncFile } = require('./sync-utils');
+const { loadSyncFile, SCHEMA_VERSION } = require('./sync-utils');
 
 const SYNC_FILE = path.join(PROJECT_ROOT, '.canvas-sync.json');
 const ENV_FILE = path.join(PROJECT_ROOT, '.env');
@@ -74,7 +74,7 @@ async function init() {
 
   // Create .canvas-sync.json
   const syncData = {
-    schema_version: 3,
+    schema_version: SCHEMA_VERSION,
     canvas_base_url: apiUrl,
     course_id: Number(courseId),
     modules: {},
@@ -82,7 +82,6 @@ async function init() {
   };
 
   // Preserve existing module mappings if the file already exists
-  // (loadSyncFile migrates older schema versions)
   const existing = loadSyncFile({ allowNull: true });
   if (existing && existing.modules) {
     syncData.modules = existing.modules;
