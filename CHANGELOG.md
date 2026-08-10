@@ -2,6 +2,20 @@
 
 ## Unreleased
 
+- **The tooling moved from the Unlicense to the MIT licence.** Course content
+  keeps its own licence in `course/LICENSE.md`. MIT asks that the copyright
+  notice stays with the code, so leave `LICENSE` in place if you publish your
+  course repository.
+- **No more bundled Century Gothic.** The `thomas-more` style still asks for
+  it first, but the font files are gone: on Windows, Office already installs
+  the typeface where Typst finds it, and on macOS the exporter now looks inside
+  the Office application bundles, which is where Office hides its fonts. Where
+  Office is absent, headings fall back to Nunito, which ships with the style
+  under the SIL Open Font License and matches the `thomas-more` theme on the
+  web.
+- **Attribution for the alert icons.** They are GitHub Octicons (MIT) and one
+  Google Material Symbol (Apache 2.0); both licences now ship in
+  `src/svg-icons/` and are recorded in `THIRD-PARTY.md`.
 - **Neutral defaults for the look.** A new `generic` export style
   (Helvetica/Arial, GitHub's alert palette, a "Built with Canvas Course
   Builder" watermark) and a `github` theme are now the shipped defaults. The

@@ -60,14 +60,15 @@ The [docs folder](docs/README.md) has the full map. Start with:
 
 ## Licensing
 
-- **Tooling** (CLI, libraries, site, VS Code extension): public domain,
-  under the [Unlicense](LICENSE).
+- **Tooling** (CLI, libraries, site, VS Code extension):
+  [MIT](LICENSE). Free to use, change and redistribute, as long as the
+  copyright notice travels with it.
 - **Course content** (`course/`): [CC BY-NC-SA 4.0](course/LICENSE.md) by
   default. Content you write in your own course is yours to license as you
   wish.
-- **Example branding assets** (the fonts and logo in
-  `export-styles/thomas-more/`): property of their respective owners, see
-  [THIRD-PARTY.md](THIRD-PARTY.md).
+- **Borrowed assets** (the alert icons, the bundled Nunito typeface, and the
+  example logo in `export-styles/thomas-more/`): each under its own licence,
+  see [THIRD-PARTY.md](THIRD-PARTY.md).
 
 ## Contributing
 

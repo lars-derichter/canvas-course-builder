@@ -1,25 +1,56 @@
 # Third-party assets
 
-This repository is licensed under the Unlicense (tooling, see `LICENSE`) and
+This repository is licensed under the MIT licence (tooling, see `LICENSE`) and
 CC BY-NC-SA 4.0 (course content, see `course/LICENSE.md`). The files listed
-below are the property of their respective owners and are covered by
-**neither** licence. They ship with the template as a worked example of
-institutional branding, in the `thomas-more` export style and theme.
+below come from elsewhere and keep the licence of their own authors.
 
-- `export-styles/thomas-more/fonts/Century Gothic*.ttf` — the Century Gothic
-  typeface, © Monotype Imaging Inc. Bundled so PDF exports of the example
-  style render consistently on machines where the font is not installed.
-- `export-styles/thomas-more/logo.png` — the logo of Thomas More University
-  of Applied Sciences, a trademark of Thomas More. Used as the example cover
-  mark in that style.
+## Bundled under a free licence
+
+- `export-styles/thomas-more/fonts/Nunito-*.ttf` — the Nunito typeface,
+  copyright 2014 The Nunito Project Authors, under the SIL Open Font License
+  1.1. The full licence ships next to the fonts in
+  `export-styles/thomas-more/fonts/OFL.txt`.
+- `src/svg-icons/caution.svg`, `important.svg`, `info.svg`, `tip.svg` and
+  `warning.svg` — the `stop`, `report`, `info`, `light-bulb` and `alert` icons
+  from [GitHub Octicons](https://primer.style/octicons/), © GitHub, Inc., under
+  the MIT licence. Full text in `src/svg-icons/LICENSE-octicons.txt`.
+- `src/svg-icons/check.svg` — the `task_alt` symbol from
+  [Google Material Symbols](https://fonts.google.com/icons), © Google, under
+  the Apache License 2.0. Full text in
+  `src/svg-icons/LICENSE-material-symbols.txt`. It covers this project's own
+  `[!CHECK]` alert, which GitHub has no icon for.
+
+The alert icons are uploaded to your Canvas course as files and embedded in
+PDF exports, so those notices travel with the icons.
+
+## Property of their owners
+
+These ship as a worked example of institutional branding, in the
+`thomas-more` export style and theme. They are covered by **neither** of this
+repository's licences.
+
+- `export-styles/thomas-more/logo.png` — the logo of Thomas More University of
+  Applied Sciences, a trademark of Thomas More. Used as the example cover mark
+  in that style.
 - The colours in `src/css/themes/thomas-more.css` are Thomas More's.
 
-`src/css/themes/thomas-more.css` also imports the Nunito and Inconsolata
-webfonts from Google Fonts. Both are licensed under the SIL Open Font
-License 1.1 and are fetched at runtime rather than bundled here.
+## Fonts referenced but not bundled
+
+- **Century Gothic** (© Monotype Imaging Inc.) is the first choice for headings
+  in the `thomas-more` style and is named in its `reference.docx`. The font
+  files are not distributed here: Microsoft Office installs the typeface, and
+  the exporter looks for it there — see
+  [docs/export-styling.md](docs/export-styling.md). On a machine without it,
+  headings fall back to the bundled Nunito.
+- `src/css/themes/thomas-more.css` imports the Nunito and Inconsolata webfonts
+  from Google Fonts for the preview site. Both are licensed under the SIL Open
+  Font License 1.1 and are fetched at runtime rather than bundled here.
 
 Neither the `thomas-more` style nor the `thomas-more` theme is the default —
 the shipped defaults (`generic` and `github`) are brand-neutral. When you
 build your own course, point `theme:` and `export.style:` in
 `course.config.yml` at your institution's colours, fonts and logo;
 [docs/customization.md](docs/customization.md) explains how.
+
+If you add a font or logo of your own to a style, check that its licence
+permits redistribution before committing it, and record it here.
