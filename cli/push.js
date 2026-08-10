@@ -294,7 +294,7 @@ async function pushModule(courseId, mod, syncData, dryRun, iconUrls, relativeToC
         const raw = fs.readFileSync(filePath, 'utf8');
         const refs = extractFileReferences(raw, item.relativePath);
         for (const ref of refs) referencedFiles.add(ref);
-      } catch (_) {
+      } catch {
         // File may not exist yet during dry run
       }
     }

@@ -45,13 +45,13 @@ function buildLinkContext() {
   let loadSyncFile;
   try {
     ({ loadSyncFile } = require('./sync-utils'));
-  } catch (err) {
+  } catch {
     return {};
   }
   let syncData;
   try {
     syncData = loadSyncFile({ allowNull: true });
-  } catch (err) {
+  } catch {
     return {};
   }
   if (!syncData || !syncData.modules) return {};
@@ -129,7 +129,7 @@ function resolvePositional(p, byPath) {
   let stat;
   try {
     stat = fs.statSync(abs);
-  } catch (err) {
+  } catch {
     throw new Error(`Path not found: ${p}`);
   }
   const rel = toPosix(path.relative(COURSE_DIR, abs));
@@ -163,7 +163,7 @@ function resolveMode(paths, options, index, labels = getLabels()) {
     let text;
     try {
       text = fs.readFileSync(path.resolve(process.cwd(), options.toc), 'utf8');
-    } catch (err) {
+    } catch {
       throw new Error(`Could not read TOC file: ${options.toc}`);
     }
     const { meta, paths: tocPaths } = parseToc(text);
@@ -382,7 +382,7 @@ async function exportCmd(paths = [], options = {}) {
     if (!options.keepMarkdown) {
       try {
         fs.unlinkSync(mdPath);
-      } catch (err) {
+      } catch {
         /* ignore */
       }
     }

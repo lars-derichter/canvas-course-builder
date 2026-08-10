@@ -88,7 +88,7 @@ function loadSyncFile(options) {
         return migrateV2toV3(data);
       }
       return data;
-    } catch (_) {
+    } catch {
       // Fall through
     }
   }

@@ -170,7 +170,7 @@ describe('htmlToMarkdown file resolution', () => {
     const md = htmlToMarkdown(html, {
       fileResolver: (src) => src === '/courses/42/files/500/preview' ? './_files/diagram.png' : null,
     });
-    assert.match(md, /!\[diagram\]\(\.\/\_files\/diagram\.png\)/);
+    assert.match(md, /!\[diagram\]\(\.\/_files\/diagram\.png\)/);
   });
 
   it('resolves Canvas file links via fileResolver', () => {
@@ -178,7 +178,7 @@ describe('htmlToMarkdown file resolution', () => {
     const md = htmlToMarkdown(html, {
       fileResolver: (href) => href === '/courses/42/files/600/download' ? './_files/guide.pdf' : null,
     });
-    assert.match(md, /\[PDF\]\(\.\/\_files\/guide\.pdf\)/);
+    assert.match(md, /\[PDF\]\(\.\/_files\/guide\.pdf\)/);
   });
 });
 

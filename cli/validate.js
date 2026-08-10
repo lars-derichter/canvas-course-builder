@@ -81,7 +81,7 @@ async function validate() {
       if (data.external_url) {
         try {
           new URL(data.external_url);
-        } catch (_) {
+        } catch {
           errors.push(`${item.relativePath}: invalid external_url "${data.external_url}"`);
         }
       }
@@ -116,7 +116,7 @@ async function validate() {
             errors.push(`${item.relativePath}: referenced file not found: ${ref}`);
           }
         }
-      } catch (_) {
+      } catch {
         // extractFileReferences may fail on unusual content
       }
     }

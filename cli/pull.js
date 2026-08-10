@@ -410,7 +410,7 @@ function reconcileSubfolders(planned, identifierMap, moduleDir, folderName, modu
       if (sr._tempName && fs.existsSync(path.join(moduleDir, sr._tempName))) {
         try {
           fs.renameSync(path.join(moduleDir, sr._tempName), path.join(moduleDir, sr.newName));
-        } catch (_) { /* Leave temp folder for next run's cleanup */ }
+        } catch { /* Leave temp folder for next run's cleanup */ }
       }
     }
     throw err;
@@ -468,7 +468,7 @@ function reconcileFileRenames(planned, identifierMap, folderName, moduleItems, t
       if (r._tempPath && fs.existsSync(r._tempPath)) {
         try {
           fs.renameSync(r._tempPath, r.newAbsPath);
-        } catch (_) { /* Leave temp file for next run's cleanup */ }
+        } catch { /* Leave temp file for next run's cleanup */ }
       }
     }
     throw err;

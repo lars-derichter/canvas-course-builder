@@ -109,7 +109,7 @@ async function newItem(options = {}) {
       process.exit(1);
     }
     if (type === 'url') {
-      try { new URL(options.url); } catch (_) {
+      try { new URL(options.url); } catch {
         console.error('[new-item] Error: --url must be a valid URL.');
         process.exit(1);
       }
@@ -137,7 +137,7 @@ async function newItem(options = {}) {
 
   console.log('[new-item] Create a new item in a module\n');
 
-  const { modulePath, folderName } = await selectModule(rl);
+  const { modulePath } = await selectModule(rl);
   const targetDir = await selectTargetDir(rl, modulePath);
   const items = getItems(targetDir);
   printItems(items);
@@ -182,7 +182,7 @@ async function newItem(options = {}) {
       while (true) {
         url = await prompt(rl, 'URL');
         if (!url) { console.log('  URL is required. Please try again.'); continue; }
-        try { new URL(url); break; } catch (_) {
+        try { new URL(url); break; } catch {
           console.log(`  "${url}" is not a valid URL. Please try again.`);
         }
       }

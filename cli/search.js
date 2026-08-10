@@ -94,7 +94,7 @@ function walkDir(dir) {
   let entries;
   try {
     entries = fs.readdirSync(dir, { withFileTypes: true });
-  } catch (err) {
+  } catch {
     return [];
   }
   entries.sort((a, b) => a.name.localeCompare(b.name));

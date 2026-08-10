@@ -255,7 +255,7 @@ describe('canvasRequest', () => {
   describe('pagination', () => {
     it('follows Link header to fetch all pages', async () => {
       let callCount = 0;
-      fetchMock = mock.method(global, 'fetch', async (url) => {
+      fetchMock = mock.method(global, 'fetch', async (_url) => {
         callCount++;
         if (callCount === 1) {
           return fakeResponse([{ id: 1 }, { id: 2 }], {

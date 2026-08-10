@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const matter = require('gray-matter');
-const { prompt, pad, toSlug, createRL, COURSE_DIR } = require('./module-utils');
+const { prompt, pad, toSlug, createRL } = require('./module-utils');
 const { getItems, printItems, selectModule, selectTargetDir } = require('./item-utils');
 const { renumberUp } = require('./renumber');
 

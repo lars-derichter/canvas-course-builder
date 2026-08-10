@@ -200,7 +200,7 @@ function removeFromSyncState(folderName, absItemPath) {
             externalUrl: data.external_url,
           });
         }
-      } catch (_) {
+      } catch {
         // Fall through to path matching
       }
     }

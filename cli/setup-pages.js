@@ -158,7 +158,7 @@ function getDefaultBranch() {
     })
       .toString()
       .trim() || 'main';
-  } catch (_) {
+  } catch {
     return 'main';
   }
 }
@@ -180,7 +180,7 @@ async function setupPages(options = {}) {
   let remoteUrl;
   try {
     remoteUrl = getOriginUrl();
-  } catch (_) {
+  } catch {
     log.error('[setup-pages] Error: no "origin" git remote found.');
     log.error('[setup-pages]   Create a GitHub repo and add it as origin first, e.g.:');
     log.error('[setup-pages]   git remote add origin git@github.com:<owner>/<repo>.git');
