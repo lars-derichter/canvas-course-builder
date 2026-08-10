@@ -37,8 +37,7 @@ but describe:
 - **Why it would help** — the use case or problem it solves
 - **How you use Canvas Course Builder today** — this helps prioritise what matters most
 
-Check the [Roadmap](roadmap.md) first — your idea may already be on the
-backlog, or already shipped.
+Check the [ideas list](roadmap.md) first — your idea may already be there.
 
 ## Contributing with a pull request
 
@@ -94,6 +93,29 @@ If you'd like to contribute a fix or improvement yourself, follow these steps:
 > Not sure if your idea is worth a pull request? Open an issue first to discuss
 > it. That way you won't spend time on something that might not fit the project
 > direction.
+
+The tooling is public domain (the [Unlicense](../LICENSE)); by opening a pull
+request you agree your contribution is released the same way.
+
+## Contributing a skill
+
+Skills follow a shared template, described in
+[Creating your own skills](ai-assistants.md#creating-your-own-skills). A
+skill that would help other courses is welcome as a pull request; keep it
+course-agnostic — course facts come from `course-context.md` at runtime,
+never hardcoded.
+
+If your change renames or removes a skill folder or a docs file, add the old
+path as it exists in downstream projects (e.g. `.agents/skills/<old-name>`)
+to `STALE_PATHS` in [update-from-upstream.sh](../update-from-upstream.sh),
+so downstream projects prune it on their next update.
+
+## Documentation style
+
+The project's own docs (`docs/`, the README, and the getting-started module)
+are written in English with UK spelling (customise, colour), sentence-case
+headings, and lines wrapped at 80 characters. `docs/style.md` is not the
+guide for these docs; it is the per-course style guide for course content.
 
 ## Understanding the codebase
 
