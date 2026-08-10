@@ -66,8 +66,11 @@ scoped modules are still verified.
      prefix, or module folders missing `_category_.json` where the other
      modules have one.
 
-6. **Stale prerequisites.** Grep for phrases like "de vorige les",
-   "vorige module", "in les [0-9]", "module [0-9]" and for cross-module
+6. **Stale prerequisites.** Grep for phrases that reference earlier
+   lessons or modules, in the course language — for a Dutch course, for
+   example, "de vorige les", "vorige module", "in les [0-9]",
+   "module [0-9]"; adapt the patterns to the language and phrasing set in
+   `course.config.yml` and `course-context.md` — and for cross-module
    links, and check each against the actual current numbering and folder
    names. A page that says "in les 3" about material that now lives in
    lesson 4, or links to a renamed module, is a finding.

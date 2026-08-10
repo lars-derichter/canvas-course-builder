@@ -1,6 +1,6 @@
 ---
 name: proofread
-description: Check a Dutch markdown document for spelling, grammar, natural-Dutch flow, and compliance with docs/style.md. Distinguishes the student-facing register (course/, evaluations/) from the collega-facing register (anything under sources/), and applies the right rules. Reports findings; does not auto-fix. Use for "proofread", "nalezen", "spelling checken", "check dit lesplan op stijl".
+description: Check a markdown document for spelling, grammar, natural flow, and compliance with docs/style.md (tuned to the shipped Dutch example style guide). Distinguishes the student-facing register (course/, evaluations/) from the colleague-facing register (anything under sources/), and applies the right rules. Reports findings; does not auto-fix. Use for "proofread", "nalezen", "spelling checken", "check dit lesplan op stijl".
 ---
 
 # Proofread
@@ -19,9 +19,9 @@ other extensions, stop and explain.
 ## Steps
 
 1. **Determine the register** from the path: `course/**` or `evaluations/**`
-   → student-facing; anywhere under `sources/` → collega-facing; otherwise
+   → student-facing; anywhere under `sources/` → colleague-facing; otherwise
    ask. The lowest-numbered lesson under `sources/lessons/` (if any) is the
-   worked example for the collega register.
+   worked example for the colleague-facing register.
 
 2. **Read `docs/style.md` in full.** Apply the shared rules plus the section
    matching the register. style.md is the authoritative ruleset — do not
@@ -37,7 +37,7 @@ other extensions, stop and explain.
      "gewoon" for emphasis, "hoor", "tof", "leuk", "lekker" as adverb).
    - Wrong address form: `u` or `jij` in running prose.
    - Title case in headings; headings ending in punctuation other than `?`.
-   - Register mismatch: in a collega doc, a page-title emoji on the H1 or
+   - Register mismatch: in a colleague-facing doc, a page-title emoji on the H1 or
      GitHub-style callouts (both defined in style.md's student-facing
      section); in a student doc, a meta-introduction opening ("In dit
      hoofdstuk", "We gaan") in the first paragraph.
@@ -59,7 +59,7 @@ other extensions, stop and explain.
    - Student-facing only: sentences clearly above CEFR B2 (flag as
      "consider", not "must fix"); Latinate phrasing where plain
      alternatives exist (_hanteren_ over _gebruiken_).
-   - Collega-facing only: cushioning before the point; defensive hedging
+   - Colleague-facing only: cushioning before the point; defensive hedging
      (_het zou kunnen zijn dat_).
 
 6. **Report in three severity buckets**, each finding as
@@ -82,7 +82,7 @@ other extensions, stop and explain.
 
 ## Rules
 
-- Treat the collega-facing register as a peer dialect, not a watered-down
+- Treat the colleague-facing register as a peer dialect, not a watered-down
   student register: short fragments, dry humour, and parenthetical asides
   are welcome there.
 - Something that reads oddly but breaks no style.md rule goes under

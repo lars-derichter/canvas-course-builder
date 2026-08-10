@@ -98,9 +98,8 @@ Empty means every entry under `## Open`.
 
 12. **Report and offer follow-ups, do not run them**: `/style-update` for
     the style preferences that surfaced; `/proofread` for heavily edited
-    files; `/commit` or `/atomic-commits` for the changes; and the reminder
-    that Canvas keeps serving the old text until `npx course push` — never
-    run the push.
+    files; `/commit` for the changes; and the reminder that Canvas keeps
+    serving the old text until `npx course push` — never run the push.
 
 ## Rules
 
