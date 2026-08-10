@@ -1,6 +1,6 @@
 const { describe, it } = require('node:test');
 const assert = require('node:assert/strict');
-const { markdownToHtml, ALERT_CONFIG } = require('../../lib/convert/markdown-to-html');
+const { markdownToHtml, getAlertConfig } = require('../../lib/convert/markdown-to-html');
 
 describe('markdownToHtml', () => {
   it('converts basic markdown to HTML', () => {
@@ -176,13 +176,23 @@ describe('markdownToHtml link/file resolvers', () => {
   });
 });
 
-describe('ALERT_CONFIG', () => {
+describe('getAlertConfig', () => {
   it('has entries for all supported types', () => {
+    const config = getAlertConfig();
     const expectedTypes = ['note', 'tip', 'important', 'warning', 'caution', 'check'];
     for (const type of expectedTypes) {
-      assert.ok(ALERT_CONFIG[type], `Missing config for type: ${type}`);
-      assert.ok(ALERT_CONFIG[type].color, `Missing color for type: ${type}`);
-      assert.ok(ALERT_CONFIG[type].icon, `Missing icon for type: ${type}`);
+      assert.ok(config[type], `Missing config for type: ${type}`);
+      assert.ok(config[type].color, `Missing color for type: ${type}`);
+      assert.ok(config[type].background, `Missing background for type: ${type}`);
+      assert.ok(config[type].icon, `Missing icon for type: ${type}`);
     }
+  });
+
+  it('takes its colours from the active theme', () => {
+    const { loadTheme } = require('../../lib/config/theme');
+    const theme = loadTheme();
+    const config = getAlertConfig();
+    assert.strictEqual(config.note.color, theme.alerts.note.fg);
+    assert.strictEqual(config.note.background, theme.alerts.note.bg);
   });
 });

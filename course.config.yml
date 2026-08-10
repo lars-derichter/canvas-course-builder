@@ -1,9 +1,17 @@
+# Per-course settings: language, look, and label overrides.
+# This file is protected during upstream updates (see update-from-upstream.conf).
+
+# Colour and site typography, for the preview site, Canvas HTML and PDF
+# exports alike. Built-in themes: github, thomas-more. The value is a name
+# under src/css/themes/, or a path to a CSS file of your own — copy a built-in
+# into sources/ and point at it there. See docs/customization.md.
+theme: github
+
 # Course-facing label language. Built-in sets: en, nl.
 # Individual labels can be overridden under `labels:`; anything you leave out
 # falls back to the built-in set for the language above. The commented block
 # shows the full override surface, with values that differ from the English
 # defaults so you can see what each key controls.
-# This file is protected during upstream updates (see update-from-upstream.conf).
 language: en
 
 # labels:

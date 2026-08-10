@@ -1,40 +1,33 @@
-/* Thomas More inspired theme — orange accent, light geometric sans-serif */
-
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600&family=Inconsolata:wght@400&display=swap');
+/* Site styling.
+ *
+ * Every colour and the font stack come from the active theme in
+ * src/css/themes/, which docusaurus.config.js loads before this file. This
+ * file only maps those --ccb-* tokens onto Infima's --ifm-* variables and
+ * styles the components; it holds no colour values of its own. To change a
+ * colour, edit the theme — the site, Canvas and PDF exports all read it.
+ */
 
 /* ---------------------------------------------------------------------------
    CSS Custom Properties
    --------------------------------------------------------------------------- */
 
 :root {
-  /* Primary orange palette */
-  --ifm-color-primary: #fa6432;
-  --ifm-color-primary-dark: #f94d14;
-  --ifm-color-primary-darker: #ef4209;
-  --ifm-color-primary-darkest: #c53707;
-  --ifm-color-primary-light: #fb7d52;
-  --ifm-color-primary-lighter: #fb8a63;
-  --ifm-color-primary-lightest: #fcab8e;
-
-  /* Dark accent (navy) */
-  --tm-color-dark: #00283c;
-
-  /* Neutrals */
-  --tm-color-text: #000a1e;
-  --tm-color-border: #e8ebee;
-  --tm-color-tint-1: #dee1e4;
-  --tm-color-tint-2: #e8ebee;
-  --tm-color-tint-3: #f2f5f8;
+  /* Primary ramp */
+  --ifm-color-primary: var(--ccb-accent);
+  --ifm-color-primary-dark: var(--ccb-accent-dark);
+  --ifm-color-primary-darker: var(--ccb-accent-darker);
+  --ifm-color-primary-darkest: var(--ccb-accent-darkest);
+  --ifm-color-primary-light: var(--ccb-accent-light);
+  --ifm-color-primary-lighter: var(--ccb-accent-lighter);
+  --ifm-color-primary-lightest: var(--ccb-accent-lightest);
 
   /* Typography */
-  --ifm-font-family-base: 'Nunito', 'Century Gothic', CenturyGothic, AppleGothic,
-    'Gill Sans', sans-serif;
-  --ifm-font-family-monospace: 'Inconsolata', Consolas, Menlo, Monaco,
-    'Courier New', monospace;
-  --ifm-font-size-base: 1.2rem;
-  --ifm-font-weight-base: 300;
-  --ifm-line-height-base: 1.75;
-  --ifm-heading-font-weight: 400;
+  --ifm-font-family-base: var(--ccb-font-sans);
+  --ifm-font-family-monospace: var(--ccb-font-mono);
+  --ifm-font-size-base: var(--ccb-font-size-base);
+  --ifm-font-weight-base: var(--ccb-font-weight-base);
+  --ifm-line-height-base: var(--ccb-line-height-base);
+  --ifm-heading-font-weight: var(--ccb-heading-font-weight);
   --ifm-font-weight-semibold: 600;
   --ifm-font-weight-bold: 600;
 
@@ -43,32 +36,32 @@
   --ifm-code-border-radius: 3px;
   --ifm-code-padding-horizontal: 0.35rem;
   --ifm-code-padding-vertical: 0.1rem;
-  --ifm-code-background: var(--tm-color-tint-2);
+  --ifm-code-background: var(--ccb-code-bg);
 
   /* Headings */
-  --ifm-heading-color: #fa6432;
+  --ifm-heading-color: var(--ccb-heading);
 
   /* Links */
-  --ifm-link-color: #fa6432;
+  --ifm-link-color: var(--ccb-link);
   --ifm-link-decoration: underline;
   --ifm-link-hover-decoration: underline;
 
   /* Layout */
   --ifm-global-radius: 4px;
-  --ifm-color-emphasis-300: var(--tm-color-border);
+  --ifm-color-emphasis-300: var(--ccb-border);
   --doc-sidebar-width: 17rem;
 
   /* Backgrounds */
-  --ifm-background-color: #ffffff;
-  --ifm-color-content-secondary: var(--tm-color-text);
-  --ifm-font-color-base: var(--tm-color-text);
+  --ifm-background-color: var(--ccb-surface);
+  --ifm-color-content-secondary: var(--ccb-fg-muted);
+  --ifm-font-color-base: var(--ccb-fg);
 
   /* Navbar */
-  --ifm-navbar-background-color: #ffffff;
+  --ifm-navbar-background-color: var(--ccb-surface);
   --ifm-navbar-shadow: none;
 
   /* Footer */
-  --ifm-footer-background-color: var(--tm-color-dark);
+  --ifm-footer-background-color: var(--ccb-secondary);
   --ifm-footer-color: #ffffff;
 }
 
@@ -78,7 +71,7 @@
 
 strong,
 b {
-  color: var(--tm-color-dark);
+  color: var(--ccb-secondary);
   font-weight: 600;
 }
 
@@ -94,7 +87,7 @@ h6 {
 }
 
 h2 {
-  border-bottom: 1px solid var(--tm-color-border);
+  border-bottom: 1px solid var(--ccb-border);
   padding-bottom: 0.4rem;
 }
 
@@ -103,8 +96,8 @@ h2 {
    --------------------------------------------------------------------------- */
 
 code {
-  background: var(--tm-color-tint-2);
-  color: var(--tm-color-text);
+  background: var(--ccb-code-bg);
+  color: var(--ccb-fg);
   border: none;
 }
 
@@ -135,7 +128,7 @@ div[class*='codeBlockTitle'] {
    --------------------------------------------------------------------------- */
 
 .navbar {
-  border-bottom: 1px solid var(--tm-color-border);
+  border-bottom: 1px solid var(--ccb-border);
 }
 
 .navbar__brand,
@@ -144,7 +137,7 @@ div[class*='codeBlockTitle'] {
 }
 
 .navbar__title {
-  color: #fa6432;
+  color: var(--ccb-accent);
   font-weight: 400;
   font-size: 1.3rem;
 }
@@ -163,18 +156,18 @@ div[class*='codeBlockTitle'] {
    --------------------------------------------------------------------------- */
 
 .theme-doc-sidebar-container {
-  background: var(--tm-color-tint-3);
-  border-right: 1px solid var(--tm-color-border) !important;
+  background: var(--ccb-surface-subtle);
+  border-right: 1px solid var(--ccb-border) !important;
 }
 
 nav.menu {
-  background: var(--tm-color-tint-3);
+  background: var(--ccb-surface-subtle);
   padding: 1rem;
 }
 
 /* Sidebar links */
 .menu__link {
-  color: var(--tm-color-text);
+  color: var(--ccb-fg);
   text-decoration: none;
   font-weight: 300;
   border-radius: 0;
@@ -189,10 +182,10 @@ nav.menu {
 
 /* Active sidebar item — orange left bar */
 .menu__link--active:not(.menu__link--sublist) {
-  color: #fa6432;
+  color: var(--ccb-accent);
   font-weight: 400;
   background: transparent;
-  border-left: 4px solid #fa6432;
+  border-left: 4px solid var(--ccb-accent);
 }
 
 /* Subcategory labels (collapsible) */
@@ -301,7 +294,7 @@ article {
 }
 
 .markdown {
-  --ifm-link-color: #fa6432;
+  --ifm-link-color: var(--ccb-accent);
 }
 
 .markdown a {
@@ -313,101 +306,42 @@ article {
    --------------------------------------------------------------------------- */
 
 .table-of-contents {
-  border-left: 3px solid var(--tm-color-border);
+  border-left: 3px solid var(--ccb-border);
   font-size: 0.85rem;
 }
 
 .table-of-contents__link {
-  color: var(--tm-color-text);
+  color: var(--ccb-fg);
   text-decoration: none;
 }
 
 .table-of-contents__link--active,
 .table-of-contents__link:hover {
-  color: #fa6432;
+  color: var(--ccb-accent);
 }
 
 /* ---------------------------------------------------------------------------
    Alerts / Callout boxes
    --------------------------------------------------------------------------- */
 
-/* Shared alert base */
+/* Shared bases for both alert flavours.
+   These must come BEFORE every per-kind rule below. The CSS minifier merges
+   rules with identical declarations — the admonition and blockquote rules for
+   one kind collapse into a single selector list placed at the position of the
+   first — and it recombines border longhands into the `border-left` shorthand.
+   A base rule sitting after a merged per-kind rule would therefore reset
+   border-left-color back to currentColor. */
 .alert {
   border: none;
   border-left: 5px solid;
-  border-top: 1px solid var(--tm-color-border);
-  border-bottom: 1px solid var(--tm-color-border);
   border-radius: 0;
-  background: #ffffff;
   padding: 1.25rem 1.5rem;
-  --ifm-alert-foreground-color: var(--tm-color-text);
+  --ifm-alert-foreground-color: var(--ccb-fg);
 }
-
-/* Orange variants: tip, warning, caution */
-.alert--warning,
-.alert--danger,
-.alert--tip {
-  border-left-color: #fa6432;
-  background: rgba(250, 100, 50, 0.04);
-}
-
-.alert--warning .admonitionHeading_node_modules-\@docusaurus-theme-classic-lib-theme-Admonition-Layout-styles-module,
-.alert--danger .admonitionHeading_node_modules-\@docusaurus-theme-classic-lib-theme-Admonition-Layout-styles-module,
-.alert--tip .admonitionHeading_node_modules-\@docusaurus-theme-classic-lib-theme-Admonition-Layout-styles-module {
-  color: #fa6432;
-}
-
-/* Use more stable selectors for alert headings */
-.alert--warning [class*='admonitionHeading'],
-.alert--danger [class*='admonitionHeading'],
-.alert--tip [class*='admonitionHeading'] {
-  color: #fa6432;
-}
-
-.alert--warning svg,
-.alert--danger svg,
-.alert--tip svg {
-  fill: #fa6432;
-}
-
-/* Navy variants: info, note */
-.alert--info,
-.alert--secondary {
-  border-left-color: var(--tm-color-dark);
-  background: rgba(0, 40, 60, 0.03);
-}
-
-.alert--info [class*='admonitionHeading'],
-.alert--secondary [class*='admonitionHeading'] {
-  color: var(--tm-color-dark);
-}
-
-.alert--info svg,
-.alert--secondary svg {
-  fill: var(--tm-color-dark);
-}
-
-/* Success variant — treat like info/navy */
-.alert--success {
-  border-left-color: var(--tm-color-dark);
-  background: rgba(0, 40, 60, 0.03);
-}
-
-.alert--success [class*='admonitionHeading'] {
-  color: var(--tm-color-dark);
-}
-
-.alert--success svg {
-  fill: var(--tm-color-dark);
-}
-
-/* ---------------------------------------------------------------------------
-   GFM Blockquote Alerts (markdown-alert)
-   --------------------------------------------------------------------------- */
 
 .markdown-alert {
   border: none;
-  border-left: .25em solid;
+  border-left: 0.25em solid;
   border-radius: 0;
   padding: 0.75rem 1rem;
   margin: 1rem 0;
@@ -432,54 +366,113 @@ article {
   flex-shrink: 0;
 }
 
-/* Note — blue */
+/* Docusaurus admonition types mapped onto the theme's alert kinds. The
+   duplicated CSS-module selector is the theme's generated class name; the
+   [class*=] selector next to it is the stable fallback. */
+.alert--secondary,
+.alert--info {
+  border-left-color: var(--ccb-alert-note-fg);
+  background: var(--ccb-alert-note-bg);
+}
+
+.alert--secondary [class*='admonitionHeading'],
+.alert--info [class*='admonitionHeading'] {
+  color: var(--ccb-alert-note-fg);
+}
+
+.alert--secondary svg,
+.alert--info svg {
+  fill: var(--ccb-alert-note-fg);
+}
+
+.alert--success,
+.alert--tip {
+  border-left-color: var(--ccb-alert-tip-fg);
+  background: var(--ccb-alert-tip-bg);
+}
+
+.alert--success [class*='admonitionHeading'],
+.alert--tip [class*='admonitionHeading'] {
+  color: var(--ccb-alert-tip-fg);
+}
+
+.alert--success svg,
+.alert--tip svg {
+  fill: var(--ccb-alert-tip-fg);
+}
+
+.alert--warning {
+  border-left-color: var(--ccb-alert-warning-fg);
+  background: var(--ccb-alert-warning-bg);
+}
+
+.alert--warning [class*='admonitionHeading'] {
+  color: var(--ccb-alert-warning-fg);
+}
+
+.alert--warning svg {
+  fill: var(--ccb-alert-warning-fg);
+}
+
+.alert--danger {
+  border-left-color: var(--ccb-alert-caution-fg);
+  background: var(--ccb-alert-caution-bg);
+}
+
+.alert--danger [class*='admonitionHeading'] {
+  color: var(--ccb-alert-caution-fg);
+}
+
+.alert--danger svg {
+  fill: var(--ccb-alert-caution-fg);
+}
+
+/* ---------------------------------------------------------------------------
+   GFM Blockquote Alerts (markdown-alert)
+   --------------------------------------------------------------------------- */
+
 .markdown-alert-note {
-  border-left-color: #4bafe1;
-  background: rgba(75, 175, 225, 0.06);
+  border-left-color: var(--ccb-alert-note-fg);
+  background: var(--ccb-alert-note-bg);
 }
-.markdown-alert-note .markdown-alert-title { color: #4bafe1; }
+.markdown-alert-note .markdown-alert-title { color: var(--ccb-alert-note-fg); }
 
-/* Tip — teal */
 .markdown-alert-tip {
-  border-left-color: #64c8c8;
-  background: rgba(100, 200, 200, 0.06);
+  border-left-color: var(--ccb-alert-tip-fg);
+  background: var(--ccb-alert-tip-bg);
 }
-.markdown-alert-tip .markdown-alert-title { color: #64c8c8; }
+.markdown-alert-tip .markdown-alert-title { color: var(--ccb-alert-tip-fg); }
 
-/* Important — purple */
 .markdown-alert-important {
-  border-left-color: #967dc8;
-  background: rgba(150, 125, 200, 0.06);
+  border-left-color: var(--ccb-alert-important-fg);
+  background: var(--ccb-alert-important-bg);
 }
-.markdown-alert-important .markdown-alert-title { color: #967dc8; }
+.markdown-alert-important .markdown-alert-title { color: var(--ccb-alert-important-fg); }
 
-/* Warning — yellow */
 .markdown-alert-warning {
-  border-left-color: #ffc87d;
-  background: rgba(255, 200, 125, 0.06);
+  border-left-color: var(--ccb-alert-warning-fg);
+  background: var(--ccb-alert-warning-bg);
 }
-.markdown-alert-warning .markdown-alert-title { color: #ffc87d; }
+.markdown-alert-warning .markdown-alert-title { color: var(--ccb-alert-warning-fg); }
 
-/* Caution / Attention — orange */
 .markdown-alert-caution {
-  border-left-color: #fa6432;
-  background: rgba(250, 100, 50, 0.06);
+  border-left-color: var(--ccb-alert-caution-fg);
+  background: var(--ccb-alert-caution-bg);
 }
-.markdown-alert-caution .markdown-alert-title { color: #fa6432; }
+.markdown-alert-caution .markdown-alert-title { color: var(--ccb-alert-caution-fg); }
 
-/* Check — navy */
 .markdown-alert-check {
-  border-left-color: #00283c;
-  background: rgba(0, 40, 60, 0.04);
+  border-left-color: var(--ccb-alert-check-fg);
+  background: var(--ccb-alert-check-bg);
 }
-.markdown-alert-check .markdown-alert-title { color: #00283c; }
+.markdown-alert-check .markdown-alert-title { color: var(--ccb-alert-check-fg); }
 
 /* ---------------------------------------------------------------------------
    Pagination (prev / next)
    --------------------------------------------------------------------------- */
 
 .pagination-nav {
-  border-top: 1px solid var(--tm-color-border);
+  border-top: 1px solid var(--ccb-border);
   padding-top: 1.5rem;
 }
 
@@ -496,17 +489,17 @@ article {
 }
 
 .pagination-nav__link:hover .pagination-nav__label {
-  color: #fa6432;
+  color: var(--ccb-accent);
 }
 
 .pagination-nav__sublabel {
   font-size: 0.85rem;
-  color: var(--tm-color-text);
+  color: var(--ccb-fg);
 }
 
 .pagination-nav__label {
   font-size: 1.1rem;
-  color: var(--tm-color-text);
+  color: var(--ccb-fg);
   font-weight: 400;
 }
 
@@ -523,7 +516,7 @@ article {
    --------------------------------------------------------------------------- */
 
 ::selection {
-  background: rgba(250, 100, 50, 0.2);
+  background: color-mix(in srgb, var(--ccb-accent) 22%, transparent);
 }
 
 /* ---------------------------------------------------------------------------
@@ -531,8 +524,8 @@ article {
    --------------------------------------------------------------------------- */
 
 .external-url-card {
-  border: 1px solid var(--tm-color-border);
-  border-left: 4px solid #fa6432;
+  border: 1px solid var(--ccb-border);
+  border-left: 4px solid var(--ccb-accent);
   border-radius: var(--ifm-global-radius);
   padding: 1.5rem 2rem;
   margin: 1rem 0;
@@ -540,7 +533,7 @@ article {
 
 .external-url-label {
   font-weight: 600;
-  color: #fa6432;
+  color: var(--ccb-accent);
   margin-bottom: 0.25rem;
   font-size: 0.9rem;
   text-transform: uppercase;
@@ -560,8 +553,8 @@ article {
    --------------------------------------------------------------------------- */
 
 .file-item-card {
-  border: 1px solid var(--tm-color-border);
-  border-left: 4px solid #00283c;
+  border: 1px solid var(--ccb-border);
+  border-left: 4px solid var(--ccb-secondary);
   border-radius: var(--ifm-global-radius);
   padding: 1.5rem 2rem;
   margin: 1rem 0;
@@ -569,7 +562,7 @@ article {
 
 .file-item-label {
   font-weight: 600;
-  color: #00283c;
+  color: var(--ccb-secondary);
   margin-bottom: 0.25rem;
   font-size: 0.9rem;
   text-transform: uppercase;

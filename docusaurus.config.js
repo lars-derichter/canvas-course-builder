@@ -1,14 +1,21 @@
 // @ts-check
 
+const path = require('path');
+
 const remarkGfmAlerts = require('./src/plugins/remark-gfm-alerts');
 const remarkExternalUrl = require('./src/plugins/remark-external-url');
 const remarkFileItem = require('./src/plugins/remark-file-item');
 const remarkHtmlLinks = require('./src/plugins/remark-html-links');
 const { loadCourseConfig } = require('./lib/config/course-config');
+const { loadTheme } = require('./lib/config/theme');
 
 // Course language drives the site locale (Docusaurus theme chrome ships
 // translations) and every label the remark plugins render.
 const { language, labels } = loadCourseConfig(__dirname);
+
+// The selected theme declares the --ccb-* colour and font tokens that
+// custom.css maps onto Infima's variables, so it has to load first.
+const themeCss = './' + path.relative(__dirname, loadTheme(__dirname).file).split(path.sep).join('/');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
@@ -50,7 +57,7 @@ const config = {
         },
         blog: false,
         theme: {
-          customCss: './src/css/custom.css',
+          customCss: [themeCss, './src/css/custom.css'],
         },
       }),
     ],
