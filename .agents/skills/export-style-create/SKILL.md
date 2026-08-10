@@ -140,6 +140,13 @@ sentence if the source is not a document, URL, or stylesheet.
   `fonts/`, to Typst via `TYPST_FONT_PATHS`); suggest
   `typst fonts` to list installed ones, dropping font files in
   `sources/export-style/fonts/`, or a close free alternative.
+- **Never copy a font file into the repository unless its licence permits
+  redistribution.** Retail and corporate fonts almost never do, and a course
+  repository is often public. Name it first in the font list so machines that
+  have it use it, bundle a free lookalike behind it, and record whatever you
+  do bundle in `THIRD-PARTY.md` with its licence file alongside it. On macOS
+  the exporter already finds Microsoft Office's own fonts inside the Office
+  application bundles, so an Office typeface needs no bundling at all.
 - A `sources/export-style/logo.png` overrides the selected style's cover
   logo; with neither present the cover simply has no logo.
 - Colours in `reference.docx` cannot read the theme. When you change a theme

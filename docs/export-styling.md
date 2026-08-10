@@ -45,9 +45,10 @@ export:
   `1.1.`, every H1 on a new page, a muted centred page number, and a cover
   carrying a "Built with Canvas Course Builder" watermark. `thomas-more`
   ships alongside it as a worked example of institutional branding — Century
-  Gothic headings, the institution's logo, and the fonts bundled so the PDF
-  renders identically anywhere. Its fonts and logo belong to their respective
-  owners (see [THIRD-PARTY.md](../THIRD-PARTY.md)).
+  Gothic headings where the machine has that font, Nunito bundled as the
+  fallback, and the institution's logo. The logo belongs to its owner and
+  Nunito ships under the SIL Open Font License (see
+  [THIRD-PARTY.md](../THIRD-PARTY.md)).
 - The **theme** is a CSS file in [`src/css/themes/`](../src/css/themes/) and
   owns colour. The exporter parses it and passes every colour to Typst as a
   pandoc variable, so the PDF, the preview site, Canvas pages and the alert
@@ -83,7 +84,7 @@ forking the rest.
 | `template.typ` | per style | PDF (Typst) | Fonts, sizes, margins, title page, TOC, alert/link-card/attachment styling, page-break behaviour. Reads its colours from the theme. |
 | `reference.docx` | per style | DOCX (Word) | All Word paragraph and character styles: `Normal`, `Heading 1/2/3`, `Hyperlink`, and the custom styles listed below — including their colours. |
 | `logo.png` | per style | PDF (Typst) | Cover logo. The filename is fixed. Optional — without it the cover simply has no logo. |
-| `fonts/` | per style | PDF (Typst) | Fonts shipped with the style. The exporter points Typst at this directory via `TYPST_FONT_PATHS`, so the PDF renders identically on machines where the font is not installed. `generic` has none and relies on Helvetica/Arial. |
+| `fonts/` | per style | PDF (Typst) | Fonts shipped with the style. The exporter points Typst at this directory via `TYPST_FONT_PATHS`, so they render on machines where the font is not installed. Only put a font here if its licence allows redistribution. `generic` has none and relies on Helvetica/Arial. |
 | `defaults.yml` | shared | both | Pandoc defaults shared by every export (TOC depth). Layout defaults deliberately live in `template.typ` instead, so `--var` can override them. Heading numbering is native to both templates, so `number-sections` stays `false`. |
 | `filter.lua` | shared | both | Maps the exporter's `.alert`, `.link-card`, `.attachment`, and `.page-break` divs onto Typst function calls (PDF) or custom-style paragraphs (DOCX). Rarely needs editing. |
 | `sample.md` | shared | both | The kitchen-sink preview document (see [Previewing a style](#previewing-a-style)). |
@@ -136,12 +137,28 @@ typst fonts
 ```
 
 Typst renders with installed **system fonts**, plus whatever the style ships in
-its `fonts/` directory (the exporter passes that directory to Typst via
-`TYPST_FONT_PATHS` — this is how the `thomas-more` style gets Century Gothic
-on a machine that has never seen it). If you set `mainfont` to something you
-have not installed, Typst falls back and the result will not match. Install the
-font, drop its files in `sources/export-style/fonts/`, or pick one
-`typst fonts` lists.
+its `fonts/` directory, which the exporter passes to Typst via
+`TYPST_FONT_PATHS`. If you set `mainfont` to something you have not installed,
+Typst falls back and the result will not match. Install the font, drop its
+files in `sources/export-style/fonts/` (only if its licence allows
+redistribution), or pick one `typst fonts` lists.
+
+### Microsoft Office fonts on macOS
+
+Office fonts are a special case worth knowing about. On Windows, Office
+installs typefaces like Century Gothic into the system font folder, so Typst
+finds them like any other. On macOS it keeps them inside the application
+bundles instead, where nothing outside Office looks — which is why `typst
+fonts` does not list Century Gothic even on a Mac with Word installed.
+
+The exporter closes that gap: on macOS it adds Office's own font directories
+to `TYPST_FONT_PATHS`, so a Mac with Word exports in the same typeface a
+Windows machine does. Nothing is copied or installed; it reads the fonts
+already licensed on that machine. `npx course export --verbose` prints the
+directories it ended up searching.
+
+Without Office, headings fall through to the next font in the style's list —
+Nunito for `thomas-more`, which ships in its `fonts/` folder.
 
 The `generic` style bundles no fonts and asks for Helvetica, then Arial. On a
 machine without one of them, Typst prints a `unknown font family` warning and

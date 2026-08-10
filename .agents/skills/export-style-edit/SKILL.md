@@ -51,7 +51,7 @@ hand off to `export-style-create`.
    | Margins / paper | `margin:`/`paper:` in `conf()` | `<w:pgMar>`/`<w:pgSz>` |
    | Cover logo | `sources/export-style/logo.png` (PDF only) | — |
    | Heading numbering | `sectionnumbering:` in `conf()` | the `numId 900` numbering + heading `numPr` |
-   | Bundled font files | `sources/export-style/fonts/` (PDF only, via `TYPST_FONT_PATHS`) | install the font on the machine that opens the DOCX |
+   | Bundled font files | `sources/export-style/fonts/` (PDF only, via `TYPST_FONT_PATHS`) — only fonts whose licence permits redistribution, recorded in `THIRD-PARTY.md` | install the font on the machine that opens the DOCX |
 
    Apply each format-agnostic change to **both** columns; a PDF-only tweak
    (justification, page numbering) touches only `template.typ`. Warn when a

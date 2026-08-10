@@ -8,7 +8,7 @@ const { COURSE_DIR } = require('./module-utils');
 const { scanCourse, flattenItems } = require('../lib/convert/course-scanner');
 const { preflight } = require('../lib/export/preflight');
 const { resolveStyle } = require('../lib/export/style-resolver');
-const { runPandoc } = require('../lib/export/pandoc');
+const { runPandoc, typstFontPaths } = require('../lib/export/pandoc');
 const { buildCombinedMarkdown } = require('../lib/export/assemble');
 const { parseToc, validateTocPaths } = require('../lib/export/toc');
 const { loadCourseConfig } = require('../lib/config/course-config');
@@ -309,6 +309,10 @@ async function exportCmd(paths = [], options = {}) {
     process.exit(1);
   }
   log.verbose(`[export] style ${style.name}, theme ${theme.name}`);
+  if (format === 'pdf') {
+    const fontPaths = typstFontPaths(style.fontsDir);
+    log.verbose(`[export] font paths: ${fontPaths.join(path.delimiter) || '(system only)'}`);
+  }
 
   fs.mkdirSync(EXPORTS_DIR, { recursive: true });
 

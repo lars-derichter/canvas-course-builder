@@ -151,7 +151,7 @@ live in [`export-styles/`](../export-styles/):
 | Style | Look |
 | --- | --- |
 | `generic` | The default. Helvetica/Arial, near-black headings, A4 with 2.5 cm margins, and a "Built with Canvas Course Builder" watermark on the cover. |
-| `thomas-more` | Century Gothic headings, the Thomas More logo, and the fonts bundled so the PDF renders the same anywhere. The fonts and logo belong to their owners — see [THIRD-PARTY.md](../THIRD-PARTY.md). |
+| `thomas-more` | Century Gothic headings where the machine has that font, Nunito bundled as the fallback, and the Thomas More logo. The logo belongs to its owner — see [THIRD-PARTY.md](../THIRD-PARTY.md). |
 
 `npx course export --style thomas-more` overrides the config for one run.
 
@@ -177,7 +177,8 @@ The pieces inside are:
   watermark is generated from `logo.typ` next to it, which carries the
   command to regenerate it.
 - `fonts/` holds fonts to embed in PDF exports; without it, exports fall
-  back to fonts installed on your machine.
+  back to fonts installed on your machine. Only put a font here if its
+  licence allows you to redistribute it, and note it in `THIRD-PARTY.md`.
 
 To change one file without forking a whole style, drop it in
 `sources/export-style/` — that path wins per file over whatever style is
@@ -189,8 +190,9 @@ See [export-styling.md](export-styling.md) for the full export pipeline.
 
 The licences also follow the tooling/content split:
 
-- The **tooling** is public domain ([Unlicense](../LICENSE)); nothing to do
-  there.
+- The **tooling** is [MIT licensed](../LICENSE). Leave `LICENSE` where it
+  is: MIT asks that the copyright notice stays with the code, so it has to
+  travel along if you publish your course repository.
 - Your **course content** defaults to CC BY-NC-SA 4.0, declared in
   [`course/LICENSE.md`](../course/LICENSE.md). That file is yours: edit it
   to change or replace the licence for your own material, and update the

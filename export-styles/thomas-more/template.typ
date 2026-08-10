@@ -25,7 +25,10 @@ $endif$
 #let tm-tableline = pick("$ccb-border$", "#AABDCA")
 #let heading-color = pick("$ccb-heading$", "#FA6432")
 
-#let heading-font = ("Century Gothic", "Arial")
+// Century Gothic first: Microsoft Office installs it, and the exporter points
+// Typst at Office's font directory. Nunito ships in this style's fonts/ folder
+// as the guaranteed fallback, and matches the thomas-more theme on the web.
+#let heading-font = ("Century Gothic", "Nunito", "Arial")
 
 // Thematic breaks. Pandoc emits `#divider()` (Typst 0.15+) and `#horizontalrule`
 // on older versions; both are defined so the rule keeps the centred hairline
@@ -122,7 +125,7 @@ $endif$
   region: "BE",
   paper: "a4",
   margin: (left: 2.5cm, right: 2.5cm, top: 2.5cm, bottom: 2.3cm),
-  font: ("Arial",),
+  font: ("Arial", "Nunito"),
   codefont: ("DejaVu Sans Mono",),
   fontsize: 12pt,
   sectionnumbering: "1.1.",

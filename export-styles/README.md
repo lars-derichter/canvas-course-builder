@@ -24,10 +24,10 @@ thomas-more` overrides it.
 | Style | Look |
 | --- | --- |
 | `generic` | The default. Helvetica/Arial, near-black headings, A4 with 2.5 cm margins, and a "Built with Canvas Course Builder" watermark on the cover. No bundled fonts. |
-| `thomas-more` | A worked example of full institutional branding: Century Gothic headings, orange and navy, the Thomas More logo, and the fonts bundled so the PDF renders the same anywhere. Pair it with `theme: thomas-more`. |
+| `thomas-more` | A worked example of full institutional branding: Century Gothic headings where the machine has that font, Nunito bundled as the fallback, orange and navy, and the Thomas More logo. Pair it with `theme: thomas-more`. |
 
-The Thomas More fonts and logo belong to their owners — see
-[THIRD-PARTY.md](../THIRD-PARTY.md).
+The Thomas More logo belongs to its owner, and the bundled Nunito ships under
+the SIL Open Font License — see [THIRD-PARTY.md](../THIRD-PARTY.md).
 
 ## What a style folder holds
 
@@ -36,7 +36,7 @@ The Thomas More fonts and logo belong to their owners — see
 | `template.typ` | PDF layout (Typst, rendered through pandoc) | yes |
 | `reference.docx` | Word styles for DOCX output | yes |
 | `logo.png` | Cover logo in the PDF. The filename is fixed. | no |
-| `fonts/` | Fonts to embed in PDF exports, via `TYPST_FONT_PATHS` | no |
+| `fonts/` | Fonts to embed in PDF exports, via `TYPST_FONT_PATHS`. Only fonts whose licence allows redistribution. | no |
 
 The three files at the root of this folder — `filter.lua`, `defaults.yml` and
 `sample.md` — drive the pandoc pipeline rather than the look, so every style
