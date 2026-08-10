@@ -117,6 +117,11 @@ are written in English with UK spelling (customise, colour), sentence-case
 headings, and lines wrapped at 80 characters. `docs/style.md` is not the
 guide for these docs; it is the per-course style guide for course content.
 
+The style baselines in `templates/` are the deliberate exception. Each one
+is written in the language it prescribes, so two of the three are in Dutch,
+and `style-generic-en.md` uses title-case headings because it states a
+title-case rule and applies it to itself. Leave them that way.
+
 ## Understanding the codebase
 
 See [Architecture](architecture.md) for a technical overview of the three-layer
