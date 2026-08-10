@@ -36,21 +36,38 @@ author's own voice and audience.
    - Instruction style for exercises and exams: same voice as
      explanations, or strictly neutral.
    - AI tells the author particularly dislikes — prime with examples from
-     the current `style.md`.
+     the current `style.md` and from the AI-tells section of whichever
+     baseline in [`templates/`](../../../templates/) matches the course
+     language.
 
 3. **Summarise and confirm** the intended changes before writing anything.
 
-4. **Rewrite `docs/style.md`.** Read its current headings first and
+4. **Pick the starting point.** `docs/style.md` ships as the English
+   baseline, which primes badly for a course in another language. Unless
+   the course language already matches what the file holds, copy the right
+   baseline from [`templates/`](../../../templates/) over `docs/style.md`
+   first and adapt from there:
+   - `style-generic-en.md` — English, UK spelling, title-case headings.
+   - `style-generic-nl-be.md` — Nederlands, Vlaamse variant.
+   - `style-generic-nl.md` — Nederlands, variant Nederland.
+
+   Never edit anything in `templates/` itself: those are shipped defaults,
+   overwritten on upstream updates.
+
+5. **Rewrite `docs/style.md`.** Read its current headings first and
    preserve the document's structure — in particular the `## Audiences`
    split into student-facing and colleague-facing registers, which
-   `/proofread`, `/consistency-check`, and `/fix-issues` depend on. Only
-   the content adapts. Keep the English meta-note at the top of the file
-   (`style.md` is consumed by AI tools).
+   `/proofread`, `/consistency-check`, and `/fix-issues` depend on. Every
+   baseline carries that structure, translated where the baseline is not in
+   English, so this holds whichever one you started from. Only the content
+   adapts. Keep the note at the top that names the course language, in
+   whatever language the guide itself is written (`style.md` is consumed by
+   AI tools), and drop the copy-me tip if you started from a baseline.
 
-5. **Check `AGENTS.md` at the project root** and update it only where it
+6. **Check `AGENTS.md` at the project root** and update it only where it
    now directly contradicts the new `style.md`.
 
-6. **Report** what changed and remind the author they can refine further
+7. **Report** what changed and remind the author they can refine further
    with `/style-update` or by editing the file directly.
 
 ## Rules
