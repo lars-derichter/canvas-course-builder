@@ -58,7 +58,7 @@ them. To override a file, drop a file of the same name into
 | `reference.docx` | DOCX (Word) | All Word paragraph and character styles: `Normal`, `Heading 1/2/3`, `Hyperlink`, and the custom styles listed below. |
 | `defaults.yml` | both | Pandoc defaults shared by every export (TOC depth). Layout defaults deliberately live in `template.typ` instead, so `--var` can override them. Heading numbering is native to both templates, so `number-sections` stays `false`. |
 | `filter.lua` | both | Maps the exporter's `.alert`, `.link-card`, `.attachment`, and `.page-break` divs onto Typst function calls (PDF) or custom-style paragraphs (DOCX). Rarely needs editing. |
-| `tm-logo.png` | PDF (Typst) | Cover logo. Resolved like the other files; delete or override it in `sources/export-style/` to change the cover mark. Optional — without it the cover simply has no logo. |
+| `logo.png` | PDF (Typst) | Cover logo. Resolved like the other files; delete or override it in `sources/export-style/` to change the cover mark. Optional — without it the cover simply has no logo. |
 | `fonts/` | PDF (Typst) | Fonts shipped with the style (Century Gothic). The exporter points Typst at this directory via `TYPST_FONT_PATHS`, so the PDF renders identically on machines where the font is not installed. |
 
 The custom Word styles `reference.docx` must define (pandoc matches on the

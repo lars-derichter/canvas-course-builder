@@ -34,7 +34,7 @@ hand off to `export-style-create`.
    | Link colour | `show link: set text(fill:)` | `Hyperlink` colour |
    | Margins / paper | `margin:`/`paper:` in `conf()` | `<w:pgMar>`/`<w:pgSz>` |
    | Alert colours | the `alert-colors` map | the per-kind `AlertTitle<Kind>`/`AlertBody<Kind>` styles |
-   | Cover logo | `sources/export-style/tm-logo.png` (PDF only) | — |
+   | Cover logo | `sources/export-style/logo.png` (PDF only) | — |
    | Heading numbering | `sectionnumbering:` in `conf()` | the `numId 900` numbering + heading `numPr` |
 
    Apply each format-agnostic change to **both** files; a PDF-only tweak

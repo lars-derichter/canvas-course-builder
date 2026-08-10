@@ -65,7 +65,7 @@ By hand, the pieces are:
 
 - `sources/export-style/template.typ` styles PDF exports (Typst).
 - `sources/export-style/reference.docx` styles DOCX exports (Word styles).
-- `sources/export-style/tm-logo.png` is the cover logo. The filename is
+- `sources/export-style/logo.png` is the cover logo. The filename is
   fixed; put your own logo there under that name, or delete the shipped
   one for a logo-less cover.
 - `sources/export-style/fonts/` holds fonts to embed in PDF exports;

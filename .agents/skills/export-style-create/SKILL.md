@@ -115,7 +115,7 @@ sentence if the source is not a document, URL, or stylesheet.
   `templates/export/fonts/`, to Typst via `TYPST_FONT_PATHS`); suggest
   `typst fonts` to list installed ones, dropping font files in
   `sources/export-style/fonts/`, or a close free alternative.
-- A `sources/export-style/tm-logo.png` overrides the shipped cover logo;
+- A `sources/export-style/logo.png` overrides the shipped cover logo;
   deleting the shipped one removes the logo from the cover.
 
 $ARGUMENTS

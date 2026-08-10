@@ -59,7 +59,7 @@ Een horizontale lijn als scheiding:
 
 ## Afbeelding
 
-![Het logo van Thomas More als voorbeeldafbeelding](tm-logo.png)
+![Het logo van Thomas More als voorbeeldafbeelding](logo.png)
 
 ## Alerts
 

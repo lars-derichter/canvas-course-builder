@@ -9,7 +9,7 @@ branded export style.
 - `templates/export/fonts/Century Gothic*.ttf` — the Century Gothic
   typeface, © Monotype Imaging Inc. Bundled so PDF exports of the example
   style render consistently on machines where the font is not installed.
-- `templates/export/tm-logo.png` — the logo of Thomas More University of
+- `templates/export/logo.png` — the logo of Thomas More University of
   Applied Sciences, a trademark of Thomas More. Used as the example cover
   mark in the default export style.
 
