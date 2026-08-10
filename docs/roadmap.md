@@ -74,8 +74,6 @@ its own site.
 
 ### Tooling polish
 
-- Linting and formatting setup (`.editorconfig`, Prettier, `npm run lint`) so
-  contributions have an objective style gate.
 - GitHub community templates: issue and pull-request templates, `SECURITY.md`, a
   code of conduct.
 - Drop the legacy sync-state migration path in the sync-state loader; no

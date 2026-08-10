@@ -195,6 +195,43 @@ written as markdown files, which are just regular text files that end in `.md`.
 See the [markdown guide](markdown.md) for supported syntax and custom alerts,
 and the [frontmatter guide](frontmatter.md) for the metadata fields.
 
+### Keeping your course files tidy
+
+`npm run format` runs Prettier over your markdown. It rewraps prose at 80
+characters and normalises list markers, emphasis, table alignment and
+frontmatter. Nothing about the rendered page changes — this is source formatting
+only, and your fenced code blocks are left exactly as you wrote them.
+
+It is worth running, for three reasons:
+
+- **Consistency without policing it.** Course material accumulates from many
+  places: a page drafted by an AI skill, a paragraph pasted out of Word or a
+  slide deck, something typed in a hurry the night before class. Each arrives
+  with its own wrapping and list markers. One command makes the whole course
+  look like it was written in one sitting.
+- **Readable diffs across an academic year.** This is the practical win. With
+  prose wrapped at 80 characters, fixing one sentence shows up in `git diff` as
+  one or two changed lines. With a paragraph sitting on a single long line, the
+  same fix reports the entire paragraph as changed and you cannot see what you
+  actually altered.
+- **It catches markdown that renders wrong silently.** A missing blank line
+  before a list, a misaligned table, stray trailing whitespace — Prettier
+  normalises all of it, so a page behaves the same in the preview and after
+  `npx course push`.
+
+Run it whenever suits you: before a commit, or after a long writing session. It
+is never required. Nothing checks your course, and `npx course push` does not
+care either way.
+
+If you would rather Prettier left your writing alone, add the content
+directories to `.prettierignore`:
+
+```
+course/
+evaluations/
+sources/
+```
+
 ## Managing course materials
 
 ### Managing modules

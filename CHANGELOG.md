@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- **Prettier and ESLint.** `npm run format` formats the repo and `npm run lint`
+  reports defects; both are checked in CI. Formatting now includes markdown, so
+  `npm run format` will also rewrap your own course prose at 80 characters — see
+  [Keeping your course files tidy](docs/user-guide.md#keeping-your-course-files-tidy)
+  for why that is usually what you want, and how to opt out if it is not.
 - **The tooling moved from the Unlicense to the MIT licence.** Course content
   keeps its own licence in `course/LICENSE.md`. MIT asks that the copyright
   notice stays with the code, so leave `LICENSE` in place if you publish your

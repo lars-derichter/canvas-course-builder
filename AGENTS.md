@@ -36,6 +36,10 @@ conceptual walkthroughs of push/pull/status and
 [`docs/advanced-commands.md`](docs/advanced-commands.md) for destructive
 operations (`reset-sync-state`, `reset-canvas`).
 
+Before handing code back, run `npm run lint` (ESLint; defects only) and
+`npm run format` (Prettier; formatting). Both are checked in CI. Do not hand-
+format code or hand-wrap markdown prose — Prettier owns both.
+
 Item commands auto-detect the current module when run from inside a module
 folder.
 

@@ -52,3 +52,10 @@ so they are verified by hand rather than in the automated suite:
 - Create a `*.test.js` file in the matching `test/` subdirectory.
 - Use `describe`/`it` from `node:test` and assertions from `node:assert/strict`.
 - The test runner discovers all `test/**/*.test.js` files automatically.
+
+`test/vscode/extension.test.js` is the odd one out: the extension cannot be
+loaded outside VS Code, so it reads `extension.js` as text and matches patterns
+against the source. Prettier decides where those lines wrap, so any pattern
+there has to span newlines — use `[\s\S]*?` rather than `.*` or `[^\n]*`, and
+allow for a trailing comma inside a wrapped call. Assert on what the extension
+does, never on how it is laid out.

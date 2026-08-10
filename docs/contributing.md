@@ -70,6 +70,8 @@ If you'd like to contribute a fix or improvement yourself, follow these steps:
    npm start        # check the Docusaurus preview
    npm run build    # verify the production build succeeds
    npm test         # run the automated tests
+   npm run lint     # report code defects
+   npm run format   # apply Prettier
    ```
 
 5. **Push** your branch to your fork:
@@ -87,8 +89,9 @@ If you'd like to contribute a fix or improvement yourself, follow these steps:
   easier to review and merge.
 - **Write a clear title and description** — explain what the change does and
   why. If there's a related issue, mention it (e.g. "Fixes #12").
-- **Test your changes** — make sure `npm run build` and `npm test` pass before
-  submitting.
+- **Test your changes** — make sure `npm run build`, `npm test` and
+  `npm run lint` pass before submitting, and that `npm run format` leaves
+  nothing to change. CI checks the last two.
 
 > [!TIP]
 >
@@ -112,6 +115,33 @@ path as it exists in downstream projects (e.g. `.agents/skills/<old-name>`) to
 `STALE_PATHS` in [update-from-upstream.sh](../update-from-upstream.sh), so
 downstream projects prune it on their next update.
 
+## Code style
+
+Prettier owns formatting and ESLint reports defects, so neither needs to come up
+in review. Run `npm run format` before you commit; `npm run lint` and
+`npm run format:check` both run in CI.
+
+The Prettier config is deliberately small — the defaults already matched the
+codebase, so only three options are set:
+
+- `proseWrap: always` wraps prose at 80 characters, the rule the next section
+  describes. It used to be maintained by hand.
+- `embeddedLanguageFormatting: off` keeps Prettier out of fenced code blocks. In
+  this repo those blocks are instructional content: a deliberately indented YAML
+  example in [Frontmatter](frontmatter.md), or a course code sample showing a
+  particular style, has to render exactly as written.
+- YAML keeps double quotes; everything else uses single.
+
+`.editorconfig` covers the file types Prettier cannot parse —
+`update-from-upstream.sh`, `export-styles/filter.lua`, the Typst templates.
+
+One repo-wide reformat is recorded in `.git-blame-ignore-revs`. GitHub skips it
+automatically; to skip it locally too:
+
+```bash
+git config blame.ignoreRevsFile .git-blame-ignore-revs
+```
+
 ## Documentation style
 
 The project's own docs (`docs/`, the README, and the getting-started module) are
@@ -122,7 +152,9 @@ docs; it is the per-course style guide for course content.
 The style baselines in `templates/` are the deliberate exception. Each one is
 written in the language it prescribes, so two of the three are in Dutch, and
 `style-generic-en.md` uses title-case headings because it states a title-case
-rule and applies it to itself. Leave them that way.
+rule and applies it to itself. Leave them that way. Prettier does reflow their
+prose and normalise their list markers, but it changes neither language nor
+heading case, so what that exception protects is untouched.
 
 ## Understanding the codebase
 
