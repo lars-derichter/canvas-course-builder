@@ -1,5 +1,14 @@
 # Writing style
 
+> [!IMPORTANT]
+>
+> This guide ships filled in as a worked example: the voice of one
+> Flemish-Dutch web-development course. It is an example, not a
+> requirement. Run `/style-init` early to replace it with rules for your
+> own language, audience, and voice; the file is protected during upstream
+> updates, so your version sticks. See
+> [Customization](customization.md).
+
 Course materials are in Dutch; this guide stays in English for AI tools.
 
 ## Audiences
@@ -9,15 +18,16 @@ file you are editing.
 
 - **Student-facing**: anything in `course/` and `evaluations/`, plus assignment
   and exam instructions. Warm, accessible, CEFR B2.
-- **Collega-facing**: lesson plans in `sources/lesson-plans/`, source notes, and
-  drafting documents in `sources/`. Direct, dry, no readability cap. Reads like
-  talking to a fellow teacher or like a published teaching manual.
+- **Colleague-facing**: lesson plans in `sources/lessons/`, class versions in
+  `sources/lesson-plans/`, and source notes and drafting documents elsewhere
+  in `sources/`. Direct, dry, no readability cap. Reads like talking to a
+  fellow teacher or like a published teaching manual.
 
-`sources/lesson-plans/lesson-01.md` is the worked example for the collega-facing
-register.
+The lowest-numbered lesson plan under `sources/lessons/` is the worked
+example for the colleague-facing register.
 
 The rest of this guide splits into **shared rules** (apply to both),
-**student-facing**, and **collega-facing**.
+**student-facing**, and **colleague-facing**.
 
 ## Shared rules
 
@@ -169,16 +179,22 @@ Keep them short. If content grows past a few lines, move it into the page.
 - `[!ATTENTION]` urgent, act now
 - `[!CHECK]` verification step
 
+`[!ATTENTION]` is this project's spelling of what GitHub calls
+`[!CAUTION]`; both are accepted, and the rendered title comes from the
+`caution` label in `course.config.yml`.
+
 ### "Meer weten" links
 
 Put background or further-reading links inside a `[!NOTE]` at the end of a
 section.
 
-## Collega-facing materials
+## Colleague-facing materials
 
-For lesson plans (`sources/lesson-plans/`), source notes, and drafting documents
-in `sources/`. The audience is fellow teachers, not students.
-`sources/lesson-plans/lesson-01.md` is the example to mirror.
+For lesson plans (`sources/lessons/`), class versions
+(`sources/lesson-plans/`), source notes, and drafting documents in
+`sources/`. The audience is fellow teachers, not students. The
+lowest-numbered lesson plan under `sources/lessons/` is the example to
+mirror.
 
 ### Reading level
 

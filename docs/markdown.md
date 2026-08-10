@@ -4,7 +4,7 @@ Standard
 [GitHub Flavoured Markdown](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax)
 is supported.
 
-## Internal Links
+## Internal links
 
 Use standard relative markdown links to reference other course pages:
 
@@ -27,7 +27,7 @@ These links work across all three layers:
 Only `.md` links are transformed. External URLs, fragment-only links
 (`#heading`), and non-markdown file links are left unchanged.
 
-## Images and Files
+## Images and files
 
 Store images and other embedded files in a `_files/` subdirectory within your
 module folder:
@@ -88,7 +88,7 @@ page. Only `.html` and `.htm` are affected; `.md`/`.mdx` stay page links, and
 other file types (`.pdf`, `.zip`, `.docx`, images) already worked. A link with
 an anchor (`_files/example.html#top`) is left as navigation.
 
-## Underscore Prefix Convention
+## Underscore prefix convention
 
 Files and folders whose names start with `_` (underscore) are treated as
 internal and are excluded from Canvas syncing. Docusaurus also skips them by
@@ -98,7 +98,7 @@ convention. Examples:
 - `_category_.json` — Docusaurus sidebar configuration
 - `_draft-notes.md` — any file you want to keep local-only
 
-## Custom Alerts
+## Custom alerts
 
 Use GitHub-style blockquote alerts for callout boxes. These render with
 appropriate styling in both the Docusaurus preview and Canvas.
@@ -122,7 +122,7 @@ appropriate styling in both the Docusaurus preview and Canvas.
 
 > [!ATTENTION]
 >
-> Urgent — demands immediate attention.
+> Urgent: demands immediate attention.
 
 > [!CHECK]
 >
@@ -132,7 +132,13 @@ appropriate styling in both the Docusaurus preview and Canvas.
 Each type displays with a distinct colour, icon, and title in Canvas. Titles
 follow the course language set in `course.config.yml` (English: Note, Tip,
 Important, Warning, Caution, Check; Dutch: Info, Tip, Belangrijk, Waarschuwing,
-Opgelet, Check) and can be overridden per label — see the "Course language and
-labels" section in the [user guide](user-guide.md). Alert icons are
-automatically uploaded to Canvas on first push and tracked in
-`.canvas-sync.json`.
+Opgelet, Check) and can be overridden per label; see the "Course language and
+labels" section in the [user guide](user-guide.md).
+
+One naming quirk to know: the alert you write as `[!ATTENTION]` is the one
+GitHub calls `[!CAUTION]`, so its label key in `course.config.yml` is
+`caution` and its default English title is "Caution". `[!CAUTION]` is
+accepted in your markdown as a synonym.
+
+Alert icons are automatically uploaded to Canvas on first push and tracked
+in `.canvas-sync.json`.
