@@ -1,8 +1,10 @@
 # Sources
 
-Reference materials, inspiration, and notes for course development. Files here are **never** served by Docusaurus or synced to Canvas — this is a private workspace for collecting ideas and references.
+Reference materials, inspiration, and notes for course development. Files
+here are **never** served by Docusaurus or synced to Canvas — this is a
+private workspace for collecting ideas and references.
 
-## Organization
+## Organisation
 
 Create subfolders as needed. Suggested structure:
 
@@ -10,11 +12,14 @@ Create subfolders as needed. Suggested structure:
 sources/
   articles/             # Research papers, blog posts, bookmarks
   code-examples/        # Code snippets, demos, prototypes
+  export-style/         # Your export style overrides (see export-styling.md)
   images/               # Diagrams, screenshots, figures
   ideas/                # Rough notes and drafts
   lessons/              # Full lesson plans (lesson-NN.md)
   lesson-plans/         # One-page class versions (lesson-plan-NN.md)
   reference-materials/  # Canonical course data, e.g. glossary.yml
+  reports/              # Dated reports, e.g. from /coverage-map
+  rubrics/              # Grading rubrics from /rubric
   issues.md             # Issue queue: /report-issue appends, /fix-issues resolves
 ```
 
@@ -41,7 +46,8 @@ These conventions are defaults, not requirements — the skills follow whatever
 
 ## Conventions
 
-- **Naming:** lowercase-hyphenated (e.g., `sorting-algorithms-overview.md`). Numeric prefixes are optional — use them only when ordering matters.
+- **Naming:** lowercase-hyphenated (e.g., `sorting-algorithms-overview.md`).
+  Numeric prefixes are optional — use them only when ordering matters.
 - **Any file type** is welcome: `.md`, `.pdf`, `.png`, `.js`, `.py`, etc.
 
 ## Optional frontmatter for markdown files
@@ -54,4 +60,6 @@ tags: [topic-a, topic-b]
 ---
 ```
 
-All fields are optional. `url` is useful for bookmarking external articles or videos. `tags` help with searching across sources (e.g., `grep -r "tags:.*topic" sources/`).
+All fields are optional. `url` is useful for bookmarking external articles
+or videos. `tags` help with searching across sources (e.g.,
+`grep -r "tags:.*topic" sources/`).

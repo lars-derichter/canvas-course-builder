@@ -12,42 +12,12 @@ npm test
 ## Test structure
 
 Tests live in `test/` and mirror the layout of the source directories they
-cover:
-
-```
-test/
-├── canvas/
-│   ├── client.test.js            # HTTP client: pagination, rate limiting, retry
-│   └── files.test.js             # MIME type detection
-├── cli/
-│   ├── merge-items.test.js       # Merging sibling items into one file
-│   ├── naming.test.js            # Folder/file/item name derivation and relative paths
-│   ├── prune-items.test.js       # Detecting modules and items deleted locally
-│   ├── pull-helpers.test.js      # Pull identifier maps, local-modification checks, strategies
-│   ├── push-helpers.test.js      # Push file resolver and page/assignment strategies
-│   ├── renumber.test.js          # Renumbering and reordering numbered entries
-│   ├── search.test.js            # Keyword matching, context windows, result rendering
-│   └── split-item.test.js        # Splitting a multi-section item into separate files
-├── config/
-│   ├── course-config.test.js     # course.config.yml loading, caching, validation warnings
-│   └── labels.test.js            # Built-in label sets, override merging, slugify
-├── convert/
-│   ├── course-scanner.test.js    # Course directory scanning, position extraction, title derivation
-│   ├── frontmatter.test.js       # YAML frontmatter parsing and serialization
-│   ├── html-to-markdown.test.js  # Canvas HTML → markdown conversion and alerts
-│   ├── link-resolver.test.js     # Bidirectional link and file map resolution
-│   └── markdown-to-html.test.js  # Markdown → Canvas HTML conversion and alerts
-├── export/
-│   ├── preprocess.test.js        # Alerts→divs, heading shift, image/link rewriting
-│   ├── assemble.test.js          # Combined-document assembly, heading regimes, anchors
-│   └── toc.test.js               # TOC generation, parsing, and path validation
-├── plugins/
-│   ├── remark-external-url.test.js  # External URL frontmatter → link transform
-│   ├── remark-file-item.test.js     # File-item frontmatter → link transform
-│   └── remark-gfm-alerts.test.js    # GFM blockquote alert syntax transform
-└── vscode/
-    └── extension.test.js         # VS Code extension command wiring vs. package.json
-```
+cover: `test/canvas/` for `lib/canvas/`, `test/cli/` for `cli/`,
+`test/config/` for `lib/config/`, `test/convert/` for `lib/convert/`,
+`test/export/` for `lib/export/`, `test/plugins/` for `src/plugins/`, and
+`test/vscode/` for the bundled VS Code extension. Each file is named after
+what it covers, e.g. `test/convert/course-scanner.test.js` or
+`test/cli/push-helpers.test.js`.
 
 Coverage spans the config layer (`lib/config/`), the conversion layer
 (`lib/convert/`), the export layer
