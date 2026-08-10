@@ -2,7 +2,7 @@
 
 Technical overview of how the sync system works.
 
-## Three Layers
+## Three layers
 
 ```
 course/  (markdown)
@@ -30,7 +30,7 @@ titles), pull (untitled fallback), export (metadata labels, document language,
 default titles), and the glossary builder; `docusaurus.config.js` loads it for
 the site locale and the remark plugin labels.
 
-## Sync State
+## Sync state
 
 `.canvas-sync.json` tracks the mapping between local files and Canvas resources:
 
@@ -87,9 +87,6 @@ Key properties:
 - **last_sync** — timestamp of last push or pull. Used to detect locally
   modified files.
 
-Older v2 sync files (modules keyed by folder, items keyed by path) are migrated
-to v3 automatically the first time any command loads them.
-
 ### Prune semantics
 
 `push --prune` deletes a Canvas resource only when no local file *claims* its
@@ -98,7 +95,7 @@ frontmatter, a module folder claims its id via `_category_.json`. Identity
 claims are collected over the whole course, so items moved to another module —
 even one outside a `--module` filter — are never mistaken for deletions.
 
-## Push Algorithm
+## Push algorithm
 
 ```
 1. Scan course/ directory (course-scanner.js)
@@ -127,7 +124,7 @@ The two-pass approach handles circular or forward references. On the first pass,
 links to not-yet-created pages are left unresolved. After all pages exist, a
 second pass updates their HTML with correct links.
 
-## Pull Algorithm
+## Pull algorithm
 
 ```
 1. Fetch modules and items from Canvas API
@@ -165,7 +162,7 @@ second pass updates their HTML with correct links.
 5. Update last_sync timestamp
 ```
 
-## Link Resolution
+## Link resolution
 
 Bidirectional link resolution happens in `link-resolver.js`:
 
@@ -184,7 +181,7 @@ Bidirectional link resolution happens in `link-resolver.js`:
 Fragment identifiers (`#section`) are preserved in both directions. External
 URLs, fragment-only links, and non-`.md` links pass through unchanged.
 
-## Content Conversion
+## Content conversion
 
 **Markdown to HTML** (`markdown-to-html.js`):
 
@@ -201,7 +198,7 @@ URLs, fragment-only links, and non-`.md` links pass through unchanged.
 - Custom rules resolve Canvas internal links and file URLs
 - Strips `&nbsp;` spacer paragraphs after alerts
 
-## Docusaurus Content Filtering
+## Docusaurus content filtering
 
 Not all Canvas content types map naturally to Docusaurus pages. Two mechanisms
 handle the mismatches:
@@ -236,7 +233,7 @@ External, absolute, `@site/`, anchor-only (`.html#…`), and non-existent target
 are left untouched, as is the Canvas sync path (the source markdown keeps its
 plain relative link).
 
-## Error Recovery
+## Error recovery
 
 - **Retry**: API calls retry 3 times on 429 (rate limit) and 5xx with
   exponential backoff.

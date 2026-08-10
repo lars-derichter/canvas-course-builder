@@ -1,4 +1,4 @@
-# Updating Your Project
+# Updating your project
 
 The original Canvas Course Builder project may receive bug fixes, new features, or
 improved documentation over time. This guide shows you how to pull those updates
@@ -48,8 +48,9 @@ The script:
    history is not imported.
 3. Always keeps your protected paths. The content directories (`course/`,
    `evaluations/`, `sources/`) and the protected files (`README.md`,
-   `AGENTS.md`, `CLAUDE.md`, `docs/style.md`, and the config file itself) are
-   restored from your version, never overwritten by upstream.
+   `AGENTS.md`, `CLAUDE.md`, the style and course-context guides,
+   `course.config.yml`, and the config file itself) are restored from your
+   version, never overwritten by upstream.
 4. Prompts you for any **other** file that changed on both sides. For each
    conflict you choose what to do (see
    [Resolving conflicts](#resolving-conflicts) below).
@@ -86,53 +87,33 @@ upstream_remote = upstream
 upstream_branch = main
 ```
 
-- **`protected_dirs`** — directories whose local content is always kept.
+- **`protected_dirs`**: directories whose local content is always kept.
   Anything upstream adds inside them is dropped.
-- **`protected_files`** — individual files always kept. The config file lists
-  itself here, so your edits to it survive future updates. Add any tooling file
-  you've customized and don't want upstream to touch.
+- **`protected_files`**: individual files always kept. The config file lists
+  itself here, so your edits to it survive future updates. Add any tooling
+  file you've customised and don't want upstream to touch.
+- **`upstream_remote`** / **`upstream_branch`**: where to merge from.
 
 > [!NOTE]
 >
-> `docs/course-context.md` was added to the default `protected_files` when the
-> lesson skills were introduced. If your `update-from-upstream.conf` predates
-> that, add it to your `protected_files` line yourself — otherwise upstream
-> updates will overwrite your course-specific version with the template.
-
-> [!NOTE]
->
-> `course.config.yml` (the course language and label settings) arrived later
-> still. The first update after it appeared upstream brings the file in with
-> `language: nl`; the update script then adds it to your `protected_files`
-> automatically on the *next* run, once the file exists locally. Do **not**
-> add it to `protected_files` by hand before the file exists in your project —
+> When upstream introduces a new file that belongs in `protected_files`, the
+> script handles it in two steps: the first update brings the file in, and
+> the next run registers it in your `protected_files` automatically. Don't
+> add a file to `protected_files` by hand before it exists in your project;
 > the protection step deletes protected files that are absent from your
 > history, which would eat the incoming file.
-
-> [!NOTE]
->
-> `AGENTS.md` arrived when the template went agent-agnostic (the shared
-> instructions for Claude Code, OpenAI Codex, and other agentic tools;
-> `CLAUDE.md` became a one-line import of it). It follows the same pattern as
-> `course.config.yml`: the first update brings the file in, and the script
-> registers it in your `protected_files` automatically on the next run. Do
-> **not** add it by hand before the file exists in your project.
-- **`upstream_remote`** / **`upstream_branch`** — where to merge from.
 
 Because the config file is itself protected, edits you make here are never
 overwritten. Commit the file after changing it.
 
 ### Renamed files and folders
 
-Upstream occasionally renames a skill folder or a docs file (in 2026:
-`initialize-style` → `style-init`, `update-style` → `style-update`,
-`create-export-style` → `export-style-create`, `edit-export-style` →
-`export-style-edit`, and `docs/claude-code.md` → `docs/ai-assistants.md`). A
-squash merge does not delete the old path in your project, so the update
-script prunes known old paths automatically — but it can only do that from the
-run *after* the one that brought it the new list. After an update that renames
-files, either run the update once more or remove the old paths yourself with
-`git rm -r`. If you customized one of the old files, re-apply your edits to
+Upstream occasionally renames a skill folder or a docs file. A squash merge
+does not delete the old path in your project, so the update script prunes
+known old paths automatically, but it can only do that from the run *after*
+the one that brought it the new list. After an update that renames files,
+either run the update once more or remove the old paths yourself with
+`git rm -r`. If you customised one of the old files, re-apply your edits to
 the renamed successor; the old content stays in your git history.
 
 ## Resolving conflicts
@@ -159,14 +140,14 @@ Conflict: docusaurus.config.js
 If the script runs without a terminal (e.g. from another script), it applies
 the default automatically for every conflict.
 
-The `a` option is the clean way to "pin" a tooling file you've customized: the
+The `a` option is the clean way to "pin" a tooling file you've customised: the
 next update restores it from your version before the resolver ever runs, so you
 won't be asked again.
 
 ## Recovering local changes to tooling files
 
 If you took the upstream version (`u`, or the default) of a file you'd actually
-customized, you can recover your version afterwards.
+customised, you can recover your version afterwards.
 
 **Before pushing** — restore your version from the previous commit:
 

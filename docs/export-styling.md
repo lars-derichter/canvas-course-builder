@@ -1,4 +1,4 @@
-# Export Styling
+# Export styling
 
 `npx course export` turns course markdown into a printable PDF or an editable
 Word document. This guide explains how the export pipeline is put together and
@@ -7,7 +7,7 @@ how to customise the look, either by hand or with the
 `/export-style-edit` skills.
 
 For prerequisites and everyday usage, see the
-[Export section of the User Guide](user-guide.md#exporting-to-pdf-or-docx).
+[export section of the user guide](user-guide.md#exporting-to-pdf-or-docx).
 
 ## The pipeline
 
@@ -28,23 +28,29 @@ DOCX through pandoc's Word writer using `reference.docx`. A single Lua filter
 translates the exporter's fenced divs (alerts, link cards, attachments, page
 breaks) into the right thing for each renderer.
 
-## The shipped Thomas More style
+## The shipped example style
 
-The shipped defaults follow the official Thomas More course template
-(Cursussjabloon A4): Century Gothic headings in TM orange (`#FA6432`) and navy
-(`#00283C`), Arial 12 pt body text, headings auto-numbered `1.` / `1.1.`, every
-H1 on a new page, A4 with 2.5 cm margins (2.3 cm bottom), a centred page number
-with a small orange rule in the footer, and a typographic cover with the TM
-logo. Both formats carry the same look; the DOCX also uses the TM colours as
-its Word theme.
+The shipped defaults are a worked example of a fully branded style, modelled
+on the Thomas More course template (Cursussjabloon A4): Century Gothic
+headings in orange (`#FA6432`) and navy (`#00283C`), Arial 12 pt body text,
+headings auto-numbered `1.` / `1.1.`, every H1 on a new page, A4 with 2.5 cm
+margins (2.3 cm bottom), a centred page number with a small orange rule in
+the footer, and a typographic cover with the institution's logo. Both
+formats carry the same look; the DOCX also uses the same colours as its Word
+theme.
+
+The bundled fonts and logo belong to their respective owners (see
+[THIRD-PARTY.md](../THIRD-PARTY.md)). For your own course, swap in your
+institution's branding; [Customization](customization.md) walks through it.
 
 ## The style files
 
 The shipped defaults live in `templates/export/`. Your overrides live in
-`sources/export-style/` — that folder is protected from upstream updates, so a
-custom style survives `npx course update`. To override a file, drop a file of
-the same name into `sources/export-style/`; the resolver prefers it over the
-shipped default. A `--template` or `--reference-doc` CLI flag wins over both.
+`sources/export-style/`; that folder is protected during
+[upstream updates](updating-your-project.md), so a custom style survives
+them. To override a file, drop a file of the same name into
+`sources/export-style/`; the resolver prefers it over the shipped default. A
+`--template` or `--reference-doc` CLI flag wins over both.
 
 | File | Renderer | Controls |
 | --- | --- | --- |
@@ -70,11 +76,6 @@ Note, Tip, Important, Warning, Caution, and Check, plus `Link Card Title`,
 > the `alert-colors` map in `template.typ`, and the twelve per-kind
 > `Alert Title/Body <Kind>` styles in `reference.docx`. Change a kind or
 > colour in one, change it in all three.
->
-> A `filter.lua` or `template.typ` forked into `sources/export-style/` before
-> this mechanism existed keeps its own hardcoded (Dutch) labels; re-fork the
-> shipped defaults, or port the `Meta` handler and `attachment-label`
-> substitution, to make the fork follow `course.config.yml`.
 
 ## Overriding layout with `--var`
 
@@ -138,11 +139,9 @@ DOCX is a lossy target next to the Typst PDF. These are known and accepted:
 - **`--var` font/margin variables** affect the PDF only. Style the DOCX through
   `reference.docx`.
 - **Cover logo** appears in the PDF only; the DOCX cover is typographic
-  (Title/Subtitle styles in the TM look).
-- **Alerts** keep their per-kind coloured border and Dutch title but have no
-  icon. A `reference.docx` fork made before the per-kind styles existed lacks
-  the `Alert Title/Body <Kind>` styles; pandoc then falls back to plain
-  paragraphs — re-derive the fork from the current shipped file to fix that.
+  (Title/Subtitle styles).
+- **Alerts** keep their per-kind coloured border and localised title but
+  have no icon.
 - **Inline SVG** renders natively in the PDF. For DOCX, pandoc needs
   `rsvg-convert` (from librsvg, e.g. `brew install librsvg`) on the PATH to
   rasterise it; without it the image is dropped with a warning. SVG shown
