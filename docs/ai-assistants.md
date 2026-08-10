@@ -1,103 +1,113 @@
 # AI assistants
 
-This project is set up for AI coding assistants that run in your terminal or
-inside VS Code — Claude Code, OpenAI Codex, and other agentic tools. They can
-read your project files, run commands, and make changes — all guided by
-natural language instructions.
+This project is set up for AI coding assistants that run in your terminal
+or inside VS Code, such as Claude Code and OpenAI Codex. They can read your
+project files, run commands, and make changes, all guided by natural
+language.
 
-An [AGENTS.md](../AGENTS.md) file at the project root gives any assistant full
-context about the project structure, available commands, and coding
-conventions, so it can assist you effectively out of the box.
-[CLAUDE.md](../CLAUDE.md) is a one-line import of the same file, because Claude
-Code reads that name.
+An [AGENTS.md](../AGENTS.md) file at the project root gives any assistant
+full context about the project structure, available commands, and
+conventions, so it can help effectively out of the box.
+[CLAUDE.md](../CLAUDE.md) is a one-line import of the same file, because
+Claude Code reads that name.
 
 ## Supported tools
 
-- **[Claude Code](https://claude.ai/code)** — reads `AGENTS.md` through
+- **[Claude Code](https://claude.ai/code)** reads `AGENTS.md` through
   `CLAUDE.md`, discovers the skills through the `.claude/skills` alias, and
   invokes them as `/name`.
-- **[OpenAI Codex](https://developers.openai.com/codex)** — reads `AGENTS.md`
+- **[OpenAI Codex](https://developers.openai.com/codex)** reads `AGENTS.md`
   and discovers the skills in `.agents/skills/` natively.
-- **Other tools** — point them at `AGENTS.md`; the skills are plain markdown,
-  so you can paste a skill's instructions into any assistant that lacks skill
-  support.
+- **Other tools**: point them at `AGENTS.md`. The skills are plain
+  markdown, so you can paste a skill's instructions into any assistant that
+  lacks skill support.
+
+On Windows, skills need one git setting before they are found; see
+[Troubleshooting](troubleshooting.md#skills-not-found-on-windows).
 
 ## Use cases for course authors
 
-- **Writing course content** — describe what a page or assignment should cover
-  and let the assistant draft the markdown
-- **Creating modules and items** — ask the assistant to run the CLI commands
-  for you, filling in names and positions interactively
-- **Restructuring courses** — move, rename, merge, or split items across modules
-  in bulk
-- **Generating markdown from notes** — paste rough notes or bullet points and
-  have them turned into polished course pages
-- **Debugging sync issues** — describe the problem and let the assistant
-  inspect sync state, logs, and Canvas responses
-- **Reviewing content** — ask the assistant to check for broken links, missing
-  frontmatter, or inconsistencies across modules
-- **Exporting to PDF or Word** — turn pages, modules, or the whole course into
-  printable documents, and derive a custom export style from a reference
+- **Writing course content**: describe what a page or assignment should
+  cover and let the assistant draft the markdown.
+- **Creating modules and items**: ask the assistant to run the CLI commands
+  for you, filling in names and positions interactively.
+- **Restructuring courses**: move, rename, merge, or split items across
+  modules in bulk.
+- **Generating markdown from notes**: paste rough notes and have them
+  turned into polished course pages.
+- **Debugging sync issues**: describe the problem and let the assistant
+  inspect sync state, logs, and Canvas responses.
+- **Reviewing content**: check for broken links, missing frontmatter, or
+  inconsistencies across modules.
+- **Exporting to PDF or Word**: turn pages, modules, or the whole course
+  into printable documents, with a style derived from your own reference.
 
 ## Writing style
 
-Your AI assistant follows the conventions in [style.md](style.md) when drafting
-course content: language register, tone, structure, formatting, and patterns to
-avoid.
+Your AI assistant follows the conventions in [style.md](style.md) when
+drafting course content: language, register, tone, structure, formatting,
+and patterns to avoid. The shipped `style.md` is a worked example for a
+Flemish-Dutch course; run `/style-init` early to replace it with your own
+(see [Customization](customization.md)).
 
 Three skills wrap around `style.md`:
 
-- Run `/proofread <path>` to check an existing document against `style.md`
-  (spelling, grammar, naturalness, audience-appropriate register).
-- Run `/style-init` once when you set up a new course, to adapt `style.md`
-  to your own voice and audience.
-- Run `/style-update` now and then after a working session in which you
-  corrected the assistant's drafts, to fold those corrections into `style.md`
-  as durable rules so you don't have to repeat them.
+- `/style-init` adapts it to your own voice and audience; run it once when
+  you set up a new course.
+- `/proofread <path>` checks an existing document against it.
+- `/style-update` folds corrections you made during a session into it as
+  durable rules, so you don't repeat the same feedback.
 
-You can also edit `style.md` by hand at any time. Treat it as a living document
-— the more it reflects your real preferences, the less you'll need to correct
-the assistant's output.
+You can also edit `style.md` by hand at any time. Treat it as a living
+document: the more it reflects your real preferences, the less you'll need
+to correct the assistant's output.
 
 ## Course context
 
-Where `style.md` captures *how you write*, [course-context.md](course-context.md)
-captures *what your course is*: subject, pedagogy, lesson-plan conventions,
-module structure, code/download rules, glossary, and scope boundaries. The
-lesson skills (`/design-lesson`, `/summarize-lesson`, `/build-lesson-module`)
-read it before generating anything. Run `/initialize-course-context` once when
-you set up a course, and again after your README, docs, or course structure
+Where `style.md` captures *how you write*,
+[course-context.md](course-context.md) captures *what your course is*:
+subject, pedagogy, lesson-plan conventions, module structure, code and
+download rules, glossary, and scope boundaries. The lesson skills read it
+before generating anything. Run `/initialize-course-context` once when you
+set up a course, and again after your README, docs, or course structure
 change substantially. Like `style.md`, you can also edit it by hand.
 
-How the lesson skills chain together — from idea to lesson plan to class
-version to published module — is described in the
-[Lesson Workflow](lesson-workflow.md).
+How the lesson skills chain together, from idea to lesson plan to class
+version to published module, is described in the
+[lesson workflow](lesson-workflow.md).
 
 ## Skills
 
 Skills are predefined workflows your AI assistant can run. In Claude Code,
-type the skill name (e.g. `/commit`) to invoke it; in Codex and other tools,
-mention the skill or let the assistant activate it from your request.
+type the skill name (e.g. `/commit`) to invoke it; in Codex and other
+tools, mention the skill or let the assistant activate it from your
+request.
 
-### /proofread
+They share the same safety behaviour, so it is stated here once: skills
+that write anything substantial propose a design first and stop for your
+approval; checking skills report findings and never auto-fix without
+confirmation; and no skill commits to git (except `/commit`, whose whole
+job that is).
 
-The `/proofread` skill checks a Dutch markdown document against
-[style.md](style.md) and your spelling. It determines the register from the
-file path (`course/` and `evaluations/` are student-facing; anything under
-`sources/` is collega-facing), applies the shared rules plus the
-audience-specific section, runs mechanical and naturalness checks, and
-spell-checks with `hunspell` if installed — treating `cSpell.words` in
-[.vscode/settings.json](../.vscode/settings.json) and code-block tokens as
-the project whitelist.
+### Writing style
 
-Findings come back in three buckets — **must fix**, **strongly suggest**,
-**consider** — each with the line number, the quoted text, a one-sentence
-diagnosis, and a proposed replacement. The skill reports but does not
-auto-fix: after the report it offers to apply selected fixes, and the
-default is to leave the file alone. Nothing is committed.
+- **/proofread** checks one markdown document against `style.md` and your
+  spelling. It picks the register from the file path (`course/` and
+  `evaluations/` are student-facing; `sources/` is colleague-facing) and
+  reports findings in three buckets: must fix, strongly suggest, consider,
+  each with line number, quote, diagnosis, and proposed replacement. The
+  shipped configuration is tuned to the Dutch example style guide.
+- **/style-init** rewrites `style.md` to match your voice and audience. It
+  asks for samples of your writing (strongly preferred) and interviews you
+  only about what the samples did not answer. Without samples it warns that
+  the result is a best guess.
+- **/style-update** reviews the current conversation for style corrections
+  and preferences you expressed and folds them into `style.md` as durable
+  rules.
 
-For best spell-checking, install `hunspell` with `nl_NL` and `en_GB`
-dictionaries:
+For the best `/proofread` spell-checking, install `hunspell` with
+dictionaries matching your course languages. For the shipped Dutch example
+plus English:
 
 ```bash
 brew install hunspell
@@ -108,278 +118,156 @@ curl -fLO https://raw.githubusercontent.com/LibreOffice/dictionaries/master/en/e
 curl -fLO https://raw.githubusercontent.com/LibreOffice/dictionaries/master/en/en_GB.dic
 ```
 
-Without `hunspell`, the skill falls back to a visual spelling scan and says so
-in the report.
+Without `hunspell`, the skill falls back to a visual spelling scan and says
+so in the report. It treats `cSpell.words` in
+[.vscode/settings.json](../.vscode/settings.json) and code-block tokens as
+the project whitelist.
 
-### /style-init
+### Lessons
 
-The `/style-init` skill adapts [style.md](style.md) to your own voice and
-audience: it asks for samples of your writing (strongly preferred),
-interviews you only about what the samples did not answer — course language,
-student level, tone, formality, punctuation, emoji, callouts — and rewrites
-`style.md` to match, preserving its structure. Without samples it runs
-interview-only and warns you that the result is a best guess.
+- **/design-lesson** designs a new lesson plan under `sources/lessons/`,
+  from rough notes, a request for a follow-up lesson, or a vague intent (it
+  asks up to three sharp questions). The design comes first, in chat:
+  learning goals, place in the course, block structure, deliberate
+  exclusions, with honest pros and cons of your suggestions and of its own.
+  After approval it writes `sources/lessons/lesson-NN.md` and adds new
+  terms to the glossary if your course keeps one. It never changes existing
+  lessons.
+- **/summarize-lesson** distils a full lesson plan into a one-page class
+  version under `sources/lesson-plans/`: learning goals, content inventory,
+  and a telegram-style timeline that fit on one A5 page. It never invents
+  content; if something is missing from the source plan, it surfaces the
+  gap and stops.
+- **/build-lesson-module** turns a finished lesson plan into a complete
+  student-facing module under `course/`: it proposes the module design
+  (page split, code archives, image placeholders), and after approval
+  writes every file, with frontmatter, downloadable archives, transparent
+  placeholder PNGs with TODO notes, and the generated glossary page. It
+  invents nothing beyond the plan and never touches the source lesson or
+  other modules.
+- **/lesson-retro** debriefs a lesson right after you taught it, in a
+  conversational interview: one question at a time, following up on your
+  answers. Afterwards it sorts every observation into a destination and
+  shows the list before touching anything: timing notes into the lesson
+  plan, course-wide insights into `course-context.md`, content errors into
+  a fix list, style corrections to `/style-update`. The retro is the one
+  sanctioned way to modify an existing lesson plan.
 
-Run this once when you set up a new course, and again whenever your voice or
-audience changes substantially; refine later with `/style-update` or by
-editing the file directly.
+### Evaluation
 
-### /style-update
+- **/design-evaluation** designs an exam or test from the lessons taught so
+  far. It proposes a blueprint matrix in chat (per question: the learning
+  goals it tests, difficulty, points) plus a coverage check that flags
+  goals not tested, weighted out of proportion, or tested below the level
+  they were taught at. After approval it writes the student-facing
+  `instructions.md` and a colleague-facing `blueprint.md` under
+  `evaluations/<year>/<slug>/`. It only tests what was taught.
+- **/build-quiz** turns a question list (a notes file, a `blueprint.md`,
+  questions drafted in conversation) into a QTI 1.2 `.zip` that Canvas
+  imports as a quiz. It first maps every question to a supported Canvas
+  question type and flags anything that fits none; after approval it
+  generates and verifies the package and writes a colleague-facing
+  `questions.md` with the answers. Importing is manual: in Canvas, go to
+  **Settings → Import Course Content**, content type **QTI .zip file**,
+  import, then check the questions, set dates and time limit (QTI does not
+  carry those), and publish.
+- **/rubric** builds a grading rubric for one assignment or evaluation. It
+  proposes the criteria-by-levels matrix, with every criterion traced to a
+  requirement in the assignment text or a learning goal, then writes a
+  colleague-facing markdown rubric next to the evaluation, or under
+  `sources/rubrics/` for homework. Markdown only; Canvas has no rubric sync
+  in this project.
 
-The `/style-update` skill reviews the current conversation for style
-corrections, rewrites, and preferences you expressed, and folds them into
-[style.md](style.md) as durable rules. Use it after a session in which you
-corrected the assistant's drafts, so you don't have to repeat the same feedback
-next time.
+### Quality
 
-### /design-lesson
+- **/consistency-check** sweeps every module under `course/` for cross-file
+  problems a single-file `/proofread` cannot see: dead cross-links and
+  missing files, glossary drift, duplicate or gapped numeric prefixes,
+  invalid frontmatter, and stale prerequisite references. Findings come
+  back in the same three buckets as `/proofread`; only the mechanical
+  categories are ever auto-applied, and only after confirmation.
+- **/coverage-map** cross-references the course's learning goals against
+  lesson plans, student modules, and evaluations, and reports alignment
+  gaps: goals never practised, practised but never assessed, assessed but
+  never taught. Every claim cites the files behind it. Most useful right
+  before an exam period.
+- **/image-todos** lists all outstanding image work across the course: the
+  placeholder PNGs and image-TODO comments that `/build-lesson-module`
+  leaves behind, as one table plus an orphan list. Pure report.
 
-The `/design-lesson` skill helps you design a new lesson plan under
-`sources/lessons/`, following [course-context.md](course-context.md) and the
-collega-facing register of [style.md](style.md). It accepts rough notes, a
-request for a follow-up to an earlier lesson, or just a vague intent (it
-asks up to three sharp questions).
+### Issue queue
 
-The design comes first, in chat: learning goals, place in the course, block
-structure, deliberate exclusions — with honest pros and cons of **your**
-suggestions and of **its own**, plus open questions. Nothing is written
-until you approve; then it writes `sources/lessons/lesson-NN.md` mirroring
-the template lesson, adds new terms to the canonical glossary if your
-course keeps one, and suggests follow-ups (`/proofread`,
-`/summarize-lesson`, `/build-lesson-module`) without running them. It never
-changes existing lessons and never commits.
+- **/report-issue** logs an error or a wanted change while you are checking
+  course material, without pulling you out of your reviewing flow. Describe
+  the problem and where you saw it (a rendered page title is fine); the
+  skill pins the exact passage, quotes it back, and appends one bullet to
+  `sources/issues.md`. It asks at most one clarifying question and never
+  fixes or diagnoses anything.
+- **/fix-issues** works through the open entries in `sources/issues.md`. It
+  first verifies every entry, groups related ones, checks wider
+  implications (the same defect elsewhere, style-rule drift, glossary,
+  lesson plans), bundles all questions into one round, and presents one fix
+  plan. After approval it applies the fixes and moves handled entries to
+  the queue's Resolved section. Canvas keeps serving the old text until you
+  run `npx course push` yourself.
 
-### /summarize-lesson
+### Export styling
 
-The `/summarize-lesson` skill distills a full lesson plan from
-`sources/lessons/` into a one-page class version under `sources/lesson-plans/`
-— learning goals, content inventory, and a telegram-style timeline that fit on
-one A5 page. A teaching reminder for in the classroom, nothing more. It never
-invents content: if something belongs on the page but is missing from the
-source plan, it surfaces the gap and stops. Grouping labels and headings follow
-the Class versions section of [course-context.md](course-context.md).
+- **/export-style-create** derives a reusable PDF/DOCX export style from a
+  reference you give it: a Word document, a PDF, a website, or a CSS file.
+  It proposes a style spec, and after approval forks the shipped defaults
+  into `sources/export-style/` and regenerates the sample so you can see
+  the result. See [export-styling.md](export-styling.md).
+- **/export-style-edit** makes a plain-language change to an existing
+  export style ("headings dark blue", "bigger margins"), keeping the PDF
+  and Word styles in sync, then regenerates the sample. It forks the
+  shipped defaults on first use, so your style survives upstream updates.
 
-### /build-lesson-module
+### Project
 
-The `/build-lesson-module` skill turns a finished lesson plan into a
-complete student-facing module under `course/`. It first proposes a design
-in chat — module name and position, page split (overview, content pages,
-reference cards if your course uses them, summary, glossary, homework),
-downloadable code archives, and image placeholders — and stops for your
-approval. Only then does it write every file: markdown pages with the right
-frontmatter, code archives built to your course's conventions, transparent
-placeholder PNGs with TODO notes for images, and `_category_.json`, with
-the glossary page generated by `npx course build-glossary` if your course
-keeps one. It closes by suggesting verification steps (Docusaurus preview,
-`/proofread`) without running them.
+- **/initialize-course-context** fills in or refreshes
+  [course-context.md](course-context.md): it reads the repo, infers
+  everything it can, interviews you only about what the repo did not
+  answer, and writes the doc after per-section confirmation. Re-running is
+  expected; existing content is treated as confirmed.
+- **/commit** makes committing safer and more consistent: it reviews the
+  changes, stages the appropriate files, and creates a commit following the
+  project conventions — imperative, present tense, verb-first summaries
+  (`Add`, `Fix`, `Update`), no `feat:`/`fix:` prefixes.
 
-It invents nothing beyond the plan, never touches the source lesson or
-other modules, and never commits.
+## Creating your own skills
 
-### /design-evaluation
+The bundled skills don't cover everything, and they don't have to: a skill
+is a plain markdown file, and your AI assistant can write one for you. Say
+what you want automated and point the assistant at the conventions below.
+For example:
 
-The `/design-evaluation` skill is the `evaluations/` counterpart of
-`/design-lesson`: it designs an exam or test from the lessons taught so
-far. It proposes a blueprint matrix in chat — per question the learning
-goal(s) it tests, difficulty, and points — plus a coverage check that flags
-goals not tested, goals weighted out of proportion to their lesson time,
-and goals tested below the level they were taught at. After your approval
-it writes the student-facing `instructions.md` and the collega-facing
-`blueprint.md` (matrix, coverage notes, scoring hints) under
-`evaluations/<year>/<slug>/`.
+> Create a new skill in `.agents/skills/weekly-update/SKILL.md` that drafts
+> a short "what changed this week" student announcement from the git log.
+> Follow the conventions in the "Creating your own skills" section of
+> `docs/ai-assistants.md`, and look at
+> `.agents/skills/summarize-lesson/SKILL.md` for a model.
 
-It only tests what was taught: every question maps to a goal a lesson in
-scope actively practised. Nothing is committed.
-
-### /rubric
-
-The `/rubric` skill builds a grading rubric for one assignment — a homework
-page under `course/` or an evaluation under `evaluations/`. Phase A proposes
-the criteria × levels matrix in chat, with every criterion traced to a
-requirement in the assignment text or a learning goal, plus an alignment
-check for requirements without a criterion (and vice versa). After your
-approval, Phase B writes a collega-facing markdown rubric — next to the
-evaluation, or under `sources/rubrics/` for homework (never inside `course/`,
-where it would be served and synced). Output is markdown only; Canvas has no
-rubric sync in this project.
-
-### /coverage-map
-
-The `/coverage-map` skill cross-references the course's learning goals
-against the lesson plans, the student modules, and the evaluations, and
-reports the alignment gaps: goals never practised, practised but never
-assessed, assessed but never taught, and goals whose assessment weight is out
-of proportion to their teaching time. Every claim cites the files behind it;
-inferred mappings are marked as such. Read-only — it only writes a dated
-report under `sources/reports/` if you ask for one. Most useful right before
-an exam period, or after `/design-evaluation`.
-
-### /consistency-check
-
-The `/consistency-check` skill sweeps every module under `course/` for
-cross-file problems a single-file `/proofread` cannot see:
-
-- dead cross-links and missing download/image files;
-- glossary drift — terms used before their introducing lesson, synonym use
-  where the glossary defines a base term, missing lemmas, and stale generated
-  pages (`npx course build-glossary --check`);
-- structural issues — duplicate or gapped numeric prefixes, invalid
-  frontmatter, `_category_.json`/prefix mismatches;
-- stale prerequisite references ("in les 3" about material that moved).
-
-Findings come back in the same three buckets as `/proofread` (**must fix**,
-**strongly suggest**, **consider**), each with file, line, and a proposed
-fix. Nothing is fixed without confirmation, and only the mechanical
-categories are ever auto-applied.
-
-### /build-quiz
-
-The `/build-quiz` skill turns a question list — a notes file, a
-`blueprint.md` from `/design-evaluation`, questions drafted in the
-conversation, or questions generated from your lessons — into a QTI 1.2
-`.zip` that Canvas imports as a quiz. Phase A maps every question to a
-supported Canvas question type (multiple choice, multiple answers,
-true/false, short answer, numerical, essay), flags anything that fits none,
-and stops for approval. Phase B generates the package under
-`evaluations/<year>/<slug>/`, verifies its structure and question count, and
-writes a collega-facing `questions.md` with the answers.
-
-Importing is manual (there is no quiz sync): in Canvas go to **Settings →
-Import Course Content**, choose content type **QTI .zip file**, select the
-generated zip, and import. The quiz appears unpublished under **Quizzes**;
-check the questions and points, set availability dates and time limit (QTI
-does not carry those), then publish. The skill's report repeats these steps.
-
-### /image-todos
-
-The `/image-todos` skill lists all outstanding image work across the course:
-the transparent placeholder PNGs and image-TODO comment blocks that
-`/build-lesson-module` leaves behind. Placeholders are confirmed by checksum
-against the known 1x1 PNG; the report is one table (module, page, image file,
-TODO text) plus an orphan list — placeholders without a TODO, TODOs naming
-missing files, placeholders no page embeds. Pure report, writes nothing.
-
-### /lesson-retro
-
-The `/lesson-retro` skill debriefs a lesson right after you taught it, in a
-conversational interview — one question at a time, following up on your
-answers rather than working through a form. It opens wide ("how did it go?"),
-then adaptively covers timing per block (using the plan's actual block names
-and budgets), student comprehension, what worked, material friction, and
-what to change next time.
-
-Afterwards it sorts every observation into a destination and shows the list
-before touching anything: timing corrections and notes-to-self go into the
-lesson plan, insights that hold course-wide go into
-[course-context.md](course-context.md), content errors in student pages
-become a fix list, and writing-style corrections are pointed at
-`/style-update`. The retro is the one sanctioned way to modify an existing
-lesson plan; scope changes are flagged as a `/design-lesson` job instead.
-
-### /export-style-create
-
-The `/export-style-create` skill derives a reusable PDF/DOCX export style from a
-reference — a Word document, a PDF, a website, or a CSS file. Phase A inspects
-the source, works out the fonts, colours, spacing, and margins, and proposes a
-style spec that maps each decision to where it applies (the Typst template for
-PDF, the `reference.docx` styles for Word), then stops for approval. Phase B
-forks the shipped defaults into `sources/export-style/`, edits the template and
-the Word XML (keeping the custom alert and link-card styles intact), and
-regenerates the sample so you can see the result. See
-[export-styling.md](export-styling.md) for how the pipeline fits together.
-
-### /export-style-edit
-
-The `/export-style-edit` skill makes a plain-language change to an existing
-export style — "headings dark blue", "bigger margins", "font Georgia" — editing
-`sources/export-style/template.typ` (PDF) and/or `reference.docx` (Word),
-keeping the two formats in sync, then regenerating the sample. It forks the
-shipped defaults on first use, so your style survives upstream updates.
-
-### /initialize-course-context
-
-The `/initialize-course-context` skill fills in or refreshes
-[course-context.md](course-context.md): it reads the repo — README,
-AGENTS.md, `style.md`, course-specific docs, existing modules and lesson
-plans — infers everything it can, interviews you only about what the repo
-did not answer, and writes the doc after a per-section confirmation. It
-also warns if `docs/course-context.md` is missing from `protected_files` in
-`update-from-upstream.conf`, so upstream updates don't overwrite it.
-
-Re-running is expected: existing content is treated as confirmed and only
-updated where the repo now contradicts it. Nothing is committed automatically.
-
-### /report-issue
-
-The `/report-issue` skill logs an error or a wanted change while you are
-checking course material — on the site, in Canvas, or in the raw markdown —
-without pulling you out of your reviewing flow. Describe the problem and
-where you saw it (a page title as rendered is fine; it maps that back to the
-file); the skill pins the exact passage, quotes it back, and appends one
-bullet to the issue queue in `sources/issues.md`. It asks at most one
-clarifying question, and if the location stays ambiguous it logs the report
-anyway with a marker rather than interrogating you.
-
-It never fixes or diagnoses anything — that is `/fix-issues` — and it never
-commits. The queue file is created on first use, is safe to hand-edit, and
-documents its own entry format.
-
-### /fix-issues
-
-The `/fix-issues` skill works through the open entries in
-`sources/issues.md`, in two phases. Phase A is triage: it verifies every
-entry against the current files, groups related ones, and checks the wider
-implications of each fix — the same defect on other pages, a style
-preference that belongs in `style.md` (routed to `/style-update`, never
-folded in silently), glossary drift, contradictions with
-`course-context.md`, lesson plans, or evaluations. It bundles all its
-clarifying questions into a single round, presents one fix plan, and stops.
-
-Phase B runs only after you approve the plan: it applies the fixes, runs a
-style pass on the touched passages, and moves each handled entry to the
-queue's Resolved section with the date and what fixed it. Nothing is
-committed, and Canvas keeps serving the old text until you run
-`npx course push` yourself.
-
-### /commit
-
-The `/commit` skill makes committing safer and more consistent: it reviews
-the changes, stages the appropriate files, and creates a commit following
-the project conventions.
-
-#### Commit message conventions
-
-- Imperative, present tense, verb-first (e.g. _Add_, _Fix_, _Update_, _Remove_,
-  _Rename_).
-- Single-line summary — no conventional-commit prefixes like `feat:` or `fix:`.
-- Focus on _what_ changed and _why_, not implementation details.
-
-Examples:
-
-```
-Add reset-canvas command to wipe all content from a Canvas course
-Upload files to module-named Canvas folder instead of unfiled
-Fix push failing to add pages/assignments to Canvas modules
-```
-
-## Writing your own skills
+The [ideas list](roadmap.md) has more candidates; most are within reach of
+a single AI-assisted session.
 
 Skills live in `.agents/skills/<name>/SKILL.md` (`.claude/skills` is a
-committed symlink to the same directory). The frontmatter — just `name` and
-`description` — is the portable [Agent Skills](https://agentskills.io) format,
-so the same files work in every tool that reads skills. `$ARGUMENTS` is
-substituted by Claude Code and Codex, and reads as an obvious placeholder
-anywhere else.
+committed symlink to the same directory). The frontmatter, just `name` and
+`description`, is the portable [Agent Skills](https://agentskills.io)
+format, so the same files work in every tool that reads skills.
+`$ARGUMENTS` is substituted by Claude Code and Codex, and reads as an
+obvious placeholder anywhere else.
 
-The shipped skills follow a shared template; new ones should too, so they stay
-predictable for both the reader and the model:
+The shipped skills follow a shared template; new ones should too, so they
+stay predictable for both the reader and the model:
 
 - **Frontmatter**: `name` (matching the folder) and a `description` that
   says what the skill does, where it writes, and the approval gate if any,
-  ending in four or five quoted trigger phrases in English and Dutch.
+  ending in four or five quoted trigger phrases in English and in your
+  course language (the shipped skills use Dutch).
 - **Section order**: H1, a 2–4-line intro, `## Input` (only when the skill
-  takes arguments — describe the `$ARGUMENTS` forms and the fallback),
-  `## Steps`, `## Rules`, and a bare `$ARGUMENTS` line at the end.
+  takes arguments), `## Steps`, `## Rules`, and a bare `$ARGUMENTS` line at
+  the end.
 - **Approval gates** only when a skill writes something worth reviewing
   first. Split `## Steps` into `### Phase A — <Verb> (writes nothing)` and
   `### Phase B — <Verb> (only after approval)`, and end Phase A with the
@@ -389,7 +277,7 @@ predictable for both the reader and the model:
   reappear under `## Rules`; drop the Rules section if nothing is left.
 - **Defer, don't copy.** Content owned by [style.md](style.md),
   [frontmatter.md](frontmatter.md), or
-  [course-context.md](course-context.md) is referenced, never inlined —
+  [course-context.md](course-context.md) is referenced, never inlined;
   copies drift. Dense reference payloads (format specs, protocol details)
   go in a `references/` file inside the skill folder, read on demand.
 - **Course-agnostic.** No hardcoded course vocabulary, module names, or
@@ -398,29 +286,11 @@ predictable for both the reader and the model:
 - **Temp files** go to the session scratchpad, never `/tmp`. Build zips and
   binaries there and copy them into the repo (cloud-synced folders can
   reject direct writes).
-- **Naming**: verb-first for actions on course material — `design-*` for
+- **Naming**: verb-first for actions on course material (`design-*` for
   gated interactive authoring, `build-*` for generation from an approved
-  source, `initialize-*` for one-time setup interviews — and noun-first for
+  source, `initialize-*` for one-time setup interviews) and noun-first for
   configuration clusters (`style-*`, `export-style-*`) so related skills
   sort together.
 
-If you rename or remove a skill folder in this template repo, add the old
-path to `STALE_PATHS` in
-[update-from-upstream.sh](../update-from-upstream.sh) so downstream
-projects prune it on their next update.
-
-## Troubleshooting: skills on Windows
-
-`.claude/skills` is a git symlink, and git on Windows only creates real
-symlinks when `core.symlinks` is `true` — which requires Developer Mode (or
-admin rights). Without it, the checkout silently turns the symlink into a
-small text file, and Claude Code finds no skills; no error is shown anywhere.
-
-To fix:
-
-1. Enable Developer Mode (Settings → System → For developers).
-2. Run `git config core.symlinks true` in the repo.
-3. Restore the checkout: `git checkout -- .claude` (or re-clone).
-
-Working inside WSL2 avoids the problem entirely — symlinks always work there.
-`AGENTS.md` and `CLAUDE.md` are plain files and are unaffected either way.
+Contributing a skill back to the template itself? See
+[Contributing](contributing.md).
