@@ -5,20 +5,23 @@ canvas_type: page
 
 # Alerts
 
-Alerts are colored callout boxes that help important information stand out on
-the page. They are a great way to highlight tips, warnings, or key details for
-your students. This project supports six types of alerts, and they work in both
-the local preview and on Canvas.
+Alerts are coloured callout boxes that help important information stand out
+on the page. They are a great way to highlight tips, warnings, or key details
+for your students. This project supports six types of alerts, and they work
+in both the local preview and on Canvas.
 
 ## Syntax
 
-Alerts use the blockquote alert syntax:
+Alerts use the blockquote alert syntax: the type marker on its own line,
+then the text on the following line(s):
 
 ```markdown
-> [!NOTE] This is a note.
+> [!NOTE]
+>
+> This is a note.
 ```
 
-## Available Types
+## Available types
 
 > [!NOTE]
 >
@@ -50,10 +53,10 @@ Alerts use the blockquote alert syntax:
 > Use **CHECK** to highlight verification steps or success criteria. Useful for
 > checklists and validation points.
 
-## Tips for Using Alerts
+## Tips for using alerts
 
 - Use alerts sparingly. Too many callout boxes make content harder to scan.
-- Pick the type that matches the intent, not the color you prefer.
+- Pick the type that matches the intent, not the colour you prefer.
 - Keep the text inside concise. If it needs multiple paragraphs, consider
   making it regular content instead.
 - Alerts are converted to styled HTML when pushed to Canvas, with icons hosted

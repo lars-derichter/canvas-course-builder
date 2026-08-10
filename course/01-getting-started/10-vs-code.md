@@ -19,7 +19,7 @@ everything you need in one window:
 - **Built-in terminal** — run CLI commands like `npx course push` without
   leaving the editor
 - **Git integration** — the Source Control panel lets you stage, commit, and
-  push changes visually (see [Git Workflow](11-git-workflow.md) for a
+  push changes visually (see [Git workflow](11-git-workflow.md) for a
   walkthrough)
 - **Course Manager extension** — this project includes a custom VS Code
   extension that puts all course commands in the sidebar and command palette,
@@ -50,7 +50,7 @@ It is free, open-source, and runs on Windows, macOS, and Linux.
 > Command: Install 'code' command in PATH** from the command palette (macOS),
 > you can open your project from the terminal: `code canvas-course-builder`
 
-## Installing the Course Manager Extension
+## Installing the Course Manager extension
 
 From the project root, run:
 
@@ -60,7 +60,7 @@ npm run vscode:install
 
 You only need to do this once (or again after the extension is updated).
 
-## The Course Manager Sidebar
+## The Course Manager sidebar
 
 After installing the extension, you will see a **Course Manager** panel in the
 VS Code activity bar (the book icon). It shows a tree view of all your modules
@@ -71,7 +71,7 @@ clicking an item opens the file in the editor.
 The tree updates automatically whenever you add, rename, or delete files — no
 need to refresh manually.
 
-### Inline Actions
+### Inline actions
 
 Hover over a module or item in the sidebar for quick-action buttons:
 
@@ -79,7 +79,7 @@ Hover over a module or item in the sidebar for quick-action buttons:
 - **Open in Canvas** (link icon) — open the item directly on Canvas in your
   browser (works once the item has been pushed at least once)
 
-### Right-Click Menu
+### Right-click menu
 
 Right-click any module or item in the sidebar to see context actions:
 
@@ -89,17 +89,20 @@ Right-click any module or item in the sidebar to see context actions:
   subsections; works for subsections too (they always land in the module
   root — subsections are never nested)
 - **Merge items** — a two-step process: first right-click an item and choose
-  "Set as Merge Source", then right-click the target item and choose "Merge
-  with Source"
+  **Merge: Set as Source**, then right-click the target item and choose
+  **Merge with Source**
 - **Split Item at Cursor** — split the file you have open into two files at
   the cursor position
+- **Export to PDF/DOCX...** — export the selected item or items
+  (multi-select combines them into one document), or a whole module via
+  **Export Module to PDF/DOCX...**
 
 Names, positions, and confirmations are collected through normal VS Code
 dialogs, and the command runs quietly in the background — no terminal pops up.
 You get a notification when it is done, and the full output is available in
 the **Canvas Course Builder** output channel (View > Output).
 
-### Drag and Drop
+### Drag and drop
 
 The fastest way to reorganise is dragging things around the tree:
 
@@ -113,46 +116,54 @@ The fastest way to reorganise is dragging things around the tree:
 Renumbering and Canvas sync state are handled automatically, exactly as if you
 had run the CLI commands yourself.
 
-## Title Bar Buttons
+## Title bar buttons
 
-At the top of the sidebar, the **Preview** button starts the Docusaurus dev
-server (if it is not already running) and opens the course in your browser.
-The dropdown menu next to it gives quick access to the sync commands:
+At the top of the sidebar sit a **Search** button (find a word or phrase
+across your course files), a **Preview** button (starts the Docusaurus dev
+server if it is not already running and opens the course in your browser),
+and a **Refresh** button for the tree. The dropdown menu next to them gives
+quick access to sync and export commands:
 
 - **Push to Canvas** — push all modules
 - **Pull from Canvas** — pull content from Canvas
 - **Status** — compare your local files against Canvas
 - **Diff** — see what changed locally since the last sync
 - **Validate** — check your content for errors before pushing
+- **Export** — export the full course, only flagged items, or a curated
+  selection via a table of contents
 
-## Command Palette
+## Command palette
 
 Open the command palette with **Cmd+Shift+P** (macOS) or **Ctrl+Shift+P**
 (Windows/Linux) and type **"Course:"** to see all available commands:
 
-| Command                          | What it does                          |
-| -------------------------------- | ------------------------------------- |
-| Course: Init (Canvas Setup)      | Configure Canvas API credentials      |
-| Course: Push to Canvas           | Push all modules                      |
-| Course: Push to Canvas (Dry Run) | Preview push without making changes   |
-| Course: Push Module to Canvas... | Push a single module                  |
-| Course: Pull from Canvas         | Pull content from Canvas              |
-| Course: Status                   | Compare local vs sync state           |
-| Course: Diff                     | Show changes since last sync          |
-| Course: Validate                 | Check content for errors              |
-| Course: New Module               | Create a new module                   |
-| Course: Move Module              | Reorder a module                      |
-| Course: Rename Module            | Rename a module                       |
-| Course: Delete Module            | Delete a module                       |
-| Course: New Item                 | Create a new item                     |
-| Course: Move Item                | Reorder an item                       |
-| Course: Move Item to Module      | Move an item to another module        |
-| Course: Rename Item              | Rename an item                        |
-| Course: Delete Item              | Delete an item                        |
-| Course: Merge Items              | Combine two items into one            |
-| Course: Split Item at Cursor     | Split the active file at the cursor   |
+| Command                           | What it does                          |
+| --------------------------------- | ------------------------------------- |
+| Course: Init (Canvas Setup)       | Configure Canvas API credentials      |
+| Course: Push to Canvas            | Push all modules                      |
+| Course: Push to Canvas (Dry Run)  | Preview push without making changes   |
+| Course: Push Module to Canvas...  | Push a single module                  |
+| Course: Pull from Canvas          | Pull content from Canvas              |
+| Course: Status                    | Compare local vs sync state           |
+| Course: Diff (Changes Since Last Sync) | Show changes since last sync     |
+| Course: Validate                  | Check content for errors              |
+| Course: Search...                 | Find a word or phrase across files    |
+| Course: New Module                | Create a new module                   |
+| Course: Move Module               | Reorder a module                      |
+| Course: Rename Module             | Rename a module                       |
+| Course: Delete Module             | Delete a module                       |
+| Course: New Item                  | Create a new item                     |
+| Course: Move Item                 | Reorder an item                       |
+| Course: Move Item to Module       | Move an item to another module        |
+| Course: Rename Item               | Rename an item                        |
+| Course: Delete Item               | Delete an item                        |
+| Course: Merge Items               | Combine two items into one            |
+| Course: Split Item at Cursor      | Split the active file at the cursor   |
+| Course: Export to PDF/DOCX...     | Export the course, flagged items, or a TOC selection |
+| Course: Export via TOC...         | Render the curated `exports/toc.md`   |
+| Course: Preview                   | Start the dev server and open the course |
 
-## How It Works
+## How it works
 
 Everything the extension does goes through the same `npx course` CLI you use
 in the terminal, so renumbering and Canvas sync state behave exactly the same
