@@ -1,0 +1,6 @@
+# Prettier already skips node_modules and everything in .gitignore, so build/,
+# .docusaurus/ and exports/ need no entry here.
+
+# npm rewrites this on every install; if its formatting ever diverges from
+# Prettier's, format:check fails on a lock file nobody edited by hand
+package-lock.json

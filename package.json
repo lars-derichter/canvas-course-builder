@@ -36,6 +36,10 @@
     "item:delete": "node cli/index.js delete-item",
     "vscode:package": "cd .vscode/extensions/course-manager && npx @vscode/vsce package -o canvas-course-builder.vsix",
     "test": "node --test 'test/**/*.test.js'",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "vscode:install": "npm run vscode:package && code --install-extension .vscode/extensions/course-manager/canvas-course-builder.vsix"
   },
   "dependencies": {
@@ -56,7 +60,11 @@
     "turndown": "^7.2.0"
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "^3.7.0"
+    "@docusaurus/module-type-aliases": "^3.7.0",
+    "@eslint/js": "^9.39.5",
+    "eslint": "^9.39.5",
+    "globals": "^16.5.0",
+    "prettier": "^3.9.6"
   },
   "engines": {
     "node": ">=24.0.0"

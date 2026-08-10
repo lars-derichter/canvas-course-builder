@@ -1,0 +1,11 @@
+{
+  "singleQuote": true,
+  "proseWrap": "always",
+  "embeddedLanguageFormatting": "off",
+  "overrides": [
+    {
+      "files": ["*.yml", "*.yaml"],
+      "options": { "singleQuote": false }
+    }
+  ]
+}
