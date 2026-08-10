@@ -2,7 +2,7 @@
 
 Common issues and how to resolve them.
 
-## Connection Errors
+## Connection errors
 
 ### "CANVAS_COURSE_ID is not set"
 
@@ -12,8 +12,9 @@ creates a `.env` file with your API URL, token, and course ID.
 ### "fetch failed" or network timeout
 
 - Verify your Canvas instance is reachable in a browser.
-- Check that `CANVAS_API_URL` in `.env` points to the correct URL
-  (e.g. `https://your-school.instructure.com/api/v1`).
+- Check that `CANVAS_API_URL` in `.env` is the bare domain
+  (e.g. `https://your-school.instructure.com`), without `/api/v1` or any
+  other path after it; the CLI appends `/api/v1` itself.
 - If behind a VPN or firewall, ensure it allows outbound HTTPS to
   your Canvas instance.
 
@@ -27,7 +28,7 @@ under **Account > Settings > New Access Token** and update `.env`.
 Your token lacks permissions for the target course. Verify you have a
 Teacher or Admin role in the Canvas course.
 
-## Push Issues
+## Push issues
 
 ### Stale canvas_id (404 on update)
 
@@ -57,7 +58,7 @@ the second pass can't run without creating real pages.
 - Ensure the MIME type is supported — see `lib/canvas/files.js` for
   the full list.
 
-## Pull Issues
+## Pull issues
 
 ### "SKIPPED (locally modified since last sync)"
 
@@ -71,7 +72,7 @@ push your local changes first.
   by pull and are skipped with a warning.
 - Empty pages on Canvas produce empty markdown files — this is normal.
 
-## Sync State
+## Sync state
 
 ### Corrupted .canvas-sync.json
 
@@ -87,11 +88,11 @@ next push creates everything from scratch on Canvas.
 
 ### Switching Canvas courses
 
-See [New Academic Year](new-academic-year.md) for the full workflow.
+See [New academic year](new-academic-year.md) for the full workflow.
 In short: run `npx course reset-sync-state`, update `.env` with the
 new course ID, then `npx course push`.
 
-## Docusaurus Issues
+## Docusaurus issues
 
 ### Build fails with broken links
 
@@ -104,4 +105,25 @@ see the exact error location.
 The custom remark plugin (`src/plugins/remark-gfm-alerts.js`)
 requires the exact syntax `> [!TYPE]` on a new line inside a
 blockquote. Make sure there's no space before the `[` and the type
-is one of: NOTE, TIP, IMPORTANT, WARNING, ATTENTION, CHECK.
+is one of: NOTE, TIP, IMPORTANT, WARNING, ATTENTION (or its synonym
+CAUTION), CHECK.
+
+## AI assistant issues
+
+### Skills not found on Windows
+
+`.claude/skills` is a git symlink, and git on Windows only creates
+real symlinks when `core.symlinks` is `true`, which requires
+Developer Mode (or admin rights). Without it, the checkout silently
+turns the symlink into a small text file, and Claude Code finds no
+skills; no error is shown anywhere.
+
+To fix:
+
+1. Enable Developer Mode (Settings → System → For developers).
+2. Run `git config core.symlinks true` in the repo.
+3. Restore the checkout: `git checkout -- .claude` (or re-clone).
+
+Working inside WSL2 avoids the problem entirely; symlinks always
+work there. `AGENTS.md` and `CLAUDE.md` are plain files and are
+unaffected either way.
