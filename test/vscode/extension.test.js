@@ -199,7 +199,7 @@ describe('VS Code extension: subsection move support', () => {
   it('skips the sub-section prompt when the moved item is itself a subsection', () => {
     // The moveItemToModule handler must not offer destination subsections for a
     // directory source — subsections cannot be nested.
-    assert.match(extensionSource, /isSubsection\s*=[^\n]*statSync\([^)]*\)\.isDirectory\(\)/);
+    assert.match(extensionSource, /isSubsection\s*=[\s\S]*?statSync\([^)]*\)\.isDirectory\(\)/);
     assert.match(extensionSource, /isSubsection\s*\?\s*\[\]\s*:/);
   });
 });
@@ -309,7 +309,10 @@ describe('VS Code extension: workspace validation', () => {
   });
 
   it('shows error when no workspace folder is open', () => {
-    assert.match(extensionSource, /showErrorMessage.*No workspace folder open/);
+    assert.match(
+      extensionSource,
+      /showErrorMessage[\s\S]*?No workspace folder open/,
+    );
   });
 
   it('shows warning when course/ directory is missing', () => {
@@ -325,6 +328,6 @@ describe('VS Code extension: CLI runner', () => {
 
   it('reuses a single shared terminal for streaming commands', () => {
     assert.match(extensionSource, /function getSharedTerminal\(\)/);
-    assert.match(extensionSource, new RegExp("terminals\\.find\\(\\(t\\) => t\\.name === 'Canvas Course Builder'\\)"));
+    assert.match(extensionSource, /terminals\.find\(\s*\(t\) => t\.name === 'Canvas Course Builder',?\s*\)/);
   });
 });
