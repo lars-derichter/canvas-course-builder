@@ -1,23 +1,26 @@
 # Course-facing label language. Built-in sets: en, nl.
-# Individual labels can be overridden under `labels:` (examples below).
+# Individual labels can be overridden under `labels:`; anything you leave out
+# falls back to the built-in set for the language above. The commented block
+# shows the full override surface, with values that differ from the English
+# defaults so you can see what each key controls.
 # This file is protected during upstream updates (see update-from-upstream.conf).
-language: nl
+language: en
 
 # labels:
 #   alerts:
 #     note: Info
 #     check: Checklist
 #   cards:
-#     external_url: Externe link
-#     file: Bestand
+#     external_url: Link
+#     file: Download
 #   export:
-#     attachment: "Bijlage:"
-#     online: "Online:"
-#     course_title: Cursus
-#     selection_title: Selectie
+#     attachment: "Handout:"
+#     online: "Read online:"
+#     course_title: Course notes
+#     selection_title: Selected pages
 #   pull:
-#     untitled: Zonder titel
+#     untitled: Untitled page
 #   glossary:
-#     title: "📘 Woordenlijst"
-#     operators: Operatoren
-#     terms: Termen
+#     title: "📘 Terminology"
+#     operators: Symbols
+#     terms: Definitions

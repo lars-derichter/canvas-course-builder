@@ -167,13 +167,13 @@ generated glossary page. It also sets the Docusaurus site locale, so the site
 chrome ("On this page", "Next", …) follows along.
 
 ```yaml
-language: nl          # built-in label sets: en, nl (default: en)
+language: en          # built-in label sets: en, nl (shipped default: en)
 
 labels:               # optional per-label overrides on top of the set
   alerts:
-    caution: Let op
+    caution: Watch out
   cards:
-    file: Document
+    file: Download
 ```
 
 Override groups and keys: `alerts` (`note`, `tip`, `important`, `warning`,
