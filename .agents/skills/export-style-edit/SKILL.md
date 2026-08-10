@@ -1,6 +1,6 @@
 ---
 name: export-style-edit
-description: Make a plain-language change to the course export style — heading colour, fonts, margins, alert colours, paper size — by editing sources/export-style/template.typ (PDF) and/or reference.docx (DOCX), then regenerating the sample to show the result. Forks the shipped defaults on first use. Use for "edit export style", "exportstijl aanpassen", "koppen donkerblauw", "ander lettertype voor de export".
+description: Make a plain-language change to how course exports look — heading colour, fonts, margins, alert colours, paper size — by editing the theme (colour) and/or sources/export-style/template.typ and reference.docx (layout), then regenerating the sample to show the result. Forks the shipped defaults on first use. Use for "edit export style", "exportstijl aanpassen", "koppen donkerblauw", "ander lettertype voor de export".
 ---
 
 # Export style edit
@@ -9,6 +9,12 @@ Apply a small, plain-language change to how `npx course export` looks, and
 show the result. The iterate-in-place companion to
 [`export-style-create`](../export-style-create/SKILL.md) — use that skill
 to derive a whole new look from a reference.
+
+Two files can carry a change. **Colour** lives in the theme
+(`src/css/themes/<name>.css`), shared with the preview site and Canvas and
+injected into the PDF at export time. **Layout** lives in the export style
+(`template.typ`, `reference.docx`). A colour request edits the theme, plus
+`reference.docx`, which cannot read it.
 
 ## Input
 
@@ -19,30 +25,45 @@ hand off to `export-style-create`.
 
 ## Steps
 
-1. **Fork the defaults if needed.** The style lives in
-   `sources/export-style/`; if a file you need is not there yet, copy it
-   from `templates/export/` first (never edit `templates/export/` itself —
-   shipped defaults, overwritten on upstream updates).
+1. **Fork the defaults if needed.** Read `course.config.yml` for the active
+   `theme` and `export.style`.
+   - Layout files live in `sources/export-style/`; if a file you need is not
+     there, copy it from `export-styles/<style>/` first.
+   - The theme, if the change is about colour, must be a copy under
+     `sources/`: `cp src/css/themes/<theme>.css sources/theme.css` and set
+     `theme: sources/theme.css` in `course.config.yml`. Skip this when it
+     already points into `sources/`.
+
+   Never edit `export-styles/` or `src/css/themes/` in place — shipped
+   defaults, overwritten on upstream updates.
 
 2. **Locate the change** (see
    [`docs/export-styling.md`](../../../docs/export-styling.md) if unsure):
 
-   | Request | PDF — `template.typ` | DOCX — `reference.docx` |
+   | Request | Site, Canvas and PDF | DOCX — `reference.docx` |
    | --- | --- | --- |
-   | Heading colour/font | `show heading: set text(fill:/font:)` | `Heading1/2/3` in `word/styles.xml` |
+   | Heading colour | `--ccb-heading` in the theme | `Heading1/2/3` in `word/styles.xml` |
+   | Link/accent colour | `--ccb-link`, `--ccb-accent` in the theme | `Hyperlink` colour |
+   | Alert colours | `--ccb-alert-<kind>-fg` / `-bg` in the theme | the per-kind `AlertTitle<Kind>`/`AlertBody<Kind>` styles |
+   | Body/muted/border colour | `--ccb-fg`, `--ccb-fg-muted`, `--ccb-border` in the theme | the matching Word styles |
+   | Heading font | `show heading: set text(font:)` in `template.typ` | `Heading1/2/3` in `word/styles.xml` |
    | Body font/size | `font:`/`fontsize:` in `conf()` | `Normal` + theme `<a:latin>` |
-   | Link colour | `show link: set text(fill:)` | `Hyperlink` colour |
    | Margins / paper | `margin:`/`paper:` in `conf()` | `<w:pgMar>`/`<w:pgSz>` |
-   | Alert colours | the `alert-colors` map | the per-kind `AlertTitle<Kind>`/`AlertBody<Kind>` styles |
    | Cover logo | `sources/export-style/logo.png` (PDF only) | — |
    | Heading numbering | `sectionnumbering:` in `conf()` | the `numId 900` numbering + heading `numPr` |
+   | Bundled font files | `sources/export-style/fonts/` (PDF only, via `TYPST_FONT_PATHS`) | install the font on the machine that opens the DOCX |
 
-   Apply each format-agnostic change to **both** files; a PDF-only tweak
-   (justification, page numbering) touches only `template.typ`.
+   Apply each format-agnostic change to **both** columns; a PDF-only tweak
+   (justification, page numbering) touches only `template.typ`. Warn when a
+   colour change cannot reach the DOCX because `reference.docx` is not
+   forked yet.
 
-3. **Edit the Typst template** with the Edit tool. Keep the `alert(...)`,
-   `linkcard(...)`, `attachment(...)` helpers and the `alert-colors` map —
-   the Lua filter calls them by name.
+3. **Edit the theme and/or the Typst template** with the Edit tool. In
+   `template.typ`, keep the `alert(...)`, `linkcard(...)`, `attachment(...)`
+   helpers and the `alert-colors` map — the Lua filter calls them by name —
+   and keep the `pick("$ccb-…$", "#fallback")` calls, which are how theme
+   colours reach the PDF. Do not replace a `pick(...)` with a literal
+   colour; change the theme token instead.
 
 4. **Edit the DOCX** by editing its XML, never in Word (Word drops the
    custom styles):
@@ -64,7 +85,8 @@ hand off to `export-style-create`.
 
 ## Rules
 
-- Write only under `sources/export-style/`.
+- Write only under `sources/` (and `course.config.yml` when pointing `theme:`
+  at a copy there).
 - Do not silently redesign — make the requested change and nothing more.
 - If a request cannot be met cleanly by the pipeline, say so and offer the
   nearest achievable alternative rather than a fragile hack.

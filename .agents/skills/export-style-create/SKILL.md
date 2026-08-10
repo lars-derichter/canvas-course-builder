@@ -7,8 +7,16 @@ description: Derive a reusable PDF/DOCX export style from a reference — a Word
 
 Turn a reference document, website, or stylesheet into a custom export style
 for `npx course export`. The style lives in `sources/export-style/`
-(protected from upstream updates) and overrides the shipped defaults in
-`templates/export/`.
+(protected from upstream updates) and overrides, per file, whichever style
+`export.style` in `course.config.yml` selects from `export-styles/`.
+
+Layout and colour are separate axes. This skill owns **layout** —
+`template.typ` and `reference.docx`. **Colour** lives in the theme
+(`src/css/themes/<name>.css`), shared with the preview site and Canvas, and
+injected into `template.typ` at export time. A colour the reference calls for
+belongs in a theme file, not hardcoded in the template. `reference.docx` is
+the exception: Word styles cannot read the theme, so their colours are set
+directly.
 
 ## Input
 
@@ -25,10 +33,13 @@ sentence if the source is not a document, URL, or stylesheet.
    [`docs/export-styling.md`](../../../docs/export-styling.md) — what
    `template.typ` (PDF via Typst) and `reference.docx` (DOCX via Word
    styles) each control, and how `--var` variables map into the template;
-   [`templates/export/template.typ`](../../../templates/export/template.typ)
+   [`export-styles/generic/template.typ`](../../../export-styles/generic/template.typ)
    — the default you will fork; note the `conf(...)` signature (font,
-   codefont, fontsize, margin, paper, logo) and the `alert-colors` map. The
-   custom paragraph styles inside `templates/export/reference.docx` — the
+   codefont, fontsize, margin, paper, logo), the `pick(...)` helper that
+   reads theme colours, and the `alert-colors` map. Also read
+   [`src/css/themes/github.css`](../../../src/css/themes/github.css) for the
+   `--ccb-*` colour tokens. The
+   custom paragraph styles inside the style's `reference.docx` — the
    twelve per-kind `AlertTitle<Kind>`/`AlertBody<Kind>` pairs (Note, Tip,
    Important, Warning, Caution, Check) plus `LinkCard`, `LinkCardTitle`,
    `Attachment`, and `SourceCode` — are mapped by the Lua filter and
@@ -50,15 +61,21 @@ sentence if the source is not a document, URL, or stylesheet.
 3. **Present the style spec** as a table, one row per decision with where
    it applies:
 
-   | Decision | Value | PDF (template.typ) | DOCX (reference.docx) |
+   | Decision | Value | Where it goes | DOCX (reference.docx) |
    | --- | --- | --- | --- |
    | Body font | … | `font:` in `conf()` | `Normal` + theme `<a:latin>` |
    | Heading font | … | `show heading` rule | `Heading 1/2/3` |
-   | Heading colour | … | `show heading … set text(fill:)` | `Heading 1/2/3` colour |
+   | Heading colour | … | `--ccb-heading` in the theme | `Heading 1/2/3` colour |
    | Body size | … | `fontsize:` in `conf()` | `Normal` size |
-   | Link/accent colour | … | `show link` rule | `Hyperlink` colour |
+   | Link/accent colour | … | `--ccb-link` / `--ccb-accent` in the theme | `Hyperlink` colour |
+   | Alert colours | … | `--ccb-alert-<kind>-fg` / `-bg` in the theme | per-kind `AlertTitle`/`AlertBody` |
    | Margins | … | `margin:` in `conf()` | `<w:pgMar>` |
    | Paper | … | `paper:` in `conf()` | `<w:pgSz>` |
+
+   When the reference implies new colours, say which theme you will write
+   them to: a copy of the active theme under `sources/` (then set `theme:`
+   to that path in `course.config.yml`), or none if the colours already
+   match.
 
    Say plainly what the reference asks for that the pipeline cannot do
    cleanly (per-heading background bands, running chapter headers, …).
@@ -67,19 +84,26 @@ sentence if the source is not a document, URL, or stylesheet.
 
 ### Phase B — Write and regenerate (only after approval)
 
-4. **Fork the defaults** into `sources/export-style/` (create the folder if
-   absent):
-   `cp templates/export/template.typ templates/export/reference.docx sources/export-style/`
+4. **Fork the selected style** into `sources/export-style/` (create the
+   folder if absent). Resolve the style from `export.style` in
+   `course.config.yml`, defaulting to `generic`:
+   `cp export-styles/generic/template.typ export-styles/generic/reference.docx sources/export-style/`
+
+   If the spec includes colours, also copy the active theme:
+   `cp src/css/themes/github.css sources/theme.css`, set `theme: sources/theme.css`
+   in `course.config.yml`, and edit the `--ccb-*` tokens there.
 
 5. **Edit `sources/export-style/template.typ`** (PDF): change the `conf()`
    defaults to the spec and add `show` rules for what the signature does
    not cover:
    ```typst
-   show heading: set text(font: ("Your Heading Font",), fill: rgb("#1a3c6e"))
-   show link: set text(fill: rgb("#1a5fb4"))
+   show heading: set text(font: ("Your Heading Font",))
    ```
    Keep the `alert(...)`, `linkcard(...)`, `attachment(...)` helpers and
-   the `alert-colors` map — the Lua filter calls them by name.
+   the `alert-colors` map — the Lua filter calls them by name. Keep the
+   `pick("$ccb-…$", "#fallback")` calls too: they are how theme colours
+   reach the PDF. Change a colour by editing the theme and, if you want the
+   standalone fallback to match, the literal second argument.
 
 6. **Edit `sources/export-style/reference.docx`** by editing its XML, never
    in Word (Word drops the custom styles):
@@ -105,17 +129,21 @@ sentence if the source is not a document, URL, or stylesheet.
 
 ## Rules
 
-- Write only under `sources/export-style/`. Never edit `templates/export/`
-  (shipped defaults, overwritten on upstream updates).
+- Write only under `sources/` — `sources/export-style/` for the style files,
+  and a theme copied to `sources/` for colours. Never edit `export-styles/`
+  or `src/css/themes/` (shipped defaults, overwritten on upstream updates).
 - Keep PDF and DOCX in sync: apply each format-agnostic decision (fonts,
   colours, margins) to both files.
 - If the reference uses a licensed font the system lacks, say so — Typst
   uses installed system fonts plus the style's `fonts/` directory (the
-  exporter passes `sources/export-style/fonts/`, or the shipped
-  `templates/export/fonts/`, to Typst via `TYPST_FONT_PATHS`); suggest
+  exporter passes `sources/export-style/fonts/`, or the selected style's
+  `fonts/`, to Typst via `TYPST_FONT_PATHS`); suggest
   `typst fonts` to list installed ones, dropping font files in
   `sources/export-style/fonts/`, or a close free alternative.
-- A `sources/export-style/logo.png` overrides the shipped cover logo;
-  deleting the shipped one removes the logo from the cover.
+- A `sources/export-style/logo.png` overrides the selected style's cover
+  logo; with neither present the cover simply has no logo.
+- Colours in `reference.docx` cannot read the theme. When you change a theme
+  colour, change the matching Word style too, or the DOCX drifts from the
+  PDF.
 
 $ARGUMENTS
