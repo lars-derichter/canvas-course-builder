@@ -4,6 +4,7 @@
   "description": "VS Code sidebar and palette commands for Canvas Course Builder CLI",
   "version": "1.0.0",
   "publisher": "local",
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/lars-derichter/canvas-course-builder"

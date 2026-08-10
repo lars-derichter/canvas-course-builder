@@ -33,6 +33,9 @@ This course covers ...
 The course content in `course/` is licensed under
 [CC BY-NC-SA 4.0](course/LICENSE.md) unless stated otherwise.
 
+The Canvas Course Builder tooling is [MIT licensed](LICENSE); keep that file
+and this line in place.
+
 ## Useful links
 
 - [User guide](docs/user-guide.md): full Canvas Course Builder documentation

@@ -94,8 +94,8 @@ If you'd like to contribute a fix or improvement yourself, follow these steps:
 > it. That way you won't spend time on something that might not fit the project
 > direction.
 
-The tooling is public domain (the [Unlicense](../LICENSE)); by opening a pull
-request you agree your contribution is released the same way.
+The tooling is [MIT licensed](../LICENSE); by opening a pull request you agree
+your contribution is released under the same licence.
 
 ## Contributing a skill
 

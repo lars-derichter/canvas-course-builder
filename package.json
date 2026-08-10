@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "description": "Write course materials locally, sync to Canvas LMS",
-  "license": "Unlicense",
+  "license": "MIT",
   "author": "Lars De Richter",
   "repository": {
     "type": "git",
