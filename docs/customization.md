@@ -1,10 +1,10 @@
 # Making the template yours
 
-The template ships with worked-example defaults: Dutch student-facing
-labels, a Flemish-Dutch writing style guide, and an export style that
-imitates the Thomas More course template. They show what a fully configured
-course looks like, but they are examples, not requirements. This page
-covers swapping each of them for your own language, branding, and licence.
+The template ships English throughout: English student-facing labels, an
+English writing style guide, and an export style that imitates the Thomas
+More course template. They show what a fully configured course looks like,
+but they are starting points, not requirements. This page covers swapping
+each of them for your own language, branding, and licence.
 
 ## Language
 
@@ -13,25 +13,45 @@ label: alert titles ("Note"/"Info"), link and file cards, export labels,
 the glossary heading, and the locale of the preview site.
 
 ```yml
-language: en   # built-in label sets: en, nl
+language: nl   # built-in label sets: en, nl
 ```
 
-The shipped default is `nl` (Dutch). Change it to `en`, restart
-`npm start`, and the preview site and all generated labels switch to
-English. Individual labels can be overridden under `labels:`; the file
-contains commented examples. `course.config.yml` is protected during
-[upstream updates](updating-your-project.md), so your choice sticks.
+The shipped default is `en`. Change it to `nl`, restart `npm start`, and
+the preview site and all generated labels switch to Dutch. Individual
+labels can be overridden under `labels:`; the file contains a commented
+block showing every overridable key. `course.config.yml` is protected
+during [upstream updates](updating-your-project.md), so your choice sticks.
 
-Two other places carry language defaults:
+Two other things track the language you write in:
 
-- **The writing style guide** ([style.md](style.md)) ships filled in for a
-  Flemish-Dutch web-development course, as a worked example. Run
-  `/style-init` with your AI assistant to replace it with a guide matching
-  your own language, voice, and audience. Do this early: the authoring
-  skills follow whatever the style guide says.
-- **Some skills are tuned to the example defaults.** `/proofread`, for
-  instance, checks Dutch texts against the shipped style guide. After
-  `/style-init`, the skills follow your rules instead.
+- **The writing style guide** ([style.md](style.md)) ships as the English
+  baseline, usable as it stands. Make it yours early: the authoring skills
+  follow whatever the style guide says. Two routes, and they combine:
+  - Run `/style-init` with your AI assistant to replace it with a guide
+    matching your own language, voice, and audience. It reads samples of
+    your writing and interviews you about the rest.
+  - Or copy one of the baselines below over `docs/style.md` for a ready
+    guide with no interview, then edit it by hand or run `/style-init` on
+    top of it.
+
+  Each baseline is a complete guide, not a fill-in-the-blanks template. All
+  three keep the same two registers, the same proficiency levels, the
+  page-title emoji and the callout set, and each is written in the language
+  it prescribes.
+
+  | Baseline | Language |
+  | -------- | -------- |
+  | [`templates/style-generic-en.md`](../templates/style-generic-en.md) | English, UK spelling, title-case headings. Already installed as `docs/style.md`. |
+  | [`templates/style-generic-nl-be.md`](../templates/style-generic-nl-be.md) | Nederlands, Vlaamse variant |
+  | [`templates/style-generic-nl.md`](../templates/style-generic-nl.md) | Nederlands, variant Nederland |
+
+  Either way your version sticks: `docs/style.md` is protected during
+  upstream updates. `templates/` is not, by design. It holds shipped
+  defaults you copy out of, never edit in place.
+
+- **The writing skills read `style.md` at runtime.** `/proofread` derives
+  its checks from whatever the guide says, so it follows your rules as soon
+  as you change them, in whatever language you write.
 
 ## Branding
 

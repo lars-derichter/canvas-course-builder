@@ -65,9 +65,10 @@ course item patterns.
 
 ### Language-aware quality skills
 
-`/proofread` and `/consistency-check` are tuned to the shipped Dutch
-example defaults. Make them read the course language from
-`course.config.yml` and adapt their checks accordingly.
+`/proofread` now derives its checks from whatever `style.md` says, but
+`/consistency-check` still carries assumptions from the shipped defaults.
+Make both read the course language from `course.config.yml` and adapt their
+checks accordingly.
 
 ### Site title from course configuration
 

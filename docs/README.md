@@ -18,7 +18,8 @@ All guides for Canvas Course Builder. New here? Start with the
 - [Frontmatter reference](frontmatter.md): page, assignment, and file
   metadata
 - [Writing style guide](style.md): the per-course style rules AI assistants
-  follow (ships as a worked example; make it yours with `/style-init`)
+  follow (ships as the English baseline; make it yours with `/style-init`,
+  or swap in another language from [`templates/`](../templates/))
 - [Course context](course-context.md): the per-course design template the
   lesson skills rely on
 - [Lesson workflow](lesson-workflow.md): from lesson plan to student module

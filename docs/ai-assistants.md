@@ -46,9 +46,12 @@ On Windows, skills need one git setting before they are found; see
 
 Your AI assistant follows the conventions in [style.md](style.md) when
 drafting course content: language, register, tone, structure, formatting,
-and patterns to avoid. The shipped `style.md` is a worked example for a
-Flemish-Dutch course; run `/style-init` early to replace it with your own
-(see [Customization](customization.md)).
+and patterns to avoid. The shipped `style.md` is the English baseline,
+usable as it stands; run `/style-init` early to adapt it to your own voice
+and audience (see [Customization](customization.md)). If you would rather
+skip the interview, `templates/` also ships baselines for Flemish Dutch and
+Netherlands Dutch: copy the one matching your course over `docs/style.md`
+and edit from there.
 
 Three skills wrap around `style.md`:
 
@@ -95,8 +98,9 @@ job that is).
   spelling. It picks the register from the file path (`course/` and
   `evaluations/` are student-facing; `sources/` is colleague-facing) and
   reports findings in three buckets: must fix, strongly suggest, consider,
-  each with line number, quote, diagnosis, and proposed replacement. The
-  shipped configuration is tuned to the Dutch example style guide.
+  each with line number, quote, diagnosis, and proposed replacement. Every
+  check comes from `style.md` itself, so it follows your rules and your
+  language rather than a fixed list.
 - **/style-init** rewrites `style.md` to match your voice and audience. It
   asks for samples of your writing (strongly preferred) and interviews you
   only about what the samples did not answer. Without samples it warns that
@@ -106,8 +110,7 @@ job that is).
   rules.
 
 For the best `/proofread` spell-checking, install `hunspell` with
-dictionaries matching your course languages. For the shipped Dutch example
-plus English:
+dictionaries matching your course languages. For English plus Dutch:
 
 ```bash
 brew install hunspell

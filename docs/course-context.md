@@ -4,7 +4,8 @@ This document describes *your course* — its subject, pedagogy, and conventions
 — so the lesson skills (`/design-lesson`, `/summarize-lesson`,
 `/build-lesson-module`) can work with your material instead of guessing. It is
 the course-design companion to [style.md](style.md), which covers writing style
-only. Like `style.md`, it stays in English because AI tools consume it.
+only. Both files are consumed by AI tools, so write them in whichever language
+you and your assistant work in, and keep the two consistent.
 
 This file ships as a template. Run `/initialize-course-context` to fill it in
 (the skill reads your repo and interviews you for the rest), or edit it by
