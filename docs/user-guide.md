@@ -1,25 +1,21 @@
-# User Guide
+# User guide
 
-- **Write in markdown** — use familiar tools (VS Code, Git) instead of the
-  Canvas web editor
-- **Version control** — full Git history for all course materials
-- **Local preview** — Docusaurus dev server for instant feedback before
-  publishing
-- **Batch sync** — push/pull entire courses or individual modules in one command
-- **Portable content** — markdown files work independently of Canvas
+Canvas Course Builder lets you write course materials as markdown files on
+your own computer, preview them on a local website
+([Docusaurus](https://docusaurus.io/)), and sync them with
+[Canvas LMS](https://www.instructure.com/canvas) in one command. This guide
+covers setup and the daily workflow; the [docs index](README.md) lists every
+other guide. If anything fails along the way, check
+[Troubleshooting](troubleshooting.md).
 
-Write course materials as markdown, preview via
-[Docusaurus](https://docusaurus.io/), and sync with
-[Canvas LMS](https://www.instructure.com/canvas).
-
-## Getting Started
+## Getting started
 
 1. **Create a [GitHub](https://github.com/) account** if you don't have one yet,
    and **install [Git](https://git-scm.com/downloads)** — see the
-   [Git & GitHub Guide](git-and-github.md) if you need help with these steps
+   [Git and GitHub guide](git-and-github.md) if you need help with these steps
 
 2. **Create your own copy** — click **Use this template** at the top-right of
-   [this project’s homepage,](https://github.com/lars-derichter/canvas-course-builder)
+   [this project's homepage](https://github.com/lars-derichter/canvas-course-builder),
    then select **Create a new repository**. Pick a descriptive name that
    reflects the course, like `course-web-development` or `course-databases` —
    this makes it much easier to find your materials, especially if you manage
@@ -65,8 +61,15 @@ Write course materials as markdown, preview via
    npm start
    ```
 
-   The included **Getting Started** module walks you through writing markdown,
+   The included **Getting started** module walks you through writing markdown,
    organising content, syncing with Canvas, and using the VS Code extension.
+
+   > [!NOTE]
+   >
+   > `npm start` keeps running while the preview is open — the terminal is
+   > busy until you stop it with **Ctrl+C**. Open a second terminal for other
+   > commands. Those other commands start with `npx course`: `npx` runs the
+   > `course` tool that ships with the project, no extra installation needed.
 
 7. **(Optional) Install pandoc and Typst for PDF/DOCX export** — only needed if
    you want to export course materials to printable documents. Install both:
@@ -89,7 +92,7 @@ Write course materials as markdown, preview via
    npx course init
    ```
 
-   See the [Canvas Setup Guide](canvas-setup.md) for detailed instructions on
+   See the [Canvas setup guide](canvas-setup.md) for detailed instructions on
    obtaining your API URL, token, and course ID.
 
 9. **Start writing** — add your own content to `course/` alongside or in place
@@ -99,9 +102,14 @@ Write course materials as markdown, preview via
    npx course new-module    # create a module (asks for name and position)
    ```
 
-## Course Structure
+10. **Make it yours** — replace the project README with your course's own:
+    copy `templates/README-course.md` over `README.md` and fill it in. Then
+    set the course language and, if you like, your own branding and content
+    licence — the [customization guide](customization.md) covers all three.
 
-### Course Modules (sync with Canvas / preview locally with Docusaurus)
+## Course structure
+
+### Course modules (sync with Canvas / preview locally with Docusaurus)
 
 ```
 course/
@@ -146,9 +154,9 @@ evaluations/
 ### Sources (private)
 
 Reference materials, inspiration, and notes. Not served by Docusaurus or synced
-to Canvas. See [Sources Guide](sources.md) for conventions.
+to Canvas. See the [sources guide](sources.md) for conventions.
 
-## Course Language and Labels
+## Course language and labels
 
 `course.config.yml` at the project root sets the language of every generated,
 student-facing label in one place: alert titles (Canvas HTML, Docusaurus
@@ -179,19 +187,18 @@ alerts (`npx course push`) and regenerate glossary pages
 (`npx course build-glossary`) so Canvas picks up the new labels. The file is
 listed in `protected_files`, so upstream updates never overwrite your choice.
 
-## Markdown Files
+## Markdown files
 
 Markdown is a simple way to format text using plain characters — for example,
 `**bold**` for **bold** and `# Heading` for a heading. Your course materials are
 written as markdown files, which are just regular text files that end in `.md`.
 
-See [Markdown Guide](markdown.md) for supported syntax and custom alerts.
+See the [markdown guide](markdown.md) for supported syntax and custom alerts,
+and the [frontmatter guide](frontmatter.md) for the metadata fields.
 
-See [Frontmatter Guide](frontmatter.md) for supported frontmatter syntax.
+## Managing course materials
 
-## Managing Course Materials
-
-### Managing Modules
+### Managing modules
 
 ```bash
 npx course new-module     # create a new module (asks for name and position)
@@ -202,7 +209,7 @@ npx course delete-module  # delete a module and renumber remaining
 
 All commands are interactive and handle renumbering automatically.
 
-### Managing Items
+### Managing items
 
 ```bash
 npx course new-item           # create a page, assignment, url, subsection, or add a file
@@ -226,7 +233,7 @@ npx course build-glossary --check  # verify pages are up to date (CI / pre-push)
 
 If your course keeps a canonical glossary in
 `sources/reference-materials/glossary.yml`, this command renders a cumulative
-glossary page per module. See the [Lesson Workflow](lesson-workflow.md) for the
+glossary page per module. See the [lesson workflow](lesson-workflow.md) for the
 file format and how it fits the authoring flow.
 
 ### Searching course content
@@ -250,9 +257,9 @@ npm run build      # production build
 ```
 
 You can also publish the preview as a free public website on GitHub Pages — a
-handy fallback when Canvas is unavailable. See the [Hosting Guide](hosting.md).
+handy fallback when Canvas is unavailable. See the [hosting guide](hosting.md).
 
-### Canvas Sync
+### Canvas sync
 
 ```bash
 npx course push                  # push all modules to Canvas
@@ -260,7 +267,7 @@ npx course push --dry-run        # preview without making changes
 npx course push -m 01-intro      # push a single module
 npx course push --prune          # also delete Canvas modules and items removed locally
 npx course pull                  # import existing Canvas course
-npx course pull --force           # overwrite locally modified files
+npx course pull --force          # overwrite locally modified files
 npx course status                # compare local vs Canvas state
 npx course status --remote       # also fetch and compare against Canvas
 npx course diff                  # show what changed locally since the last sync
@@ -274,9 +281,9 @@ npx course --verbose <command>   # show API request details
 npx course --quiet <command>     # only show errors
 ```
 
-#### New Academic Year
+#### New academic year
 
-See the [New Academic Year Guide](new-academic-year.md) for switching your
+See the [new academic year guide](new-academic-year.md) for switching your
 materials to a new Canvas course at the start of a new academic year.
 
 ## Exporting to PDF or DOCX
@@ -310,54 +317,28 @@ npx course export --toc exports/toc.md
 All of this is also available from the VS Code sidebar, including multi-select
 export of highlighted items. To change how exports look — fonts, colours,
 margins, a house style from a Word template — see
-[Export Styling](export-styling.md) and the `/export-style-create` and
+[export styling](export-styling.md) and the `/export-style-create` and
 `/export-style-edit` skills.
 
-## VS Code Integration
-
-All course commands are available through a visual sidebar and the VS Code
-command palette. See the [VS Code Guide](vscode.md) for setup and the full
-command list.
-
-## Troubleshooting
-
-See [Troubleshooting](troubleshooting.md) for solutions to common connection
-errors, push/pull issues, and sync state problems.
-
-## Advanced Commands
+## Advanced commands
 
 ```bash
 npx course reset-sync-state      # remove canvas_id fields and delete .canvas-sync.json
 npx course reset-canvas          # delete all modules, pages, assignments, and files from Canvas
 ```
 
-See [Advanced Commands](advanced-commands.md) for details on these destructive
+See [advanced commands](advanced-commands.md) for details on these destructive
 operations.
 
-## AI Assistants
+## Further guides
 
-See [AI Assistants](ai-assistants.md) for how to use an AI assistant — Claude
-Code, OpenAI Codex, or another agentic tool — for writing course content,
-managing modules, and more.
-
-## Lesson Workflow
-
-See the [Lesson Workflow](lesson-workflow.md) for the AI-assistant skills that
-take a lesson from rough idea to lesson plan (`/design-lesson`), one-page class
-version (`/summarize-lesson`), and published student module
-(`/build-lesson-module`), plus the generated glossary pipeline.
-
-## Updating Your Project
-
-See [Updating Your Project](updating-your-project.md) for how to pull in bug
-fixes and new features from the original Canvas Course Builder project.
-
-## Contributing
-
-See [Contributing](contributing.md) for how to report issues, suggest
-improvements, and submit pull requests.
-
-## Theme
-
-The Docusaurus preview uses Thomas More-inspired styling (orange `#fa6432`
-accent, Nunito font, light weights). Customise in `src/css/custom.css`.
+| Guide | What it covers |
+| --- | --- |
+| [VS Code integration](vscode.md) | The sidebar and command palette |
+| [AI assistants](ai-assistants.md) | Assistant setup, the bundled skills, creating your own |
+| [Lesson workflow](lesson-workflow.md) | From lesson idea to published module with the skills |
+| [Customization](customization.md) | Language, branding, and licence |
+| [Hosting](hosting.md) | Publishing the preview site on GitHub Pages |
+| [Updating your project](updating-your-project.md) | Pulling in upstream improvements |
+| [Troubleshooting](troubleshooting.md) | Common errors and their fixes |
+| [Contributing](contributing.md) | Issues, ideas, and pull requests |
