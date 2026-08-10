@@ -12,10 +12,13 @@ Create a git commit following the project's commit message conventions.
 1. Review all changes with `git status` (never `-uall`) and `git diff`.
 2. **Before staging**, run `git remote get-url origin` to determine the
    mode:
-   - Origin URL contains `canvas-course-builder` → **development mode**: skip all
+   - Origin URL contains the upstream path `lars-derichter/canvas-course-builder`
+     → **development mode**: this is the tool's own repository, so skip all
      changes inside `course/` unless the user explicitly asks to include
      them — they are typically temporary sync-test artifacts that should
-     not reach git history or the remote.
+     not reach git history or the remote. (Matching on the repository name
+     alone is not enough: forks and template copies may keep the name, and
+     their `course/` content is real course material.)
    - Otherwise → **production mode**: stage everything (including
      `canvas_id` and other `course/` changes) normally.
 3. Stage by name (`git add <file>...`), never `git add -A` or `git add .`.
