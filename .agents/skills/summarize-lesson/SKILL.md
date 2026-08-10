@@ -33,7 +33,7 @@ file is not a `.md` under `sources/lessons/`.
    goal-reference notation); if Class versions is still `TODO`, use the
    defaults below and offer at the end to record the choices made;
    [`docs/style.md`](../../../docs/style.md), shared rules plus the
-   collega-facing section; the worked example, if any.
+   colleague-facing section; the worked example, if any.
 
 3. **Check the source's learning goals.** The source must state
    lesson-specific goals in the course's notation. If they are missing,
@@ -70,7 +70,7 @@ file is not a `.md` under `sources/lessons/`.
    plausible). Too long? Tighten the timeline first; goals and content are
    already terse.
 
-6. **Style-check** against the collega-facing rules of `docs/style.md` (no
+6. **Style-check** against the colleague-facing rules of `docs/style.md` (no
    page-title emoji, no student callouts), then write the destination file
    and report the path.
 

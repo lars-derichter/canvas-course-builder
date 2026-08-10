@@ -1,5 +1,5 @@
 ---
-title: Practice Assignment
+title: Practice assignment
 canvas_type: assignment
 points_possible: 10
 submission_types:
@@ -7,7 +7,7 @@ submission_types:
 published: true
 ---
 
-# Practice Assignment
+# Practice assignment
 
 You have made it through the Getting Started module — well done! Now it is
 time to try things out for yourself.

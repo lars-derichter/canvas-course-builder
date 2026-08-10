@@ -1,4 +1,4 @@
-# Advanced Commands
+# Advanced commands
 
 Commands for managing sync state and Canvas content. These commands modify state
 destructively — only use them if you know what you are doing.
@@ -59,7 +59,7 @@ npx course --verbose reset-canvas
 both Canvas and local state back to a clean slate, then `push` to re-create
 everything.
 
-## Resilience & Conflict Detection
+## Resilience and conflict detection
 
 - **Retry logic**: API calls automatically retry on 429 (rate limit) and 5xx
   errors with exponential backoff (up to 3 attempts).

@@ -20,7 +20,7 @@ not have to repeat the same feedback next time the assistant drafts material.
 2. **Cluster the findings by the actual current headings of `style.md`** —
    read them at runtime, never assume a section list. Mind the registers:
    a preference expressed about student material belongs in the
-   student-facing section, one about lesson plans in the collega-facing
+   student-facing section, one about lesson plans in the colleague-facing
    section, and only genuinely general rules under the shared rules.
 
 3. **Propose the edits**: a concise list of additions, rewordings, or

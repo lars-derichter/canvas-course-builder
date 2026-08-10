@@ -73,7 +73,7 @@ or a downgrade to `essay_question`, and let the author choose.
 
 6. **Write the companion file** `evaluations/<year>/<slug>/questions.md`:
    the approved question list with correct answers and points
-   (collega-facing — the readable source of truth for the zip), plus an
+   (colleague-facing — the readable source of truth for the zip), plus an
    import section titled in the course's language (e.g. "Importeren in
    Canvas") with these steps:
    1. Canvas → course → **Settings** → **Import Course Content**.

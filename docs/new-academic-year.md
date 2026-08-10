@@ -1,4 +1,4 @@
-# New Academic Year
+# New academic year
 
 How to switch your course materials to a new Canvas course at the start of a new
 academic year. Your markdown content stays the same — you just point it at the

@@ -24,7 +24,7 @@ lesson-plan-NN.md                     (student-facing module)
 The workflow produces material for two audiences, defined in
 [style.md](style.md):
 
-- **Collega-facing** — the lesson plan and class version under `sources/`.
+- **Colleague-facing** — the lesson plan and class version under `sources/`.
   Written for you and fellow teachers; never served by Docusaurus or synced to
   Canvas.
 - **Student-facing** — the module under `course/`; served by Docusaurus and

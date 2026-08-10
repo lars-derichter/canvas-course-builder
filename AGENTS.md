@@ -62,7 +62,7 @@ Three layers:
 - `course/` — Course materials (replaces default Docusaurus `docs/`). One folder
   per module, numbered 00-99. Subfolders become Canvas "Text Header" items. Each
   module may have a `_files/` subdirectory for embedded assets.
-- `evaluations/` — Exam/test materials organized by academic year (e.g.,
+- `evaluations/` — Exam/test materials organised by academic year (e.g.,
   `2526/`). Not served by Docusaurus.
 - `sources/` — Reference materials and notes. Not served by Docusaurus or synced
   to Canvas.

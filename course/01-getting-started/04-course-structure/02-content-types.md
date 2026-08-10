@@ -1,9 +1,9 @@
 ---
-title: Content Types
+title: Content types
 canvas_type: page
 ---
 
-# Content Types
+# Content types
 
 Every item in a module has a type that determines how it appears on Canvas. You
 set the type by adding a `canvas_type` field at the top of your markdown file
@@ -15,7 +15,7 @@ The most common type. Rendered as a Canvas wiki page.
 
 ```yaml
 ---
-title: My Page
+title: My page
 canvas_type: page
 ---
 ```
@@ -71,7 +71,7 @@ actual file lives in `_files/` and the markdown wrapper points to it with
 
 ```yaml
 ---
-title: Workflow Diagram
+title: Workflow diagram
 canvas_type: file
 file_ref: _files/workflow-diagram.svg
 ---

@@ -1,4 +1,4 @@
-# VS Code Integration
+# VS Code integration
 
 All course commands are available in the VS Code command palette (Cmd+Shift+P /
 Ctrl+Shift+P). Type "Course:" to filter the list.
@@ -20,7 +20,7 @@ icon on the left). It shows a tree view of all modules and items in the
 
 ### Tree structure
 
-- **Modules** — shown as folders, labeled from `_category_.json` or derived from
+- **Modules** — shown as folders, labelled from `_category_.json` or derived from
   the folder name. The numeric prefix is shown as a description.
 - **Subheaders** — subfolders within a module, shown as collapsible groups.
 - **Items** — course pages, assignments, external URLs, and files. Each type has
@@ -125,7 +125,7 @@ Choosing the TOC option opens the generated list for editing and reveals an
 | Course: Diff                     | Show what changed locally since last sync |
 | Course: Validate                 | Check course content for errors          |
 
-### Module Management
+### Module management
 
 | Command               | Description                                      |
 | --------------------- | ------------------------------------------------ |
@@ -134,7 +134,7 @@ Choosing the TOC option opens the generated list for editing and reveals an
 | Course: Rename Module | Rename a module                                  |
 | Course: Delete Module | Delete a module and renumber remaining           |
 
-### Item Management
+### Item management
 
 | Command                     | Description                                               |
 | --------------------------- | --------------------------------------------------------- |
@@ -161,10 +161,10 @@ Choosing the TOC option opens the generated list for editing and reveals an
 | Course: Export to PDF/DOCX  | Export the full course, only flagged items, or via a TOC  |
 | Course: Export via TOC      | Render the curated `exports/toc.md` after editing it      |
 
-See [Export Styling](export-styling.md) for customising fonts, colours, and
+See [export styling](export-styling.md) for customising fonts, colours, and
 margins.
 
-## How It Works
+## How it works
 
 - Long-running sync commands (push, pull, status, diff, validate, init) run in
   a single shared **Canvas Course Builder** terminal so you can follow their output.

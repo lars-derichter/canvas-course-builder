@@ -10,7 +10,7 @@ Design an exam or test together with the author and write it under
 [`docs/course-context.md`](../../../docs/course-context.md). The evaluation
 itself is student-facing material per
 [`docs/style.md`](../../../docs/style.md); the accompanying blueprint is
-collega-facing.
+colleague-facing.
 
 ## Input
 
@@ -78,7 +78,7 @@ intent. If the scope is not given, default to every lesson with a plan in
 
 6. **Write the blueprint** to `evaluations/<year>/<slug>/blueprint.md`: the
    approved matrix, the coverage notes, and a model answer or scoring hint
-   where a question needs one. Collega-facing; never handed to students.
+   where a question needs one. Colleague-facing; never handed to students.
 
 7. **Style-check `instructions.md`** against the student-facing rules of
    `docs/style.md`, then report both paths and offer follow-ups, do not run

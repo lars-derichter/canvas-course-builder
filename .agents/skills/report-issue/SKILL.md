@@ -39,8 +39,9 @@ budget below.
 3. **Ask at most one clarifying question** — only when the file or the
    passage stays ambiguous (several candidate files, no match for the
    quoted text, several matches). Present the candidates as options; if
-   both file and passage are open, combine them in that one question. Still unresolved after the answer: log anyway with the best
-   guess and a `location unverified` marker — `/fix-issues` sorts it out.
+   both file and passage are open, combine them in that one question.
+   Still unresolved after the answer: log anyway with the best guess and
+   a `location unverified` marker — `/fix-issues` sorts it out.
 
 4. **Classify lightly** from the author's wording, never by asking:
    `[error]` (wrong content, typo, broken link), `[change]` (correct but

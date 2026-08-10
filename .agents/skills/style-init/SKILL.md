@@ -25,7 +25,7 @@ author's own voice and audience.
      UK/US; …); student age band and CEFR level if the course language is
      not the students' first language.
    - Register and formality (je/u, tu/vous, first-name basis) — for both
-     the student-facing and the collega-facing register.
+     the student-facing and the colleague-facing register.
    - Sentence length, rhythm, and tone latitude (jokes, parenthetical
      asides, personal voice ik/we).
    - Tech-term handling: translated or kept in the source language.
@@ -42,7 +42,7 @@ author's own voice and audience.
 
 4. **Rewrite `docs/style.md`.** Read its current headings first and
    preserve the document's structure — in particular the `## Audiences`
-   split into student-facing and collega-facing registers, which
+   split into student-facing and colleague-facing registers, which
    `/proofread`, `/consistency-check`, and `/fix-issues` depend on. Only
    the content adapts. Keep the English meta-note at the top of the file
    (`style.md` is consumed by AI tools).

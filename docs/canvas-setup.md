@@ -1,4 +1,4 @@
-# Canvas Setup Guide
+# Canvas setup
 
 This guide walks you through obtaining the three credentials needed to connect
 Canvas Course Builder to your Canvas LMS instance.
@@ -21,7 +21,7 @@ Copy the base URL **without** any path after the domain (no `/courses/...` or
 > If your institution uses a custom domain (e.g.
 > `https://canvas.university.edu`), use that instead.
 
-## Canvas API Token
+## Canvas API token
 
 An API access token lets Canvas Course Builder interact with Canvas on your behalf. To
 create one:
@@ -45,7 +45,7 @@ create one:
 For more information, see the Canvas documentation:
 [How do I manage API access tokens as an admin?](https://community.canvaslms.com/t5/Admin-Guide/How-do-I-manage-API-access-tokens-as-an-admin/ta-p/89)
 
-## Canvas Course ID
+## Canvas course ID
 
 The course ID is the numeric identifier Canvas uses for your course. To find it:
 
@@ -62,7 +62,7 @@ You can also find the course ID on the course **Settings** page or via the
 For more information, see the Canvas documentation:
 [How do I find my course ID?](https://community.canvaslms.com/t5/Canvas-Basics-Guide/How-do-I-find-my-Canvas-course-ID/ta-p/55)
 
-## Next Steps
+## Next steps
 
 Once you have all three values, either:
 

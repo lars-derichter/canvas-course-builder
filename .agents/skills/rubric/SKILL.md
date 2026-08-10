@@ -1,13 +1,13 @@
 ---
 name: rubric
-description: Generate a grading rubric for an assignment or evaluation, with criteria drawn from the assignment text and aligned to the course's learning goals. Phase A proposes the criteria-by-levels matrix and stops for approval; Phase B writes a collega-facing markdown rubric. Use for "rubric", "rubric maken", "beoordelingsrubriek", "verbetersleutel voor de opdracht", "grading criteria".
+description: Generate a grading rubric for an assignment or evaluation, with criteria drawn from the assignment text and aligned to the course's learning goals. Phase A proposes the criteria-by-levels matrix and stops for approval; Phase B writes a colleague-facing markdown rubric. Use for "rubric", "rubric maken", "beoordelingsrubriek", "verbetersleutel voor de opdracht", "grading criteria".
 ---
 
 # Rubric
 
 Build a grading rubric for one assignment — a homework page under `course/`
 or an evaluation under `evaluations/` — aligned with the learning goals it
-serves, written as a collega-facing markdown file. Markdown only: pushing
+serves, written as a colleague-facing markdown file. Markdown only: pushing
 rubrics to Canvas would need a `lib/canvas/rubrics.js` that does not exist.
 
 ## Input
@@ -31,7 +31,7 @@ is not a markdown file under `course/` or `evaluations/`.
      offer at the end to save what you learned.
    - The lesson plan(s) in `sources/lessons/` that the assignment belongs to,
      for the goals it practises and the level at which they were taught.
-   - [`docs/style.md`](../../../docs/style.md) — the rubric is collega-facing.
+   - [`docs/style.md`](../../../docs/style.md) — the rubric is colleague-facing.
    - Existing rubrics under `evaluations/**/rubric*.md` or
      `sources/rubrics/`, if any, as the structural worked example.
 
@@ -70,7 +70,7 @@ is not a markdown file under `course/` or `evaluations/`.
    Content: title naming the assignment, a link to it, the point model, the
    criteria × levels table, and per criterion a short grading note (common
    mistakes to look for, partial-credit guidance) where Phase A surfaced one.
-   Collega-facing register of `docs/style.md`.
+   Colleague-facing register of `docs/style.md`.
 
 7. **Offer, do not run:**
    - A student-facing summary of the criteria (no level descriptors, just

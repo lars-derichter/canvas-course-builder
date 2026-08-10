@@ -1,21 +1,21 @@
 ---
-title: Managing Modules and Items
+title: Managing modules and items
 canvas_type: page
 ---
 
-# Managing Modules and Items
+# Managing modules and items
 
 As your course grows, you will need to add new content, reorganise things, and
 sometimes clean up. The CLI has interactive commands for all of this, and they
 handle renumbering automatically — you never have to manually rename files to
 fix gaps or reorder content.
 
-## Working with Modules
+## Working with modules
 
 A module is a top-level folder inside `course/`. Each module maps to a Canvas
 module.
 
-### Creating a Module
+### Creating a module
 
 ```bash
 npx course new-module
@@ -24,7 +24,7 @@ npx course new-module
 You will be asked for a name and a position. The command creates the folder
 with the correct numeric prefix and a `_category_.json` file inside it.
 
-### Reordering Modules
+### Reordering modules
 
 ```bash
 npx course move-module
@@ -33,7 +33,7 @@ npx course move-module
 Select the module you want to move and pick its new position. All other
 modules are renumbered to make room.
 
-### Renaming a Module
+### Renaming a module
 
 ```bash
 npx course rename-module
@@ -41,7 +41,7 @@ npx course rename-module
 
 This renames both the folder and the label in `_category_.json`.
 
-### Deleting a Module
+### Deleting a module
 
 ```bash
 npx course delete-module
@@ -55,12 +55,12 @@ close the gap.
 > Deleting a module removes all its pages, assignments, and files from disk.
 > Make sure you have committed or backed up your work before deleting.
 
-## Working with Items
+## Working with items
 
 Items are the files inside a module folder: pages, assignments, external
 links, file uploads, and subsections.
 
-### Creating an Item
+### Creating an item
 
 ```bash
 npx course new-item
@@ -77,7 +77,7 @@ The command walks you through picking:
 For assignments, you will also be asked for the number of points. For URLs,
 you provide the link.
 
-### Moving Items
+### Moving items
 
 ```bash
 npx course move-item          # reorder within the same module
@@ -90,7 +90,7 @@ destination module, and it works on subsections themselves: a subsection can
 move to another module, but always into the module root — subsections are
 never nested.
 
-### Renaming an Item
+### Renaming an item
 
 ```bash
 npx course rename-item
@@ -98,7 +98,7 @@ npx course rename-item
 
 Updates the filename and the `title` in the frontmatter.
 
-### Deleting an Item
+### Deleting an item
 
 ```bash
 npx course delete-item
@@ -106,7 +106,7 @@ npx course delete-item
 
 Removes the file and renumbers the remaining items to close the gap.
 
-### Merging Two Items
+### Merging two items
 
 Sometimes you realise that two separate pages would work better as one.
 Instead of copying and pasting manually:
@@ -119,7 +119,7 @@ Pick a **source** and a **target** item. The source content is appended to the
 target, and the source file is removed. Remaining items are renumbered
 automatically.
 
-### Splitting an Item
+### Splitting an item
 
 The opposite situation — a page has grown too long and you want to break it
 up:
@@ -138,7 +138,7 @@ original.
 > inside a module folder. You only need to pick the module manually if you run
 > the command from the project root.
 
-## Skipping the Prompts
+## Skipping the prompts
 
 Every command also accepts flags, so you can skip the interactive prompts
 entirely — useful for scripts or when you already know exactly what you want:

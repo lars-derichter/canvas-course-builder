@@ -1,6 +1,6 @@
 ---
 slug: /
-title: Course Home
+title: Course home
 sidebar_position: 0
 ---
 
@@ -8,7 +8,7 @@ sidebar_position: 0
 
 This course is built and maintained with **Canvas Course Builder**, a tool that lets you write all your course materials as markdown files, preview them locally with Docusaurus, and sync everything to Canvas LMS with a single command.
 
-## How It Works
+## How it works
 
 1. **Write** your pages, assignments, and links as markdown in the `course/` folder
 2. **Preview** locally by running `npm start` — you are looking at this preview right now

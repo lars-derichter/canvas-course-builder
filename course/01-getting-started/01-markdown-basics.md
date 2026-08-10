@@ -1,16 +1,16 @@
 ---
-title: ✅ Markdown Basics
+title: Markdown basics
 canvas_type: page
 ---
 
-# Markdown Basics
+# Markdown basics
 
 All course content is written in **Markdown** — a simple way to format text that
 is easy to read and write. You do not need any technical background to use it.
 This page walks you through the most common formatting options so you can start
 writing right away.
 
-## Text Formatting
+## Text formatting
 
 You can make text **bold**, _italic_, or **_both_**. Use ~~strikethrough~~ for
 deleted text and `inline code` for code references.
@@ -43,21 +43,21 @@ Link to external resources with `[text](url)`:
 - [Canvas LMS Documentation](https://canvas.instructure.com/doc/api/)
 - [Markdown Guide](https://www.markdownguide.org/)
 
-### Internal Links
+### Internal links
 
 You can link to other course pages using relative paths. These links work in
 both the Docusaurus preview and Canvas — during push, they are automatically
 converted to Canvas internal URLs.
 
 - Same folder: `[Alerts](03-alerts.md)`
-- Subfolder: `[Folder Layout](04-course-structure/01-folder-layout.md)`
-- With heading anchor: `[Available Types](03-alerts.md#available-types)`
+- Subfolder: `[Folder layout](04-course-structure/01-folder-layout.md)`
+- With heading anchor: `[Available types](03-alerts.md#available-types)`
 
 Try them here:
 
 - [Alerts](03-alerts.md)
-- [Folder Layout](04-course-structure/01-folder-layout.md)
-- [Available Types](03-alerts.md#available-types)
+- [Folder layout](04-course-structure/01-folder-layout.md)
+- [Available types](03-alerts.md#available-types)
 
 ## Images
 
@@ -75,7 +75,7 @@ Here is an embedded example:
 During push, images are automatically uploaded to Canvas and their paths are
 rewritten to Canvas file URLs. During pull, they are downloaded back.
 
-## Linking to Files
+## Linking to files
 
 You can link to any file in `_files/` the same way — handy for handouts,
 templates, or starter files students should download:
@@ -100,9 +100,9 @@ file. Internal links to course pages must always use the `.md` path, never
 >
 > To make a file its own entry in the module list — instead of a link inside a
 > page — use a file item. See
-> [Content Types](04-course-structure/02-content-types.md).
+> [Content types](04-course-structure/02-content-types.md).
 
-## Code Blocks
+## Code blocks
 
 Use triple backticks for code blocks with optional language highlighting:
 
@@ -135,7 +135,7 @@ Use `>` for blockquotes:
 >
 > — John Gruber
 
-## Horizontal Rules
+## Horizontal rules
 
 Three dashes create a horizontal rule:
 

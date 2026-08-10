@@ -1,4 +1,4 @@
-# Git & GitHub Guide
+# Git and GitHub
 
 This guide helps you get set up with Git and GitHub so you can start working
 with Canvas Course Builder. No prior experience required.
@@ -111,7 +111,7 @@ unlimited private repositories and other benefits. You can apply at
 
 You can keep your repository private and still publish a public website with
 your course materials (without exposing `evaluations/`). See the
-[Hosting Guide](hosting.md).
+[hosting guide](hosting.md).
 
 ## Cloning your project
 
