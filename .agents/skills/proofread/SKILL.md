@@ -1,12 +1,12 @@
 ---
 name: proofread
-description: Check a markdown document for spelling, grammar, natural flow, and compliance with docs/style.md (tuned to the shipped Dutch example style guide). Distinguishes the student-facing register (course/, evaluations/) from the colleague-facing register (anything under sources/), and applies the right rules. Reports findings; does not auto-fix. Use for "proofread", "nalezen", "spelling checken", "check dit lesplan op stijl".
+description: Check a markdown document for spelling, grammar, natural flow, and compliance with docs/style.md, in whatever language that guide is written. Distinguishes the student-facing register (course/, evaluations/) from the colleague-facing register (anything under sources/), and applies the right rules. Reports findings; does not auto-fix. Use for "proofread", "nalezen", "spelling checken", "check dit lesplan op stijl".
 ---
 
 # Proofread
 
-Review one markdown document for spelling, grammar, naturalness of Dutch (no
-translated-English feel), and [`docs/style.md`](../../../docs/style.md)
+Review one markdown document for spelling, grammar, naturalness of the prose
+(no translated feel), and [`docs/style.md`](../../../docs/style.md)
 compliance. Report findings grouped by severity; never auto-fix without
 confirmation.
 
@@ -25,50 +25,60 @@ other extensions, stop and explain.
 
 2. **Read `docs/style.md` in full.** Apply the shared rules plus the section
    matching the register. style.md is the authoritative ruleset — do not
-   invent rules it does not contain.
+   invent rules it does not contain, and do not assume a language it does
+   not state. Note what it says about heading case, address form, and
+   regional variety before running any check below; those differ per guide,
+   and the shipped baselines disagree with each other on all three.
 
 3. **Mechanical checks** with `grep -n` on the file; discard hits inside
    code blocks, inline code, URLs, frontmatter, and HTML comments (they are
    not the document's prose). Check at least:
    - Em-dashes (`—`) — always a violation unless the dash itself is the
      quoted subject.
-   - The AI-tell phrases and Hollandisms listed in `style.md` (e.g. "laten
-     we erin duiken", "het is belangrijk om op te merken", filler "even",
-     "gewoon" for emphasis, "hoor", "tof", "leuk", "lekker" as adverb).
-   - Wrong address form: `u` or `jij` in running prose.
-   - Title case in headings; headings ending in punctuation other than `?`.
+   - Every literal phrase style.md lists under its AI-tells section, plus
+     any regional or vocabulary blacklist it carries (the Dutch baselines
+     list Hollandisms, the English one lists LLM vocabulary). Build the
+     grep from the file, not from memory.
+   - Wrong address form, as style.md defines it (e.g. `u`/`jij` where a
+     Dutch guide forbids them).
+   - Headings that break the guide's case rule, in whichever direction it
+     runs: sentence case where the guide mandates title case, or title case
+     where it mandates sentence case. Headings ending in punctuation other
+     than `?`.
    - Register mismatch: in a colleague-facing doc, a page-title emoji on the H1 or
      GitHub-style callouts (both defined in style.md's student-facing
-     section); in a student doc, a meta-introduction opening ("In dit
-     hoofdstuk", "We gaan") in the first paragraph.
+     section); in a student doc, a meta-introduction opening (style.md's
+     AI-tells section lists the phrasings) in the first paragraph.
 
-4. **Spelling.** If `hunspell` with `nl_NL` and `en_GB` dictionaries is
-   available (`command -v hunspell`, `hunspell -D`), run it over the prose
-   and collect suggestions per candidate typo. Discard words whitelisted in
+4. **Spelling.** If `hunspell` is available (`command -v hunspell`,
+   `hunspell -D`) with a dictionary for the document's language, run it over
+   the prose and collect suggestions per candidate typo. Discard words
+   whitelisted in
    `cSpell.words` (`.vscode/settings.json`) or used as identifiers in the
    file's own code blocks. Without hunspell, scan visually, note in the
    report that no system spell-checker ran, and point to the install
    instructions in [`docs/ai-assistants.md`](../../../docs/ai-assistants.md).
 
 5. **Content checks** (judgement-based; do not flood the report):
-   - Translated English: literal idiom translations, calqued collocations,
-     English sentence rhythm (stacked subordinate clauses, multiple
-     parentheticals in one sentence).
+   - Prose that reads as translated rather than written: literal idiom
+     translations, calqued collocations, another language's sentence rhythm
+     (stacked subordinate clauses, multiple parentheticals in one
+     sentence). Every baseline names this; the Dutch ones make it a
+     separate AI-tell with markers to grep for.
    - Decorative tricolons, bold scattered through prose, trailing
      summaries, repeating the heading as the section's first line.
-   - Student-facing only: sentences clearly above CEFR B2 (flag as
-     "consider", not "must fix"); Latinate phrasing where plain
-     alternatives exist (_hanteren_ over _gebruiken_).
-   - Colleague-facing only: cushioning before the point; defensive hedging
-     (_het zou kunnen zijn dat_).
+   - Student-facing only: sentences clearly above the guide's reading level
+     (flag as "consider", not "must fix"); Latinate or inflated phrasing
+     where the guide's plain-word rule offers an alternative.
+   - Colleague-facing only: cushioning before the point; defensive hedging.
 
 6. **Report in three severity buckets**, each finding as
    `line | quoted text | diagnosis | proposed replacement`, diagnoses of one
    short sentence:
-   - **Must fix** — hard style.md violations: em-dashes, title-case
-     headings, `u`/`jij`, register mismatch.
-   - **Strongly suggest** — spelling, grammar, anglicisms, AI tells,
-     tricolons, scattered bold.
+   - **Must fix** — hard style.md violations: em-dashes, the wrong heading
+     case, a forbidden address form, register mismatch.
+   - **Strongly suggest** — spelling, grammar, translated-sounding phrasing,
+     AI tells, tricolons, scattered bold.
    - **Consider** — sentence length, rhythm, trailing summaries.
 
    Name empty buckets explicitly; if all three are empty, say the document
