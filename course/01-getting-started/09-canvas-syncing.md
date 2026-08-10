@@ -1,15 +1,15 @@
 ---
-title: Canvas Syncing
+title: Canvas syncing
 canvas_type: page
 ---
 
-# Canvas Syncing
+# Canvas syncing
 
 Once your content is ready, you can push it to Canvas or pull existing Canvas
 content into your local project. The CLI handles all the API communication,
 content conversion, and state tracking for you.
 
-## Initial Setup
+## Initial setup
 
 Before syncing, you need to configure your Canvas credentials:
 
@@ -18,9 +18,9 @@ npx course init
 ```
 
 This interactive command asks for your Canvas instance URL, an API access
-token, and the course ID. It stores these in a `.env` file. See the Canvas
-Setup Guide in the `docs/` folder for detailed instructions on where to find
-these values.
+token, and the course ID. It stores these in a `.env` file. The Canvas setup
+guide (`docs/canvas-setup.md` in your project folder, also readable on
+GitHub) explains where to find these values.
 
 > [!IMPORTANT]
 >
@@ -28,7 +28,7 @@ these values.
 > grants full access to your Canvas account. Never commit it to version
 > control.
 
-## Reviewing Changes Before You Push
+## Reviewing changes before you push
 
 Before pushing, it is a good idea to check what has changed:
 
@@ -39,7 +39,7 @@ npx course diff
 This shows you exactly what changed locally since the last sync — new files,
 modified content, and deleted items — so there are no surprises.
 
-## Validating Your Content
+## Validating your content
 
 You can also check your content for common errors before pushing:
 
@@ -64,7 +64,7 @@ becomes a Canvas module, and each file becomes the appropriate item type
 After the first push, `canvas_id` is written back into each file's frontmatter
 so the CLI knows which Canvas object to update on subsequent pushes.
 
-### Useful Flags
+### Useful flags
 
 | Flag                          | What it does                                                    |
 | ----------------------------- | --------------------------------------------------------------- |
@@ -72,7 +72,7 @@ so the CLI knows which Canvas object to update on subsequent pushes.
 | `--module 01-getting-started` | Push only a single module instead of the entire course         |
 | `--prune`                     | Delete Canvas modules and individual items that no longer exist locally |
 
-### Example Workflow
+### Example workflow
 
 ```bash
 # Check what would change first
@@ -95,7 +95,7 @@ This downloads your Canvas course and converts it into local markdown files.
 Useful for importing an existing Canvas course or syncing changes made
 directly on Canvas.
 
-### Conflict Detection
+### Conflict detection
 
 Pull checks whether you have modified any local files since the last sync. If
 it finds changes, it skips those files to avoid overwriting your work. To
@@ -105,7 +105,7 @@ force overwrite:
 npx course pull --force
 ```
 
-## Checking Status
+## Checking status
 
 ```bash
 npx course status
@@ -118,7 +118,7 @@ also fetch the current state from Canvas and compare:
 npx course status --remote
 ```
 
-## Global Flags
+## Global flags
 
 These flags work with any command:
 
@@ -127,7 +127,7 @@ These flags work with any command:
 | `--verbose` | Show detailed API request and response information  |
 | `--quiet`   | Only show errors, suppress all other output         |
 
-## Error Handling
+## Error handling
 
 The sync process is designed to be resilient:
 

@@ -1,9 +1,9 @@
 ---
-title: Working with an AI Assistant
+title: Working with an AI assistant
 canvas_type: page
 ---
 
-# Working with an AI Assistant
+# Working with an AI assistant
 
 Writing a course is a lot of small, repetitive jobs: drafting pages, keeping your
 style consistent, building quizzes, checking for broken links. An AI assistant
@@ -16,7 +16,7 @@ in plain language, and they can read and write your files, run the `npx course`
 commands, and follow packaged workflows called **skills**. Project instructions
 in `AGENTS.md` give any of them full context out of the box.
 
-## What Are Skills?
+## What are skills?
 
 A skill is a ready-made workflow you trigger with a short command. Instead of
 explaining a whole task from scratch, you name the skill and the assistant
@@ -30,7 +30,7 @@ follows instructions written for exactly that job. For example:
 Skills are plain markdown files in the `.agents/skills/` folder, so you can read
 what each one does and adjust it to fit how you work.
 
-## What You Can Do With It
+## What you can do with it
 
 Beyond everyday help — "draft a page about X", "move these three items to another
 module", "why did my push fail?" — this project ships a set of skills built for
@@ -56,7 +56,7 @@ You do not have to memorise these. Type `/` in Claude Code (or ask any assistant
 what skills it sees) to get the list, or just describe what you want and let it
 suggest the right one.
 
-## Getting Started
+## Getting started
 
 1. Pick a tool and open your project folder with it: Claude Code
    ([claude.ai/code](https://claude.ai/code)), OpenAI Codex
@@ -72,7 +72,7 @@ suggest the right one.
 > `npx course` commands you would, and it asks before doing anything you have not
 > already allowed, like pushing to Canvas or committing to git.
 
-## Choosing a Tool
+## Choosing a tool
 
 You are not locked in. Claude Code and Codex read the same `AGENTS.md`
 instructions and the same skills, so you can switch tools — or work next to a
@@ -84,5 +84,6 @@ its instructions, or simply describe the task yourself.
 > [!NOTE]
 >
 > For the full list of skills and what each one does, see the AI assistants
-> guide (`docs/ai-assistants.md`) and the Lesson Workflow guide
-> (`docs/lesson-workflow.md`) in the project documentation.
+> guide (`docs/ai-assistants.md`) and the lesson workflow guide
+> (`docs/lesson-workflow.md`) in your project folder, also readable on
+> GitHub.

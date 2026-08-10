@@ -12,7 +12,7 @@ Word document.
 
 This is optional. If you only ever publish to Canvas, you can skip it.
 
-## What You Need
+## What you need
 
 Export relies on two free, open-source tools:
 
@@ -30,7 +30,7 @@ Install both:
 >
 > Word export needs only pandoc. Typst is what produces the PDF.
 
-## Exporting From the Terminal
+## Exporting from the terminal
 
 The `export` command takes whatever you point it at and writes a document to the
 `exports/` folder:
@@ -52,7 +52,7 @@ frontmatter:
 
 ```yaml
 ---
-title: Exam Review
+title: Exam review
 export: true
 ---
 ```
@@ -63,7 +63,7 @@ Then export just the flagged pages:
 npx course export --flagged
 ```
 
-## Exporting a Custom Selection
+## Exporting a custom selection
 
 Want a specific set of pages, in a specific order, without flagging each one?
 Use the two-step table-of-contents flow.
@@ -85,7 +85,7 @@ Use the two-step table-of-contents flow.
    npx course export --toc exports/toc.md
    ```
 
-## Exporting From VS Code
+## Exporting from VS Code
 
 With the Course Manager sidebar you do not have to type anything:
 
@@ -98,16 +98,17 @@ With the Course Manager sidebar you do not have to type anything:
 You choose PDF or Word each time. Export runs in the Canvas Course Builder terminal so
 you can follow its progress.
 
-## Where Your Files Go
+## Where your files go
 
 Exports land in the `exports/` folder in your project. That folder is ignored by
 git, so your documents never end up in your repository or on Canvas.
 
-## Changing How Exports Look
+## Changing how exports look
 
-Out of the box, exports use a clean default style. You can change the fonts,
-colours, margins, and more, or match an existing house style from a Word
-template. Two ready-made skills make this easy:
+Out of the box, exports use the shipped example style, modelled on the
+Thomas More course template. You can change the fonts, colours, margins, and
+more, or match your own institution's house style from a Word template. Two
+ready-made skills make this easy:
 
 - **`/export-style-create`** builds a style from a reference — a Word document,
   a PDF, a website, or a CSS file
@@ -117,5 +118,6 @@ template. Two ready-made skills make this easy:
 > [!NOTE]
 >
 > For the full picture of how styling works — what each template file controls
-> and how to tweak the PDF with `--var` — see the Export Styling guide
-> (`docs/export-styling.md`) in the project documentation.
+> and how to tweak the PDF with `--var` — see the export styling guide
+> (`docs/export-styling.md` in your project folder, also readable on GitHub),
+> and `docs/customization.md` for swapping in your own branding.
