@@ -1,22 +1,36 @@
-$-- Course export template for pandoc's Typst writer (shipped default).
-$-- Styled after the Thomas More course template (Cursussjabloon A4).
-$-- Override by placing a template.typ in sources/export-style/.
+$-- Course export template for pandoc's Typst writer.
+$-- Styled after the Thomas More course template (Cursussjabloon A4). Select it
+$-- with `export.style: thomas-more` in course.config.yml, or override single
+$-- files by placing them in sources/export-style/.
 $if(highlighting-definitions)$
 // syntax highlighting functions from skylighting:
 $highlighting-definitions$
 
 $endif$
-// Thomas More palette. Headings and covers use tm-orange/tm-navy; the
-// near-duplicate theme values (#FA6232, #00627B) are deliberately not used.
-#let tm-orange = rgb("#FA6432")
-#let tm-navy = rgb("#00283C")
-#let tm-link = rgb("#00637C")
-#let tm-grey = rgb("#E8EBEE")
-#let tm-muted = rgb("#595959")
-#let tm-tableline = rgb("#AABDCA")
+// Colours come from the theme (src/css/themes/<name>.css), which the exporter
+// parses and passes in as pandoc variables. The literals below are the Thomas
+// More fallback for rendering this template without them — they mirror
+// src/css/themes/thomas-more.css. Pair this style with `theme: thomas-more`
+// for the full house style.
+#let pick(injected, fallback) = {
+  let value = injected.trim()
+  rgb(if value == "" { fallback } else { value })
+}
+
+#let tm-orange = pick("$ccb-accent$", "#FA6432")
+#let tm-navy = pick("$ccb-secondary$", "#00283C")
+#let tm-link = pick("$ccb-link$", "#00637C")
+#let tm-grey = pick("$ccb-code-bg$", "#E8EBEE")
+#let tm-muted = pick("$ccb-fg-muted$", "#595959")
+#let tm-tableline = pick("$ccb-border$", "#AABDCA")
+#let heading-color = pick("$ccb-heading$", "#FA6432")
 
 #let heading-font = ("Century Gothic", "Arial")
 
+// Thematic breaks. Pandoc emits `#divider()` (Typst 0.15+) and `#horizontalrule`
+// on older versions; both are defined so the rule keeps the centred hairline
+// look rather than Typst's default full-weight black line.
+#let divider() = align(center, line(length: 50%, stroke: 0.5pt + tm-tableline))
 #let horizontalrule = line(start: (25%, 0%), end: (75%, 0%), stroke: 0.5pt + tm-tableline)
 
 #show terms.item: it => block(breakable: false)[
@@ -24,29 +38,47 @@ $endif$
   #block(inset: (left: 1.5em, top: -0.4em))[#it.description]
 ]
 
-// Alert colors and kinds mirror ALERT_CONFIG in lib/convert/markdown-to-html.js
-// and the per-kind Alert styles in reference.docx. Keep all three in sync.
+// Alert kinds mirror ALERT_KINDS in lib/config/theme.js and the per-kind Alert
+// styles in reference.docx.
 #let alert-colors = (
-  note: rgb("#4bafe1"),
-  tip: rgb("#64c8c8"),
-  important: rgb("#967dc8"),
-  warning: rgb("#ffc87d"),
-  caution: rgb("#fa6432"),
-  check: rgb("#00283c"),
+  note: (
+    fg: pick("$ccb-alert-note-fg$", "#4bafe1"),
+    bg: pick("$ccb-alert-note-bg$", "#f4fafd"),
+  ),
+  tip: (
+    fg: pick("$ccb-alert-tip-fg$", "#64c8c8"),
+    bg: pick("$ccb-alert-tip-bg$", "#f6fcfc"),
+  ),
+  important: (
+    fg: pick("$ccb-alert-important-fg$", "#967dc8"),
+    bg: pick("$ccb-alert-important-bg$", "#f9f7fc"),
+  ),
+  warning: (
+    fg: pick("$ccb-alert-warning-fg$", "#ffc87d"),
+    bg: pick("$ccb-alert-warning-bg$", "#fffcf7"),
+  ),
+  caution: (
+    fg: pick("$ccb-alert-caution-fg$", "#fa6432"),
+    bg: pick("$ccb-alert-caution-bg$", "#fff6f3"),
+  ),
+  check: (
+    fg: pick("$ccb-alert-check-fg$", "#00283c"),
+    bg: pick("$ccb-alert-check-bg$", "#f5f6f7"),
+  ),
 )
 
 #let alert(kind, title, body) = {
-  let color = alert-colors.at(kind, default: alert-colors.note)
+  let palette = alert-colors.at(kind, default: alert-colors.note)
   block(
     width: 100%,
-    stroke: (left: 3pt + color),
-    fill: color.lighten(88%),
+    stroke: (left: 3pt + palette.fg),
+    fill: palette.bg,
     inset: (left: 12pt, right: 10pt, top: 8pt, bottom: 8pt),
     radius: (top-right: 3pt, bottom-right: 3pt),
     above: 1.2em,
     below: 1.2em,
   )[
-    #text(weight: "bold", fill: color.darken(10%))[#title]
+    #text(weight: "bold", fill: palette.fg.darken(10%))[#title]
     #v(2pt)
     #body
   ]
@@ -122,9 +154,9 @@ $endif$
 
   show heading: set text(font: heading-font, weight: "bold")
   show heading: set block(above: 1.4em, below: 0.8em)
-  show heading.where(level: 1): set text(size: 21pt, fill: tm-orange)
+  show heading.where(level: 1): set text(size: 21pt, fill: heading-color)
   show heading.where(level: 2): set text(size: 15pt, fill: tm-navy)
-  show heading.where(level: 3): set text(size: 13pt, fill: tm-orange)
+  show heading.where(level: 3): set text(size: 13pt, fill: heading-color)
   show heading.where(level: 4): set text(size: 12pt, fill: tm-navy, style: "italic")
   show heading.where(level: 1): it => {
     pagebreak(weak: true)
@@ -132,7 +164,7 @@ $endif$
   }
   // H5/H6 are small bold-caps labels in the TM template, not numbered.
   show heading.where(level: 5): it => block(above: 1.4em, below: 0.8em,
-    text(font: font, size: 11pt, weight: "bold", fill: tm-orange, upper(it.body)))
+    text(font: font, size: 11pt, weight: "bold", fill: heading-color, upper(it.body)))
   show heading.where(level: 6): it => block(above: 1.4em, below: 0.8em,
     text(font: font, size: 11pt, weight: "bold", fill: tm-navy, upper(it.body)))
 
@@ -184,7 +216,7 @@ $endif$
       v(0.8em, weak: true)
     }
     par(leading: 0.45em, text(font: heading-font, size: 32pt, weight: "bold",
-      fill: tm-orange, title))
+      fill: heading-color, title))
     if course != none {
       v(1.6em, weak: true)
       text(size: 12pt)[#course]

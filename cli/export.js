@@ -12,6 +12,7 @@ const { runPandoc } = require('../lib/export/pandoc');
 const { buildCombinedMarkdown } = require('../lib/export/assemble');
 const { parseToc, validateTocPaths } = require('../lib/export/toc');
 const { loadCourseConfig } = require('../lib/config/course-config');
+const { loadTheme, themeVariables } = require('../lib/config/theme');
 const { getLabels, slugify } = require('../lib/config/labels');
 
 const EXPORTS_DIR = path.join(PROJECT_ROOT, 'exports');
@@ -292,17 +293,32 @@ async function exportCmd(paths = [], options = {}) {
     process.exit(1);
   }
 
-  const style = resolveStyle({
-    template: options.template,
-    referenceDoc: options.referenceDoc,
-  });
+  // The export style decides the layout, the theme the colours. Both can fail
+  // on a bad name or a missing file; report that as a CLI error, not a stack.
+  let style;
+  let theme;
+  try {
+    style = resolveStyle({
+      style: options.style,
+      template: options.template,
+      referenceDoc: options.referenceDoc,
+    });
+    theme = loadTheme();
+  } catch (err) {
+    log.error(`[export] ${err.message}`);
+    process.exit(1);
+  }
+  log.verbose(`[export] style ${style.name}, theme ${theme.name}`);
 
   fs.mkdirSync(EXPORTS_DIR, { recursive: true });
 
-  // --sample: render the shipped kitchen-sink document.
+  // --sample: render the shipped kitchen-sink document. The sample is shared by
+  // every style, so pandoc needs both its own directory and the selected
+  // style's on the resource path to find `![](logo.png)`.
   if (options.sample) {
     const output = options.output || path.join(EXPORTS_DIR, `style-sample.${format}`);
-    await run(style, style.sample, output, format, options, path.dirname(style.sample));
+    const resourcePath = [path.dirname(style.sample), style.dir].join(path.delimiter);
+    await run(style, theme, style.sample, output, format, options, resourcePath);
     log.info(`[export] Wrote ${path.relative(process.cwd(), output)}`);
     return;
   }
@@ -357,7 +373,7 @@ async function exportCmd(paths = [], options = {}) {
   fs.writeFileSync(mdPath, combined, 'utf8');
 
   try {
-    await run(style, mdPath, output, format, options, COURSE_DIR);
+    await run(style, theme, mdPath, output, format, options, COURSE_DIR);
   } finally {
     if (!options.keepMarkdown) {
       try {
@@ -374,8 +390,8 @@ async function exportCmd(paths = [], options = {}) {
   }
 }
 
-/** Run pandoc for one input file with the resolved style assets. */
-async function run(style, input, output, format, options, resourcePath) {
+/** Run pandoc for one input file with the resolved style assets and theme. */
+async function run(style, theme, input, output, format, options, resourcePath) {
   try {
     await runPandoc({
       input,
@@ -386,7 +402,9 @@ async function run(style, input, output, format, options, resourcePath) {
       template: style.template,
       referenceDoc: style.referenceDoc,
       resourcePath,
-      variables: options.var || {},
+      // Theme colours travel as pandoc variables so template.typ reads them
+      // instead of hardcoding a palette. An explicit --var still wins.
+      variables: { ...themeVariables(theme), ...(options.var || {}) },
       logo: style.logo,
       fontsDir: style.fontsDir,
     });

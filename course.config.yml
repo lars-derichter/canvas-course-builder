@@ -7,6 +7,13 @@
 # into sources/ and point at it there. See docs/customization.md.
 theme: github
 
+# PDF and DOCX layout: typography, margins, cover, bundled fonts. Built-in
+# styles: generic, thomas-more. The value is a folder name under
+# export-styles/, or a path to a folder of your own. See
+# docs/export-styling.md.
+export:
+  style: generic
+
 # Course-facing label language. Built-in sets: en, nl.
 # Individual labels can be overridden under `labels:`; anything you leave out
 # falls back to the built-in set for the language above. The commented block

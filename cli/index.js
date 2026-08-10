@@ -178,6 +178,7 @@ program
   .option('-o, --output <path>', 'Output file path')
   .option('--title <text>', 'Title-page title')
   .option('--subtitle <text>', 'Title-page subtitle')
+  .option('--style <name|path>', 'Export style to use, overriding course.config.yml')
   .option('--template <path>', 'Override the Typst template')
   .option('--reference-doc <path>', 'Override the reference.docx')
   .option('--var <key=value>', 'Pandoc variable (repeatable)', require('./export').collectVar, {})

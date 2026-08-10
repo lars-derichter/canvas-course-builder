@@ -147,6 +147,7 @@ STALE_PATHS=(
   ".claude/skills/edit-export-style"
   "docs/claude-code.md"
   "templates/export/tm-logo.png"
+  "templates/export"
 )
 
 for path in "${STALE_PATHS[@]}"; do
