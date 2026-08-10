@@ -2,7 +2,7 @@
   "name": "canvas-course-builder",
   "displayName": "Canvas Course Builder",
   "description": "VS Code sidebar and palette commands for Canvas Course Builder CLI",
-  "version": "0.4.0",
+  "version": "1.0.0",
   "publisher": "local",
   "repository": {
     "type": "git",
