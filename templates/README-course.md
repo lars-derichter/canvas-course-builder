@@ -39,7 +39,8 @@ The course content in `course/` is licensed under
 - [Canvas setup](docs/canvas-setup.md): API credentials and course ID
 - [Markdown guide](docs/markdown.md): supported syntax and alerts
 - [Frontmatter guide](docs/frontmatter.md): page and assignment metadata
-- [Customization](docs/customization.md): language, branding, and licence
+- [Customization](docs/customization.md): README, language, branding, and
+  licence
 - [VS Code extension](docs/vscode.md): visual sidebar commands
 - [Troubleshooting](docs/troubleshooting.md): common issues and fixes
 

@@ -102,10 +102,9 @@ other guide. If anything fails along the way, check
    npx course new-module    # create a module (asks for name and position)
    ```
 
-10. **Make it yours** — replace the project README with your course's own:
-    copy `templates/README-course.md` over `README.md` and fill it in. Then
-    set the course language and, if you like, your own branding and content
-    licence — the [customization guide](customization.md) covers all three.
+10. **Make it yours** — swap the tooling README for your course's own, set the
+    course language, and add your own branding and content licence. The
+    [customization guide](customization.md) covers all four.
 
 ## Course structure
 
@@ -337,7 +336,7 @@ operations.
 | [VS Code integration](vscode.md) | The sidebar and command palette |
 | [AI assistants](ai-assistants.md) | Assistant setup, the bundled skills, creating your own |
 | [Lesson workflow](lesson-workflow.md) | From lesson idea to published module with the skills |
-| [Customization](customization.md) | Language, branding, and licence |
+| [Customization](customization.md) | README, language, branding, and licence |
 | [Hosting](hosting.md) | Publishing the preview site on GitHub Pages |
 | [Updating your project](updating-your-project.md) | Pulling in upstream improvements |
 | [Troubleshooting](troubleshooting.md) | Common errors and their fixes |

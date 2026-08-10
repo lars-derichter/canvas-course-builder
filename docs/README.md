@@ -38,7 +38,7 @@ All guides for Canvas Course Builder. New here? Start with the
 
 ## Making it yours
 
-- [Customization](customization.md): language, branding, and licence
+- [Customization](customization.md): README, language, branding, and licence
 - [Updating your project](updating-your-project.md): pulling tooling
   improvements from upstream
 - [New academic year](new-academic-year.md): pointing your course at a

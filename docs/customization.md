@@ -1,10 +1,32 @@
 # Making the template yours
 
-The template ships English throughout: English student-facing labels, an
-English writing style guide, and an export style that imitates the Thomas
-More course template. They show what a fully configured course looks like,
-but they are starting points, not requirements. This page covers swapping
-each of them for your own language, branding, and licence.
+The template ships as a working example: a README about the tooling,
+English student-facing labels, an English writing style guide, and an
+export style that imitates the Thomas More course template. Together they
+show what a fully configured course looks like, but they are starting
+points, not requirements. This page covers replacing each of them with your
+own README, language, branding, and licence.
+
+## The README
+
+The `README.md` in your project root describes Canvas Course Builder, the
+tooling — not your course. Replace it with the course README template:
+
+```bash
+cp templates/README-course.md README.md
+```
+
+Then work through the copy: change `Course name` to the name of your
+course, write the course overview, fill in the module table, check that the
+licence line matches [`course/LICENSE.md`](../course/LICENSE.md), and trim
+the "Useful links" list to the guides your colleagues will actually need.
+Delete the tip at the top when you are done. The TODO comments in the
+template mark the sections that need writing.
+
+`README.md` is protected during [upstream updates](updating-your-project.md),
+so your version is never overwritten. `templates/` is not, by design: it
+holds shipped defaults you copy out of, never edit in place. The same goes
+for the style baselines and export defaults below.
 
 ## Language
 
@@ -45,9 +67,8 @@ Two other things track the language you write in:
   | [`templates/style-generic-nl-be.md`](../templates/style-generic-nl-be.md) | Nederlands, Vlaamse variant |
   | [`templates/style-generic-nl.md`](../templates/style-generic-nl.md) | Nederlands, variant Nederland |
 
-  Either way your version sticks: `docs/style.md` is protected during
-  upstream updates. `templates/` is not, by design. It holds shipped
-  defaults you copy out of, never edit in place.
+  Either way your version sticks: like `README.md`, `docs/style.md` is
+  protected during upstream updates.
 
 - **The writing skills read `style.md` at runtime.** `/proofread` derives
   its checks from whatever the guide says, so it follows your rules as soon

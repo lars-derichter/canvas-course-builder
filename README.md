@@ -52,7 +52,8 @@ beginners.
 The [docs folder](docs/README.md) has the full map. Start with:
 
 - [User guide](docs/user-guide.md): setup, course structure, daily commands
-- [Customization](docs/customization.md): language, branding, and licence
+- [Customization](docs/customization.md): README, language, branding, and
+  licence
 - [AI assistants](docs/ai-assistants.md): the bundled skills and how to add
   your own
 - [Troubleshooting](docs/troubleshooting.md): common issues and fixes
