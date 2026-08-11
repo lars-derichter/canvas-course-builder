@@ -112,7 +112,7 @@ question at a time — about timing, comprehension, what worked, and material
 friction, then folds timing corrections and notes-to-self back into the lesson
 plan and course-wide insights into `course-context.md`. Next year's version of
 the lesson starts better than this year's. Content fixes for the student pages
-that surface in the retro can be logged with `/report-issue` so `/fix-issues`
+that surface in the retro can be logged with `/issue-report` so `/issue-fix`
 picks them up later.
 
 ## Assessment
@@ -141,10 +141,10 @@ Two report-only sweeps complement the single-file `/proofread`:
 - `/image-todos` — every placeholder image and image-TODO block still waiting
   for real artwork.
 
-For the findings you stumble on yourself while reviewing, `/report-issue` is the
+For the findings you stumble on yourself while reviewing, `/issue-report` is the
 retail counterpart of those wholesale sweeps: it logs one error or wanted change
 into `sources/issues.md` with at most one question, so you stay in your
-reviewing flow. Later, `/fix-issues` triages the whole queue — checking whether
+reviewing flow. Later, `/issue-fix` triages the whole queue — checking whether
 each fix has wider implications, from the same defect on other pages to a style
 rule that belongs in `writing-style.md` — and applies the fixes after you
 approve its plan.

@@ -1,11 +1,11 @@
 ---
-name: fix-issues
+name: issue-fix
 description: Work through the open issues in sources/issues.md. Phase A verifies and groups every entry, checks wider implications (same defect elsewhere, style-rule drift, glossary, course context, lesson plans, evaluations), bundles all clarifying questions into one round, and presents one fix plan; Phase B applies the fixes only after approval and moves entries to Resolved. Never fixes style preferences silently, never commits. Use for "fix issues", "work the issue queue", "fix the queue", "issues afwerken", "werk de foutenlijst af", "los de issues op".
 ---
 
-# Fix issues
+# Issue fix
 
-Work through the issue queue that `/report-issue` — and the author's own hand —
+Work through the issue queue that `/issue-report` — and the author's own hand —
 filled in `sources/issues.md`.
 
 ## Input
@@ -22,7 +22,7 @@ entries. Empty means every entry under `## Open`.
    `## Resolved` —,
    [`context/writing-style.md`](../../../context/writing-style.md), and
    [`context/course-context.md`](../../../context/course-context.md). If the
-   queue file is absent or `## Open` is empty, say so, mention `/report-issue`,
+   queue file is absent or `## Open` is empty, say so, mention `/issue-report`,
    and stop. Never create the queue file here.
 
 2. **Verify every entry in scope** against the current files: find the quoted
@@ -93,7 +93,7 @@ entries. Empty means every entry under `## Open`.
     appending `→ resolved YYYY-MM-DD: what fixed it (files touched)` — or the
     non-fix outcome: already fixed, author decision, routed to `/style-update`.
     Deferred entries stay under `## Open` with a dated `deferred:` note. Never
-    delete an entry; Resolved is the dedupe memory for `/report-issue`.
+    delete an entry; Resolved is the dedupe memory for `/issue-report`.
 
 12. **Report and offer follow-ups, do not run them**: `/style-update` for the
     style preferences that surfaced; `/proofread` for heavily edited files;

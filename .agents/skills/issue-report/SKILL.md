@@ -1,13 +1,13 @@
 ---
-name: report-issue
-description: Quickly log an error or wanted change in course material into the issue queue at sources/issues.md — locates the file, quotes the passage to confirm, asks at most one clarifying question, and never diagnoses or fixes anything (that is /fix-issues). Use for "report issue", "log this for later", "found a mistake on page X", "issue melden", "noteer deze fout", "dit wil ik nog aanpassen".
+name: issue-report
+description: Quickly log an error or wanted change in course material into the issue queue at sources/issues.md — locates the file, quotes the passage to confirm, asks at most one clarifying question, and never diagnoses or fixes anything (that is /issue-fix). Use for "report issue", "log this for later", "found a mistake on page X", "issue melden", "noteer deze fout", "dit wil ik nog aanpassen".
 ---
 
-# Report issue
+# Issue report
 
 Capture an error or a wanted change while the author is reviewing course
 material, without breaking their flow. One bullet is appended to the issue queue
-in `sources/issues.md`; the diagnosis and the fix wait for `/fix-issues`. Speed
+in `sources/issues.md`; the diagnosis and the fix wait for `/issue-fix`. Speed
 beats completeness here: pin the file and the passage, log, and get out of the
 way.
 
@@ -32,7 +32,7 @@ that intake question does not count against the question budget below.
 
 2. **Pin the passage.** Find the disputed text in the located file and quote it
    exactly as it stands there, not as the author paraphrased it. The verbatim
-   quote is the anchor `/fix-issues` will use — line numbers drift, quotes do
+   quote is the anchor `/issue-fix` will use — line numbers drift, quotes do
    not.
 
 3. **Ask at most one clarifying question** — only when the file or the passage
@@ -40,7 +40,7 @@ that intake question does not count against the question budget below.
    several matches). Present the candidates as options; if both file and passage
    are open, combine them in that one question. Still unresolved after the
    answer: log anyway with the best guess and a `location unverified` marker —
-   `/fix-issues` sorts it out.
+   `/issue-fix` sorts it out.
 
 4. **Classify lightly** from the author's wording, never by asking: `[error]`
    (wrong content, typo, broken link), `[change]` (correct but should be
@@ -67,13 +67,13 @@ that intake question does not count against the question budget below.
 
    An issue spanning several files gets a glob or a short description in the
    path field. Create `sources/issues.md` (and `sources/` if needed) on first
-   use, with this structure: an intro naming `/report-issue` and `/fix-issues`
+   use, with this structure: an intro naming `/issue-report` and `/issue-fix`
    and welcoming hand-added bullets, a `## How to add an issue yourself` section
    with the bullet format and one example, `## Open`, and `## Resolved`. Quote
    the appended line back to the author as confirmation.
 
 7. **Stop.** Never fix, never start diagnosing, never open the affected file for
-   editing. Close with one sentence: `/fix-issues` works the queue. For a
+   editing. Close with one sentence: `/issue-fix` works the queue. For a
    `[style]` entry, add one more: `/style-update` can make the preference a
    durable rule in `context/writing-style.md` — the logged entry covers only
    this one instance.

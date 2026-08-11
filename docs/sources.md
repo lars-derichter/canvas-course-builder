@@ -20,11 +20,11 @@ sources/
   reference-materials/  # Canonical course data, e.g. glossary.yml
   reports/              # Dated reports, e.g. from /coverage-map
   rubrics/              # Grading rubrics from /rubric-build
-  issues.md             # Issue queue: /report-issue appends, /fix-issues resolves
+  issues.md             # Issue queue: /issue-report appends, /issue-fix resolves
 ```
 
 No folders are required — add what you need, when you need it. `issues.md` is
-created by `/report-issue` on first use and is safe to hand-edit; its header
+created by `/issue-report` on first use and is safe to hand-edit; its header
 documents the entry format.
 
 ## Lesson plans

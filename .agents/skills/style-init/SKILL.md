@@ -61,12 +61,12 @@ the course author's own voice and audience.
 5. **Rewrite `context/writing-style.md`.** Read its current headings first and
    preserve the document's structure — in particular the `## Audiences` split
    into student-facing and colleague-facing registers, which `/proofread`,
-   `/consistency-check`, and `/fix-issues` depend on. Every baseline carries
-   that structure, translated where the baseline is not in English, so this
-   holds whichever one you started from. Only the content adapts. Keep the note
-   at the top that names the course language, in whatever language the guide
-   itself is written (`writing-style.md` is consumed by AI tools), and drop the
-   copy-me tip if you started from a baseline.
+   `/consistency-check`, and `/issue-fix` depend on. Every baseline carries that
+   structure, translated where the baseline is not in English, so this holds
+   whichever one you started from. Only the content adapts. Keep the note at the
+   top that names the course language, in whatever language the guide itself is
+   written (`writing-style.md` is consumed by AI tools), and drop the copy-me
+   tip if you started from a baseline.
 
 6. **Check `AGENTS.md` at the project root** and update it only where it now
    directly contradicts the new `writing-style.md`.

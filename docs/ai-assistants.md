@@ -192,18 +192,18 @@ project whitelist.
 
 ### Issue queue
 
-- **/report-issue** logs an error or a wanted change while you are checking
+- **/issue-report** logs an error or a wanted change while you are checking
   course material, without pulling you out of your reviewing flow. Describe the
   problem and where you saw it (a rendered page title is fine); the skill pins
   the exact passage, quotes it back, and appends one bullet to
   `sources/issues.md`. It asks at most one clarifying question and never fixes
   or diagnoses anything.
-- **/fix-issues** works through the open entries in `sources/issues.md`. It
-  first verifies every entry, groups related ones, checks wider implications
-  (the same defect elsewhere, style-rule drift, glossary, lesson plans), bundles
-  all questions into one round, and presents one fix plan. After approval it
-  applies the fixes and moves handled entries to the queue's Resolved section.
-  Canvas keeps serving the old text until you run `npx course push` yourself.
+- **/issue-fix** works through the open entries in `sources/issues.md`. It first
+  verifies every entry, groups related ones, checks wider implications (the same
+  defect elsewhere, style-rule drift, glossary, lesson plans), bundles all
+  questions into one round, and presents one fix plan. After approval it applies
+  the fixes and moves handled entries to the queue's Resolved section. Canvas
+  keeps serving the old text until you run `npx course push` yourself.
 
 ### Export styling
 
