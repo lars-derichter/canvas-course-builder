@@ -151,6 +151,7 @@ STALE_PATHS=(
   "templates/style-generic-en.md"
   "templates/style-generic-nl-be.md"
   "templates/style-generic-nl.md"
+  "templates/README-course.md"
 )
 
 for path in "${STALE_PATHS[@]}"; do

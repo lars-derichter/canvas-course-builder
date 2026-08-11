@@ -2,10 +2,11 @@
 
 > [!TIP]
 >
-> This is the README template for your course repository. Copy this file over
-> the `README.md` in your project root (which describes the Canvas Course
-> Builder tooling), change `Course name` to the name of your course, fill in the
-> sections below, and delete this tip.
+> This is the README template for your course repository, in English. Copy this
+> file over the `README.md` in your project root (which describes the Canvas
+> Course Builder tooling), change `Course name` to the name of your course, fill
+> in the sections below, and delete this tip. Dutch-language courses want
+> [`README-course-nl.md`](README-course-nl.md) instead.
 
 Course materials for **Course name**, written in markdown and synced with Canvas
 LMS using

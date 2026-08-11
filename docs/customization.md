@@ -13,7 +13,7 @@ The `README.md` in your project root describes Canvas Course Builder, the
 tooling — not your course. Replace it with the course README template:
 
 ```bash
-cp templates/README-course.md README.md
+cp templates/README-course-en.md README.md
 ```
 
 Then work through the copy: change `Course name` to the name of your course,
