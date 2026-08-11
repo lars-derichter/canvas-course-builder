@@ -2,6 +2,22 @@
 
 ## Unreleased
 
+- **Publishing to GitHub Pages is now a repository setting, and
+  `npx course setup-pages` is gone.** That command wrote your site's public
+  address into `docusaurus.config.js`, a file no upstream update protects, so a
+  published course could lose its `url` and `baseUrl` at a conflict prompt and
+  redeploy every page under the wrong path, with nothing failing to say so.
+  GitHub Pages already knows the address of the repository a build runs in, so
+  the deploy workflow reads it from there and hands it to the build, and
+  `.github/workflows/deploy.yml` ships with the project rather than being
+  generated per course. Nothing in your repository names your site any more. Set
+  **Settings > Pages** to "GitHub Actions" and push; a custom domain works the
+  same way, entered on that page and read back at build time. Until you switch
+  Pages on, the workflow starts on each push and skips, so a course that never
+  publishes collects skipped runs rather than failed ones. If you already
+  publish, follow
+  [Publishing moved out of `docusaurus.config.js`](docs/updating-your-project.md#publishing-moved-out-of-docusaurusconfigjs-one-off)
+  and take upstream's version of both files.
 - **`/translate` puts a document or a passage into another language.** A source
   note in one language, a page a colleague needs in another, a fragment pasted
   mid-conversation: the request came up often enough, and every time the answer

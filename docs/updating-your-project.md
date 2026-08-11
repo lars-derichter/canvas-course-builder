@@ -144,9 +144,9 @@ update runs.
 > [!WARNING]
 >
 > Protect the individual paths, not `.github` as a whole. That directory also
-> holds the CI workflow and, if you publish with [GitHub Pages](hosting.md), the
-> deploy workflow; protecting it wholesale would freeze both at the version you
-> happen to have today.
+> holds the CI workflow and the [GitHub Pages](hosting.md) deploy workflow;
+> protecting it wholesale would freeze both at the version you happen to have
+> today.
 
 `LICENSE` and `THIRD-PARTY.md` are a different case: they cover code that stays
 in your repository, so leave them alone.
@@ -197,23 +197,34 @@ locations.
 
 The preview site used to be titled from `docusaurus.config.js`. It now reads
 `title` from `course.config.yml`, which is protected, so your choice survives
-future updates. Two consequences for an existing project:
+future updates. One consequence for an existing project: **add a `title:`**.
+Your `course.config.yml` is protected and therefore does not gain the new key,
+so until you add it the site falls back to the generic label for your course
+language: "Course", or "Cursus". Nothing breaks, but nothing names your course
+either.
 
-- **Add a `title:`.** Your `course.config.yml` is protected and therefore does
-  not gain the new key, so until you add it the site falls back to the generic
-  label for your course language: "Course", or "Cursus". Nothing breaks, but
-  nothing names your course either.
+### Publishing moved out of `docusaurus.config.js` (one-off)
 
-- **Re-run `npx course setup-pages` if you publish to GitHub Pages.** That
-  command writes `docusaurus.config.js`, which is _not_ protected, so this
-  update is likely to conflict on it. Taking upstream's version (the default at
-  the prompt) drops your `url`, `baseUrl`, `organizationName`, `projectName` and
-  `trailingSlash`, and the site then deploys to the wrong base path.
-  `setup-pages` is safe to re-run and puts all five back:
+The site's public address used to be written into `docusaurus.config.js` by
+`npx course setup-pages`, which also generated a deploy workflow. Both now come
+from GitHub Pages at build time, and `.github/workflows/deploy.yml` ships with
+the project, so the command is gone. Publishing is the **Settings > Pages**
+source setting and nothing else. See [Hosting](hosting.md).
 
-  ```bash
-  npx course setup-pages
-  ```
+If you already publish, this update touches `docusaurus.config.js` and
+`.github/workflows/deploy.yml`, neither of which is protected, so the script
+prompts you for both. **Take upstream's version of each.** Upstream's
+configuration with your old workflow is the one combination that breaks: the old
+workflow passes no address, so the site rebuilds at the root path and its links
+and assets 404 under your project path. Keeping both of your own files also
+still works, but leaves you maintaining a workflow the project no longer
+generates.
+
+> [!WARNING]
+>
+> If you wrote your own `.github/workflows/deploy.yml` for a different host,
+> rename it before updating. Upstream now ships a file at that path, and the
+> conflict prompt is your only chance to keep yours.
 
 ## Resolving conflicts
 

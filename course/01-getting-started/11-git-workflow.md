@@ -193,16 +193,11 @@ unlimited private repositories and other benefits. You can apply at
 ## Publishing your course online
 
 Since your repository is on GitHub anyway, you can also publish the Docusaurus
-site for free with GitHub Pages. One command sets everything up:
-
-```bash
-npx course setup-pages
-```
-
-This configures the Docusaurus settings and adds a deploy workflow, so GitHub
-rebuilds and republishes the site automatically every time you push to the
-repository. Use `--domain` if you want to serve the site on your own domain
-instead of the default `github.io` address.
+site for free with GitHub Pages. Go to **Settings > Pages** and set **Source**
+to **GitHub Actions**. That is the whole setup: from then on, GitHub rebuilds
+and republishes the site every time you push. To serve it on your own domain
+instead of the default `github.io` address, enter that domain on the same
+settings page.
 
 > [!WARNING]
 >
