@@ -31,8 +31,8 @@ for a path. Stop with one sentence if the target is not a markdown file under
      offer at the end to save what you learned.
    - The lesson plan(s) in `sources/lessons/` that the assignment belongs to,
      for the goals it practises and the level at which they were taught.
-   - [`context/style.md`](../../../context/style.md) — the rubric is
-     colleague-facing.
+   - [`context/writing-style.md`](../../../context/writing-style.md) — the
+     rubric is colleague-facing.
    - Existing rubrics under `evaluations/**/rubric*.md` or `sources/rubrics/`,
      if any, as the structural worked example.
 
@@ -68,7 +68,7 @@ for a path. Stop with one sentence if the target is not a markdown file under
    Content: title naming the assignment, a link to it, the point model, the
    criteria × levels table, and per criterion a short grading note (common
    mistakes to look for, partial-credit guidance) where Phase A surfaced one.
-   Colleague-facing register of `context/style.md`.
+   Colleague-facing register of `context/writing-style.md`.
 
 7. **Offer, do not run:**
    - A student-facing summary of the criteria (no level descriptors, just what

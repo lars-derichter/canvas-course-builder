@@ -80,7 +80,7 @@ protected_dirs = course evaluations sources
 
 # Individual files always kept. Includes this config file itself so your
 # customizations here survive future upstream updates.
-protected_files = README.md AGENTS.md CLAUDE.md context/style.md context/course-context.md update-from-upstream.conf course.config.yml
+protected_files = README.md AGENTS.md CLAUDE.md context/writing-style.md context/course-context.md update-from-upstream.conf course.config.yml
 
 # Upstream git remote and branch to merge from.
 upstream_remote = upstream
@@ -135,23 +135,28 @@ hand.
 
 The style guide and the course context used to live in `docs/`. They now sit in
 `context/`, which holds the files that are yours rather than the tooling
-project's. Both are protected, so the update leaves you with your versions at
-the old paths and upstream's blank baselines at the new ones — while the skills
-already read the new ones. Fix that once:
+project's, and the style guide is called `writing-style.md` there so that
+nothing confuses it with the export styles. Both are protected, so the update
+leaves you with your versions at the old paths and upstream's blank baselines at
+the new ones, while the skills already read the new ones. Fix that once, running
+whichever of the first two lines matches what your repository actually holds:
 
 ```bash
-mv -f docs/style.md          context/style.md
+mv -f docs/style.md          context/writing-style.md   # coming from 1.0.0
+mv -f context/style.md       context/writing-style.md   # if already on context/
 mv -f docs/course-context.md context/course-context.md
 ```
 
-Then open `update-from-upstream.conf` and replace the two old paths in
-`protected_files` with `context/style.md` and `context/course-context.md`,
-keeping any entries you added yourself. Without this step the next update
-overwrites both files with the shipped baselines.
+Then open `update-from-upstream.conf` and replace the old paths in
+`protected_files` with `context/writing-style.md` and
+`context/course-context.md`, keeping any entries you added yourself. Without
+this step the next update overwrites both files with the shipped baselines.
 
-Finally, `grep -rn "docs/style\.md\|docs/course-context\.md" .` and fix anything
-left in `course/`, `evaluations/` or `sources/` — those are protected, so
-upstream never touches them and they may still point at the old locations.
+Finally, run
+`grep -rn "docs/style\.md\|context/style\.md\|docs/course-context\.md" .` and
+fix anything left in `course/`, `evaluations/` or `sources/` — those are
+protected, so upstream never touches them and they may still point at the old
+locations.
 
 ### The course title moved into `course.config.yml` (one-off)
 
@@ -265,7 +270,7 @@ If you prefer to run the steps yourself instead of using the script:
 
    # Restore your content and protected files from HEAD
    git checkout HEAD -- course/ evaluations/ sources/ \
-     README.md AGENTS.md CLAUDE.md context/style.md context/course-context.md \
+     README.md AGENTS.md CLAUDE.md context/writing-style.md context/course-context.md \
      update-from-upstream.conf course.config.yml 2>/dev/null || true
 
    # Drop the now-untracked upstream-only files

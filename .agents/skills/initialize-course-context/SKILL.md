@@ -6,10 +6,10 @@ description: Read the repo and interview the user to fill in or refresh context/
 # Initialize course context
 
 Fill in or refresh `context/course-context.md` — the course-design companion to
-`context/style.md` that describes the course's subject, pedagogy, lesson-plan
-conventions, module structure, code/download rules, glossary, and scope
-boundaries. The lesson skills read it before generating anything, so the more it
-reflects the real course, the fewer questions they need to ask.
+`context/writing-style.md` that describes the course's subject, pedagogy,
+lesson-plan conventions, module structure, code/download rules, glossary, and
+scope boundaries. The lesson skills read it before generating anything, so the
+more it reflects the real course, the fewer questions they need to ask.
 
 Re-running is expected: after `README.md`, docs, or the course structure change,
 run this skill again to fold the new facts in. On a re-run, treat existing
@@ -26,8 +26,8 @@ contradicts it, and say so explicitly in the report.
      name and descriptor, and `language` the course language.
    - `README.md` and `AGENTS.md` at the project root — course name, subject,
      institution, audience.
-   - `context/style.md` — language, register, student level; do not duplicate
-     style rules into the context doc, only cross-reference.
+   - `context/writing-style.md` — language, register, student level; do not
+     duplicate style rules into the context doc, only cross-reference.
    - Any course-specific doc under `context/` or `sources/` (e.g. a pedagogical
      framework, card or page-type descriptions). These are prime sources for the
      Pedagogy and Module conventions sections. `docs/` holds the
@@ -83,8 +83,8 @@ contradicts it, and say so explicitly in the report.
 
 - Never invent course facts. Everything in the doc comes from the repo or from
   the author; when in doubt, ask or leave `TODO`.
-- Do not modify `context/style.md`, `AGENTS.md`, or course content — the only
-  written artefact is `context/course-context.md`.
+- Do not modify `context/writing-style.md`, `AGENTS.md`, or course content — the
+  only written artefact is `context/course-context.md`.
 - Do not commit the changes automatically — leave that to the author.
 
 $ARGUMENTS

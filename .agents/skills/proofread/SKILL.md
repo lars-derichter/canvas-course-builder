@@ -1,14 +1,14 @@
 ---
 name: proofread
-description: Check a markdown document for spelling, grammar, natural flow, and compliance with context/style.md, in whatever language that guide is written. Distinguishes the student-facing register (course/, evaluations/) from the colleague-facing register (anything under sources/), and applies the right rules. Reports findings; does not auto-fix. Use for "proofread", "nalezen", "spelling checken", "check dit lesplan op stijl".
+description: Check a markdown document for spelling, grammar, natural flow, and compliance with context/writing-style.md, in whatever language that guide is written. Distinguishes the student-facing register (course/, evaluations/) from the colleague-facing register (anything under sources/), and applies the right rules. Reports findings; does not auto-fix. Use for "proofread", "nalezen", "spelling checken", "check dit lesplan op stijl".
 ---
 
 # Proofread
 
 Review one markdown document for spelling, grammar, naturalness of the prose (no
-translated feel), and [`context/style.md`](../../../context/style.md)
-compliance. Report findings grouped by severity; never auto-fix without
-confirmation.
+translated feel), and
+[`context/writing-style.md`](../../../context/writing-style.md) compliance.
+Report findings grouped by severity; never auto-fix without confirmation.
 
 ## Input
 
@@ -23,30 +23,30 @@ extensions, stop and explain.
    The lowest-numbered lesson under `sources/lessons/` (if any) is the worked
    example for the colleague-facing register.
 
-2. **Read `context/style.md` in full.** Apply the shared rules plus the section
-   matching the register. style.md is the authoritative ruleset — do not invent
-   rules it does not contain, and do not assume a language it does not state.
-   Note what it says about heading case, address form, and regional variety
-   before running any check below; those differ per guide, and the shipped
-   baselines disagree with each other on all three.
+2. **Read `context/writing-style.md` in full.** Apply the shared rules plus the
+   section matching the register. writing-style.md is the authoritative ruleset
+   — do not invent rules it does not contain, and do not assume a language it
+   does not state. Note what it says about heading case, address form, and
+   regional variety before running any check below; those differ per guide, and
+   the shipped baselines disagree with each other on all three.
 
 3. **Mechanical checks** with `grep -n` on the file; discard hits inside code
    blocks, inline code, URLs, frontmatter, and HTML comments (they are not the
    document's prose). Check at least:
    - Em-dashes (`—`) — always a violation unless the dash itself is the quoted
      subject.
-   - Every literal phrase style.md lists under its AI-tells section, plus any
-     regional or vocabulary blacklist it carries (the Dutch baselines list
-     Hollandisms, the English one lists LLM vocabulary). Build the grep from the
-     file, not from memory.
-   - Wrong address form, as style.md defines it (e.g. `u`/`jij` where a Dutch
-     guide forbids them).
+   - Every literal phrase writing-style.md lists under its AI-tells section,
+     plus any regional or vocabulary blacklist it carries (the Dutch baselines
+     list Hollandisms, the English one lists LLM vocabulary). Build the grep
+     from the file, not from memory.
+   - Wrong address form, as writing-style.md defines it (e.g. `u`/`jij` where a
+     Dutch guide forbids them).
    - Headings that break the guide's case rule, in whichever direction it runs:
      sentence case where the guide mandates title case, or title case where it
      mandates sentence case. Headings ending in punctuation other than `?`.
    - Register mismatch: in a colleague-facing doc, a page-title emoji on the H1
-     or GitHub-style callouts (both defined in style.md's student-facing
-     section); in a student doc, a meta-introduction opening (style.md's
+     or GitHub-style callouts (both defined in writing-style.md's student-facing
+     section); in a student doc, a meta-introduction opening (writing-style.md's
      AI-tells section lists the phrasings) in the first paragraph.
 
 4. **Spelling.** If `hunspell` is available (`command -v hunspell`,
@@ -73,8 +73,8 @@ extensions, stop and explain.
 6. **Report in three severity buckets**, each finding as
    `line | quoted text | diagnosis | proposed replacement`, diagnoses of one
    short sentence:
-   - **Must fix** — hard style.md violations: em-dashes, the wrong heading case,
-     a forbidden address form, register mismatch.
+   - **Must fix** — hard writing-style.md violations: em-dashes, the wrong
+     heading case, a forbidden address form, register mismatch.
    - **Strongly suggest** — spelling, grammar, translated-sounding phrasing, AI
      tells, tricolons, scattered bold.
    - **Consider** — sentence length, rhythm, trailing summaries.
@@ -92,7 +92,7 @@ extensions, stop and explain.
 - Treat the colleague-facing register as a peer dialect, not a watered-down
   student register: short fragments, dry humour, and parenthetical asides are
   welcome there.
-- Something that reads oddly but breaks no style.md rule goes under "consider"
-  with a one-sentence note, or is left alone.
+- Something that reads oddly but breaks no writing-style.md rule goes under
+  "consider" with a one-sentence note, or is left alone.
 
 $ARGUMENTS

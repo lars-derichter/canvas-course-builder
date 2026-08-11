@@ -3,15 +3,15 @@
 > [!TIP]
 >
 > This is a generic Dutch writing-style guide, for courses taught in the
-> Netherlands. Copy this file over `context/style.md` in your project and delete
-> this tip. It is a usable baseline, not a fill-in-the-blanks template: nothing
-> is marked `TODO`, and the rules work as written for most Dutch-language
-> courses. Colleagues in Flanders want
+> Netherlands. Copy this file over `context/writing-style.md` in your project
+> and delete this tip. It is a usable baseline, not a fill-in-the-blanks
+> template: nothing is marked `TODO`, and the rules work as written for most
+> Dutch-language courses. Colleagues in Flanders want
 > [`style-generic-nl-be.md`](style-generic-nl-be.md) instead, which adds the
 > Flemish register rules. Adjust the few course-specific spots (emoji meanings,
 > code-comment language) to taste, or run `/style-init` to have your AI
 > assistant adapt the whole guide to samples of your own writing.
-> `context/style.md` is protected during
+> `context/writing-style.md` is protected during
 > [upstream updates](../docs/updating-your-project.md), so your copy sticks.
 
 Het cursusmateriaal is in het Nederlands, en deze gids ook.

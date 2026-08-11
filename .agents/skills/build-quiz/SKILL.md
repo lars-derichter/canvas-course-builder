@@ -41,9 +41,9 @@ to `essay_question`, and let the author choose.
 
 ### Phase A — Inventory (writes nothing)
 
-1. **Read** [`context/style.md`](../../../context/style.md) — question text is
-   student-facing — and the question source; draft questions now, in chat, if
-   they must come from lessons.
+1. **Read** [`context/writing-style.md`](../../../context/writing-style.md) —
+   question text is student-facing — and the question source; draft questions
+   now, in chat, if they must come from lessons.
 
 2. **Confirm the destination** in one sentence: `evaluations/<year>/<slug>/`,
    with the year folder the highest-numbered under `evaluations/` and the slug

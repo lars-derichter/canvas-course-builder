@@ -19,7 +19,8 @@ means every entry under `## Open`.
 ### Phase A — Triage (writes nothing)
 
 1. **Read the fixed inputs**: `sources/issues.md` in full — `## Open` _and_
-   `## Resolved` —, [`context/style.md`](../../../context/style.md), and
+   `## Resolved` —,
+   [`context/writing-style.md`](../../../context/writing-style.md), and
    [`context/course-context.md`](../../../context/course-context.md). If the
    queue file is absent or `## Open` is empty, say so, mention `/report-issue`,
    and stop. Never create the queue file here.
@@ -40,9 +41,9 @@ means every entry under `## Open`.
    - **Same defect elsewhere.** Grep `course/` and `evaluations/` for the same
      wrong text or pattern; list the extra hits.
    - **Style rule.** Does the fix encode a durable writing preference that
-     `context/style.md` does not have yet? Mark the group for an `/style-update`
-     offer — never edit `style.md` here — and grep for other pages that would
-     violate the would-be rule.
+     `context/writing-style.md` does not have yet? Mark the group for an
+     `/style-update` offer — never edit `writing-style.md` here — and grep for
+     other pages that would violate the would-be rule.
    - **Glossary.** Does the fix change or rename a term? Check the canonical
      glossary (default `sources/reference-materials/glossary.yml`; path per
      `course-context.md`) and note whether `npx course build-glossary` must be
@@ -81,8 +82,8 @@ means every entry under `## Open`.
 
 9. **Style pass on the touched passages.** Check every edited passage in
    `course/` and `evaluations/` against the student-facing checklist of
-   `context/style.md`. Passages only — no whole-file rewrites; a heavily edited
-   file gets a `/proofread` recommendation in the report instead.
+   `context/writing-style.md`. Passages only — no whole-file rewrites; a heavily
+   edited file gets a `/proofread` recommendation in the report instead.
 
 10. **Carry out the approved side effects**: glossary edits (then
     `npx course build-glossary` if the course keeps generated glossary pages),

@@ -1,13 +1,13 @@
 ---
 name: design-lesson
-description: Help draft a new lesson plan in sources/lessons/, following context/course-context.md and the colleague-facing register of context/style.md. Accepts rough notes, a request for the next logical lesson, or pure Q&A. Phase A presents a design with pros/cons of the author's suggestions and its own; Phase B writes the draft only after approval. Use for "design lesson", "nieuwe les ontwerpen", "lesplan opzetten", "vervolg op les X".
+description: Help draft a new lesson plan in sources/lessons/, following context/course-context.md and the colleague-facing register of context/writing-style.md. Accepts rough notes, a request for the next logical lesson, or pure Q&A. Phase A presents a design with pros/cons of the author's suggestions and its own; Phase B writes the draft only after approval. Use for "design lesson", "nieuwe les ontwerpen", "lesplan opzetten", "vervolg op les X".
 ---
 
 # Design lesson
 
 Design a new lesson plan together with the author and write it to
 `sources/lessons/lesson-NN.md` in the colleague-facing register of
-[`context/style.md`](../../../context/style.md), following
+[`context/writing-style.md`](../../../context/writing-style.md), following
 [`context/course-context.md`](../../../context/course-context.md).
 
 ## Input
@@ -33,8 +33,8 @@ lesson". Three modes, combinable:
 1. **Read the fixed inputs**: `course-context.md` — pedagogy, learning-goal
    scheme, lesson-plan conventions, scope boundaries; follow the documents it
    points to, and for a needed section still `TODO`, infer the answer from the
-   repo or ask, offering at the end to save it back; `context/style.md` — shared
-   rules plus the colleague-facing section; all existing files in
+   repo or ask, offering at the end to save it back; `context/writing-style.md`
+   — shared rules plus the colleague-facing section; all existing files in
    `sources/lessons/` in full, tracking which learning goals are actively
    practised versus only seeded and the running context (project, storyline,
    case) at each point; the structural template — the lesson plan named in
@@ -80,10 +80,10 @@ lesson". Three modes, combinable:
    pitfalls, reserve activities, anticipated questions). Where the lesson
    introduces a future student-facing reference page (card, cheat sheet), name
    it in the block prose the way existing lessons do, so `/build-lesson-module`
-   can pick it up. Apply the colleague-facing checklist of `context/style.md` to
-   the whole draft — no student-facing conventions (page-title emoji, student
-   callouts) unless `style.md` says otherwise — then write the file in one
-   `Write`.
+   can pick it up. Apply the colleague-facing checklist of
+   `context/writing-style.md` to the whole draft — no student-facing conventions
+   (page-title emoji, student callouts) unless `writing-style.md` says otherwise
+   — then write the file in one `Write`.
 
 5. **Update the glossary — only if the course has one** (Glossary section of
    `course-context.md`). Add the technical terms a student meets for the first

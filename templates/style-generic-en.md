@@ -3,14 +3,14 @@
 > [!TIP]
 >
 > This is a generic English writing-style guide. Copy this file over
-> `context/style.md` in your project and delete this tip. It is a usable
+> `context/writing-style.md` in your project and delete this tip. It is a usable
 > baseline, not a fill-in-the-blanks template: nothing is marked `TODO`, and the
 > rules work as written for most English-language courses. Adjust the few
 > course-specific spots (spelling variety, emoji meanings, code-comment
 > language) to taste, or run `/style-init` to have your AI assistant adapt the
-> whole guide to samples of your own writing. `context/style.md` is protected
-> during [upstream updates](../docs/updating-your-project.md), so your copy
-> sticks.
+> whole guide to samples of your own writing. `context/writing-style.md` is
+> protected during [upstream updates](../docs/updating-your-project.md), so your
+> copy sticks.
 
 Course materials are in English, and so is this guide, which AI tools read
 before drafting anything for you.

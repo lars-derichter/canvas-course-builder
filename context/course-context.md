@@ -3,9 +3,9 @@
 This document describes _your course_ — its subject, pedagogy, and conventions —
 so the lesson skills (`/design-lesson`, `/summarize-lesson`,
 `/build-lesson-module`) can work with your material instead of guessing. It is
-the course-design companion to [style.md](style.md), which covers writing style
-only. Both files are consumed by AI tools, so write them in whichever language
-you and your assistant work in, and keep the two consistent.
+the course-design companion to [writing-style.md](writing-style.md), which
+covers writing style only. Both files are consumed by AI tools, so write them in
+whichever language you and your assistant work in, and keep the two consistent.
 
 This file ships as a template. Run `/initialize-course-context` to fill it in
 (the skill reads your repo and interviews you for the rest), or edit it by hand.
@@ -63,7 +63,7 @@ TODO
 ## Module conventions
 
 <!-- How a generated student-facing module under `course/` is built beyond
-what docs/frontmatter.md and style.md already define: the page roles and their
+what docs/frontmatter.md and writing-style.md already define: the page roles and their
 order (overview, content pages, reference cards, summary, glossary, homework),
 which page types your course uses, per-page-type emoji or title conventions,
 and any recurring page structure (e.g. a three-part reference-card layout).

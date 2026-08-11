@@ -22,7 +22,7 @@ lesson-plan-NN.md                     (student-facing module)
 ## The two registers
 
 The workflow produces material for two audiences, defined in
-[style.md](../context/style.md):
+[writing-style.md](../context/writing-style.md):
 
 - **Colleague-facing** — the lesson plan and class version under `sources/`.
   Written for you and fellow teachers; never served by Docusaurus or synced to
@@ -146,8 +146,8 @@ retail counterpart of those wholesale sweeps: it logs one error or wanted change
 into `sources/issues.md` with at most one question, so you stay in your
 reviewing flow. Later, `/fix-issues` triages the whole queue — checking whether
 each fix has wider implications, from the same defect on other pages to a style
-rule that belongs in `style.md` — and applies the fixes after you approve its
-plan.
+rule that belongs in `writing-style.md` — and applies the fixes after you
+approve its plan.
 
 ## Adopting the workflow mid-course
 

@@ -13,8 +13,8 @@ would help you, there are two good routes:
 
 All would follow the established pattern: read
 [`course-context.md`](../context/course-context.md) and
-[`style.md`](../context/style.md) first, design-then-write phases, no
-auto-commits.
+[`writing-style.md`](../context/writing-style.md) first, design-then-write
+phases, no auto-commits.
 
 ### Course quality
 
@@ -62,7 +62,7 @@ patterns.
 
 ### Language-aware quality skills
 
-`/proofread` now derives its checks from whatever `style.md` says, but
+`/proofread` now derives its checks from whatever `writing-style.md` says, but
 `/consistency-check` still carries assumptions from the shipped defaults. Make
 both read the course language from `course.config.yml` and adapt their checks
 accordingly.

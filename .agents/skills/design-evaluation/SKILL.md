@@ -1,6 +1,6 @@
 ---
 name: design-evaluation
-description: Design an exam or test in evaluations/ from the lessons taught so far, following context/course-context.md and the student-facing register of context/style.md. Phase A proposes a blueprint matrix (learning goals × questions × difficulty) and flags over- and under-tested goals; Phase B writes the evaluation only after approval. Use for "design evaluation", "toets ontwerpen", "examen opstellen", "test maken over les 1 tot 4".
+description: Design an exam or test in evaluations/ from the lessons taught so far, following context/course-context.md and the student-facing register of context/writing-style.md. Phase A proposes a blueprint matrix (learning goals × questions × difficulty) and flags over- and under-tested goals; Phase B writes the evaluation only after approval. Use for "design evaluation", "toets ontwerpen", "examen opstellen", "test maken over les 1 tot 4".
 ---
 
 # Design evaluation
@@ -9,8 +9,8 @@ Design an exam or test together with the author and write it under
 `evaluations/<year>/<slug>/`, following
 [`context/course-context.md`](../../../context/course-context.md). The
 evaluation itself is student-facing material per
-[`context/style.md`](../../../context/style.md); the accompanying blueprint is
-colleague-facing.
+[`context/writing-style.md`](../../../context/writing-style.md); the
+accompanying blueprint is colleague-facing.
 
 ## Input
 
@@ -27,13 +27,13 @@ intent. If the scope is not given, default to every lesson with a plan in
 1. **Read the fixed inputs**: `course-context.md` — pedagogy, learning-goal
    scheme and its reference notation, scope boundaries; for a needed section
    still `TODO`, infer the answer from the repo or ask, offering at the end to
-   save it back; `context/style.md` — shared rules plus the student-facing
-   section; every lesson plan in scope, in full, tracking per lesson which
-   learning goals were actively practised versus only seeded and how much lesson
-   time each goal received; existing evaluations under `evaluations/` as worked
-   examples (the most recent is the structural template). If none exist, the
-   Phase A proposal doubles as a proposal for the evaluation format — confirm it
-   explicitly.
+   save it back; `context/writing-style.md` — shared rules plus the
+   student-facing section; every lesson plan in scope, in full, tracking per
+   lesson which learning goals were actively practised versus only seeded and
+   how much lesson time each goal received; existing evaluations under
+   `evaluations/` as worked examples (the most recent is the structural
+   template). If none exist, the Phase A proposal doubles as a proposal for the
+   evaluation format — confirm it explicitly.
 
 2. **Confirm the destination** in one sentence: the highest-numbered
    academic-year folder under `evaluations/` (e.g. `2526/`) unless the author
@@ -69,7 +69,7 @@ intent. If the scope is not given, default to every lesson with a plan in
 5. **Write the evaluation** to `evaluations/<year>/<slug>/instructions.md`,
    mirroring the worked example (or the format agreed in Phase A): full question
    text, points per question, the agreed practicalities. Student-facing register
-   of `context/style.md`; code in questions follows the course's code
+   of `context/writing-style.md`; code in questions follows the course's code
    conventions from `course-context.md`.
 
 6. **Write the blueprint** to `evaluations/<year>/<slug>/blueprint.md`: the
@@ -77,10 +77,10 @@ intent. If the scope is not given, default to every lesson with a plan in
    a question needs one. Colleague-facing; never handed to students.
 
 7. **Style-check `instructions.md`** against the student-facing rules of
-   `context/style.md`, then report both paths and offer follow-ups, do not run
-   them: `/proofread` on `instructions.md`, `/rubric` for open questions,
-   `/build-quiz` if part should become a Canvas quiz, `/coverage-map` for the
-   whole-course picture, saving gathered facts into `course-context.md`.
+   `context/writing-style.md`, then report both paths and offer follow-ups, do
+   not run them: `/proofread` on `instructions.md`, `/rubric` for open
+   questions, `/build-quiz` if part should become a Canvas quiz, `/coverage-map`
+   for the whole-course picture, saving gathered facts into `course-context.md`.
 
 ## Rules
 

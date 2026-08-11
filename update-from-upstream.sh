@@ -4,9 +4,9 @@ set -euo pipefail
 # Update project from the upstream canvas-course-builder template repository.
 # Uses a squash merge so only one commit is added to your history.
 # Content directories (course/, evaluations/, sources/) and the protected files
-# (README.md, AGENTS.md, CLAUDE.md, context/style.md, context/course-context.md) are
-# always preserved. Conflicts in other files are resolved interactively (keep local /
-# upstream / merge in the editor).
+# (README.md, AGENTS.md, CLAUDE.md, context/writing-style.md,
+# context/course-context.md) are always preserved. Conflicts in other files are
+# resolved interactively (keep local / upstream / merge in the editor).
 
 # --- Load configuration ---
 #
@@ -27,7 +27,7 @@ protected_dirs = course evaluations sources
 
 # Individual files always kept. Includes this config file itself so your
 # customizations here survive future upstream updates.
-protected_files = README.md AGENTS.md CLAUDE.md context/style.md context/course-context.md update-from-upstream.conf course.config.yml
+protected_files = README.md AGENTS.md CLAUDE.md context/writing-style.md context/course-context.md update-from-upstream.conf course.config.yml
 
 # Upstream git remote and branch to merge from.
 upstream_remote = upstream

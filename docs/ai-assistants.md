@@ -42,15 +42,17 @@ On Windows, skills need one git setting before they are found; see
 
 ## Writing style
 
-Your AI assistant follows the conventions in [style.md](../context/style.md)
-when drafting course content: language, register, tone, structure, formatting,
-and patterns to avoid. The shipped `style.md` is the English baseline, usable as
-it stands; run `/style-init` early to adapt it to your own voice and audience
-(see [Customization](customization.md)). If you would rather skip the interview,
+Your AI assistant follows the conventions in
+[writing-style.md](../context/writing-style.md) when drafting course content:
+language, register, tone, structure, formatting, and patterns to avoid. The
+shipped `writing-style.md` is the English baseline, usable as it stands; run
+`/style-init` early to adapt it to your own voice and audience (see
+[Customization](customization.md)). If you would rather skip the interview,
 `templates/` also ships baselines for Flemish Dutch and Netherlands Dutch: copy
-the one matching your course over `context/style.md` and edit from there.
+the one matching your course over `context/writing-style.md` and edit from
+there.
 
-Three skills wrap around `style.md`:
+Three skills wrap around `writing-style.md`:
 
 - `/style-init` adapts it to your own voice and audience; run it once when you
   set up a new course.
@@ -58,19 +60,19 @@ Three skills wrap around `style.md`:
 - `/style-update` folds corrections you made during a session into it as durable
   rules, so you don't repeat the same feedback.
 
-You can also edit `style.md` by hand at any time. Treat it as a living document:
-the more it reflects your real preferences, the less you'll need to correct the
-assistant's output.
+You can also edit `writing-style.md` by hand at any time. Treat it as a living
+document: the more it reflects your real preferences, the less you'll need to
+correct the assistant's output.
 
 ## Course context
 
-Where `style.md` captures _how you write_,
+Where `writing-style.md` captures _how you write_,
 [course-context.md](../context/course-context.md) captures _what your course
 is_: subject, pedagogy, lesson-plan conventions, module structure, code and
 download rules, glossary, and scope boundaries. The lesson skills read it before
 generating anything. Run `/initialize-course-context` once when you set up a
 course, and again after your README, docs, or course structure change
-substantially. Like `style.md`, you can also edit it by hand.
+substantially. Like `writing-style.md`, you can also edit it by hand.
 
 How the lesson skills chain together, from idea to lesson plan to class version
 to published module, is described in the [lesson workflow](lesson-workflow.md).
@@ -88,19 +90,20 @@ skill commits to git (except `/commit`, whose whole job that is).
 
 ### Writing style
 
-- **/proofread** checks one markdown document against `style.md` and your
-  spelling. It picks the register from the file path (`course/` and
+- **/proofread** checks one markdown document against `writing-style.md` and
+  your spelling. It picks the register from the file path (`course/` and
   `evaluations/` are student-facing; `sources/` is colleague-facing) and reports
   findings in three buckets: must fix, strongly suggest, consider, each with
   line number, quote, diagnosis, and proposed replacement. Every check comes
-  from `style.md` itself, so it follows your rules and your language rather than
-  a fixed list.
-- **/style-init** rewrites `style.md` to match your voice and audience. It asks
-  for samples of your writing (strongly preferred) and interviews you only about
-  what the samples did not answer. Without samples it warns that the result is a
-  best guess.
+  from `writing-style.md` itself, so it follows your rules and your language
+  rather than a fixed list.
+- **/style-init** rewrites `writing-style.md` to match your voice and audience.
+  It asks for samples of your writing (strongly preferred) and interviews you
+  only about what the samples did not answer. Without samples it warns that the
+  result is a best guess.
 - **/style-update** reviews the current conversation for style corrections and
-  preferences you expressed and folds them into `style.md` as durable rules.
+  preferences you expressed and folds them into `writing-style.md` as durable
+  rules.
 
 For the best `/proofread` spell-checking, install `hunspell` with dictionaries
 matching your course languages. For English plus Dutch:
@@ -268,7 +271,8 @@ predictable for both the reader and the model:
   B."
 - **State each rule once.** A rule already carried by a step does not reappear
   under `## Rules`; drop the Rules section if nothing is left.
-- **Defer, don't copy.** Content owned by [style.md](../context/style.md),
+- **Defer, don't copy.** Content owned by
+  [writing-style.md](../context/writing-style.md),
   [frontmatter.md](frontmatter.md), or
   [course-context.md](../context/course-context.md) is referenced, never
   inlined; copies drift. Dense reference payloads (format specs, protocol
