@@ -27,7 +27,7 @@ async function exportTocCmd(options = {}) {
 
   const body = generateToc(modules, {
     flagged: options.flagged,
-    title: options.title || loadCourseConfig().labels.export.course_title,
+    title: options.title || loadCourseConfig().title,
     subtitle: options.subtitle,
   });
 

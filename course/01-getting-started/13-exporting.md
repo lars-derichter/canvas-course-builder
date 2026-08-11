@@ -103,6 +103,11 @@ terminal so you can follow its progress.
 Exports land in the `exports/` folder in your project. That folder is ignored by
 git, so your documents never end up in your repository or on Canvas.
 
+Export the whole course and the document is titled after your course, filename
+included: `programming-fundamentals.pdf`. That name comes from `title` in
+`course.config.yml`. Export a single module and the module's own name is used
+instead.
+
 ## Changing how exports look
 
 Out of the box, exports use a clean, neutral style. Two settings in

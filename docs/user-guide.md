@@ -166,7 +166,7 @@ items, and the generated glossary page. It also sets the Docusaurus site locale,
 so the site chrome ("On this page", "Next", …) follows along.
 
 ```yaml
-title: Programming Fundamentals # names the preview site and its navbar
+title: Programming Fundamentals # names the site, navbar and export covers
 tagline: Bachelor 1, semester 2 # optional one-line descriptor
 
 language: en # built-in label sets: en, nl (shipped default: en)
@@ -178,9 +178,10 @@ labels: # optional per-label overrides on top of the set
     file: Download
 ```
 
-Without a `title`, the site falls back to the generic label for the course
-language ("Course", "Cursus"). Set it — it is the one place that names the
-course, and unlike `docusaurus.config.js` it survives an upstream update.
+Without a `title`, the site and a full-course export fall back to the generic
+label for the course language ("Course", "Cursus"). Set it — it is the one place
+that names the course, and unlike `docusaurus.config.js` it survives an upstream
+update.
 
 Override groups and keys: `alerts` (`note`, `tip`, `important`, `warning`,
 `caution`, `check`), `cards` (`external_url`, `file`), `export` (`attachment`,
@@ -347,6 +348,10 @@ Multiple items combine into one document with a title page, a generated table of
 contents, and a page break between chapters. Output lands in `exports/`
 (gitignored). Non-markdown items become link cards (external URLs) or attachment
 references (files) in the combined document.
+
+A whole-course export takes its title, and its filename, from `title` in
+`course.config.yml` — `exports/programming-fundamentals.pdf`. A module export is
+titled after the module. `--title "Something else"` overrides both.
 
 For a curated selection, use the two-step **table of contents** flow: generate a
 list, delete the lines you do not want, then export what remains.

@@ -58,6 +58,10 @@ The two combine freely: `theme: thomas-more` with `export.style: generic` gives
 the institution's colours in the neutral layout.
 `npx course export --style <name|path>` overrides the style for a single run.
 
+Both axes are about the look. The cover's _words_ come from elsewhere: an export
+covering the whole course is headed by `title` from `course.config.yml`, a
+module export by the module's name, and `--title` overrides either.
+
 > [!IMPORTANT]
 >
 > **DOCX does not follow the theme.** Word styles are baked into

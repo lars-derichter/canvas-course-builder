@@ -154,11 +154,27 @@ function resolvePositional(p, byPath) {
 }
 
 /**
- * Resolve the export mode into { groups, regime, defaultSlug, defaultTitle }.
- * `labels` supplies the localized default titles/slugs (en when omitted).
+ * Output-filename slug for a whole-course export. Never empty and never absurdly
+ * long: slugify strips everything outside [a-z0-9], so a title written in a
+ * non-Latin script slugs to '' and would land in a hidden `exports/.pdf`, and an
+ * essay-length title would exceed the filesystem's name limit. The label
+ * fallback can itself be empty, because it is overridable, hence the literal.
  */
-function resolveMode(paths, options, index, labels = getLabels()) {
+function exportSlug(title, labels) {
+  const slug =
+    slugify(title) || slugify(labels.export.course_title) || 'course';
+  return slug.slice(0, 100).replace(/-+$/, '');
+}
+
+/**
+ * Resolve the export mode into { groups, regime, defaultSlug, defaultTitle }.
+ * `labels` supplies the localized default titles/slugs (en when omitted), and
+ * `course` the course's own name from course.config.yml, which titles any export
+ * covering the whole course.
+ */
+function resolveMode(paths, options, index, labels = getLabels(), course = {}) {
   const { modules, byPath } = index;
+  const courseTitle = course.title || labels.export.course_title;
   const flagged = (entry) =>
     !options.flagged ||
     (entry.item.frontmatter && entry.item.frontmatter.export === true);
@@ -188,7 +204,7 @@ function resolveMode(paths, options, index, labels = getLabels()) {
       groups,
       regime: groups.length > 1 ? 'course' : 'flat',
       defaultSlug: 'toc',
-      defaultTitle: meta.title || labels.export.course_title,
+      defaultTitle: meta.title || courseTitle,
       defaultSubtitle: meta.subtitle,
     };
   }
@@ -280,7 +296,7 @@ function resolveMode(paths, options, index, labels = getLabels()) {
       groups,
       regime: groups.length > 1 ? 'course' : 'flat',
       defaultSlug: 'flagged',
-      defaultTitle: options.title || labels.export.course_title,
+      defaultTitle: options.title || courseTitle,
     };
   }
 
@@ -295,8 +311,8 @@ function resolveMode(paths, options, index, labels = getLabels()) {
   return {
     groups,
     regime: 'course',
-    defaultSlug: slugify(labels.export.course_title),
-    defaultTitle: options.title || labels.export.course_title,
+    defaultSlug: exportSlug(options.title || courseTitle, labels),
+    defaultTitle: options.title || courseTitle,
   };
 }
 
@@ -368,11 +384,11 @@ async function exportCmd(paths = [], options = {}) {
     return;
   }
 
-  const { language, labels } = loadCourseConfig();
+  const { title, language, labels } = loadCourseConfig();
 
   let mode;
   try {
-    mode = resolveMode(paths, options, indexCourse(), labels);
+    mode = resolveMode(paths, options, indexCourse(), labels, { title });
   } catch (err) {
     log.error(`[export] ${err.message}`);
     process.exit(1);
@@ -463,4 +479,5 @@ async function run(style, theme, input, output, format, options, resourcePath) {
 
 module.exports = exportCmd;
 module.exports.collectVar = collectVar;
+module.exports.exportSlug = exportSlug;
 module.exports.resolveMode = resolveMode;
