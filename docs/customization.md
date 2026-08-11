@@ -28,6 +28,23 @@ your version is never overwritten. `templates/` is not, by design: it holds
 shipped defaults you copy out of, never edit in place. The same goes for the
 style baselines below and for `export-styles/` and `src/css/themes/`.
 
+## The course name
+
+`course.config.yml` holds the name of the course, which titles the preview site
+and its navbar and heads the cover of a full-course PDF or Word export:
+
+```yml
+title: Programming Fundamentals
+tagline: Bachelor 1, semester 2 # optional, shown under the title on covers
+```
+
+Leave `title` out and it falls back to the generic label for your course
+language — "Course", "Cursus" — which is a nudge, not a name. Set it once.
+
+Do not put the title in `docusaurus.config.js`. That file belongs to the tooling
+project and is overwritten on [upstream updates](updating-your-project.md);
+`course.config.yml` is protected, so a title set there sticks.
+
 ## Language
 
 `course.config.yml` sets the language of every generated student-facing label:
@@ -136,8 +153,8 @@ Canvas pages pick it up on the next run.
 
 [`src/css/custom.css`](../src/css/custom.css) holds no colours of its own — it
 maps the `--ccb-*` tokens onto Docusaurus's `--ifm-*` variables and styles the
-components. The site title and navbar label are set in
-[`docusaurus.config.js`](../docusaurus.config.js).
+components. The site title and navbar label come from `title` in
+`course.config.yml`, above.
 
 ### Layout: the export style
 

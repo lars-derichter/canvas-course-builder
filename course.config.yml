@@ -1,5 +1,13 @@
-# Per-course settings: language, look, and label overrides.
+# Per-course settings: name, language, look, and label overrides.
 # This file is protected during upstream updates (see update-from-upstream.conf).
+
+# The name of this course. Titles the preview site and its navbar. Leave it out
+# and it falls back to the generic label for the language below ("Course",
+# "Cursus"), so set it to something of your own.
+title: Canvas Course Builder
+
+# A one-line descriptor of the course: programme, year, semester. Optional.
+# tagline: Bachelor 1, semester 2
 
 # Colour and site typography, for the preview site, Canvas HTML and PDF
 # exports alike. Built-in themes: github, thomas-more. The value is a name

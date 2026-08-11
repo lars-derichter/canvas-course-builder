@@ -9,9 +9,11 @@ const remarkHtmlLinks = require('./src/plugins/remark-html-links');
 const { loadCourseConfig } = require('./lib/config/course-config');
 const { loadTheme } = require('./lib/config/theme');
 
-// Course language drives the site locale (Docusaurus theme chrome ships
-// translations) and every label the remark plugins render.
-const { language, labels } = loadCourseConfig(__dirname);
+// The course title names the site and its navbar. Course language drives the
+// site locale (Docusaurus theme chrome ships translations) and every label the
+// remark plugins render. All of it comes from course.config.yml, which upstream
+// updates never overwrite — unlike this file.
+const { title, tagline, language, labels } = loadCourseConfig(__dirname);
 
 // The selected theme declares the --ccb-* colour and font tokens that
 // custom.css maps onto Infima's variables, so it has to load first.
@@ -21,8 +23,8 @@ const themeCss =
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Canvas Course Builder',
-  tagline: 'Course materials',
+  title,
+  tagline,
   favicon: 'img/favicon.ico',
 
   url: 'https://example.com',
@@ -79,7 +81,7 @@ const config = {
         respectPrefersColorScheme: false,
       },
       navbar: {
-        title: 'Canvas Course Builder',
+        title,
         items: [],
       },
       footer: {

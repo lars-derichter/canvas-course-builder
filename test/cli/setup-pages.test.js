@@ -53,7 +53,7 @@ describe('parseGitHubRemote', () => {
 });
 
 const PLACEHOLDER_CONFIG = `const config = {
-  title: 'Canvas Course Builder',
+  title,
 
   url: 'https://example.com',
   baseUrl: '/',

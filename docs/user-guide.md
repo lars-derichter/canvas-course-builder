@@ -155,25 +155,32 @@ evaluations/
 Reference materials, inspiration, and notes. Not served by Docusaurus or synced
 to Canvas. See the [sources guide](sources.md) for conventions.
 
-## Course language and labels
+## Course name, language and labels
 
-`course.config.yml` at the project root sets the language of every generated,
-student-facing label in one place: alert titles (Canvas HTML, Docusaurus
-preview, and PDF/DOCX exports), the "External link" and "File" cards in the
-preview, the attachment and online-footnote labels in exports, default export
-titles and filenames, the fallback title for unnamed pulled items, and the
-generated glossary page. It also sets the Docusaurus site locale, so the site
-chrome ("On this page", "Next", …) follows along.
+`course.config.yml` at the project root names the course and sets the language
+of every generated, student-facing label in one place: alert titles (Canvas
+HTML, Docusaurus preview, and PDF/DOCX exports), the "External link" and "File"
+cards in the preview, the attachment and online-footnote labels in exports,
+default export titles and filenames, the fallback title for unnamed pulled
+items, and the generated glossary page. It also sets the Docusaurus site locale,
+so the site chrome ("On this page", "Next", …) follows along.
 
 ```yaml
-language: en          # built-in label sets: en, nl (shipped default: en)
+title: Programming Fundamentals # names the preview site and its navbar
+tagline: Bachelor 1, semester 2 # optional one-line descriptor
 
-labels:               # optional per-label overrides on top of the set
+language: en # built-in label sets: en, nl (shipped default: en)
+
+labels: # optional per-label overrides on top of the set
   alerts:
     caution: Watch out
   cards:
     file: Download
 ```
+
+Without a `title`, the site falls back to the generic label for the course
+language ("Course", "Cursus"). Set it — it is the one place that names the
+course, and unlike `docusaurus.config.js` it survives an upstream update.
 
 Override groups and keys: `alerts` (`note`, `tip`, `important`, `warning`,
 `caution`, `check`), `cards` (`external_url`, `file`), `export` (`attachment`,

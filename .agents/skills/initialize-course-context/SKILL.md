@@ -22,6 +22,8 @@ contradicts it, and say so explicitly in the report.
    still the shipped template (marked `TODO`) and which are filled in.
 
 2. **Read the repo before asking anything.** In order:
+   - `course.config.yml` — `title` and `tagline` are the authoritative course
+     name and descriptor, and `language` the course language.
    - `README.md` and `AGENTS.md` at the project root — course name, subject,
      institution, audience.
    - `context/style.md` — language, register, student level; do not duplicate

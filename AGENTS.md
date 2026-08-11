@@ -88,6 +88,11 @@ Three layers:
 
 - `course.config.yml` — Committed, per-course settings, loaded via
   `lib/config/course-config.js`:
+  - `title` names the course: the preview site and its navbar
+    (`docusaurus.config.js`). The machine-readable answer to "what is this
+    course called". An unset title falls back to the language's
+    `export.course_title` label, because Docusaurus requires a non-empty one.
+    `tagline` is an optional one-line descriptor.
   - `language` drives every generated student-facing label (alert titles,
     link/file cards, export labels, glossary) and the Docusaurus locale;
     built-in `en`/`nl` label sets live in `lib/config/labels.js`, with optional
