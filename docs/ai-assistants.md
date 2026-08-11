@@ -318,11 +318,15 @@ predictable for both the reader and the model:
   you reliably know; which verb an author picked is what you would have to
   guess, and prefix matching only keys on the first segment. The verb comes
   last, from a small vocabulary: `design` for gated interactive authoring,
-  `build` for generation from an approved source, `init` for one-time setup
-  interviews, `create`/`edit`/`update` for configuration. Read-only report
-  skills take a result noun instead of a verb (`consistency-check`,
-  `coverage-map`, `image-todos`). Two names stay bare verbs because they are
-  single words in universal use: `/commit` and `/proofread`.
+  `build` for generation from an approved source, `init` for building a
+  configuration from ground truth — the repo, an interview, a reference document
+  — and `update` for changing a configuration already in place, whether from a
+  direct instruction (`/export-style-update`) or from decisions you settled
+  during the session (`/writing-style-update`). An `init` skill is not one-shot:
+  re-running it after the course changes is expected. Read-only report skills
+  take a result noun instead of a verb (`consistency-check`, `coverage-map`,
+  `image-todos`). Two names stay bare verbs because they are single words in
+  universal use: `/commit` and `/proofread`.
 
 Contributing a skill back to the template itself? See
 [Contributing](contributing.md).

@@ -141,7 +141,8 @@ embedded files. Frontmatter fields are documented in
 - Skill names are `<object>-<verb>`: the object first, so skills about the same
   thing share a prefix and sort together (`lesson-design`, `lesson-summarize`,
   `lesson-module-build`). Verbs come from a small set — `design`, `build`,
-  `init`, `create`/`edit`/`update`. Read-only reports take a result noun instead
+  `init` to build a configuration from ground truth, `update` to change one
+  already in place. Read-only reports take a result noun instead
   (`consistency-check`, `coverage-map`). `/commit` and `/proofread` stay bare
   verbs. The full skill template is in the "Creating your own skills" section of
   [`docs/ai-assistants.md`](docs/ai-assistants.md).
