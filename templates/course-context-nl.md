@@ -15,7 +15,8 @@
 > they get there. Run `/course-context-init` to fill it in (the skill reads your
 > repo and interviews you for the rest) or edit it by hand; a section left on
 > `TODO` counts as unanswered, and a skill that needs it will ask and offer to
-> save the answer here. English-language courses want
+> save the answer here; `/course-context-update` folds a working session's
+> decisions in afterwards. English-language courses want
 > [`course-context-en.md`](course-context-en.md) instead. Keep
 > `context/course-context.md` in `protected_files` in
 > `update-from-upstream.conf`, so

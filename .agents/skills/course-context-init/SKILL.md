@@ -87,8 +87,9 @@ contradicts it, and say so explicitly in the report.
 
 7. **Report changes.** List what changed per section and remind the author that
    the lesson skills will offer to save newly gathered facts back into this doc
-   as they work, and that re-running this skill after major repo changes keeps
-   it current.
+   as they work, that `/course-context-update` folds a working session's
+   decisions in without a full re-run, and that re-running this skill after
+   major repo changes keeps it current.
 
 ## Rules
 

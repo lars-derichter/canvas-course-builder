@@ -49,7 +49,8 @@ entries. Empty means every entry under `## Open`.
      `course-context.md`) and note whether `npx course build-glossary` must be
      re-run afterwards.
    - **Course context.** Does the fix contradict a fact recorded in
-     `context/course-context.md`?
+     `context/course-context.md`? Mark the group for a `/course-context-update`
+     offer — never edit `course-context.md` here.
    - **Lesson plans.** Grep `sources/lessons/` and `sources/lesson-plans/`:
      would the fixed student page now contradict the plan it was built from?
      Flag it — the plan edit belongs to `/lesson-retro` or the author, not this
@@ -67,9 +68,9 @@ entries. Empty means every entry under `## Open`.
 
 6. **Present one fix plan in chat**, per group and numbered entry: the proposed
    action — fix as described / already fixed, move only / not a defect, close as
-   author decision / route to `/writing-style-update` or `/lesson-retro` / defer
-   —, the files it touches, and the follow-ups from step 4. Add a separate list
-   of what will _not_ be fixed and why.
+   author decision / route to `/writing-style-update`, `/course-context-update`
+   or `/lesson-retro` / defer —, the files it touches, and the follow-ups from
+   step 4. Add a separate list of what will _not_ be fixed and why.
 
 7. Adjust the plan on request and stay in Phase A until the author explicitly
    approves. Stop. Wait for explicit approval before starting Phase B.
@@ -97,9 +98,10 @@ entries. Empty means every entry under `## Open`.
     `/issue-report`.
 
 12. **Report and offer follow-ups, do not run them**: `/writing-style-update`
-    for the style preferences that surfaced; `/proofread` for heavily edited
-    files; `/commit` for the changes; and the reminder that Canvas keeps serving
-    the old text until `npx course push` — never run the push.
+    for the style preferences that surfaced; `/course-context-update` for the
+    course facts a fix contradicted; `/proofread` for heavily edited files;
+    `/commit` for the changes; and the reminder that Canvas keeps serving the
+    old text until `npx course push` — never run the push.
 
 ## Rules
 

@@ -88,7 +88,8 @@ plausibly recent, propose it in the same breath.
 
 7. **Report.** What changed where, what was deliberately left as a fix list, and
    — if the author corrected the same kind of thing twice across retros —
-   suggest the pattern belongs in `course-context.md`.
+   suggest the pattern belongs in `course-context.md`, and point at
+   `/course-context-update` for folding it in.
 
 ## Rules
 
