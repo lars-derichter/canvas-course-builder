@@ -19,7 +19,10 @@ contradicts it, and say so explicitly in the report.
 ## Steps
 
 1. **Read `context/course-context.md` as it stands.** Note which sections are
-   still the shipped template (marked `TODO`) and which are filled in.
+   still the shipped template (marked `TODO`) and which are filled in. If every
+   section is still `TODO` and the author works in Dutch, offer to start from
+   `templates/course-context-nl.md` (the same scaffold with its headings and
+   guidance comments in Dutch) before filling anything in.
 
 2. **Read the repo before asking anything.** In order:
    - `course.config.yml` — `title` and `tagline` are the authoritative course
@@ -70,11 +73,11 @@ contradicts it, and say so explicitly in the report.
    template (Course overview, Learning goals, Assessment, Pedagogy, Lesson
    plans, Class versions, Module conventions, Code and downloads, Glossary,
    Scope boundaries) — the order is the backward-design chain, so do not reorder
-   it — and the English meta-note at the top. Replace each answered section's
-   `TODO` with concise prose or bullets; leave a section on `TODO` when there is
-   genuinely nothing to say yet, and drop the HTML guidance comments from
-   sections that are now filled in. Point to repo files (framework docs,
-   worked-example modules and lessons) rather than copying their content.
+   it — and the tip at the top. Replace each answered section's `TODO` with
+   concise prose or bullets; leave a section on `TODO` when there is genuinely
+   nothing to say yet, and drop the HTML guidance comments from sections that
+   are now filled in. Point to repo files (framework docs, worked-example
+   modules and lessons) rather than copying their content.
 
 6. **Check the update config.** If `update-from-upstream.conf` exists and its
    `protected_files` does not include `context/course-context.md`, tell the
@@ -88,8 +91,8 @@ contradicts it, and say so explicitly in the report.
 
 ## Rules
 
-- **Language.** Write the doc in the language the author works in, as its own
-  opening paragraph asks — that need not be the course language, which
+- **Language.** Write the doc in the language the author works in, as the tip at
+  the top asks — that need not be the course language, which
   `context/writing-style.md` states. Interview and reply in the same language.
 - Never invent course facts. Everything in the doc comes from the repo or from
   the author; when in doubt, ask or leave `TODO`.

@@ -1,22 +1,23 @@
 # Course context
 
-This document describes _your course_ — its subject, pedagogy, and conventions —
-so the lesson skills (`/lesson-design`, `/lesson-summarize`,
-`/lesson-module-build`) can work with your material instead of guessing. It is
-the course-design companion to [writing-style.md](writing-style.md), which
-covers writing style only. Both files are consumed by AI tools, so write them in
-whichever language you and your assistant work in, and keep the two consistent.
-
-The sections run in backward-design order: what students should be able to do,
-how you will know they can, and only then how they get there.
-
-This file ships as a template. Run `/course-context-init` to fill it in (the
-skill reads your repo and interviews you for the rest), or edit it by hand.
-Sections still marked `TODO` are treated as unanswered: a skill that needs one
-will gather the information itself and offer to save it here.
-
-Keep this file in `protected_files` in `update-from-upstream.conf` so upstream
-updates never overwrite your version.
+> [!TIP]
+>
+> This document describes _your course_: its learning goals, assessment,
+> pedagogy and conventions, so the lesson skills (`/lesson-design`,
+> `/lesson-summarize`, `/lesson-module-build`) work from your material instead
+> of guessing. It is the course-design companion to
+> [writing-style.md](writing-style.md), which covers writing style only, and its
+> sections run in backward-design order: what students should be able to do, how
+> you will know they can, and only then how they get there. Run
+> `/course-context-init` to fill it in (the skill reads your repo and interviews
+> you for the rest) or edit it by hand; a section left on `TODO` counts as
+> unanswered, and a skill that needs it will ask and offer to save the answer
+> here. Write it in whichever language you and your assistant work in — Dutch
+> courses can copy
+> [`templates/course-context-nl.md`](../templates/course-context-nl.md) over
+> this file first. Keep the file in `protected_files` in
+> `update-from-upstream.conf`, so upstream updates never overwrite your version.
+> See [Customization](../docs/customization.md).
 
 ## Course overview
 

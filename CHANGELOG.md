@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- **The course context explains itself in a tip.** The three paragraphs of
+  meta-explanation that opened `context/course-context.md` — what the file is,
+  how to fill it in, why it belongs in `protected_files` — now sit in a `[!TIP]`
+  at the top, like the README template and the style guide. The document itself
+  starts at its first real section.
 - **Course-context templates, in English and Dutch.**
   `templates/course-context-en.md` and `templates/course-context-nl.md` give the
   course-context document the same shape as the README and the style guides:
