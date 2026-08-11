@@ -38,7 +38,8 @@ page roles, code-download conventions, glossary, and scope boundaries. Its
 sections follow backward design — goals, then the evidence for them, then the
 teaching that gets students there — so a lesson design starts from the goals it
 serves rather than from the topic list. Run `/course-context-init` once to fill
-it in; the skills ask about (and offer to record) anything it doesn't cover yet.
+it in; the skills ask about (and offer to record) anything it doesn't cover yet,
+and `/course-context-update` folds a working session's decisions in afterwards.
 The richer that file, the less the skills need to ask.
 
 ## Steps

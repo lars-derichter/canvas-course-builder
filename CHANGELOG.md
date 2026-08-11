@@ -2,6 +2,17 @@
 
 ## Unreleased
 
+- **`/course-context-update` folds a session's decisions into the course
+  context.** The style guide had `/writing-style-update` to catch corrections
+  you made while working; the course context had only `/course-context-init`, so
+  a learning-goal notation or a scope boundary you settled mid-session had
+  nowhere durable to land and the next skill run asked about it again. The new
+  skill sweeps the conversation, clusters what it finds against the document's
+  own headings — whatever language they are in — and either fills a section
+  still on `TODO` or replaces a fact the conversation overtook. It proposes
+  every edit before applying it, never reorders the backward-design sections,
+  and hands writing-style corrections to `/writing-style-update` rather than
+  writing them itself. `/issue-fix` and `/lesson-retro` now route to it too.
 - **The course context explains itself in a tip.** The three paragraphs of
   meta-explanation that opened `context/course-context.md` — what the file is,
   how to fill it in, why it belongs in `protected_files` — now sit in a `[!TIP]`

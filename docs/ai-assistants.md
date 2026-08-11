@@ -73,11 +73,18 @@ module structure, code and download rules, glossary, and scope boundaries. Its
 sections run in backward-design order — what students should be able to do, how
 you will know they can, then how they get there — so the alignment between
 goals, assessment and teaching is written down once instead of re-derived per
-skill. The lesson skills read it before generating anything. Run
-`/course-context-init` once when you set up a course, and again after your
-README, docs, or course structure change substantially. Like `writing-style.md`,
-you can also edit it by hand. The shipped file is the English template;
-`templates/` holds the same scaffold in Dutch, so copy
+skill. The lesson skills read it before generating anything.
+
+Two skills wrap around `course-context.md`:
+
+- `/course-context-init` fills it in from your repo and an interview; run it
+  once when you set up a course, and again after your README, docs, or course
+  structure change substantially.
+- `/course-context-update` folds the design decisions you settled during a
+  working session into it, so the next skill run stops asking.
+
+Like `writing-style.md`, you can also edit it by hand. The shipped file is the
+English template; `templates/` holds the same scaffold in Dutch, so copy
 `templates/course-context-nl.md` over `context/course-context.md` first if that
 is the language you work in.
 
@@ -236,6 +243,13 @@ project whitelist.
   everything it can, interviews you only about what the repo did not answer, and
   writes the doc after per-section confirmation. Re-running is expected;
   existing content is treated as confirmed.
+- **/course-context-update** reviews the current conversation for course-design
+  decisions you settled — a learning-goal notation, an assessment rule, a scope
+  boundary, a module convention — and folds them into
+  [course-context.md](../context/course-context.md) as durable facts. It reads
+  the document's headings at runtime, so it fills a section still on `TODO` or
+  replaces a fact the conversation overtook, and never reorders the sections.
+  Writing-style corrections it notices go to `/writing-style-update` instead.
 - **/commit** makes committing safer and more consistent: it reviews the
   changes, stages the appropriate files, and creates a commit following the
   project conventions — imperative, present tense, verb-first summaries (`Add`,

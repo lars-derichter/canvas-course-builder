@@ -29,6 +29,11 @@ rules, glossary, scope boundaries — and drives the lesson skills
 marked `TODO` mean: gather the fact from the repo or the user, and offer to save
 it back into the doc. `/course-context-init` fills the doc in wholesale.
 
+If the user settles a course-design decision in conversation — a learning-goal
+notation, an assessment rule, a scope boundary, a module convention — offer to
+run `/course-context-update` so it lands in `course-context.md` as a durable
+fact.
+
 ## Commands
 
 Run `npx course --help` for the full command list, and `npx course <cmd> --help`

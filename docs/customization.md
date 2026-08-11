@@ -102,9 +102,10 @@ Three other things track the language you write in:
   describes what your course _is_ — learning goals, assessment, pedagogy,
   conventions — for the lesson skills to work from. It ships as the English
   fill-in template. `/course-context-init` fills it in in whatever language you
-  work in; for a Dutch scaffold to start from, copy
-  [`templates/course-context-nl.md`](../templates/course-context-nl.md) over it
-  first. Protected during upstream updates, like the style guide.
+  work in, and `/course-context-update` keeps it current by folding in the
+  design decisions you settle while working; for a Dutch scaffold to start from,
+  copy [`templates/course-context-nl.md`](../templates/course-context-nl.md)
+  over it first. Protected during upstream updates, like the style guide.
 
 - **The writing skills read `writing-style.md` at runtime.** `/proofread`
   derives its checks from whatever the guide says, so it follows your rules as

@@ -45,11 +45,6 @@ names below are provisional; they firm up when someone builds one.
 
 ### Meta
 
-- **/course-context-update**: the `/writing-style-update` analogue, and the
-  counterpart to `/course-context-init`. After a working session, fold
-  corrections about course _design_ (not writing style) into
-  `course-context.md`. Currently the lesson skills offer this ad hoc; a
-  dedicated end-of-session sweep would catch more.
 - **/academic-year-rollover**: interactive wrapper around the
   [new academic year](new-academic-year.md) guide: archive the previous year's
   `evaluations/` folder, reset sync state, update dates in homework frontmatter,
