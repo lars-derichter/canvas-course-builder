@@ -114,6 +114,11 @@ other guide. If anything fails along the way, check
     npx course new-module    # create a module (asks for name and position)
     ```
 
+    `course/01-getting-started/` is a real module, so it would be published to
+    your students along with your own. The setup wizard offers to remove it; see
+    [the built-in tutorial module](customization.md#the-built-in-tutorial-module)
+    for how to keep it locally without publishing it.
+
 ## Course structure
 
 ### Course modules (sync with Canvas / preview locally with Docusaurus)

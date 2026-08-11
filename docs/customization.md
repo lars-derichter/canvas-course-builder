@@ -270,6 +270,31 @@ The licences follow the tooling/content split:
   change or replace the licence for your own material, and update the licence
   section of your README to match.
 
+## The built-in tutorial module
+
+`course/01-getting-started/` is two things at once: a friendly walkthrough of
+the project — markdown, alerts, course structure, syncing, exporting, working
+with an AI assistant — and a worked example of every content type the tooling
+supports, which makes it the handiest reference while you build your first
+module.
+
+It is also a real module in `course/`, which means `npx course push` publishes
+it to your students along with everything else.
+
+> [!WARNING]
+>
+> Remove it, or move it out of `course/`, before your first push to a course
+> students can see. Otherwise fifteen pages about Canvas Course Builder appear
+> in their module list.
+
+`npx course setup` offers to delete it. Deleting is safe: the module stays
+readable in the
+[upstream repository](https://github.com/lars-derichter/canvas-course-builder/tree/main/course/01-getting-started),
+so you can consult it, or copy it back, long after your own course has replaced
+it. To keep it locally without publishing it, rename the folder with a leading
+underscore — `_01-getting-started` — which excludes it from Canvas syncing while
+the preview site still ignores it too.
+
 ## Files that belong to the tooling project
 
 "Use this template" copies the whole repository, so your course also inherits
