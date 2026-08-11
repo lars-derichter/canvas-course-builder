@@ -1,9 +1,9 @@
 ---
-name: style-init
+name: writing-style-init
 description: Interview the user and analyse samples of their writing to rewrite context/writing-style.md to match their voice, audience, and formatting preferences. Use for "initialize style", "set up the style guide", "configure the writing style", "stijlgids opzetten", "schrijfstijl instellen".
 ---
 
-# Style init
+# Writing style init
 
 Adapt [`context/writing-style.md`](../../../context/writing-style.md) — the
 writing-style guide your AI assistant follows when drafting course content — to
@@ -15,7 +15,7 @@ the course author's own voice and audience.
    the voice the author wants imitated (course material, blog posts, handouts).
    Samples reveal habits the author may not articulate. Without samples, proceed
    interview-only and warn explicitly that the resulting `writing-style.md` is a
-   best guess, refinable later via `/style-update` or direct edits.
+   best guess, refinable later via `/writing-style-update` or direct edits.
 
 2. **Analyse the samples, then interview only what they did not answer** (ask
    the user, bundling related questions into one round). Dimensions for both:
@@ -72,7 +72,7 @@ the course author's own voice and audience.
    directly contradicts the new `writing-style.md`.
 
 7. **Report** what changed and remind the author they can refine further with
-   `/style-update` or by editing the file directly.
+   `/writing-style-update` or by editing the file directly.
 
 ## Rules
 

@@ -42,9 +42,9 @@ phases, no auto-commits.
 
 ### Meta
 
-- **/update-course-context**: the `/style-update` analogue. After a working
-  session, fold corrections about course _design_ (not writing style) into
-  `course-context.md`. Currently the lesson skills offer this ad hoc; a
+- **/update-course-context**: the `/writing-style-update` analogue. After a
+  working session, fold corrections about course _design_ (not writing style)
+  into `course-context.md`. Currently the lesson skills offer this ad hoc; a
   dedicated end-of-session sweep would catch more.
 - **/new-year**: interactive wrapper around the
   [new academic year](new-academic-year.md) guide: archive the previous year's

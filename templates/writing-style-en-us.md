@@ -9,8 +9,8 @@
 > Colleagues who write UK English want
 > [`writing-style-en.md`](writing-style-en.md) instead. Adjust the few
 > course-specific spots (emoji meanings, code-comment language) to taste, or run
-> `/style-init` to have your AI assistant adapt the whole guide to samples of
-> your own writing. `context/writing-style.md` is protected during
+> `/writing-style-init` to have your AI assistant adapt the whole guide to
+> samples of your own writing. `context/writing-style.md` is protected during
 > [upstream updates](../docs/updating-your-project.md), so your copy sticks.
 
 Course materials are in English, and so is this guide, which AI tools read

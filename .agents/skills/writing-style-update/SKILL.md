@@ -1,9 +1,9 @@
 ---
-name: style-update
+name: writing-style-update
 description: Review style corrections and preferences the user expressed in this conversation, and fold them into context/writing-style.md as durable rules. Use for "update style", "make this a style rule", "remember this writing preference", "stijlregel toevoegen", "onthoud deze schrijfvoorkeur".
 ---
 
-# Style update
+# Writing style update
 
 Turn one-off style corrections from the current conversation into permanent
 entries in [`context/writing-style.md`](../../../context/writing-style.md), so

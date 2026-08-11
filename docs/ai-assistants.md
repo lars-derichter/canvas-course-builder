@@ -46,7 +46,7 @@ Your AI assistant follows the conventions in
 [writing-style.md](../context/writing-style.md) when drafting course content:
 language, register, tone, structure, formatting, and patterns to avoid. The
 shipped `writing-style.md` is the English baseline, usable as it stands; run
-`/style-init` early to adapt it to your own voice and audience (see
+`/writing-style-init` early to adapt it to your own voice and audience (see
 [Customization](customization.md)). If you would rather skip the interview,
 `templates/` also ships baselines for US English, Flemish Dutch and Netherlands
 Dutch: copy the one matching your course over `context/writing-style.md` and
@@ -54,11 +54,11 @@ edit from there.
 
 Three skills wrap around `writing-style.md`:
 
-- `/style-init` adapts it to your own voice and audience; run it once when you
-  set up a new course.
+- `/writing-style-init` adapts it to your own voice and audience; run it once
+  when you set up a new course.
 - `/proofread <path>` checks an existing document against it.
-- `/style-update` folds corrections you made during a session into it as durable
-  rules, so you don't repeat the same feedback.
+- `/writing-style-update` folds corrections you made during a session into it as
+  durable rules, so you don't repeat the same feedback.
 
 You can also edit `writing-style.md` by hand at any time. Treat it as a living
 document: the more it reflects your real preferences, the less you'll need to
@@ -97,13 +97,13 @@ skill commits to git (except `/commit`, whose whole job that is).
   line number, quote, diagnosis, and proposed replacement. Every check comes
   from `writing-style.md` itself, so it follows your rules and your language
   rather than a fixed list.
-- **/style-init** rewrites `writing-style.md` to match your voice and audience.
-  It asks for samples of your writing (strongly preferred) and interviews you
-  only about what the samples did not answer. Without samples it warns that the
-  result is a best guess.
-- **/style-update** reviews the current conversation for style corrections and
-  preferences you expressed and folds them into `writing-style.md` as durable
-  rules.
+- **/writing-style-init** rewrites `writing-style.md` to match your voice and
+  audience. It asks for samples of your writing (strongly preferred) and
+  interviews you only about what the samples did not answer. Without samples it
+  warns that the result is a best guess.
+- **/writing-style-update** reviews the current conversation for style
+  corrections and preferences you expressed and folds them into
+  `writing-style.md` as durable rules.
 
 For the best `/proofread` spell-checking, install `hunspell` with dictionaries
 matching your course languages. For English plus Dutch:
@@ -146,8 +146,8 @@ project whitelist.
   answers. Afterwards it sorts every observation into a destination and shows
   the list before touching anything: timing notes into the lesson plan,
   course-wide insights into `course-context.md`, content errors into a fix list,
-  style corrections to `/style-update`. The retro is the one sanctioned way to
-  modify an existing lesson plan.
+  style corrections to `/writing-style-update`. The retro is the one sanctioned
+  way to modify an existing lesson plan.
 
 ### Evaluation
 

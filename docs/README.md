@@ -27,7 +27,8 @@ upstream updates, and AI assistants read them before drafting anything.
 
 - [Writing style guide](../context/writing-style.md): the per-course style rules
   AI assistants follow (ships as the English baseline; make it yours with
-  `/style-init`, or swap in another language from [`templates/`](../templates/))
+  `/writing-style-init`, or swap in another language from
+  [`templates/`](../templates/))
 - [Course context](../context/course-context.md): the per-course design template
   the lesson skills rely on
 

@@ -36,9 +36,9 @@ Beyond everyday help — "draft a page about X", "move these three items to
 another module", "why did my push fail?" — this project ships a set of skills
 built for course authoring. The main families:
 
-- **Writing style** — `/style-init` adapts the style guide to your voice,
-  `/style-update` folds in new preferences, and `/proofread` checks a page
-  against it.
+- **Writing style** — `/writing-style-init` adapts the style guide to your
+  voice, `/writing-style-update` folds in new preferences, and `/proofread`
+  checks a page against it.
 - **Lessons** — `/lesson-design` helps you plan a lesson, `/lesson-summarize`
   makes a one-page class version, and `/lesson-module-build` turns the plan into
   finished student pages. After teaching, `/lesson-retro` debriefs the lesson

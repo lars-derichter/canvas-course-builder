@@ -77,12 +77,12 @@ Two other things track the language you write in:
   ships as the English baseline, usable as it stands. Make it yours early: the
   authoring skills follow whatever the style guide says. Two routes, and they
   combine:
-  - Run `/style-init` with your AI assistant to replace it with a guide matching
-    your own language, voice, and audience. It reads samples of your writing and
-    interviews you about the rest.
+  - Run `/writing-style-init` with your AI assistant to replace it with a guide
+    matching your own language, voice, and audience. It reads samples of your
+    writing and interviews you about the rest.
   - Or copy one of the baselines below over `context/writing-style.md` for a
-    ready guide with no interview, then edit it by hand or run `/style-init` on
-    top of it.
+    ready guide with no interview, then edit it by hand or run
+    `/writing-style-init` on top of it.
 
   Each baseline is a complete guide, not a fill-in-the-blanks template. All four
   keep the same two registers, the page-title emoji and the callout set, and

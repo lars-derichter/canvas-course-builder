@@ -42,8 +42,8 @@ entries. Empty means every entry under `## Open`.
      wrong text or pattern; list the extra hits.
    - **Style rule.** Does the fix encode a durable writing preference that
      `context/writing-style.md` does not have yet? Mark the group for an
-     `/style-update` offer — never edit `writing-style.md` here — and grep for
-     other pages that would violate the would-be rule.
+     `/writing-style-update` offer — never edit `writing-style.md` here — and
+     grep for other pages that would violate the would-be rule.
    - **Glossary.** Does the fix change or rename a term? Check the canonical
      glossary (default `sources/reference-materials/glossary.yml`; path per
      `course-context.md`) and note whether `npx course build-glossary` must be
@@ -67,9 +67,9 @@ entries. Empty means every entry under `## Open`.
 
 6. **Present one fix plan in chat**, per group and numbered entry: the proposed
    action — fix as described / already fixed, move only / not a defect, close as
-   author decision / route to `/style-update` or `/lesson-retro` / defer —, the
-   files it touches, and the follow-ups from step 4. Add a separate list of what
-   will _not_ be fixed and why.
+   author decision / route to `/writing-style-update` or `/lesson-retro` / defer
+   —, the files it touches, and the follow-ups from step 4. Add a separate list
+   of what will _not_ be fixed and why.
 
 7. Adjust the plan on request and stay in Phase A until the author explicitly
    approves. Stop. Wait for explicit approval before starting Phase B.
@@ -91,23 +91,24 @@ entries. Empty means every entry under `## Open`.
 
 11. **Move every handled entry to `## Resolved`**, keeping its text and
     appending `→ resolved YYYY-MM-DD: what fixed it (files touched)` — or the
-    non-fix outcome: already fixed, author decision, routed to `/style-update`.
-    Deferred entries stay under `## Open` with a dated `deferred:` note. Never
-    delete an entry; Resolved is the dedupe memory for `/issue-report`.
+    non-fix outcome: already fixed, author decision, routed to
+    `/writing-style-update`. Deferred entries stay under `## Open` with a dated
+    `deferred:` note. Never delete an entry; Resolved is the dedupe memory for
+    `/issue-report`.
 
-12. **Report and offer follow-ups, do not run them**: `/style-update` for the
-    style preferences that surfaced; `/proofread` for heavily edited files;
-    `/commit` for the changes; and the reminder that Canvas keeps serving the
-    old text until `npx course push` — never run the push.
+12. **Report and offer follow-ups, do not run them**: `/writing-style-update`
+    for the style preferences that surfaced; `/proofread` for heavily edited
+    files; `/commit` for the changes; and the reminder that Canvas keeps serving
+    the old text until `npx course push` — never run the push.
 
 ## Rules
 
 - **Language.** Write everything in the language `context/writing-style.md`
   states the course uses; `course.config.yml`'s `language` key only picks the
   generated labels. Reply in chat in the language the author writes in.
-- Never fix silently: `[style]` preferences route through the `/style-update`
-  offer, design decisions and scope changes go back to the author, anything
-  unclear goes into the question round.
+- Never fix silently: `[style]` preferences route through the
+  `/writing-style-update` offer, design decisions and scope changes go back to
+  the author, anything unclear goes into the question round.
 - Fix only what the queue and the approved plan cover — no drive-by rewrites of
   surrounding prose.
 - Every Resolved move states what changed, or why nothing had to.

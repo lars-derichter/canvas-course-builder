@@ -3,8 +3,8 @@
 > [!IMPORTANT]
 >
 > This guide ships as a ready English baseline, usable as it stands. It is a
-> starting point, not a requirement. Run `/style-init` early to adapt it to your
-> own language, audience, and voice, or copy another baseline from
+> starting point, not a requirement. Run `/writing-style-init` early to adapt it
+> to your own language, audience, and voice, or copy another baseline from
 > [`templates/`](../templates/) over this file: US English, Flemish Dutch or
 > Netherlands Dutch. The file is protected during upstream updates, so your
 > version sticks. See [Customization](../docs/customization.md).

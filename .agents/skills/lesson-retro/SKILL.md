@@ -10,8 +10,8 @@ that into durable improvements: timing corrections and notes-to-self in the
 lesson plan, insights that hold for every lesson in
 [`context/course-context.md`](../../../context/course-context.md), and a fix
 list for the student material. This is the teaching counterpart of
-`/style-update`: the self-improvement loop closed at the level of the lesson,
-not the writing.
+`/writing-style-update`: the self-improvement loop closed at the level of the
+lesson, not the writing.
 
 The interview is a conversation, not a form. Ask **one question at a time** and
 follow up on what they say before moving on. Never bundle the whole interview
@@ -77,7 +77,7 @@ plausibly recent, propose it in the same breath.
      list with file paths. Fixing them is a separate job; offer to do it after
      the retro edits land, or leave the list for later.
    - **Writing-style corrections** — do not fold these in here; point the author
-     at `/style-update`.
+     at `/writing-style-update`.
 
    Mark anything you are unsure about as a question, not a proposal.
 

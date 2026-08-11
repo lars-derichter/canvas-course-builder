@@ -8,9 +8,10 @@
 > rules work as written for most Dutch-language courses in Flanders. Colleagues
 > in the Netherlands want [`writing-style-nl.md`](writing-style-nl.md) instead.
 > Adjust the few course-specific spots (emoji meanings, code-comment language)
-> to taste, or run `/style-init` to have your AI assistant adapt the whole guide
-> to samples of your own writing. `context/writing-style.md` is protected during
-> [upstream updates](../docs/updating-your-project.md), so your copy sticks.
+> to taste, or run `/writing-style-init` to have your AI assistant adapt the
+> whole guide to samples of your own writing. `context/writing-style.md` is
+> protected during [upstream updates](../docs/updating-your-project.md), so your
+> copy sticks.
 
 Het cursusmateriaal is in het Nederlands, en deze gids ook.
 
