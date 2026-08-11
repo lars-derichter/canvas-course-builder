@@ -25,6 +25,8 @@ On Windows, skills need one git setting before they are found; see
 
 ## Use cases for course authors
 
+- **Setting up a new course**: `/course-setup` walks the whole first-run
+  configuration with you and writes the parts a command cannot.
 - **Writing course content**: describe what a page or assignment should cover
   and let the assistant draft the markdown.
 - **Creating modules and items**: ask the assistant to run the CLI commands for
@@ -246,6 +248,14 @@ project whitelist.
 
 ### Project
 
+- **/course-setup** turns a fresh copy of the template into your course. It
+  reads what the repo already settles, asks you the rest in one round, and
+  proposes every answer for approval before touching anything. Then it runs
+  `npx course setup` — which writes `course.config.yml` and installs the
+  language-matched templates — and writes the README prose the command cannot
+  generate, before handing off to `/course-context-init` and
+  `/writing-style-init`. It never connects Canvas for you: `npx course init`
+  asks for credentials you type yourself.
 - **/course-context-init** fills in or refreshes
   [course-context.md](../context/course-context.md): it reads the repo, infers
   everything it can, interviews you only about what the repo did not answer, and

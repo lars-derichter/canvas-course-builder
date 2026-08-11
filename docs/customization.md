@@ -31,7 +31,9 @@ want to change an answer — it offers your current settings as the defaults, an
 never replaces a file you have written in without asking.
 
 That leaves the writing itself: the README prose, and the course context. Both
-sections below say what goes in them.
+sections below say what goes in them. Working with an AI assistant,
+[`/course-setup`](ai-assistants.md#project) drives the same command and then
+writes those two for you.
 
 The rest of this page is what each choice means and how to change it by hand
 afterwards. You never have to run the wizard; every question it asks is a file
