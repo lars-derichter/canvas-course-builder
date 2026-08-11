@@ -85,9 +85,9 @@ Two other things track the language you write in:
 
   | Baseline                                                                  | Language                                                                                    |
   | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
-  | [`templates/style-generic-en.md`](../templates/style-generic-en.md)       | English, UK spelling, title-case headings. Already installed as `context/writing-style.md`. |
-  | [`templates/style-generic-nl-be.md`](../templates/style-generic-nl-be.md) | Nederlands, Vlaamse variant                                                                 |
-  | [`templates/style-generic-nl.md`](../templates/style-generic-nl.md)       | Nederlands, variant Nederland                                                               |
+  | [`templates/writing-style-en.md`](../templates/writing-style-en.md)       | English, UK spelling, title-case headings. Already installed as `context/writing-style.md`. |
+  | [`templates/writing-style-nl-be.md`](../templates/writing-style-nl-be.md) | Nederlands, Vlaamse variant                                                                 |
+  | [`templates/writing-style-nl.md`](../templates/writing-style-nl.md)       | Nederlands, variant Nederland                                                               |
 
   Either way your version sticks: like `README.md`, `context/writing-style.md`
   is protected during upstream updates.

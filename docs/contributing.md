@@ -165,7 +165,7 @@ course content, not these docs.
 
 The style baselines in `templates/` are the deliberate exception. Each one is
 written in the language it prescribes, so two of the three are in Dutch, and
-`style-generic-en.md` uses title-case headings because it states a title-case
+`writing-style-en.md` uses title-case headings because it states a title-case
 rule and applies it to itself. Leave them that way. Prettier does reflow their
 prose and normalise their list markers, but it changes neither language nor
 heading case, so what that exception protects is untouched.

@@ -7,7 +7,7 @@
 > and delete this tip. It is a usable baseline, not a fill-in-the-blanks
 > template: nothing is marked `TODO`, and the rules work as written for most
 > Dutch-language courses. Colleagues in Flanders want
-> [`style-generic-nl-be.md`](style-generic-nl-be.md) instead, which adds the
+> [`writing-style-nl-be.md`](writing-style-nl-be.md) instead, which adds the
 > Flemish register rules. Adjust the few course-specific spots (emoji meanings,
 > code-comment language) to taste, or run `/style-init` to have your AI
 > assistant adapt the whole guide to samples of your own writing.

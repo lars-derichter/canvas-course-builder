@@ -45,9 +45,9 @@ the course author's own voice and audience.
    course language already matches what the file holds, copy the right baseline
    from [`templates/`](../../../templates/) over `context/writing-style.md`
    first and adapt from there:
-   - `style-generic-en.md` — English, UK spelling, title-case headings.
-   - `style-generic-nl-be.md` — Nederlands, Vlaamse variant.
-   - `style-generic-nl.md` — Nederlands, variant Nederland.
+   - `writing-style-en.md` — English, UK spelling, title-case headings.
+   - `writing-style-nl-be.md` — Nederlands, Vlaamse variant.
+   - `writing-style-nl.md` — Nederlands, variant Nederland.
 
    Never edit anything in `templates/` itself: those are shipped defaults,
    overwritten on upstream updates.

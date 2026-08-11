@@ -6,7 +6,7 @@
 > `context/writing-style.md` in your project and delete this tip. It is a usable
 > baseline, not a fill-in-the-blanks template: nothing is marked `TODO`, and the
 > rules work as written for most Dutch-language courses in Flanders. Colleagues
-> in the Netherlands want [`style-generic-nl.md`](style-generic-nl.md) instead.
+> in the Netherlands want [`writing-style-nl.md`](writing-style-nl.md) instead.
 > Adjust the few course-specific spots (emoji meanings, code-comment language)
 > to taste, or run `/style-init` to have your AI assistant adapt the whole guide
 > to samples of your own writing. `context/writing-style.md` is protected during
