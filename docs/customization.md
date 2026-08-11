@@ -16,6 +16,11 @@ tooling — not your course. Replace it with the course README template:
 cp templates/README-course-en.md README.md
 ```
 
+Courses taught in Dutch want
+[`templates/README-course-nl.md`](../templates/README-course-nl.md) instead; it
+is the same template with its headings, prose and TODO comments in Dutch, and it
+links to the same English guides under `docs/`.
+
 Then work through the copy: change `Course name` to the name of your course,
 write the course overview, fill in the module table, check that the licence line
 matches [`course/LICENSE.md`](../course/LICENSE.md), and trim the "Useful links"

@@ -21,6 +21,11 @@
   Existing projects need a one-off manual move, because a protected file that
   changes location is the one case the update script cannot prune safely — see
   [Moving to `context/`](docs/updating-your-project.md#moving-to-context-one-off).
+- **A Dutch course README template.** `templates/README-course-nl.md` joins the
+  English one, so a Dutch-language course no longer starts by translating its
+  own README. The English template moved to `templates/README-course-en.md` to
+  match the language suffix every other per-language template carries; the old
+  path is pruned automatically on your next update.
 - **A US-English style baseline.** `templates/writing-style-en-us.md` joins the
   three existing baselines. The English one prescribes UK spelling, which meant
   a US instructor had to edit the guide before it was usable and any AI
