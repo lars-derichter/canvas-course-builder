@@ -118,8 +118,11 @@ still verified.
 
 - Every mechanical finding is verified against the filesystem or a command
   result; a grep hit alone is not a finding.
-- Skip code blocks, inline code, URLs, frontmatter, and HTML comments for
-  terminology checks. Link extraction uses the raw file.
+- Skip code blocks, inline code, URLs, frontmatter, and HTML comments for every
+  check that greps prose — terminology in step 4 and prerequisites in step 6
+  alike. Step 6 needs this most: a module or lesson number inside a command, a
+  path or sample output is not a prerequisite reference, and any course that
+  shows commands will carry them. Link extraction uses the raw file.
 - Course specifics come from the repo at runtime; hardcode nothing. Glossary
   path and module conventions come from `course-context.md`, the prose language
   and its variety from `writing-style.md`, and the phrasing this course actually
