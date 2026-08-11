@@ -24,6 +24,30 @@ program
   });
 
 program
+  .command('setup')
+  .description(
+    'First-run wizard: course name, language, templates, look, and Canvas',
+  )
+  .option('--language <lang>', 'Course label language (en, nl)')
+  .option('--title <title>', 'Course name')
+  .option('--tagline <text>', 'One-line course descriptor')
+  .option('--theme <name>', 'Colour theme name or path')
+  .option('--export-style <name>', 'Export style folder name or path')
+  .option('--readme <copy|keep>', 'Install the course README template')
+  .option('--course-context <copy|keep>', 'Install the course-context template')
+  .option(
+    '--writing-style <variant>',
+    'Writing style baseline (en, en-us, nl-be, nl, keep)',
+  )
+  .option(
+    '--tutorial <keep|remove>',
+    'Keep or remove course/01-getting-started',
+  )
+  .option('--no-canvas', 'Skip the Canvas connection question')
+  .option('-y, --yes', 'Take the answers from the flags and never prompt')
+  .action(require('./setup'));
+
+program
   .command('init')
   .description('Interactive setup for Canvas API credentials and sync file')
   .action(require('./init'));

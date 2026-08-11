@@ -37,6 +37,10 @@
     },
     "commands": [
       {
+        "command": "course.setup",
+        "title": "Course: Setup (First-Run Wizard)"
+      },
+      {
         "command": "course.init",
         "title": "Course: Init (Canvas Setup)"
       },

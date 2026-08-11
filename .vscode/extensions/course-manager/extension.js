@@ -14,6 +14,7 @@ const {
 // commands (new/rename/move/delete) run silently via runCli and report
 // through notifications + the output channel.
 const commands = {
+  'course.setup': 'npx course setup',
   'course.init': 'npx course init',
   'course.push': 'npx course push',
   'course.pushDryRun': 'npx course push --dry-run',

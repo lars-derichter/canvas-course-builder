@@ -21,6 +21,7 @@
     "build": "docusaurus build",
     "serve": "docusaurus serve",
     "clear": "docusaurus clear",
+    "course:setup": "node cli/index.js setup",
     "canvas:init": "node cli/index.js init",
     "canvas:push": "node cli/index.js push",
     "canvas:pull": "node cli/index.js pull",
