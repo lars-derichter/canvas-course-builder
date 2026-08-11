@@ -71,7 +71,7 @@ overridden under `labels:`; the file contains a commented block showing every
 overridable key. `course.config.yml` is protected during
 [upstream updates](updating-your-project.md), so your choice sticks.
 
-Two other things track the language you write in:
+Three other things track the language you write in:
 
 - **The writing style guide** ([writing-style.md](../context/writing-style.md))
   ships as the English baseline, usable as it stands. Make it yours early: the
@@ -97,6 +97,14 @@ Two other things track the language you write in:
 
   Either way your version sticks: like `README.md`, `context/writing-style.md`
   is protected during upstream updates.
+
+- **The course context** ([course-context.md](../context/course-context.md))
+  describes what your course _is_ — learning goals, assessment, pedagogy,
+  conventions — for the lesson skills to work from. It ships as the English
+  fill-in template. `/course-context-init` fills it in in whatever language you
+  work in; for a Dutch scaffold to start from, copy
+  [`templates/course-context-nl.md`](../templates/course-context-nl.md) over it
+  first. Protected during upstream updates, like the style guide.
 
 - **The writing skills read `writing-style.md` at runtime.** `/proofread`
   derives its checks from whatever the guide says, so it follows your rules as

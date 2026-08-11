@@ -76,7 +76,10 @@ goals, assessment and teaching is written down once instead of re-derived per
 skill. The lesson skills read it before generating anything. Run
 `/course-context-init` once when you set up a course, and again after your
 README, docs, or course structure change substantially. Like `writing-style.md`,
-you can also edit it by hand.
+you can also edit it by hand. The shipped file is the English template;
+`templates/` holds the same scaffold in Dutch, so copy
+`templates/course-context-nl.md` over `context/course-context.md` first if that
+is the language you work in.
 
 How the lesson skills chain together, from idea to lesson plan to class version
 to published module, is described in the [lesson workflow](lesson-workflow.md).

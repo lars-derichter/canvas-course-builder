@@ -2,6 +2,12 @@
 
 ## Unreleased
 
+- **Course-context templates, in English and Dutch.**
+  `templates/course-context-en.md` and `templates/course-context-nl.md` give the
+  course-context document the same shape as the README and the style guides:
+  language variants in `templates/`, the English one pre-installed as
+  `context/course-context.md`. A Dutch-language course no longer starts by
+  translating the scaffold before it can fill it in.
 - **The course context follows backward design.** `context/course-context.md`
   gained a Learning goals section and an Assessment section, and its sections
   now run in the order a course is actually designed: what students should be
