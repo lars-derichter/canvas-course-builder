@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- **Courses name themselves.** `course.config.yml` gains `title` and `tagline`.
+  The title heads the preview site and its navbar, and titles any PDF or DOCX
+  export covering the whole course, filename included
+  (`exports/programming-fundamentals.pdf` rather than `exports/course.pdf`); a
+  module export now prints the course name under the module's title on the
+  cover. The tagline subtitles those same covers. The point is where the setting
+  lives: `docusaurus.config.js` belongs to the tooling project and is
+  overwritten on update, `course.config.yml` is protected. Existing projects
+  need two small steps — see
+  [The course title moved](docs/updating-your-project.md#the-course-title-moved-into-courseconfigyml-one-off).
 - **The style guide and course context moved to `context/`.** `docs/style.md`
   and `docs/course-context.md` are not documentation: they are per-course files
   you own and AI assistants read, and everything else in `docs/` belongs to the

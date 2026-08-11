@@ -66,9 +66,3 @@ patterns.
 `/consistency-check` still carries assumptions from the shipped defaults. Make
 both read the course language from `course.config.yml` and adapt their checks
 accordingly.
-
-### Site title from course configuration
-
-`docusaurus.config.js` hardcodes the preview site title "Canvas Course Builder".
-Derive it from a course title field in `course.config.yml` so every course names
-its own site.

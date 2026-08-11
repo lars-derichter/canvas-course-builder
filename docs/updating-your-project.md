@@ -153,6 +153,28 @@ Finally, `grep -rn "docs/style\.md\|docs/course-context\.md" .` and fix anything
 left in `course/`, `evaluations/` or `sources/` — those are protected, so
 upstream never touches them and they may still point at the old locations.
 
+### The course title moved into `course.config.yml` (one-off)
+
+The preview site used to be titled from `docusaurus.config.js`. It now reads
+`title` from `course.config.yml`, which is protected, so your choice survives
+future updates. Two consequences for an existing project:
+
+- **Add a `title:`.** Your `course.config.yml` is protected and therefore does
+  not gain the new key, so until you add it the site falls back to the generic
+  label for your course language: "Course", or "Cursus". Nothing breaks, but
+  nothing names your course either.
+
+- **Re-run `npx course setup-pages` if you publish to GitHub Pages.** That
+  command writes `docusaurus.config.js`, which is _not_ protected, so this
+  update is likely to conflict on it. Taking upstream's version (the default at
+  the prompt) drops your `url`, `baseUrl`, `organizationName`, `projectName` and
+  `trailingSlash`, and the site then deploys to the wrong base path.
+  `setup-pages` is safe to re-run and puts all five back:
+
+  ```bash
+  npx course setup-pages
+  ```
+
 ## Resolving conflicts
 
 A conflict only happens when a file outside your protected paths was changed
