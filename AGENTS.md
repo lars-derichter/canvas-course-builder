@@ -23,8 +23,8 @@ the new preference is folded into `writing-style.md` as a durable rule.
 **Read [`context/course-context.md`](context/course-context.md) before designing
 lessons or generating modules.** It describes the course itself — pedagogy,
 lesson-plan and module conventions, code/download rules, glossary, scope
-boundaries — and drives the lesson skills (`/design-lesson`,
-`/summarize-lesson`, `/build-lesson-module`). Sections still marked `TODO` mean:
+boundaries — and drives the lesson skills (`/lesson-design`,
+`/lesson-summarize`, `/lesson-module-build`). Sections still marked `TODO` mean:
 gather the fact from the repo or the user, and offer to save it back into the
 doc. `/initialize-course-context` fills the doc in wholesale.
 

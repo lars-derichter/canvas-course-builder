@@ -56,7 +56,7 @@ still verified.
      Judgement-based; keep it to clear cases.
    - **Synonym drift**: pages using a synonym where the glossary defines a base
      term. First use with the synonyms named once is fine (see the terminology
-     rule in `/build-lesson-module`); consistent use of the synonym instead of
+     rule in `/lesson-module-build`); consistent use of the synonym instead of
      the base term is a finding.
    - **Generated pages up to date**: run `npx course build-glossary --check`. A
      failure is a must-fix finding.

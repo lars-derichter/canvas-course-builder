@@ -124,18 +124,18 @@ project whitelist.
 
 ### Lessons
 
-- **/design-lesson** designs a new lesson plan under `sources/lessons/`, from
+- **/lesson-design** designs a new lesson plan under `sources/lessons/`, from
   rough notes, a request for a follow-up lesson, or a vague intent (it asks up
   to three sharp questions). The design comes first, in chat: learning goals,
   place in the course, block structure, deliberate exclusions, with honest pros
   and cons of your suggestions and of its own. After approval it writes
   `sources/lessons/lesson-NN.md` and adds new terms to the glossary if your
   course keeps one. It never changes existing lessons.
-- **/summarize-lesson** distils a full lesson plan into a one-page class version
+- **/lesson-summarize** distils a full lesson plan into a one-page class version
   under `sources/lesson-plans/`: learning goals, content inventory, and a
   telegram-style timeline that fit on one A5 page. It never invents content; if
   something is missing from the source plan, it surfaces the gap and stops.
-- **/build-lesson-module** turns a finished lesson plan into a complete
+- **/lesson-module-build** turns a finished lesson plan into a complete
   student-facing module under `course/`: it proposes the module design (page
   split, code archives, image placeholders), and after approval writes every
   file, with frontmatter, downloadable archives, transparent placeholder PNGs
@@ -187,7 +187,7 @@ project whitelist.
   Every claim cites the files behind it. Most useful right before an exam
   period.
 - **/image-todos** lists all outstanding image work across the course: the
-  placeholder PNGs and image-TODO comments that `/build-lesson-module` leaves
+  placeholder PNGs and image-TODO comments that `/lesson-module-build` leaves
   behind, as one table plus an orphan list. Pure report.
 
 ### Issue queue
@@ -244,7 +244,7 @@ want automated and point the assistant at the conventions below. For example:
 > short "what changed this week" student announcement from the git log. Follow
 > the conventions in the "Creating your own skills" section of
 > `docs/ai-assistants.md`, and look at
-> `.agents/skills/summarize-lesson/SKILL.md` for a model.
+> `.agents/skills/lesson-summarize/SKILL.md` for a model.
 
 The [ideas list](roadmap.md) has more candidates; most are within reach of a
 single AI-assisted session.

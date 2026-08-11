@@ -1,9 +1,9 @@
 ---
-name: build-lesson-module
+name: lesson-module-build
 description: Generate a complete student-facing module under course/ from a lesson plan in sources/lessons/ — pages (overview, content, reference cards, summary, glossary, optional homework), downloadable code archives, and transparent PNG placeholders with TODO notes for images. Phase A proposes the design and stops for approval; Phase B writes the files. Use for "build lesson module", "turn this lesson plan into a module", "generate the student material", "module maken van les", "lesplan omzetten naar course", "student-materiaal genereren".
 ---
 
-# Build lesson module
+# Lesson module build
 
 Turn a lesson plan under `sources/lessons/lesson-NN.md` into a complete
 student-facing module under `course/`.
@@ -38,7 +38,7 @@ with one sentence if the source is not a `.md` under `sources/lessons/`.
      one archive in numbered subfolders. Layout, packaging, and exclusions
      follow the Code and downloads section of `course-context.md`.
    - **Reference cards** (only if `course-context.md` defines card page types).
-     Find every card the plan introduces in prose — the way `/design-lesson`
+     Find every card the plan introduces in prose — the way `/lesson-design`
      writes them; each becomes its own page.
    - **Homework.** A homework page only if the plan has a homework section.
    - **Images.** References like "show on the board", diagrams, schemas. One

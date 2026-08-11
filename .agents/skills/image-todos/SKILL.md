@@ -1,12 +1,12 @@
 ---
 name: image-todos
-description: List all outstanding image work across the course — the transparent placeholder PNGs and image-TODO comment blocks that /build-lesson-module leaves behind. Pure report, writes nothing. Use for "image todos", "placeholder images", "which images do I still have to make", "openstaande afbeeldingen", "welke afbeeldingen moet ik nog maken", "beeldwerk oplijsten".
+description: List all outstanding image work across the course — the transparent placeholder PNGs and image-TODO comment blocks that /lesson-module-build leaves behind. Pure report, writes nothing. Use for "image todos", "placeholder images", "which images do I still have to make", "openstaande afbeeldingen", "welke afbeeldingen moet ik nog maken", "beeldwerk oplijsten".
 ---
 
 # Image todos
 
 List every image that still needs to be made across the course:
-`/build-lesson-module` drops a 1x1 transparent PNG per planned image in
+`/lesson-module-build` drops a 1x1 transparent PNG per planned image in
 `_files/` and an HTML-comment TODO block at the bottom of each page that embeds
 one. This skill finds all of them, cross-references placeholders with their
 TODOs, and reports the outstanding work in one table. Pure report; it writes
@@ -19,7 +19,7 @@ all of `course/`.
 
 ## Steps
 
-1. **Find placeholder PNGs.** `/build-lesson-module` writes a fixed 1x1
+1. **Find placeholder PNGs.** `/lesson-module-build` writes a fixed 1x1
    transparent PNG. Decode the known bytes to a temp file and compare checksums
    against every PNG under `course/**/_files/`:
 
@@ -37,7 +37,7 @@ all of `course/`.
 
 2. **Find TODO blocks.** Grep the pages under `course/` for HTML comments
    containing `TODO` (`grep -rn 'TODO' course --include='*.md'`, then keep only
-   hits inside `<!-- … -->`). `/build-lesson-module` puts one block at the
+   hits inside `<!-- … -->`). `/lesson-module-build` puts one block at the
    bottom of each page with images, listing each placeholder and what it must
    show; other image-related TODO comments count too.
 

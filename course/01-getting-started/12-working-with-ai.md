@@ -24,7 +24,7 @@ follows instructions written for exactly that job. For example:
 
 - `/proofread course/01-getting-started/03-alerts.md` checks a page against the
   project's writing style and your spelling.
-- `/build-lesson-module lesson-03` turns a finished lesson plan into a complete
+- `/lesson-module-build lesson-03` turns a finished lesson plan into a complete
   set of student pages.
 
 Skills are plain markdown files in the `.agents/skills/` folder, so you can read
@@ -39,8 +39,8 @@ built for course authoring. The main families:
 - **Writing style** — `/style-init` adapts the style guide to your voice,
   `/style-update` folds in new preferences, and `/proofread` checks a page
   against it.
-- **Lessons** — `/design-lesson` helps you plan a lesson, `/summarize-lesson`
-  makes a one-page class version, and `/build-lesson-module` turns the plan into
+- **Lessons** — `/lesson-design` helps you plan a lesson, `/lesson-summarize`
+  makes a one-page class version, and `/lesson-module-build` turns the plan into
   finished student pages. After teaching, `/lesson-retro` debriefs the lesson
   and folds your notes back in.
 - **Evaluation** — `/design-evaluation` blueprints an exam, `/build-quiz` turns

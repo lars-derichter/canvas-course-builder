@@ -1,8 +1,8 @@
 # Course context
 
 This document describes _your course_ — its subject, pedagogy, and conventions —
-so the lesson skills (`/design-lesson`, `/summarize-lesson`,
-`/build-lesson-module`) can work with your material instead of guessing. It is
+so the lesson skills (`/lesson-design`, `/lesson-summarize`,
+`/lesson-module-build`) can work with your material instead of guessing. It is
 the course-design companion to [writing-style.md](writing-style.md), which
 covers writing style only. Both files are consumed by AI tools, so write them in
 whichever language you and your assistant work in, and keep the two consistent.

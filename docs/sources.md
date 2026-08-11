@@ -32,10 +32,10 @@ documents the entry format.
 Three of the suggested folders carry the [lesson workflow](lesson-workflow.md):
 
 - **`lessons/`** — full lesson designs, one `lesson-NN.md` per lesson (two-digit
-  number). Written for you and colleagues; `/design-lesson` drafts them and
-  `/build-lesson-module` turns them into student modules under `course/`.
+  number). Written for you and colleagues; `/lesson-design` drafts them and
+  `/lesson-module-build` turns them into student modules under `course/`.
 - **`lesson-plans/`** — one-page class versions, `lesson-plan-NN.md`, distilled
-  from the matching lesson by `/summarize-lesson`.
+  from the matching lesson by `/lesson-summarize`.
 - **`reference-materials/`** — canonical course data. `glossary.yml` here feeds
   `npx course build-glossary`, which generates per-module glossary pages.
 

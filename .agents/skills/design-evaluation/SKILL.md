@@ -56,7 +56,7 @@ sentence.
      point weight is disproportionate to their lesson time, and goals tested
      only at reproduction level while the lessons practised application. Flag
      each; propose a correction or a motivated acceptance.
-   - **Pros and cons**, two sub-headings as in `/design-lesson`: _Your
+   - **Pros and cons**, two sub-headings as in `/lesson-design`: _Your
      suggestions_ — one bullet per author input element, honest; _My
      suggestions_ — the same for what the skill adds, naming rejected
      alternatives and why.

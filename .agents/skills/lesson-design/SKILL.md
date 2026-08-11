@@ -1,9 +1,9 @@
 ---
-name: design-lesson
+name: lesson-design
 description: Help draft a new lesson plan in sources/lessons/, following context/course-context.md and the colleague-facing register of context/writing-style.md. Accepts rough notes, a request for the next logical lesson, or pure Q&A. Phase A presents a design with pros/cons of the author's suggestions and its own; Phase B writes the draft only after approval. Use for "design lesson", "design the next lesson", "draft a lesson plan", "nieuwe les ontwerpen", "lesplan opzetten", "vervolg op les X".
 ---
 
-# Design lesson
+# Lesson design
 
 Design a new lesson plan together with the author and write it to
 `sources/lessons/lesson-NN.md` in the colleague-facing register of
@@ -79,7 +79,7 @@ logical lesson". Three modes, combinable:
    one sentence; **Notes to self** — only tips not already elsewhere (timing
    pitfalls, reserve activities, anticipated questions). Where the lesson
    introduces a future student-facing reference page (card, cheat sheet), name
-   it in the block prose the way existing lessons do, so `/build-lesson-module`
+   it in the block prose the way existing lessons do, so `/lesson-module-build`
    can pick it up. Apply the colleague-facing checklist of
    `context/writing-style.md` to the whole draft — no student-facing conventions
    (page-title emoji, student callouts) unless `writing-style.md` says otherwise
@@ -92,11 +92,11 @@ logical lesson". Three modes, combinable:
    never standardise on a synonym or invent one; definitions of one or two
    sentences in the voice of the existing entries, tagged with this lesson's
    number. If in doubt whether a term belongs, ask the author in one bundled
-   question. Page regeneration happens in `/build-lesson-module`, not here.
+   question. Page regeneration happens in `/lesson-module-build`, not here.
 
 6. **Report and offer follow-ups, do not run them**: `/proofread` on the new
-   plan, `/summarize-lesson` for the one-page class version,
-   `/build-lesson-module` when the lesson is ready to become a module, and
+   plan, `/lesson-summarize` for the one-page class version,
+   `/lesson-module-build` when the lesson is ready to become a module, and
    saving gathered course facts into `course-context.md`.
 
 ## Rules

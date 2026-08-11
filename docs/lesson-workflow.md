@@ -7,10 +7,10 @@ complete authoring flow:
 
 ```
 idea/notes
-   │  /design-lesson
+   │  /lesson-design
    ▼
 sources/lessons/lesson-NN.md          (full lesson plan, for you and colleagues)
-   │  /summarize-lesson                │  /build-lesson-module
+   │  /lesson-summarize                │  /lesson-module-build
    ▼                                   ▼
 sources/lesson-plans/                 course/NN-<slug>/
 lesson-plan-NN.md                     (student-facing module)
@@ -41,13 +41,13 @@ skills need to ask.
 
 ## Steps
 
-1. **Design** — `/design-lesson` turns notes, a "next logical lesson" request,
+1. **Design** — `/lesson-design` turns notes, a "next logical lesson" request,
    or a Q&A conversation into a full lesson plan at
    `sources/lessons/lesson-NN.md`. It always proposes a design first — with pros
    and cons of your ideas and its own — and writes only after you approve.
-2. **Class version** (optional) — `/summarize-lesson` distills the plan into a
+2. **Class version** (optional) — `/lesson-summarize` distills the plan into a
    one-page teaching reminder at `sources/lesson-plans/lesson-plan-NN.md`.
-3. **Build** — `/build-lesson-module` converts the plan into a student module
+3. **Build** — `/lesson-module-build` converts the plan into a student module
    under `course/`: overview, content pages, reference cards (if your course
    uses them), summary, glossary page, homework assignment, downloadable code
    archives, and placeholder images with TODO notes. Again design-first,
@@ -102,7 +102,7 @@ _generated_, never hand-written:
 - Existing frontmatter such as `canvas_id` is preserved, so regeneration is safe
   on already-synced pages.
 
-New terms enter the YAML file when you design a lesson (`/design-lesson` adds
+New terms enter the YAML file when you design a lesson (`/lesson-design` adds
 them) or build a module; the pages then follow from one command.
 
 ## After teaching: the retro

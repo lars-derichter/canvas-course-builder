@@ -101,7 +101,7 @@ plausibly recent, propose it in the same breath.
   only the blocks and notes the interview justifies.
 - Timing corrections change the plan for _next_ year's delivery; if a change
   would alter what the lesson teaches (scope, goals), flag it as a
-  `/design-lesson` job instead of editing it in.
+  `/lesson-design` job instead of editing it in.
 - One lesson per retro.
 - No commits, no pushes, no staging.
 
