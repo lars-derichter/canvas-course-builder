@@ -240,8 +240,8 @@ The bundled skills don't cover everything, and they don't have to: a skill is a
 plain markdown file, and your AI assistant can write one for you. Say what you
 want automated and point the assistant at the conventions below. For example:
 
-> Create a new skill in `.agents/skills/weekly-update/SKILL.md` that drafts a
-> short "what changed this week" student announcement from the git log. Follow
+> Create a new skill in `.agents/skills/announcement-draft/SKILL.md` that drafts
+> a short "what changed this week" student announcement from the git log. Follow
 > the conventions in the "Creating your own skills" section of
 > `docs/ai-assistants.md`, and look at
 > `.agents/skills/lesson-summarize/SKILL.md` for a model.
@@ -264,8 +264,9 @@ predictable for both the reader and the model:
   same request in your course language (the shipped skills add Dutch). English
   leads because the skill itself is written in English; the second language is
   what makes the skill fire on how you actually ask for it.
-- **Section order**: H1, a 2–4-line intro, `## Input` (only when the skill takes
-  arguments), `## Steps`, `## Rules`, and a bare `$ARGUMENTS` line at the end.
+- **Section order**: H1 (the name with the hyphens as spaces, in sentence case),
+  a 2–4-line intro, `## Input` (only when the skill takes arguments),
+  `## Steps`, `## Rules`, and a bare `$ARGUMENTS` line at the end.
 - **Approval gates** only when a skill writes something worth reviewing first.
   Split `## Steps` into `### Phase A — <Verb> (writes nothing)` and
   `### Phase B — <Verb> (only after approval)`, and end Phase A with the
@@ -290,10 +291,17 @@ predictable for both the reader and the model:
 - **Temp files** go to the session scratchpad, never `/tmp`. Build zips and
   binaries there and copy them into the repo (cloud-synced folders can reject
   direct writes).
-- **Naming**: verb-first for actions on course material (`design-*` for gated
-  interactive authoring, `build-*` for generation from an approved source,
-  `initialize-*` for one-time setup interviews) and noun-first for configuration
-  clusters (`style-*`, `export-style-*`) so related skills sort together.
+- **Naming**: `<object>-<verb>`, object first, so skills about the same thing
+  share a prefix and sort together — `/lesson` finds the whole authoring
+  pipeline, `/issue` the whole queue. The object comes first because it is what
+  you reliably know; which verb an author picked is what you would have to
+  guess, and prefix matching only keys on the first segment. The verb comes
+  last, from a small vocabulary: `design` for gated interactive authoring,
+  `build` for generation from an approved source, `init` for one-time setup
+  interviews, `create`/`edit`/`update` for configuration. Read-only report
+  skills take a result noun instead of a verb (`consistency-check`,
+  `coverage-map`, `image-todos`). Two names stay bare verbs because they are
+  single words in universal use: `/commit` and `/proofread`.
 
 Contributing a skill back to the template itself? See
 [Contributing](contributing.md).

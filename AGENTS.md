@@ -133,6 +133,13 @@ embedded files. Frontmatter fields are documented in
   symlink to the same directory, so Claude Code discovers them natively. Skill
   names are written as `/name` (e.g. `/proofread`) throughout the docs and skill
   instructions.
+- Skill names are `<object>-<verb>`: the object first, so skills about the same
+  thing share a prefix and sort together (`lesson-design`, `lesson-summarize`,
+  `lesson-module-build`). Verbs come from a small set — `design`, `build`,
+  `init`, `create`/`edit`/`update`. Read-only reports take a result noun instead
+  (`consistency-check`, `coverage-map`). `/commit` and `/proofread` stay bare
+  verbs. The full skill template is in the "Creating your own skills" section of
+  [`docs/ai-assistants.md`](docs/ai-assistants.md).
 - "Session scratchpad" in skill instructions means a temporary working directory
   outside the repo — Claude Code's session scratchpad, or whatever temp
   directory your tool provides. Never write temp files into the repo or `/tmp`.
