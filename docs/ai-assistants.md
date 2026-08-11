@@ -331,12 +331,16 @@ predictable for both the reader and the model:
   — and `update` for changing a configuration already in place, whether from a
   direct instruction (`/export-style-update`) or from decisions you settled
   during the session (`/writing-style-update`). An `init` skill is not one-shot:
-  re-running it after the course changes is expected. Read-only report skills
-  take a result noun instead of a verb (`consistency-check`, `coverage-map`,
-  `image-todos`). Three names stay bare verbs because they are single words in
-  universal use, and because what they act on is whatever you hand them rather
-  than a course object worth putting first: `/commit`, `/proofread`, and
-  `/translate`.
+  re-running it after the course changes is expected. `setup` is the one verb
+  outside that set, and `/course-setup` is the only skill that carries it: where
+  an `init` skill builds one configuration file, setup configures the project as
+  a whole, and the name matches the `npx course setup` command it drives. There
+  is one project to set up, so the verb stays a single case rather than a
+  pattern to follow. Read-only report skills take a result noun instead of a
+  verb (`consistency-check`, `coverage-map`, `image-todos`). Three names stay
+  bare verbs because they are single words in universal use, and because what
+  they act on is whatever you hand them rather than a course object worth
+  putting first: `/commit`, `/proofread`, and `/translate`.
 
 Contributing a skill back to the template itself? See
 [Contributing](contributing.md).

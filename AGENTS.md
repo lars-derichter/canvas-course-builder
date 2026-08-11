@@ -142,7 +142,9 @@ embedded files. Frontmatter fields are documented in
   thing share a prefix and sort together (`lesson-design`, `lesson-summarize`,
   `lesson-module-build`). Verbs come from a small set — `design`, `build`,
   `init` to build a configuration from ground truth, `update` to change one
-  already in place. Read-only reports take a result noun instead
+  already in place. `/course-setup` is the single exception, named after the
+  `npx course setup` command it drives: it configures the whole project rather
+  than one configuration file. Read-only reports take a result noun instead
   (`consistency-check`, `coverage-map`). `/commit`, `/proofread` and
   `/translate` stay bare verbs: they act on whatever you hand them, not on a
   course object. The full skill template is in the "Creating your own skills"
