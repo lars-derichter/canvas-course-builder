@@ -164,11 +164,12 @@ and lines wrapped at 80 characters. The per-course guides in `context/` govern
 course content, not these docs.
 
 The style baselines in `templates/` are the deliberate exception. Each one is
-written in the language it prescribes, so two of the three are in Dutch, and
-`writing-style-en.md` uses title-case headings because it states a title-case
-rule and applies it to itself. Leave them that way. Prettier does reflow their
-prose and normalise their list markers, but it changes neither language nor
-heading case, so what that exception protects is untouched.
+written in the language and variety it prescribes, so two of the four are in
+Dutch, one is in US English, and both English baselines use title-case headings
+because they state a title-case rule and apply it to themselves. Leave them that
+way. Prettier does reflow their prose and normalise their list markers, but it
+changes neither language nor heading case, so what that exception protects is
+untouched.
 
 ## Understanding the codebase
 

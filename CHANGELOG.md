@@ -21,6 +21,14 @@
   Existing projects need a one-off manual move, because a protected file that
   changes location is the one case the update script cannot prune safely — see
   [Moving to `context/`](docs/updating-your-project.md#moving-to-context-one-off).
+- **A US-English style baseline.** `templates/writing-style-en-us.md` joins the
+  three existing baselines. The English one prescribes UK spelling, which meant
+  a US instructor had to edit the guide before it was usable and any AI
+  assistant reading it kept writing "colour". The new file is the same guide
+  with US spelling, the serial comma mandated rather than left to the author,
+  and a US grade level in place of CEFR B2. Nothing changes for existing
+  projects: the shipped `context/writing-style.md` is still the UK-spelling
+  baseline, and the two files point at each other.
 - **Issue forms, a pull-request template, a security policy and a code of
   conduct.** Reporting a bug on the upstream project now walks you through the
   fields that make a report useful, and security problems have a private channel

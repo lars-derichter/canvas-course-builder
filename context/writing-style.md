@@ -5,9 +5,9 @@
 > This guide ships as a ready English baseline, usable as it stands. It is a
 > starting point, not a requirement. Run `/style-init` early to adapt it to your
 > own language, audience, and voice, or copy another baseline from
-> [`templates/`](../templates/) over this file: Flemish Dutch or Netherlands
-> Dutch. The file is protected during upstream updates, so your version sticks.
-> See [Customization](../docs/customization.md).
+> [`templates/`](../templates/) over this file: US English, Flemish Dutch or
+> Netherlands Dutch. The file is protected during upstream updates, so your
+> version sticks. See [Customization](../docs/customization.md).
 
 Course materials are in English, and so is this guide, which AI tools read
 before drafting anything for you.
@@ -35,9 +35,9 @@ The rest of this guide splits into **shared rules** (apply to both),
 ### Language
 
 - **UK spelling.** "colour", "customise", "-ise" over "-ize", "practise" for the
-  verb against "practice" for the noun. If your institution uses US spelling,
-  swap this line and stay consistent. The rule that matters is that one variety
-  wins throughout.
+  verb against "practice" for the noun. If your institution writes US English,
+  take [`templates/writing-style-en-us.md`](../templates/writing-style-en-us.md)
+  instead. The rule that matters is that one variety wins throughout.
 - **Second person, plain vocabulary.** "you", never "one". Prefer "use" over
   "utilise", "make sure" over "ensure that due care is taken", "help" over
   "facilitate", "about" over "with regard to".

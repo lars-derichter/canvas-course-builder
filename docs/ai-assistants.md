@@ -48,9 +48,9 @@ language, register, tone, structure, formatting, and patterns to avoid. The
 shipped `writing-style.md` is the English baseline, usable as it stands; run
 `/style-init` early to adapt it to your own voice and audience (see
 [Customization](customization.md)). If you would rather skip the interview,
-`templates/` also ships baselines for Flemish Dutch and Netherlands Dutch: copy
-the one matching your course over `context/writing-style.md` and edit from
-there.
+`templates/` also ships baselines for US English, Flemish Dutch and Netherlands
+Dutch: copy the one matching your course over `context/writing-style.md` and
+edit from there.
 
 Three skills wrap around `writing-style.md`:
 

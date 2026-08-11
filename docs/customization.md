@@ -79,13 +79,14 @@ Two other things track the language you write in:
     ready guide with no interview, then edit it by hand or run `/style-init` on
     top of it.
 
-  Each baseline is a complete guide, not a fill-in-the-blanks template. All
-  three keep the same two registers, the same proficiency levels, the page-title
-  emoji and the callout set, and each is written in the language it prescribes.
+  Each baseline is a complete guide, not a fill-in-the-blanks template. All four
+  keep the same two registers, the page-title emoji and the callout set, and
+  each is written in the language it prescribes.
 
   | Baseline                                                                  | Language                                                                                    |
   | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
   | [`templates/writing-style-en.md`](../templates/writing-style-en.md)       | English, UK spelling, title-case headings. Already installed as `context/writing-style.md`. |
+  | [`templates/writing-style-en-us.md`](../templates/writing-style-en-us.md) | English, US spelling, title-case headings                                                   |
   | [`templates/writing-style-nl-be.md`](../templates/writing-style-nl-be.md) | Nederlands, Vlaamse variant                                                                 |
   | [`templates/writing-style-nl.md`](../templates/writing-style-nl.md)       | Nederlands, variant Nederland                                                               |
 
