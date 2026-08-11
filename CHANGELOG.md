@@ -2,6 +2,15 @@
 
 ## Unreleased
 
+- **The course context follows backward design.** `context/course-context.md`
+  gained a Learning goals section and an Assessment section, and its sections
+  now run in the order a course is actually designed: what students should be
+  able to do, how you will know they can, then how they get there. Learning
+  goals used to be one clause inside the Pedagogy comment, and assessment was
+  nowhere, which is why `/evaluation-design` asked you for exam format,
+  weighting and allowed aids on every single run. Both new sections ship as
+  `TODO` like the rest, so nothing breaks if you leave them empty, and
+  `/course-context-init` now interviews you about them.
 - **Courses name themselves.** `course.config.yml` gains `title` and `tagline`.
   The title heads the preview site and its navbar, and titles any PDF or DOCX
   export covering the whole course, filename included

@@ -29,9 +29,12 @@ contradicts it, and say so explicitly in the report.
    - `context/writing-style.md` — language, register, student level; do not
      duplicate style rules into the context doc, only cross-reference.
    - Any course-specific doc under `context/` or `sources/` (e.g. a pedagogical
-     framework, card or page-type descriptions). These are prime sources for the
-     Pedagogy and Module conventions sections. `docs/` holds the
-     canvas-course-builder tooling docs and is not a source.
+     framework, a competency profile, card or page-type descriptions). These are
+     prime sources for the Learning goals, Pedagogy and Module conventions
+     sections. `docs/` holds the canvas-course-builder tooling docs and is not a
+     source.
+   - `evaluations/` if it exists — the most recent evaluation shows the forms,
+     question types and weights the Assessment section should record.
    - The existing modules under `course/` (folder names, page files, `_files/`
      contents) — infer page roles, ordering, download conventions.
    - `sources/lessons/` and `sources/lesson-plans/` if they exist — infer
@@ -44,8 +47,11 @@ contradicts it, and say so explicitly in the report.
    per context-doc section:
    - Course overview: anything not in the README (lesson count, minutes per
      lesson, student prior knowledge).
-   - Pedagogy: learning-goal scheme and the notation lesson plans use to
-     reference goals; recurring teaching methods.
+   - Learning goals: the course's overarching goals, the programme competencies
+     they concretise, and the notation lesson plans use to reference a goal.
+   - Assessment: the evaluation moments, their weight, question formats, allowed
+     aids, and the alignment rule the course holds itself to.
+   - Pedagogy: recurring teaching methods and the framework they come from.
    - Lesson plans: location, template file, required sections — only if
      `sources/lessons/` is empty or ambiguous.
    - Class versions: whether the author wants them at all; grouping labels for
@@ -61,13 +67,14 @@ contradicts it, and say so explicitly in the report.
    interview). Let the author adjust.
 
 5. **Write `context/course-context.md`.** Keep the section structure of the
-   template (Course overview, Pedagogy, Lesson plans, Class versions, Module
-   conventions, Code and downloads, Glossary, Scope boundaries) and the English
-   meta-note at the top. Replace each answered section's `TODO` with concise
-   prose or bullets; leave a section on `TODO` when there is genuinely nothing
-   to say yet, and drop the HTML guidance comments from sections that are now
-   filled in. Point to repo files (framework docs, worked-example modules and
-   lessons) rather than copying their content.
+   template (Course overview, Learning goals, Assessment, Pedagogy, Lesson
+   plans, Class versions, Module conventions, Code and downloads, Glossary,
+   Scope boundaries) — the order is the backward-design chain, so do not reorder
+   it — and the English meta-note at the top. Replace each answered section's
+   `TODO` with concise prose or bullets; leave a section on `TODO` when there is
+   genuinely nothing to say yet, and drop the HTML guidance comments from
+   sections that are now filled in. Point to repo files (framework docs,
+   worked-example modules and lessons) rather than copying their content.
 
 6. **Check the update config.** If `update-from-upstream.conf` exists and its
    `protected_files` does not include `context/course-context.md`, tell the

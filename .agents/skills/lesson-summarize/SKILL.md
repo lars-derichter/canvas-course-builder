@@ -29,7 +29,7 @@ not a `.md` under `sources/lessons/`.
    contents and ask whether to overwrite, merge, or stop.
 
 2. **Read**: the source lesson in full; `course-context.md` — the Class versions
-   section (grouping labels) and the Pedagogy section (the goal-reference
+   section (grouping labels) and the Learning goals section (the goal-reference
    notation); if Class versions is still `TODO`, use the defaults below and
    offer at the end to record the choices made;
    [`context/writing-style.md`](../../../context/writing-style.md), shared rules

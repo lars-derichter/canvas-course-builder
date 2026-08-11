@@ -21,10 +21,11 @@ the whole course.
 
 1. **Read the learning-goal scheme.** Read
    [`context/course-context.md`](../../../context/course-context.md),
-   specifically the Pedagogy section: the course-wide goals and the exact
-   notation lesson plans use to reference them. Follow any framework document it
-   points to.
-   - If the section is `TODO`, infer the scheme from the lesson plans under
+   specifically the Learning goals section: the course-wide goals and the exact
+   notation lesson plans use to reference them. Read the Assessment section too,
+   for the alignment rule the course holds itself to and the weight each
+   evaluation carries. Follow any framework document they point to.
+   - If Learning goals is `TODO`, infer the scheme from the lesson plans under
      `sources/lessons/` (a consistent goal notation across plans counts as a
      scheme). If that fails, ask the author once — and at the end offer to save
      the answer into `course-context.md`.

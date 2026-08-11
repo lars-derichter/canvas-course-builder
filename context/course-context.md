@@ -7,6 +7,9 @@ the course-design companion to [writing-style.md](writing-style.md), which
 covers writing style only. Both files are consumed by AI tools, so write them in
 whichever language you and your assistant work in, and keep the two consistent.
 
+The sections run in backward-design order: what students should be able to do,
+how you will know they can, and only then how they get there.
+
 This file ships as a template. Run `/course-context-init` to fill it in (the
 skill reads your repo and interviews you for the rest), or edit it by hand.
 Sections still marked `TODO` are treated as unanswered: a skill that needs one
@@ -26,14 +29,38 @@ with what you write here. -->
 
 TODO
 
+## Learning goals
+
+<!-- The course's overarching learning goals: what a student can do at the end
+of the course. List them here, or point to the document that holds them, and
+state which programme or curriculum competencies each one concretises. Also
+give the numbering scheme and the exact notation lesson plans, modules and
+evaluations use to reference a goal (e.g. `LG3`) — /coverage-map,
+/evaluation-design and /rubric-build match on that notation. A lesson's own
+goals are concretisations of these, not a parallel list; say here how a lesson
+goal points back at the course goal it serves. -->
+
+TODO
+
+## Assessment
+
+<!-- How the learning goals are evidenced. Per evaluation moment: its form
+(exam, test, portfolio, project), when it falls, its weight in the final grade,
+the question formats the course uses, the aids students may bring (open or
+closed book, IDE, cheat sheet), and which goals it covers. State the alignment
+rule the course holds itself to — for example that every goal is assessed at
+least once, and that no goal is assessed above the level at which it was
+practised. Evaluation material lives in `evaluations/<year>/`; name the most
+recent one as the worked example. -->
+
+TODO
+
 ## Pedagogy
 
-<!-- The course's pedagogical approach. If a framework document exists in this
-repo, point to it here and summarize only what the skills need: the
-learning-goal scheme (numbered course-wide goals? plain per-lesson goals?) and
-the exact notation lesson plans use to reference goals. Also name recurring
-teaching methods (e.g. live coding, PRIMM, worked examples) if lesson plans
-refer to them. -->
+<!-- The course's pedagogical approach, chosen to serve the learning goals
+above. If a framework document exists in this repo, point to it here and
+summarize only what the skills need. Also name recurring teaching methods (e.g.
+live coding, PRIMM, worked examples) if lesson plans refer to them. -->
 
 TODO
 
@@ -45,7 +72,8 @@ skills assume when this section is TODO:
 - Template: the lowest-numbered existing lesson plan is the structural worked
   example.
 List here any required sections, timing conventions, or rules that a new
-lesson plan must follow. -->
+lesson plan must follow, including how a plan states its own goals and ties
+them to the course goals above. -->
 
 TODO
 

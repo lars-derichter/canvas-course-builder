@@ -33,11 +33,13 @@ The workflow produces material for two audiences, defined in
 ## Course context
 
 All lesson skills read [course-context.md](../context/course-context.md) first:
-your course's pedagogy, learning-goal scheme, lesson-plan template, module page
-roles, code-download conventions, glossary, and scope boundaries. Run
-`/course-context-init` once to fill it in; the skills ask about (and offer to
-record) anything it doesn't cover yet. The richer that file, the less the skills
-need to ask.
+your course's learning goals, assessment, pedagogy, lesson-plan template, module
+page roles, code-download conventions, glossary, and scope boundaries. Its
+sections follow backward design — goals, then the evidence for them, then the
+teaching that gets students there — so a lesson design starts from the goals it
+serves rather than from the topic list. Run `/course-context-init` once to fill
+it in; the skills ask about (and offer to record) anything it doesn't cover yet.
+The richer that file, the less the skills need to ask.
 
 ## Steps
 

@@ -68,11 +68,15 @@ correct the assistant's output.
 
 Where `writing-style.md` captures _how you write_,
 [course-context.md](../context/course-context.md) captures _what your course
-is_: subject, pedagogy, lesson-plan conventions, module structure, code and
-download rules, glossary, and scope boundaries. The lesson skills read it before
-generating anything. Run `/course-context-init` once when you set up a course,
-and again after your README, docs, or course structure change substantially.
-Like `writing-style.md`, you can also edit it by hand.
+is_: subject, learning goals, assessment, pedagogy, lesson-plan conventions,
+module structure, code and download rules, glossary, and scope boundaries. Its
+sections run in backward-design order — what students should be able to do, how
+you will know they can, then how they get there — so the alignment between
+goals, assessment and teaching is written down once instead of re-derived per
+skill. The lesson skills read it before generating anything. Run
+`/course-context-init` once when you set up a course, and again after your
+README, docs, or course structure change substantially. Like `writing-style.md`,
+you can also edit it by hand.
 
 How the lesson skills chain together, from idea to lesson plan to class version
 to published module, is described in the [lesson workflow](lesson-workflow.md).
