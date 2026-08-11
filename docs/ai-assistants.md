@@ -42,13 +42,13 @@ On Windows, skills need one git setting before they are found; see
 
 ## Writing style
 
-Your AI assistant follows the conventions in [style.md](style.md) when drafting
-course content: language, register, tone, structure, formatting, and patterns to
-avoid. The shipped `style.md` is the English baseline, usable as it stands; run
-`/style-init` early to adapt it to your own voice and audience (see
-[Customization](customization.md)). If you would rather skip the interview,
+Your AI assistant follows the conventions in [style.md](../context/style.md)
+when drafting course content: language, register, tone, structure, formatting,
+and patterns to avoid. The shipped `style.md` is the English baseline, usable as
+it stands; run `/style-init` early to adapt it to your own voice and audience
+(see [Customization](customization.md)). If you would rather skip the interview,
 `templates/` also ships baselines for Flemish Dutch and Netherlands Dutch: copy
-the one matching your course over `docs/style.md` and edit from there.
+the one matching your course over `context/style.md` and edit from there.
 
 Three skills wrap around `style.md`:
 
@@ -65,12 +65,12 @@ assistant's output.
 ## Course context
 
 Where `style.md` captures _how you write_,
-[course-context.md](course-context.md) captures _what your course is_: subject,
-pedagogy, lesson-plan conventions, module structure, code and download rules,
-glossary, and scope boundaries. The lesson skills read it before generating
-anything. Run `/initialize-course-context` once when you set up a course, and
-again after your README, docs, or course structure change substantially. Like
-`style.md`, you can also edit it by hand.
+[course-context.md](../context/course-context.md) captures _what your course
+is_: subject, pedagogy, lesson-plan conventions, module structure, code and
+download rules, glossary, and scope boundaries. The lesson skills read it before
+generating anything. Run `/initialize-course-context` once when you set up a
+course, and again after your README, docs, or course structure change
+substantially. Like `style.md`, you can also edit it by hand.
 
 How the lesson skills chain together, from idea to lesson plan to class version
 to published module, is described in the [lesson workflow](lesson-workflow.md).
@@ -222,10 +222,10 @@ project whitelist.
 ### Project
 
 - **/initialize-course-context** fills in or refreshes
-  [course-context.md](course-context.md): it reads the repo, infers everything
-  it can, interviews you only about what the repo did not answer, and writes the
-  doc after per-section confirmation. Re-running is expected; existing content
-  is treated as confirmed.
+  [course-context.md](../context/course-context.md): it reads the repo, infers
+  everything it can, interviews you only about what the repo did not answer, and
+  writes the doc after per-section confirmation. Re-running is expected;
+  existing content is treated as confirmed.
 - **/commit** makes committing safer and more consistent: it reviews the
   changes, stages the appropriate files, and creates a commit following the
   project conventions — imperative, present tense, verb-first summaries (`Add`,
@@ -268,11 +268,11 @@ predictable for both the reader and the model:
   B."
 - **State each rule once.** A rule already carried by a step does not reappear
   under `## Rules`; drop the Rules section if nothing is left.
-- **Defer, don't copy.** Content owned by [style.md](style.md),
-  [frontmatter.md](frontmatter.md), or [course-context.md](course-context.md) is
-  referenced, never inlined; copies drift. Dense reference payloads (format
-  specs, protocol details) go in a `references/` file inside the skill folder,
-  read on demand.
+- **Defer, don't copy.** Content owned by [style.md](../context/style.md),
+  [frontmatter.md](frontmatter.md), or
+  [course-context.md](../context/course-context.md) is referenced, never
+  inlined; copies drift. Dense reference payloads (format specs, protocol
+  details) go in a `references/` file inside the skill folder, read on demand.
 - **Course-agnostic.** No hardcoded course vocabulary, module names, or paths
   that exist in only one course; course facts come from `course-context.md` at
   runtime.

@@ -12,8 +12,9 @@ would help you, there are two good routes:
 ## Skill ideas
 
 All would follow the established pattern: read
-[`course-context.md`](course-context.md) and [`style.md`](style.md) first,
-design-then-write phases, no auto-commits.
+[`course-context.md`](../context/course-context.md) and
+[`style.md`](../context/style.md) first, design-then-write phases, no
+auto-commits.
 
 ### Course quality
 

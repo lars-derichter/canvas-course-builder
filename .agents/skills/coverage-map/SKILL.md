@@ -8,8 +8,8 @@ description: Cross-reference the course's learning goals against lessons, module
 Cross-reference the course's learning goals with the lesson plans under
 `sources/lessons/`, the student modules under `course/`, and the assessment
 material under `evaluations/`, following the learning-goal scheme defined in
-[`docs/course-context.md`](../../../docs/course-context.md). Report which goals
-are taught, practised, and assessed — and where the gaps are.
+[`context/course-context.md`](../../../context/course-context.md). Report which
+goals are taught, practised, and assessed — and where the gaps are.
 
 ## Input
 
@@ -20,9 +20,10 @@ the whole course.
 ## Steps
 
 1. **Read the learning-goal scheme.** Read
-   [`docs/course-context.md`](../../../docs/course-context.md), specifically the
-   Pedagogy section: the course-wide goals and the exact notation lesson plans
-   use to reference them. Follow any framework document it points to.
+   [`context/course-context.md`](../../../context/course-context.md),
+   specifically the Pedagogy section: the course-wide goals and the exact
+   notation lesson plans use to reference them. Follow any framework document it
+   points to.
    - If the section is `TODO`, infer the scheme from the lesson plans under
      `sources/lessons/` (a consistent goal notation across plans counts as a
      scheme). If that fails, ask the author once — and at the end offer to save

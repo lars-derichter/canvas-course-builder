@@ -160,8 +160,8 @@ git config blame.ignoreRevsFile .git-blame-ignore-revs
 
 The project's own docs (`docs/`, the README, and the getting-started module) are
 written in English with UK spelling (customise, colour), sentence-case headings,
-and lines wrapped at 80 characters. `docs/style.md` is not the guide for these
-docs; it is the per-course style guide for course content.
+and lines wrapped at 80 characters. The per-course guides in `context/` govern
+course content, not these docs.
 
 The style baselines in `templates/` are the deliberate exception. Each one is
 written in the language it prescribes, so two of the three are in Dutch, and

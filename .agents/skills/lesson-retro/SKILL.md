@@ -1,6 +1,6 @@
 ---
 name: lesson-retro
-description: Debrief a lesson right after teaching it, in a conversational interview — one question at a time, following up on the answers. Folds timing corrections and tips into the lesson plan's notes-to-self, durable course-wide insights into docs/course-context.md, and lists content fixes for the student material. Use for "lesson retro", "les nabespreken", "retro les 3", "hoe de les gegaan is", "debrief after teaching".
+description: Debrief a lesson right after teaching it, in a conversational interview — one question at a time, following up on the answers. Folds timing corrections and tips into the lesson plan's notes-to-self, durable course-wide insights into context/course-context.md, and lists content fixes for the student material. Use for "lesson retro", "les nabespreken", "retro les 3", "hoe de les gegaan is", "debrief after teaching".
 ---
 
 # Lesson retro
@@ -8,9 +8,10 @@ description: Debrief a lesson right after teaching it, in a conversational inter
 Capture how a lesson actually went while the author still remembers, and turn
 that into durable improvements: timing corrections and notes-to-self in the
 lesson plan, insights that hold for every lesson in
-[`docs/course-context.md`](../../../docs/course-context.md), and a fix list for
-the student material. This is the teaching counterpart of `/style-update`: the
-self-improvement loop closed at the level of the lesson, not the writing.
+[`context/course-context.md`](../../../context/course-context.md), and a fix
+list for the student material. This is the teaching counterpart of
+`/style-update`: the self-improvement loop closed at the level of the lesson,
+not the writing.
 
 The interview is a conversation, not a form. Ask **one question at a time**, in
 the language the author is chatting in, and follow up on what they say before
@@ -31,8 +32,8 @@ plausibly recent, propose it in the same breath.
    - `sources/lessons/lesson-NN.md`, in full — especially the timed blocks and
      the existing notes-to-self.
    - The class version `sources/lesson-plans/lesson-plan-NN.md`, if it exists.
-   - [`docs/course-context.md`](../../../docs/course-context.md) — to recognise
-     when an observation is course-wide rather than lesson-specific.
+   - [`context/course-context.md`](../../../context/course-context.md) — to
+     recognise when an observation is course-wide rather than lesson-specific.
 
    Do not summarise these back to the author. They taught the lesson; go
    straight to the first question.
@@ -68,9 +69,9 @@ plausibly recent, propose it in the same breath.
      reserve activities, questions to anticipate. Quote the proposed wording.
    - **Class version** — only if it exists and a timing or emphasis change
      affects it.
-   - **`docs/course-context.md`** — insights that hold beyond this lesson (e.g.
-     "prediction exercises take twice the planned time with this group"). Name
-     the section it belongs in.
+   - **`context/course-context.md`** — insights that hold beyond this lesson
+     (e.g. "prediction exercises take twice the planned time with this group").
+     Name the section it belongs in.
    - **Student material under `course/`** — content errors and friction: a fix
      list with file paths. Fixing them is a separate job; offer to do it after
      the retro edits land, or leave the list for later.

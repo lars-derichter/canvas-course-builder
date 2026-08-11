@@ -40,7 +40,7 @@ Three of the suggested folders carry the [lesson workflow](lesson-workflow.md):
   `npx course build-glossary`, which generates per-module glossary pages.
 
 These conventions are defaults, not requirements — the skills follow whatever
-[course-context.md](course-context.md) says.
+[course-context.md](../context/course-context.md) says.
 
 ## Conventions
 

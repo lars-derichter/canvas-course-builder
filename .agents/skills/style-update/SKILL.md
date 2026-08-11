@@ -1,13 +1,13 @@
 ---
 name: style-update
-description: Review style corrections and preferences the user expressed in this conversation, and fold them into docs/style.md as durable rules. Use for "update style", "stijlregel toevoegen", "onthoud deze schrijfvoorkeur", "make this a style rule".
+description: Review style corrections and preferences the user expressed in this conversation, and fold them into context/style.md as durable rules. Use for "update style", "stijlregel toevoegen", "onthoud deze schrijfvoorkeur", "make this a style rule".
 ---
 
 # Style update
 
 Turn one-off style corrections from the current conversation into permanent
-entries in [`docs/style.md`](../../../docs/style.md), so the author does not
-have to repeat the same feedback next time the assistant drafts material.
+entries in [`context/style.md`](../../../context/style.md), so the author does
+not have to repeat the same feedback next time the assistant drafts material.
 
 ## Steps
 

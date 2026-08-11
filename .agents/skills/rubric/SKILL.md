@@ -25,13 +25,14 @@ for a path. Stop with one sentence if the target is not a markdown file under
 1. **Read the fixed inputs**, in this order:
    - The assignment itself, in full. Its stated requirements are the primary
      source of criteria.
-   - [`docs/course-context.md`](../../../docs/course-context.md) — the
+   - [`context/course-context.md`](../../../context/course-context.md) — the
      learning-goal scheme and its notation. If it is `TODO`, infer goals from
      the lesson plan the assignment belongs to, or ask the author once, and
      offer at the end to save what you learned.
    - The lesson plan(s) in `sources/lessons/` that the assignment belongs to,
      for the goals it practises and the level at which they were taught.
-   - [`docs/style.md`](../../../docs/style.md) — the rubric is colleague-facing.
+   - [`context/style.md`](../../../context/style.md) — the rubric is
+     colleague-facing.
    - Existing rubrics under `evaluations/**/rubric*.md` or `sources/rubrics/`,
      if any, as the structural worked example.
 
@@ -67,7 +68,7 @@ for a path. Stop with one sentence if the target is not a markdown file under
    Content: title naming the assignment, a link to it, the point model, the
    criteria × levels table, and per criterion a short grading note (common
    mistakes to look for, partial-credit guidance) where Phase A surfaced one.
-   Colleague-facing register of `docs/style.md`.
+   Colleague-facing register of `context/style.md`.
 
 7. **Offer, do not run:**
    - A student-facing summary of the criteria (no level descriptors, just what

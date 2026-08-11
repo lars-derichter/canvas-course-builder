@@ -10,17 +10,17 @@ tooling is JavaScript/Node.js (CommonJS).
 
 ## Writing course materials
 
-**Always read [`docs/style.md`](docs/style.md) before drafting or editing any
-file under `course/` or `evaluations/`.** The style guide defines the language,
-tone, structure, headings, callouts, punctuation, and AI-tell patterns for this
-project's student-facing content. Apply it from the first draft — do not write
-course prose, assignment instructions, or exam text without consulting it first
-in the current session.
+**Always read [`context/style.md`](context/style.md) before drafting or editing
+any file under `course/` or `evaluations/`.** The style guide defines the
+language, tone, structure, headings, callouts, punctuation, and AI-tell patterns
+for this project's student-facing content. Apply it from the first draft — do
+not write course prose, assignment instructions, or exam text without consulting
+it first in the current session.
 
 If the user asks you to change how you write, offer to run `/style-update` so
 the new preference is folded into `style.md` as a durable rule.
 
-**Read [`docs/course-context.md`](docs/course-context.md) before designing
+**Read [`context/course-context.md`](context/course-context.md) before designing
 lessons or generating modules.** It describes the course itself — pedagogy,
 lesson-plan and module conventions, code/download rules, glossary, scope
 boundaries — and drives the lesson skills (`/design-lesson`,

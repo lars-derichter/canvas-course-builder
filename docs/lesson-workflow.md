@@ -22,7 +22,7 @@ lesson-plan-NN.md                     (student-facing module)
 ## The two registers
 
 The workflow produces material for two audiences, defined in
-[style.md](style.md):
+[style.md](../context/style.md):
 
 - **Colleague-facing** — the lesson plan and class version under `sources/`.
   Written for you and fellow teachers; never served by Docusaurus or synced to
@@ -32,8 +32,8 @@ The workflow produces material for two audiences, defined in
 
 ## Course context
 
-All lesson skills read [course-context.md](course-context.md) first: your
-course's pedagogy, learning-goal scheme, lesson-plan template, module page
+All lesson skills read [course-context.md](../context/course-context.md) first:
+your course's pedagogy, learning-goal scheme, lesson-plan template, module page
 roles, code-download conventions, glossary, and scope boundaries. Run
 `/initialize-course-context` once to fill it in; the skills ask about (and offer
 to record) anything it doesn't cover yet. The richer that file, the less the

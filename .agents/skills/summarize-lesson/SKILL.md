@@ -12,9 +12,9 @@ more. It writes without an approval phase: the class version is a low-stakes
 derivation of an already-approved lesson plan.
 
 Conventions come from the Class versions section of
-[`docs/course-context.md`](../../../docs/course-context.md); the lowest-numbered
-file under `sources/lesson-plans/` (if any) is the worked example to mirror.
-Where both are silent, use the defaults below.
+[`context/course-context.md`](../../../context/course-context.md); the
+lowest-numbered file under `sources/lesson-plans/` (if any) is the worked
+example to mirror. Where both are silent, use the defaults below.
 
 ## Input
 
@@ -32,7 +32,7 @@ not a `.md` under `sources/lessons/`.
    section (grouping labels) and the Pedagogy section (the goal-reference
    notation); if Class versions is still `TODO`, use the defaults below and
    offer at the end to record the choices made;
-   [`docs/style.md`](../../../docs/style.md), shared rules plus the
+   [`context/style.md`](../../../context/style.md), shared rules plus the
    colleague-facing section; the worked example, if any.
 
 3. **Check the source's learning goals.** The source must state lesson-specific
@@ -67,7 +67,7 @@ not a `.md` under `sources/lessons/`.
    plausible). Too long? Tighten the timeline first; goals and content are
    already terse.
 
-6. **Style-check** against the colleague-facing rules of `docs/style.md` (no
+6. **Style-check** against the colleague-facing rules of `context/style.md` (no
    page-title emoji, no student callouts), then write the destination file and
    report the path.
 

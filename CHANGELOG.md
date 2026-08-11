@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- **The style guide and course context moved to `context/`.** `docs/style.md`
+  and `docs/course-context.md` are not documentation: they are per-course files
+  you own and AI assistants read, and everything else in `docs/` belongs to the
+  tooling project and gets overwritten on update. They now live in `context/`,
+  which makes that split visible in the file tree. Existing projects need a
+  one-off manual move, because a protected file that changes location is the one
+  case the update script cannot prune safely — see
+  [Moving to `context/`](docs/updating-your-project.md#moving-to-context-one-off).
 - **Issue forms, a pull-request template, a security policy and a code of
   conduct.** Reporting a bug on the upstream project now walks you through the
   fields that make a report useful, and security problems have a private channel

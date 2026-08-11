@@ -46,27 +46,27 @@ overridable key. `course.config.yml` is protected during
 
 Two other things track the language you write in:
 
-- **The writing style guide** ([style.md](style.md)) ships as the English
-  baseline, usable as it stands. Make it yours early: the authoring skills
-  follow whatever the style guide says. Two routes, and they combine:
+- **The writing style guide** ([style.md](../context/style.md)) ships as the
+  English baseline, usable as it stands. Make it yours early: the authoring
+  skills follow whatever the style guide says. Two routes, and they combine:
   - Run `/style-init` with your AI assistant to replace it with a guide matching
     your own language, voice, and audience. It reads samples of your writing and
     interviews you about the rest.
-  - Or copy one of the baselines below over `docs/style.md` for a ready guide
+  - Or copy one of the baselines below over `context/style.md` for a ready guide
     with no interview, then edit it by hand or run `/style-init` on top of it.
 
   Each baseline is a complete guide, not a fill-in-the-blanks template. All
   three keep the same two registers, the same proficiency levels, the page-title
   emoji and the callout set, and each is written in the language it prescribes.
 
-  | Baseline                                                                  | Language                                                                         |
-  | ------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-  | [`templates/style-generic-en.md`](../templates/style-generic-en.md)       | English, UK spelling, title-case headings. Already installed as `docs/style.md`. |
-  | [`templates/style-generic-nl-be.md`](../templates/style-generic-nl-be.md) | Nederlands, Vlaamse variant                                                      |
-  | [`templates/style-generic-nl.md`](../templates/style-generic-nl.md)       | Nederlands, variant Nederland                                                    |
+  | Baseline                                                                  | Language                                                                            |
+  | ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+  | [`templates/style-generic-en.md`](../templates/style-generic-en.md)       | English, UK spelling, title-case headings. Already installed as `context/style.md`. |
+  | [`templates/style-generic-nl-be.md`](../templates/style-generic-nl-be.md) | Nederlands, Vlaamse variant                                                         |
+  | [`templates/style-generic-nl.md`](../templates/style-generic-nl.md)       | Nederlands, variant Nederland                                                       |
 
-  Either way your version sticks: like `README.md`, `docs/style.md` is protected
-  during upstream updates.
+  Either way your version sticks: like `README.md`, `context/style.md` is
+  protected during upstream updates.
 
 - **The writing skills read `style.md` at runtime.** `/proofread` derives its
   checks from whatever the guide says, so it follows your rules as soon as you
@@ -217,7 +217,7 @@ then list them in `update-from-upstream.conf`:
 
 ```ini
 protected_dirs = course evaluations sources .github/ISSUE_TEMPLATE
-protected_files = README.md AGENTS.md CLAUDE.md docs/style.md docs/course-context.md update-from-upstream.conf course.config.yml CODE_OF_CONDUCT.md SECURITY.md .github/PULL_REQUEST_TEMPLATE.md
+protected_files = README.md AGENTS.md CLAUDE.md context/style.md context/course-context.md update-from-upstream.conf course.config.yml CODE_OF_CONDUCT.md SECURITY.md .github/PULL_REQUEST_TEMPLATE.md
 ```
 
 Protection restores a path from your own history, and a protected path that is

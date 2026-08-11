@@ -19,10 +19,10 @@ means every entry under `## Open`.
 ### Phase A — Triage (writes nothing)
 
 1. **Read the fixed inputs**: `sources/issues.md` in full — `## Open` _and_
-   `## Resolved` —, [`docs/style.md`](../../../docs/style.md), and
-   [`docs/course-context.md`](../../../docs/course-context.md). If the queue
-   file is absent or `## Open` is empty, say so, mention `/report-issue`, and
-   stop. Never create the queue file here.
+   `## Resolved` —, [`context/style.md`](../../../context/style.md), and
+   [`context/course-context.md`](../../../context/course-context.md). If the
+   queue file is absent or `## Open` is empty, say so, mention `/report-issue`,
+   and stop. Never create the queue file here.
 
 2. **Verify every entry in scope** against the current files: find the quoted
    passage. Number the entries 1..N for the plan. A passage that is already
@@ -40,7 +40,7 @@ means every entry under `## Open`.
    - **Same defect elsewhere.** Grep `course/` and `evaluations/` for the same
      wrong text or pattern; list the extra hits.
    - **Style rule.** Does the fix encode a durable writing preference that
-     `docs/style.md` does not have yet? Mark the group for an `/style-update`
+     `context/style.md` does not have yet? Mark the group for an `/style-update`
      offer — never edit `style.md` here — and grep for other pages that would
      violate the would-be rule.
    - **Glossary.** Does the fix change or rename a term? Check the canonical
@@ -48,7 +48,7 @@ means every entry under `## Open`.
      `course-context.md`) and note whether `npx course build-glossary` must be
      re-run afterwards.
    - **Course context.** Does the fix contradict a fact recorded in
-     `docs/course-context.md`?
+     `context/course-context.md`?
    - **Lesson plans.** Grep `sources/lessons/` and `sources/lesson-plans/`:
      would the fixed student page now contradict the plan it was built from?
      Flag it — the plan edit belongs to `/lesson-retro` or the author, not this
@@ -81,7 +81,7 @@ means every entry under `## Open`.
 
 9. **Style pass on the touched passages.** Check every edited passage in
    `course/` and `evaluations/` against the student-facing checklist of
-   `docs/style.md`. Passages only — no whole-file rewrites; a heavily edited
+   `context/style.md`. Passages only — no whole-file rewrites; a heavily edited
    file gets a `/proofread` recommendation in the report instead.
 
 10. **Carry out the approved side effects**: glossary edits (then

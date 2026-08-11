@@ -20,11 +20,11 @@ with one sentence if the source is not a `.md` under `sources/lessons/`.
 ### Phase A — Design (writes nothing)
 
 1. **Read**, in order: the source lesson plan (full);
-   [`docs/course-context.md`](../../../docs/course-context.md) — module
+   [`context/course-context.md`](../../../context/course-context.md) — module
    conventions, code-and-downloads rules, glossary; for a needed section still
    `TODO`, infer the answer from existing modules or ask once, and offer at the
-   end to save it back; [`docs/style.md`](../../../docs/style.md) — the pages
-   use the student-facing register;
+   end to save it back; [`context/style.md`](../../../context/style.md) — the
+   pages use the student-facing register;
    [`docs/frontmatter.md`](../../../docs/frontmatter.md); the one or two
    lowest-numbered existing modules under `course/` as worked examples; the
    canonical glossary file, if the course has one. If no modules exist yet, the
@@ -76,7 +76,7 @@ with one sentence if the source is not a `.md` under `sources/lessons/`.
      | base64 -d > "$DIR/<name>.png"   # $DIR = a dir in the session scratchpad
    ```
 
-6. **Markdown pages.** Student-facing register per `docs/style.md` (voice,
+6. **Markdown pages.** Student-facing register per `context/style.md` (voice,
    punctuation, page-title emoji, callouts), frontmatter per
    `docs/frontmatter.md` — homework becomes `canvas_type: assignment`; mirror
    the worked example's homework page or ask for the values once. Mirror the
@@ -116,8 +116,8 @@ with one sentence if the source is not a `.md` under `sources/lessons/`.
    newline.
 
 9. **Style pass.** Re-check every page against the student-facing rules of
-   `docs/style.md` and the module conventions of `course-context.md`, and every
-   internal link against the actual numbered filenames.
+   `context/style.md` and the module conventions of `course-context.md`, and
+   every internal link against the actual numbered filenames.
 
 10. **Report in chat**: module path; generated files grouped (pages, archives,
     PNGs, `_category_.json`); table of image TODOs. Suggest as separate steps,

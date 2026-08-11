@@ -19,8 +19,8 @@ are still verified.
 ## Steps
 
 1. **Read the course facts.**
-   [`docs/course-context.md`](../../../docs/course-context.md) — whether the
-   course keeps a glossary and where (default
+   [`context/course-context.md`](../../../context/course-context.md) — whether
+   the course keeps a glossary and where (default
    `sources/reference-materials/glossary.yml`), and the module conventions.
    [`docs/frontmatter.md`](../../../docs/frontmatter.md) — valid frontmatter per
    content type. If the Glossary section is `TODO`, check whether the default

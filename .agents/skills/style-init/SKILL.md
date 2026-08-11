@@ -1,13 +1,13 @@
 ---
 name: style-init
-description: Interview the user and analyse samples of their writing to rewrite docs/style.md to match their voice, audience, and formatting preferences. Use for "initialize style", "stijlgids opzetten", "schrijfstijl instellen", "set up the style guide".
+description: Interview the user and analyse samples of their writing to rewrite context/style.md to match their voice, audience, and formatting preferences. Use for "initialize style", "stijlgids opzetten", "schrijfstijl instellen", "set up the style guide".
 ---
 
 # Style init
 
-Adapt [`docs/style.md`](../../../docs/style.md) — the writing-style guide your
-AI assistant follows when drafting course content — to the course author's own
-voice and audience.
+Adapt [`context/style.md`](../../../context/style.md) — the writing-style guide
+your AI assistant follows when drafting course content — to the course author's
+own voice and audience.
 
 ## Steps
 
@@ -39,11 +39,11 @@ voice and audience.
 
 3. **Summarise and confirm** the intended changes before writing anything.
 
-4. **Pick the starting point.** `docs/style.md` ships as the English baseline,
-   which primes badly for a course in another language. Unless the course
-   language already matches what the file holds, copy the right baseline from
-   [`templates/`](../../../templates/) over `docs/style.md` first and adapt from
-   there:
+4. **Pick the starting point.** `context/style.md` ships as the English
+   baseline, which primes badly for a course in another language. Unless the
+   course language already matches what the file holds, copy the right baseline
+   from [`templates/`](../../../templates/) over `context/style.md` first and
+   adapt from there:
    - `style-generic-en.md` — English, UK spelling, title-case headings.
    - `style-generic-nl-be.md` — Nederlands, Vlaamse variant.
    - `style-generic-nl.md` — Nederlands, variant Nederland.
@@ -51,8 +51,8 @@ voice and audience.
    Never edit anything in `templates/` itself: those are shipped defaults,
    overwritten on upstream updates.
 
-5. **Rewrite `docs/style.md`.** Read its current headings first and preserve the
-   document's structure — in particular the `## Audiences` split into
+5. **Rewrite `context/style.md`.** Read its current headings first and preserve
+   the document's structure — in particular the `## Audiences` split into
    student-facing and colleague-facing registers, which `/proofread`,
    `/consistency-check`, and `/fix-issues` depend on. Every baseline carries
    that structure, translated where the baseline is not in English, so this

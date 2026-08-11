@@ -1,12 +1,12 @@
 ---
 name: initialize-course-context
-description: Read the repo and interview the user to fill in or refresh docs/course-context.md, the per-course design context the lesson skills (design-lesson, summarize-lesson, build-lesson-module) rely on. Run once when setting up a course, and again after README, docs, or course structure change substantially. Use for "initialize course context", "cursuscontext invullen", "course context verversen", "set up the course context".
+description: Read the repo and interview the user to fill in or refresh context/course-context.md, the per-course design context the lesson skills (design-lesson, summarize-lesson, build-lesson-module) rely on. Run once when setting up a course, and again after README, docs, or course structure change substantially. Use for "initialize course context", "cursuscontext invullen", "course context verversen", "set up the course context".
 ---
 
 # Initialize course context
 
-Fill in or refresh `docs/course-context.md` — the course-design companion to
-`docs/style.md` that describes the course's subject, pedagogy, lesson-plan
+Fill in or refresh `context/course-context.md` — the course-design companion to
+`context/style.md` that describes the course's subject, pedagogy, lesson-plan
 conventions, module structure, code/download rules, glossary, and scope
 boundaries. The lesson skills read it before generating anything, so the more it
 reflects the real course, the fewer questions they need to ask.
@@ -18,18 +18,18 @@ contradicts it, and say so explicitly in the report.
 
 ## Steps
 
-1. **Read `docs/course-context.md` as it stands.** Note which sections are still
-   the shipped template (marked `TODO`) and which are filled in.
+1. **Read `context/course-context.md` as it stands.** Note which sections are
+   still the shipped template (marked `TODO`) and which are filled in.
 
 2. **Read the repo before asking anything.** In order:
    - `README.md` and `AGENTS.md` at the project root — course name, subject,
      institution, audience.
-   - `docs/style.md` — language, register, student level; do not duplicate style
-     rules into the context doc, only cross-reference.
-   - Any course-specific doc under `docs/` that is not part of the
-     canvas-course-builder tooling docs (e.g. a pedagogical framework, card or
-     page-type descriptions). These are prime sources for the Pedagogy and
-     Module conventions sections.
+   - `context/style.md` — language, register, student level; do not duplicate
+     style rules into the context doc, only cross-reference.
+   - Any course-specific doc under `context/` or `sources/` (e.g. a pedagogical
+     framework, card or page-type descriptions). These are prime sources for the
+     Pedagogy and Module conventions sections. `docs/` holds the
+     canvas-course-builder tooling docs and is not a source.
    - The existing modules under `course/` (folder names, page files, `_files/`
      contents) — infer page roles, ordering, download conventions.
    - `sources/lessons/` and `sources/lesson-plans/` if they exist — infer
@@ -58,7 +58,7 @@ contradicts it, and say so explicitly in the report.
    of what will go into the doc and where it came from (repo inference vs.
    interview). Let the author adjust.
 
-5. **Write `docs/course-context.md`.** Keep the section structure of the
+5. **Write `context/course-context.md`.** Keep the section structure of the
    template (Course overview, Pedagogy, Lesson plans, Class versions, Module
    conventions, Code and downloads, Glossary, Scope boundaries) and the English
    meta-note at the top. Replace each answered section's `TODO` with concise
@@ -68,9 +68,9 @@ contradicts it, and say so explicitly in the report.
    lessons) rather than copying their content.
 
 6. **Check the update config.** If `update-from-upstream.conf` exists and its
-   `protected_files` does not include `docs/course-context.md`, tell the author
-   to add it — otherwise the next upstream update overwrites their version with
-   the template. Do not edit the conf yourself.
+   `protected_files` does not include `context/course-context.md`, tell the
+   author to add it — otherwise the next upstream update overwrites their
+   version with the template. Do not edit the conf yourself.
 
 7. **Report changes.** List what changed per section and remind the author that
    the lesson skills will offer to save newly gathered facts back into this doc
@@ -81,8 +81,8 @@ contradicts it, and say so explicitly in the report.
 
 - Never invent course facts. Everything in the doc comes from the repo or from
   the author; when in doubt, ask or leave `TODO`.
-- Do not modify `docs/style.md`, `AGENTS.md`, or course content — the only
-  written artefact is `docs/course-context.md`.
+- Do not modify `context/style.md`, `AGENTS.md`, or course content — the only
+  written artefact is `context/course-context.md`.
 - Do not commit the changes automatically — leave that to the author.
 
 $ARGUMENTS

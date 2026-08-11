@@ -75,7 +75,7 @@ that intake question does not count against the question budget below.
 7. **Stop.** Never fix, never start diagnosing, never open the affected file for
    editing. Close with one sentence: `/fix-issues` works the queue. For a
    `[style]` entry, add one more: `/style-update` can make the preference a
-   durable rule in `docs/style.md` — the logged entry covers only this one
+   durable rule in `context/style.md` — the logged entry covers only this one
    instance.
 
 ## Rules
@@ -83,7 +83,7 @@ that intake question does not count against the question budget below.
 - Append-only: never restructure, reword, or reorder existing entries.
   Hand-added bullets are first-class, however minimal.
 - Course specifics come from
-  [`docs/course-context.md`](../../../docs/course-context.md) at runtime;
+  [`context/course-context.md`](../../../context/course-context.md) at runtime;
   hardcode nothing.
 - No commits, no pushes, no staging.
 

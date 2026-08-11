@@ -15,14 +15,21 @@ All guides for Canvas Course Builder. New here? Start with the
 
 - [Markdown guide](markdown.md): supported syntax, links, and alerts
 - [Frontmatter reference](frontmatter.md): page, assignment, and file metadata
-- [Writing style guide](style.md): the per-course style rules AI assistants
-  follow (ships as the English baseline; make it yours with `/style-init`, or
-  swap in another language from [`templates/`](../templates/))
-- [Course context](course-context.md): the per-course design template the lesson
-  skills rely on
 - [Lesson workflow](lesson-workflow.md): from lesson plan to student module with
   the bundled skills
 - [The sources folder](sources.md): where lesson plans, notes, and issues live
+
+## Your course's own files
+
+These two are not documentation and do not live in `docs/`. They sit in
+[`context/`](../context/), they are yours to edit, they are protected during
+upstream updates, and AI assistants read them before drafting anything.
+
+- [Writing style guide](../context/style.md): the per-course style rules AI
+  assistants follow (ships as the English baseline; make it yours with
+  `/style-init`, or swap in another language from [`templates/`](../templates/))
+- [Course context](../context/course-context.md): the per-course design template
+  the lesson skills rely on
 
 ## Tools
 

@@ -17,7 +17,7 @@ free text. Question sources, in order of preference: a markdown file given as a
 path (e.g. a `blueprint.md` from `/design-evaluation`); questions drafted
 earlier in the conversation; or nothing yet — then draft questions from the
 lesson plans in scope as part of Phase A, after reading
-[`docs/course-context.md`](../../../docs/course-context.md).
+[`context/course-context.md`](../../../context/course-context.md).
 
 ## Supported question types
 
@@ -41,7 +41,7 @@ to `essay_question`, and let the author choose.
 
 ### Phase A — Inventory (writes nothing)
 
-1. **Read** [`docs/style.md`](../../../docs/style.md) — question text is
+1. **Read** [`context/style.md`](../../../context/style.md) — question text is
    student-facing — and the question source; draft questions now, in chat, if
    they must come from lessons.
 

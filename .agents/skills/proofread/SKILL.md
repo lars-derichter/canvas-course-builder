@@ -1,13 +1,14 @@
 ---
 name: proofread
-description: Check a markdown document for spelling, grammar, natural flow, and compliance with docs/style.md, in whatever language that guide is written. Distinguishes the student-facing register (course/, evaluations/) from the colleague-facing register (anything under sources/), and applies the right rules. Reports findings; does not auto-fix. Use for "proofread", "nalezen", "spelling checken", "check dit lesplan op stijl".
+description: Check a markdown document for spelling, grammar, natural flow, and compliance with context/style.md, in whatever language that guide is written. Distinguishes the student-facing register (course/, evaluations/) from the colleague-facing register (anything under sources/), and applies the right rules. Reports findings; does not auto-fix. Use for "proofread", "nalezen", "spelling checken", "check dit lesplan op stijl".
 ---
 
 # Proofread
 
 Review one markdown document for spelling, grammar, naturalness of the prose (no
-translated feel), and [`docs/style.md`](../../../docs/style.md) compliance.
-Report findings grouped by severity; never auto-fix without confirmation.
+translated feel), and [`context/style.md`](../../../context/style.md)
+compliance. Report findings grouped by severity; never auto-fix without
+confirmation.
 
 ## Input
 
@@ -22,7 +23,7 @@ extensions, stop and explain.
    The lowest-numbered lesson under `sources/lessons/` (if any) is the worked
    example for the colleague-facing register.
 
-2. **Read `docs/style.md` in full.** Apply the shared rules plus the section
+2. **Read `context/style.md` in full.** Apply the shared rules plus the section
    matching the register. style.md is the authoritative ruleset — do not invent
    rules it does not contain, and do not assume a language it does not state.
    Note what it says about heading case, address form, and regional variety
