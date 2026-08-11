@@ -44,7 +44,7 @@ so they are verified by hand rather than in the automated suite:
   `npx course export --toc exports/toc.md`.
 - `npx course export --flagged` after setting `export: true` on a few items.
 - VS Code: multi-select several items in the sidebar and export them together.
-- The `/export-style-create` and `/export-style-edit` skills: derive or tweak a
+- The `/export-style-init` and `/export-style-update` skills: derive or tweak a
   style and confirm the regenerated sample reflects it.
 
 ## Writing new tests

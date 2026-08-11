@@ -2,6 +2,16 @@
 
 ## Unreleased
 
+- **The export-style skills are now `/export-style-init` and
+  `/export-style-update`.** Every skill that configures a single artefact now
+  answers to the same two verbs: `init` builds the thing from scratch, `update`
+  changes what is already there. `writing-style-*` and `course-context-*`
+  already worked that way; `/export-style-create` and `/export-style-edit` were
+  the last pair with a vocabulary of their own, so reaching for them meant
+  remembering which verb their author had picked. Nothing else changed — same
+  phases, same files, same plain-language triggers — and an upstream update
+  removes the old folders, so you are not left with two skills answering the
+  same request.
 - **`/course-context-update` folds a session's decisions into the course
   context.** The style guide had `/writing-style-update` to catch corrections
   you made while working; the course context had only `/course-context-init`, so

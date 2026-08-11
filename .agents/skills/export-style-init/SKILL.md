@@ -1,9 +1,9 @@
 ---
-name: export-style-create
-description: Derive a reusable PDF/DOCX export style from a reference — a Word document, a PDF, a website URL, or a CSS file — and write it to sources/export-style/ so course exports match that look. Phase A proposes a style spec and stops for approval; Phase B writes template.typ + reference.docx and regenerates the sample. Use for "create export style", "match this Word template", "build a house style for the export", "exportstijl maken", "maak een huisstijl voor de export".
+name: export-style-init
+description: Derive a reusable PDF/DOCX export style from a reference — a Word document, a PDF, a website URL, or a CSS file — and write it to sources/export-style/ so course exports match that look. Phase A proposes a style spec and stops for approval; Phase B writes template.typ + reference.docx and regenerates the sample. Use for "initialize export style", "set up an export style", "match this Word template", "build a house style for the export", "exportstijl opzetten", "maak een huisstijl voor de export".
 ---
 
-# Export style create
+# Export style init
 
 Turn a reference document, website, or stylesheet into a custom export style for
 `npx course export`. The style lives in `sources/export-style/` (protected from
@@ -125,7 +125,7 @@ source is not a document, URL, or stylesheet.
    `-f docx`. Surface `exports/style-sample.pdf` (and the DOCX), point out any
    DOCX degradation that applies (see `docs/export-styling.md`), and iterate on
    request. Small later tweaks are the job of
-   [`export-style-edit`](../export-style-edit/SKILL.md).
+   [`export-style-update`](../export-style-update/SKILL.md).
 
 ## Rules
 

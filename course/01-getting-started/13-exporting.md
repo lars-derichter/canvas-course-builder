@@ -121,9 +121,9 @@ Out of the box, exports use a clean, neutral style. Two settings in
 
 Two ready-made skills do the work for you:
 
-- **`/export-style-create`** builds a style from a reference — a Word document,
-  a PDF, a website, or a CSS file
-- **`/export-style-edit`** makes a plain-language tweak, like "headings dark
+- **`/export-style-init`** builds a style from a reference — a Word document, a
+  PDF, a website, or a CSS file
+- **`/export-style-update`** makes a plain-language tweak, like "headings dark
   blue" or "bigger margins"
 
 To try another style for a single export, add `--style`:

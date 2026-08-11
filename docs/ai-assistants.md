@@ -221,12 +221,12 @@ project whitelist.
 
 ### Export styling
 
-- **/export-style-create** derives a reusable PDF/DOCX export style from a
+- **/export-style-init** derives a reusable PDF/DOCX export style from a
   reference you give it: a Word document, a PDF, a website, or a CSS file. It
   proposes a style spec, and after approval forks the selected style into
   `sources/export-style/` and regenerates the sample so you can see the result.
   See [export-styling.md](export-styling.md).
-- **/export-style-edit** makes a plain-language change to an existing export
+- **/export-style-update** makes a plain-language change to an existing export
   style ("headings dark blue", "bigger margins"), keeping the PDF and Word
   styles in sync, then regenerates the sample. It forks the selected style on
   first use, so your style survives upstream updates.

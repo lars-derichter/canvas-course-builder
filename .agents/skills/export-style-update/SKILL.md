@@ -1,14 +1,18 @@
 ---
-name: export-style-edit
-description: Make a plain-language change to how course exports look — heading colour, fonts, margins, alert colours, paper size — by editing the theme (colour) and/or sources/export-style/template.typ and reference.docx (layout), then regenerating the sample to show the result. Forks the shipped defaults on first use. Use for "edit export style", "headings dark blue", "different font for the export", "exportstijl aanpassen", "koppen donkerblauw", "ander lettertype voor de export".
+name: export-style-update
+description: Make a plain-language change to how course exports look — heading colour, fonts, margins, alert colours, paper size — by editing the theme (colour) and/or sources/export-style/template.typ and reference.docx (layout), then regenerating the sample to show the result. Forks the shipped defaults on first use. Use for "update export style", "headings dark blue", "different font for the export", "exportstijl aanpassen", "koppen donkerblauw", "ander lettertype voor de export".
 ---
 
-# Export style edit
+# Export style update
 
 Apply a small, plain-language change to how `npx course export` looks, and show
 the result. The iterate-in-place companion to
-[`export-style-create`](../export-style-create/SKILL.md) — use that skill to
-derive a whole new look from a reference.
+[`export-style-init`](../export-style-init/SKILL.md) — use that skill to derive
+a whole new look from a reference.
+
+Unlike `/writing-style-update` and `/course-context-update`, this skill does not
+sweep the conversation for decisions to record. It takes the change asked of it
+and applies it straight away.
 
 Two files can carry a change. **Colour** lives in the theme
 (`src/css/themes/<name>.css`), shared with the preview site and Canvas and
@@ -21,7 +25,7 @@ injected into the PDF at export time. **Layout** lives in the export style
 `$ARGUMENTS` is the requested change in plain language ("headings dark blue",
 "font Georgia", "bigger margins", "koppen donkerblauw", "grotere marges"). If
 empty, ask what to change. If the request is really "build a style from this
-document/site", hand off to `export-style-create`.
+document/site", hand off to `export-style-init`.
 
 ## Steps
 

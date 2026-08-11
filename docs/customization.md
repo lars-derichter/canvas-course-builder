@@ -171,7 +171,7 @@ Canvas pages pick it up on the next run.
 >
 > One surface does not follow the theme: **Word output**. Colours in DOCX
 > exports are baked into the export style's `reference.docx` and cannot be
-> injected. Use `/export-style-edit` to recolour it to match.
+> injected. Use `/export-style-update` to recolour it to match.
 
 [`src/css/custom.css`](../src/css/custom.css) holds no colours of its own — it
 maps the `--ccb-*` tokens onto Docusaurus's `--ifm-*` variables and styles the
@@ -193,9 +193,9 @@ margins, the cover, and any fonts it ships. Built-in styles live in
 
 The comfortable route to a style of your own is AI-assisted:
 
-- `/export-style-create` derives a complete style from a reference you give it:
-  a Word template, a PDF, a website URL, or a CSS file.
-- `/export-style-edit` makes plain-language tweaks ("headings dark blue",
+- `/export-style-init` derives a complete style from a reference you give it: a
+  Word template, a PDF, a website URL, or a CSS file.
+- `/export-style-update` makes plain-language tweaks ("headings dark blue",
   "bigger margins") to an existing style.
 
 By hand, copy the closest style out and point `export.style` at it:

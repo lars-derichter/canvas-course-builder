@@ -3,8 +3,8 @@
 `npx course export` turns course markdown into a printable PDF or an editable
 Word document. This guide explains how the export pipeline is put together and
 how to customise the look, either by hand or with the
-[`/export-style-create`](#deriving-a-style-from-a-reference) and
-`/export-style-edit` skills.
+[`/export-style-init`](#deriving-a-style-from-a-reference) and
+`/export-style-update` skills.
 
 For prerequisites and everyday usage, see the
 [export section of the user guide](user-guide.md#exporting-to-pdf-or-docx).
@@ -68,7 +68,7 @@ name beneath it. `--title` and `--subtitle` override either.
 > **DOCX does not follow the theme.** Word styles are baked into
 > `reference.docx` and cannot be injected at export time, so switching `theme:`
 > recolours the site, Canvas and the PDF but leaves Word output alone.
-> `/export-style-edit` rewrites `reference.docx` to match.
+> `/export-style-update` rewrites `reference.docx` to match.
 
 ## The style files
 
@@ -173,13 +173,13 @@ uses the next in the list; that is informational, not an error. Silence it with
 
 Two skills automate the editing described above:
 
-- **`/export-style-create`** takes a Word document, a PDF, a website URL, or a
-  CSS file, works out the fonts, colours, spacing, and margins, proposes a style
+- **`/export-style-init`** takes a Word document, a PDF, a website URL, or a CSS
+  file, works out the fonts, colours, spacing, and margins, proposes a style
   spec, and — after you approve — writes `template.typ` and `reference.docx`
   into `sources/export-style/` and regenerates the sample.
-- **`/export-style-edit`** makes a plain-language change ("headings dark blue",
-  "bigger margins", "font Georgia") to an existing style and regenerates the
-  sample so you can see it.
+- **`/export-style-update`** makes a plain-language change ("headings dark
+  blue", "bigger margins", "font Georgia") to an existing style and regenerates
+  the sample so you can see it.
 
 Both edit the DOCX by unzipping it, editing its XML, and rezipping — never in
 Word, which would drop the custom alert and link-card styles.
@@ -221,7 +221,7 @@ DOCX is a lossy target next to the Typst PDF. These are known and accepted:
 - **`--var` font/margin variables** affect the PDF only. Style the DOCX through
   `reference.docx`.
 - **The theme** recolours the site, Canvas and the PDF, but not the DOCX: Word
-  styles are baked into `reference.docx`. `/export-style-edit` rewrites them.
+  styles are baked into `reference.docx`. `/export-style-update` rewrites them.
 - **Cover logo** appears in the PDF only; the DOCX cover is typographic
   (Title/Subtitle styles).
 - **The course name under the title** appears in the PDF only. Word's writer

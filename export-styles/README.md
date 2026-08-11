@@ -52,8 +52,8 @@ cp -r export-styles/generic sources/my-style
 ```
 
 Then edit `sources/my-style/template.typ` and `reference.docx`, or let
-`/export-style-create` derive a style from a Word template, a PDF, a website or
-a CSS file, and `/export-style-edit` make plain-language tweaks.
+`/export-style-init` derive a style from a Word template, a PDF, a website or a
+CSS file, and `/export-style-update` make plain-language tweaks.
 
 To change one file of a shipped style without forking the rest, drop it in
 `sources/export-style/` — that path wins per file over whatever style is

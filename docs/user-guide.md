@@ -369,7 +369,7 @@ To change how exports look, `course.config.yml` picks the layout with
 `export.style` and the colours with `theme`; `--style <name>` overrides the
 layout for one run. See [export styling](export-styling.md) for the pipeline,
 [Customization](customization.md#branding) for the colour tokens, and the
-`/export-style-create` and `/export-style-edit` skills for deriving a house
+`/export-style-init` and `/export-style-update` skills for deriving a house
 style from a Word template.
 
 ## Advanced commands
