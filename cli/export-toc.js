@@ -25,10 +25,11 @@ async function exportTocCmd(options = {}) {
     }
   }
 
+  const { title, tagline } = loadCourseConfig();
   const body = generateToc(modules, {
     flagged: options.flagged,
-    title: options.title || loadCourseConfig().title,
-    subtitle: options.subtitle,
+    title: options.title || title,
+    subtitle: options.subtitle || tagline,
   });
 
   fs.mkdirSync(EXPORTS_DIR, { recursive: true });

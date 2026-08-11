@@ -59,9 +59,9 @@ the institution's colours in the neutral layout.
 `npx course export --style <name|path>` overrides the style for a single run.
 
 Both axes are about the look. The cover's _words_ come from elsewhere: an export
-covering the whole course is headed by `title` from `course.config.yml`, a
-module export by the module's name with the course name beneath it, and
-`--title` overrides either.
+covering the whole course is headed by `title` from `course.config.yml` and
+subtitled by `tagline`, a module export by the module's name with the course
+name beneath it. `--title` and `--subtitle` override either.
 
 > [!IMPORTANT]
 >

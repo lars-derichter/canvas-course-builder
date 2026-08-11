@@ -175,6 +175,9 @@ function exportSlug(title, labels) {
 function resolveMode(paths, options, index, labels = getLabels(), course = {}) {
   const { modules, byPath } = index;
   const courseTitle = course.title || labels.export.course_title;
+  // The tagline describes the course, so it only subtitles a document actually
+  // titled after the course. A module export gets the course name instead.
+  const courseSubtitle = course.tagline || undefined;
   const flagged = (entry) =>
     !options.flagged ||
     (entry.item.frontmatter && entry.item.frontmatter.export === true);
@@ -205,7 +208,7 @@ function resolveMode(paths, options, index, labels = getLabels(), course = {}) {
       regime: groups.length > 1 ? 'course' : 'flat',
       defaultSlug: 'toc',
       defaultTitle: meta.title || courseTitle,
-      defaultSubtitle: meta.subtitle,
+      defaultSubtitle: meta.subtitle || courseSubtitle,
     };
   }
 
@@ -297,6 +300,7 @@ function resolveMode(paths, options, index, labels = getLabels(), course = {}) {
       regime: groups.length > 1 ? 'course' : 'flat',
       defaultSlug: 'flagged',
       defaultTitle: options.title || courseTitle,
+      defaultSubtitle: courseSubtitle,
     };
   }
 
@@ -313,6 +317,7 @@ function resolveMode(paths, options, index, labels = getLabels(), course = {}) {
     regime: 'course',
     defaultSlug: exportSlug(options.title || courseTitle, labels),
     defaultTitle: options.title || courseTitle,
+    defaultSubtitle: courseSubtitle,
   };
 }
 
@@ -384,11 +389,14 @@ async function exportCmd(paths = [], options = {}) {
     return;
   }
 
-  const { title, language, labels } = loadCourseConfig();
+  const { title, tagline, language, labels } = loadCourseConfig();
 
   let mode;
   try {
-    mode = resolveMode(paths, options, indexCourse(), labels, { title });
+    mode = resolveMode(paths, options, indexCourse(), labels, {
+      title,
+      tagline,
+    });
   } catch (err) {
     log.error(`[export] ${err.message}`);
     process.exit(1);

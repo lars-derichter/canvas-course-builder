@@ -30,16 +30,21 @@ style baselines below and for `export-styles/` and `src/css/themes/`.
 
 ## The course name
 
-`course.config.yml` holds the name of the course, which titles the preview site
-and its navbar and heads the cover of a full-course PDF or Word export:
+`course.config.yml` holds the name of the course. It titles the preview site and
+its navbar, and heads the cover of a full-course PDF or Word export:
 
 ```yml
 title: Programming Fundamentals
-tagline: Bachelor 1, semester 2 # optional, shown under the title on covers
+tagline: Bachelor 1, semester 2 # optional, sits above the title on covers
 ```
 
 Leave `title` out and it falls back to the generic label for your course
 language — "Course", "Cursus" — which is a nudge, not a name. Set it once.
+
+The `tagline` is optional and does double duty: Docusaurus keeps it in the site
+metadata, and it subtitles the cover of an export covering the whole course. A
+module export gets the course name under its title instead, since the tagline
+describes the course rather than the module.
 
 Do not put the title in `docusaurus.config.js`. That file belongs to the tooling
 project and is overwritten on [upstream updates](updating-your-project.md);

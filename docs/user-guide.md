@@ -167,7 +167,7 @@ so the site chrome ("On this page", "Next", …) follows along.
 
 ```yaml
 title: Programming Fundamentals # names the site, navbar and export covers
-tagline: Bachelor 1, semester 2 # optional one-line descriptor
+tagline: Bachelor 1, semester 2 # optional, subtitles those covers
 
 language: en # built-in label sets: en, nl (shipped default: en)
 
