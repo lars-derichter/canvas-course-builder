@@ -1,6 +1,6 @@
 ---
 name: rubric
-description: Generate a grading rubric for an assignment or evaluation, with criteria drawn from the assignment text and aligned to the course's learning goals. Phase A proposes the criteria-by-levels matrix and stops for approval; Phase B writes a colleague-facing markdown rubric. Use for "rubric", "rubric maken", "beoordelingsrubriek", "verbetersleutel voor de opdracht", "grading criteria".
+description: Generate a grading rubric for an assignment or evaluation, with criteria drawn from the assignment text and aligned to the course's learning goals. Phase A proposes the criteria-by-levels matrix and stops for approval; Phase B writes a colleague-facing markdown rubric. Use for "rubric", "grading criteria", "marking key for the assignment", "rubric maken", "beoordelingsrubriek", "verbetersleutel voor de opdracht".
 ---
 
 # Rubric

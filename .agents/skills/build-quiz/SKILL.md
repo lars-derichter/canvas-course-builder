@@ -1,6 +1,6 @@
 ---
 name: build-quiz
-description: Turn a question list into a QTI 1.2 package that Canvas can import as a quiz, plus import instructions. Phase A maps every question to a supported QTI type and stops for approval; Phase B generates and verifies the .zip. Use for "build quiz", "quiz maken", "QTI genereren", "Canvas quiz van deze vragen".
+description: Turn a question list into a QTI 1.2 package that Canvas can import as a quiz, plus import instructions. Phase A maps every question to a supported QTI type and stops for approval; Phase B generates and verifies the .zip. Use for "build quiz", "make a Canvas quiz from these questions", "generate QTI", "quiz maken", "QTI genereren", "Canvas quiz van deze vragen".
 ---
 
 # Build quiz

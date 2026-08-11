@@ -1,6 +1,6 @@
 ---
 name: design-lesson
-description: Help draft a new lesson plan in sources/lessons/, following context/course-context.md and the colleague-facing register of context/writing-style.md. Accepts rough notes, a request for the next logical lesson, or pure Q&A. Phase A presents a design with pros/cons of the author's suggestions and its own; Phase B writes the draft only after approval. Use for "design lesson", "nieuwe les ontwerpen", "lesplan opzetten", "vervolg op les X".
+description: Help draft a new lesson plan in sources/lessons/, following context/course-context.md and the colleague-facing register of context/writing-style.md. Accepts rough notes, a request for the next logical lesson, or pure Q&A. Phase A presents a design with pros/cons of the author's suggestions and its own; Phase B writes the draft only after approval. Use for "design lesson", "design the next lesson", "draft a lesson plan", "nieuwe les ontwerpen", "lesplan opzetten", "vervolg op les X".
 ---
 
 # Design lesson

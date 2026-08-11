@@ -1,6 +1,6 @@
 ---
 name: coverage-map
-description: Cross-reference the course's learning goals against lessons, modules, and evaluations and report alignment gaps — goals never practised, practised but never assessed, assessed but never taught. Structure, links, and numbering are /consistency-check's job. Report-only; offers to save the report as a file but writes nothing by default. Use for "coverage map", "leerdoelendekking", "dekkingsmatrix", "welke leerdoelen zijn nog niet getest", "coverage check voor het examen".
+description: Cross-reference the course's learning goals against lessons, modules, and evaluations and report alignment gaps — goals never practised, practised but never assessed, assessed but never taught. Structure, links, and numbering are /consistency-check's job. Report-only; offers to save the report as a file but writes nothing by default. Use for "coverage map", "learning-goal coverage", "which goals are never tested", "leerdoelendekking", "dekkingsmatrix", "welke leerdoelen zijn nog niet getest".
 ---
 
 # Coverage map

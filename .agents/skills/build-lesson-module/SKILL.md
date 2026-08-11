@@ -1,6 +1,6 @@
 ---
 name: build-lesson-module
-description: Generate a complete student-facing module under course/ from a lesson plan in sources/lessons/ — pages (overview, content, reference cards, summary, glossary, optional homework), downloadable code archives, and transparent PNG placeholders with TODO notes for images. Phase A proposes the design and stops for approval; Phase B writes the files. Use for "build lesson module", "module maken van les", "student-materiaal genereren", "lesplan omzetten naar course".
+description: Generate a complete student-facing module under course/ from a lesson plan in sources/lessons/ — pages (overview, content, reference cards, summary, glossary, optional homework), downloadable code archives, and transparent PNG placeholders with TODO notes for images. Phase A proposes the design and stops for approval; Phase B writes the files. Use for "build lesson module", "turn this lesson plan into a module", "generate the student material", "module maken van les", "lesplan omzetten naar course", "student-materiaal genereren".
 ---
 
 # Build lesson module

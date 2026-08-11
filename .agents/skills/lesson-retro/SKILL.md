@@ -1,6 +1,6 @@
 ---
 name: lesson-retro
-description: Debrief a lesson right after teaching it, in a conversational interview — one question at a time, following up on the answers. Folds timing corrections and tips into the lesson plan's notes-to-self, durable course-wide insights into context/course-context.md, and lists content fixes for the student material. Use for "lesson retro", "les nabespreken", "retro les 3", "hoe de les gegaan is", "debrief after teaching".
+description: Debrief a lesson right after teaching it, in a conversational interview — one question at a time, following up on the answers. Folds timing corrections and tips into the lesson plan's notes-to-self, durable course-wide insights into context/course-context.md, and lists content fixes for the student material. Use for "lesson retro", "debrief after teaching", "how the lesson went", "les nabespreken", "retro les 3", "hoe de les gegaan is".
 ---
 
 # Lesson retro

@@ -1,6 +1,6 @@
 ---
 name: style-update
-description: Review style corrections and preferences the user expressed in this conversation, and fold them into context/writing-style.md as durable rules. Use for "update style", "stijlregel toevoegen", "onthoud deze schrijfvoorkeur", "make this a style rule".
+description: Review style corrections and preferences the user expressed in this conversation, and fold them into context/writing-style.md as durable rules. Use for "update style", "make this a style rule", "remember this writing preference", "stijlregel toevoegen", "onthoud deze schrijfvoorkeur".
 ---
 
 # Style update

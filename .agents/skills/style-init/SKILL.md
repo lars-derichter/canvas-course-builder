@@ -1,6 +1,6 @@
 ---
 name: style-init
-description: Interview the user and analyse samples of their writing to rewrite context/writing-style.md to match their voice, audience, and formatting preferences. Use for "initialize style", "stijlgids opzetten", "schrijfstijl instellen", "set up the style guide".
+description: Interview the user and analyse samples of their writing to rewrite context/writing-style.md to match their voice, audience, and formatting preferences. Use for "initialize style", "set up the style guide", "configure the writing style", "stijlgids opzetten", "schrijfstijl instellen".
 ---
 
 # Style init

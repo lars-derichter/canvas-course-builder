@@ -1,6 +1,6 @@
 ---
 name: image-todos
-description: List all outstanding image work across the course — the transparent placeholder PNGs and image-TODO comment blocks that /build-lesson-module leaves behind. Pure report, writes nothing. Use for "image todos", "openstaande afbeeldingen", "welke afbeeldingen moet ik nog maken", "placeholder images", "beeldwerk oplijsten", "image debt".
+description: List all outstanding image work across the course — the transparent placeholder PNGs and image-TODO comment blocks that /build-lesson-module leaves behind. Pure report, writes nothing. Use for "image todos", "placeholder images", "which images do I still have to make", "openstaande afbeeldingen", "welke afbeeldingen moet ik nog maken", "beeldwerk oplijsten".
 ---
 
 # Image todos

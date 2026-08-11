@@ -1,6 +1,6 @@
 ---
 name: design-evaluation
-description: Design an exam or test in evaluations/ from the lessons taught so far, following context/course-context.md and the student-facing register of context/writing-style.md. Phase A proposes a blueprint matrix (learning goals × questions × difficulty) and flags over- and under-tested goals; Phase B writes the evaluation only after approval. Use for "design evaluation", "toets ontwerpen", "examen opstellen", "test maken over les 1 tot 4".
+description: Design an exam or test in evaluations/ from the lessons taught so far, following context/course-context.md and the student-facing register of context/writing-style.md. Phase A proposes a blueprint matrix (learning goals × questions × difficulty) and flags over- and under-tested goals; Phase B writes the evaluation only after approval. Use for "design evaluation", "design a test", "write an exam on lessons 1 to 4", "toets ontwerpen", "examen opstellen", "test maken over les 1 tot 4".
 ---
 
 # Design evaluation

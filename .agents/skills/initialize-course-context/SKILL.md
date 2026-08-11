@@ -1,6 +1,6 @@
 ---
 name: initialize-course-context
-description: Read the repo and interview the user to fill in or refresh context/course-context.md, the per-course design context the lesson skills (design-lesson, summarize-lesson, build-lesson-module) rely on. Run once when setting up a course, and again after README, docs, or course structure change substantially. Use for "initialize course context", "cursuscontext invullen", "course context verversen", "set up the course context".
+description: Read the repo and interview the user to fill in or refresh context/course-context.md, the per-course design context the lesson skills (design-lesson, summarize-lesson, build-lesson-module) rely on. Run once when setting up a course, and again after README, docs, or course structure change substantially. Use for "initialize course context", "set up the course context", "refresh the course context", "cursuscontext invullen", "course context verversen".
 ---
 
 # Initialize course context

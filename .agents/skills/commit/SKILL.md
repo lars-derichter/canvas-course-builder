@@ -1,6 +1,6 @@
 ---
 name: commit
-description: Stage changes and create a git commit with a clear, consistent message. Use for "commit", "commit dit", "maak een commit", "commit the changes".
+description: Stage changes and create a git commit with a clear, consistent message. Use for "commit", "commit the changes", "commit this", "commit dit", "maak een commit".
 ---
 
 # Commit

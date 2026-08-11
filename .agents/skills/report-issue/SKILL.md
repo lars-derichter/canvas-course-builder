@@ -1,6 +1,6 @@
 ---
 name: report-issue
-description: Quickly log an error or wanted change in course material into the issue queue at sources/issues.md — locates the file, quotes the passage to confirm, asks at most one clarifying question, and never diagnoses or fixes anything (that is /fix-issues). Use for "report issue", "issue melden", "noteer deze fout", "fout gevonden op pagina X", "log this for later", "dit wil ik nog aanpassen".
+description: Quickly log an error or wanted change in course material into the issue queue at sources/issues.md — locates the file, quotes the passage to confirm, asks at most one clarifying question, and never diagnoses or fixes anything (that is /fix-issues). Use for "report issue", "log this for later", "found a mistake on page X", "issue melden", "noteer deze fout", "dit wil ik nog aanpassen".
 ---
 
 # Report issue

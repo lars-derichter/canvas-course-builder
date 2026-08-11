@@ -1,6 +1,6 @@
 ---
 name: fix-issues
-description: Work through the open issues in sources/issues.md. Phase A verifies and groups every entry, checks wider implications (same defect elsewhere, style-rule drift, glossary, course context, lesson plans, evaluations), bundles all clarifying questions into one round, and presents one fix plan; Phase B applies the fixes only after approval and moves entries to Resolved. Never fixes style preferences silently, never commits. Use for "fix issues", "issues afwerken", "werk de foutenlijst af", "gemelde fouten oplossen", "los de issues op", "fix the queue".
+description: Work through the open issues in sources/issues.md. Phase A verifies and groups every entry, checks wider implications (same defect elsewhere, style-rule drift, glossary, course context, lesson plans, evaluations), bundles all clarifying questions into one round, and presents one fix plan; Phase B applies the fixes only after approval and moves entries to Resolved. Never fixes style preferences silently, never commits. Use for "fix issues", "work the issue queue", "fix the queue", "issues afwerken", "werk de foutenlijst af", "los de issues op".
 ---
 
 # Fix issues
