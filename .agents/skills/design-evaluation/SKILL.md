@@ -14,11 +14,12 @@ accompanying blueprint is colleague-facing.
 
 ## Input
 
-`$ARGUMENTS` may combine an evaluation name or type (`test 1`, `examen`,
-`herexamen`), a lesson range (`les 1 tot 4`, or "everything taught so far"), a
-path to a notes file with question ideas or constraints, and free text with
-intent. If the scope is not given, default to every lesson with a plan in
-`sources/lessons/` and confirm the range in one sentence.
+`$ARGUMENTS` may combine an evaluation name or type (`test 1`, `exam`, `resit`,
+`examen`, `herexamen`), a lesson range (`lessons 1 to 4`, `les 1 tot 4`, or
+"everything taught so far"), a path to a notes file with question ideas or
+constraints, and free text with intent. If the scope is not given, default to
+every lesson with a plan in `sources/lessons/` and confirm the range in one
+sentence.
 
 ## Steps
 

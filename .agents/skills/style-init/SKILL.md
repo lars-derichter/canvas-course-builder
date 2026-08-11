@@ -19,13 +19,13 @@ the course author's own voice and audience.
 
 2. **Analyse the samples, then interview only what they did not answer** (ask
    the user, bundling related questions into one round). Dimensions for both:
-   - Language and regional variety (Dutch — Flemish/Netherlands; English —
-     UK/US; …); student age band and CEFR level if the course language is not
-     the students' first language.
-   - Register and formality (je/u, tu/vous, first-name basis) — for both the
+   - Language and regional variety (English — UK/US; Dutch —
+     Flemish/Netherlands; …); student age band and CEFR level if the course
+     language is not the students' first language.
+   - Register and formality (first-name basis, je/u, tu/vous) — for both the
      student-facing and the colleague-facing register.
    - Sentence length, rhythm, and tone latitude (jokes, parenthetical asides,
-     personal voice ik/we).
+     personal voice I/we).
    - Tech-term handling: translated or kept in the source language.
    - Punctuation habits (em-dashes, quote style, ellipsis); headings case.
    - Emoji: the page-title signalling system, a custom set, or none.
@@ -45,9 +45,15 @@ the course author's own voice and audience.
    course language already matches what the file holds, copy the right baseline
    from [`templates/`](../../../templates/) over `context/writing-style.md`
    first and adapt from there:
-   - `writing-style-en.md` — English, UK spelling, title-case headings.
+   - `writing-style-en.md` — English, UK spelling, title-case headings. Already
+     installed as `context/writing-style.md`.
+   - `writing-style-en-us.md` — English, US spelling, title-case headings.
    - `writing-style-nl-be.md` — Nederlands, Vlaamse variant.
    - `writing-style-nl.md` — Nederlands, variant Nederland.
+
+   For a course in a language no baseline covers, start from
+   `writing-style-en.md` and write the adapted guide in the course language: the
+   structure is what matters, and step 5 preserves it.
 
    Never edit anything in `templates/` itself: those are shipped defaults,
    overwritten on upstream updates.

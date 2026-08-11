@@ -18,7 +18,7 @@ repo path, a page title as rendered on the Docusaurus site or in Canvas, a
 module or lesson number, or a quoted snippet of the offending text. The author
 is usually reading the rendered site, not the raw file: rendered titles come
 from frontmatter `title:` or the first heading, and numeric prefixes are
-stripped (`03-methoden` renders as "Methoden"). Empty means ask what to report —
+stripped (`03-methods` renders as "Methods"). Empty means ask what to report —
 that intake question does not count against the question budget below.
 
 ## Steps

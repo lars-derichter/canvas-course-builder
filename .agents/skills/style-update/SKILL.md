@@ -15,8 +15,8 @@ drafts material.
 1. **Scan the conversation** for style signals: direct corrections ("don't use
    em-dashes", "too formal", "sentences too long"), rewrites the author made to
    drafts (diff before/after, extract the pattern), positive confirmations of
-   non-obvious choices, and word-choice preferences ("use _kot_ instead of
-   _studentenkamer_", "never _leuk_").
+   non-obvious choices, and word-choice preferences ("use _folder_ instead of
+   _directory_", "never _leuk_").
 
 2. **Cluster the findings by the actual current headings of `writing-style.md`**
    — read them at runtime, never assume a section list. Mind the registers: a
@@ -37,8 +37,8 @@ drafts material.
 
 - If the conversation has no style signals, say so and stop — do not invent
   rules.
-- Prefer concrete examples over abstract rules: "avoid _hanteren_, prefer
-  _gebruiken_" beats "keep diction plain".
+- Prefer concrete examples over abstract rules: "avoid _utilise_, prefer _use_"
+  (or "avoid _hanteren_, prefer _gebruiken_") beats "keep diction plain".
 - Do not commit the changes automatically.
 
 $ARGUMENTS

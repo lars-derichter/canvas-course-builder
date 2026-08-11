@@ -36,11 +36,12 @@ extensions, stop and explain.
    - Em-dashes (`—`) — always a violation unless the dash itself is the quoted
      subject.
    - Every literal phrase writing-style.md lists under its AI-tells section,
-     plus any regional or vocabulary blacklist it carries (the Dutch baselines
-     list Hollandisms, the English one lists LLM vocabulary). Build the grep
-     from the file, not from memory.
-   - Wrong address form, as writing-style.md defines it (e.g. `u`/`jij` where a
-     Dutch guide forbids them).
+     plus any regional or vocabulary blacklist it carries (the English baselines
+     list LLM vocabulary, the Dutch ones list Hollandisms). Build the grep from
+     the file, not from memory.
+   - Wrong address form, as writing-style.md defines it (e.g. `one` where an
+     English guide mandates `you`, or `u`/`jij` where a Dutch guide forbids
+     them).
    - Headings that break the guide's case rule, in whichever direction it runs:
      sentence case where the guide mandates title case, or title case where it
      mandates sentence case. Headings ending in punctuation other than `?`.
@@ -61,8 +62,8 @@ extensions, stop and explain.
    - Prose that reads as translated rather than written: literal idiom
      translations, calqued collocations, another language's sentence rhythm
      (stacked subordinate clauses, multiple parentheticals in one sentence).
-     Every baseline names this; the Dutch ones make it a separate AI-tell with
-     markers to grep for.
+     Every baseline names this; some make it a separate AI-tell with markers to
+     grep for.
    - Decorative tricolons, bold scattered through prose, trailing summaries,
      repeating the heading as the section's first line.
    - Student-facing only: sentences clearly above the guide's reading level

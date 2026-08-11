@@ -18,10 +18,10 @@ injected into the PDF at export time. **Layout** lives in the export style
 
 ## Input
 
-`$ARGUMENTS` is the requested change in plain language ("koppen donkerblauw",
-"font Georgia", "grotere marges"). If empty, ask what to change. If the request
-is really "build a style from this document/site", hand off to
-`export-style-create`.
+`$ARGUMENTS` is the requested change in plain language ("headings dark blue",
+"font Georgia", "bigger margins", "koppen donkerblauw", "grotere marges"). If
+empty, ask what to change. If the request is really "build a style from this
+document/site", hand off to `export-style-create`.
 
 ## Steps
 

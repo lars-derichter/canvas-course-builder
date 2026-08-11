@@ -11,8 +11,8 @@ filled in `sources/issues.md`.
 ## Input
 
 `$ARGUMENTS` may limit the scope: a date or date range, a file or module, a type
-tag (e.g. `alleen [error]`), or free text matched against the entries. Empty
-means every entry under `## Open`.
+tag (e.g. `[error] only`, `alleen [error]`), or free text matched against the
+entries. Empty means every entry under `## Open`.
 
 ## Steps
 

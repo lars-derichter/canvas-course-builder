@@ -12,9 +12,9 @@ Design a new lesson plan together with the author and write it to
 
 ## Input
 
-`$ARGUMENTS` may combine a lesson number (`les 4`, `4`), a path to a notes file,
-and free text with intent — or the author simply asks for "the next logical
-lesson". Three modes, combinable:
+`$ARGUMENTS` may combine a lesson number (`lesson 4`, `les 4`, `4`), a path to a
+notes file, and free text with intent — or the author simply asks for "the next
+logical lesson". Three modes, combinable:
 
 - **Notes**: the author's bullets are hard constraints, not suggestions to round
   out.

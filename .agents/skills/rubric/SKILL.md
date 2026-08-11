@@ -12,11 +12,11 @@ Canvas would need a `lib/canvas/rubrics.js` that does not exist.
 
 ## Input
 
-`$ARGUMENTS` may hold a path to the assignment, free text naming it (_"huiswerk
-les 3"_), and/or constraints (point total, number of levels). If empty, propose
-the file open in the IDE when it is an assignment or evaluation; otherwise ask
-for a path. Stop with one sentence if the target is not a markdown file under
-`course/` or `evaluations/`.
+`$ARGUMENTS` may hold a path to the assignment, free text naming it (_"homework
+lesson 3"_, _"huiswerk les 3"_), and/or constraints (point total, number of
+levels). If empty, propose the file open in the IDE when it is an assignment or
+evaluation; otherwise ask for a path. Stop with one sentence if the target is
+not a markdown file under `course/` or `evaluations/`.
 
 ## Steps
 

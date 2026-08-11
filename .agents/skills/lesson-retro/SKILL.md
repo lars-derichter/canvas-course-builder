@@ -19,9 +19,9 @@ moving on. Never bundle the whole interview into one question round.
 
 ## Input
 
-`$ARGUMENTS` may hold a lesson number (`les 3`, `lesson-03`, `3`) and/or
-free-text first impressions — treat those as the first interview answers. If no
-lesson is given, ask which lesson was taught; if only one lesson plan is
+`$ARGUMENTS` may hold a lesson number (`lesson 3`, `les 3`, `lesson-03`, `3`)
+and/or free-text first impressions — treat those as the first interview answers.
+If no lesson is given, ask which lesson was taught; if only one lesson plan is
 plausibly recent, propose it in the same breath.
 
 ## Steps
@@ -46,8 +46,9 @@ plausibly recent, propose it in the same breath.
 3. **Then cover the ground below, adaptively.** Skip what the author already
    answered, dig into what they flag, and drop lines that yield nothing after
    one follow-up. Reference the plan's actual block names and time budgets in
-   your questions — in the author's language, e.g. "Blok 2 stond op 25 minuten;
-   klopte dat?" beats "how was the timing?".
+   your questions — in the author's language, e.g. "Block 2 was budgeted at 25
+   minutes; did that hold?" (a Dutch author gets "Blok 2 stond op 25 minuten;
+   klopte dat?") beats "how was the timing?".
    - **Timing** — which blocks ran long or short, where the break actually fell,
      what got cut or rushed at the end.
    - **Comprehension** — what confused students, which questions they asked,
