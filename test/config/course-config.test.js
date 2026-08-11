@@ -86,6 +86,58 @@ describe('loadCourseConfig', () => {
     );
   });
 
+  it("falls back to the language's generic course label for the title", () => {
+    assert.equal(loadCourseConfig(tmpDir).title, 'Course');
+    _clearCache();
+    writeConfig('language: nl\n');
+    assert.equal(loadCourseConfig(tmpDir).title, 'Cursus');
+    assert.equal(warnMock.mock.callCount(), 0);
+  });
+
+  it('reads and trims an explicit title', () => {
+    writeConfig('title: "  Programming Fundamentals  "\n');
+    assert.equal(loadCourseConfig(tmpDir).title, 'Programming Fundamentals');
+    assert.equal(warnMock.mock.callCount(), 0);
+  });
+
+  it('lets a course_title label override drive the title fallback', () => {
+    writeConfig(
+      ['labels:', '  export:', '    course_title: Syllabus', ''].join('\n'),
+    );
+    assert.equal(loadCourseConfig(tmpDir).title, 'Syllabus');
+  });
+
+  it('warns and falls back for an empty title', () => {
+    writeConfig('title: ""\n');
+    assert.equal(loadCourseConfig(tmpDir).title, 'Course');
+    assert.equal(warnMock.mock.callCount(), 1);
+    assert.match(warnMock.mock.calls[0].arguments[0], /Ignoring empty "title"/);
+  });
+
+  it('warns and falls back for a non-scalar title', () => {
+    writeConfig(['title:', '  nested: nope', ''].join('\n'));
+    assert.equal(loadCourseConfig(tmpDir).title, 'Course');
+    assert.equal(warnMock.mock.callCount(), 1);
+    assert.match(
+      warnMock.mock.calls[0].arguments[0],
+      /Ignoring "title".*expected a string/,
+    );
+  });
+
+  it('treats a missing or empty tagline as no tagline, without warning', () => {
+    assert.equal(loadCourseConfig(tmpDir).tagline, '');
+    _clearCache();
+    writeConfig('tagline: ""\n');
+    assert.equal(loadCourseConfig(tmpDir).tagline, '');
+    assert.equal(warnMock.mock.callCount(), 0);
+  });
+
+  it('reads and trims an explicit tagline', () => {
+    writeConfig('tagline: "  Bachelor 1, semester 2  "\n');
+    assert.equal(loadCourseConfig(tmpDir).tagline, 'Bachelor 1, semester 2');
+    assert.equal(warnMock.mock.callCount(), 0);
+  });
+
   it('warns about unknown top-level keys', () => {
     writeConfig('langauge: nl\n');
     const config = loadCourseConfig(tmpDir);
