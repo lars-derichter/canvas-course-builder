@@ -27,8 +27,12 @@ const config = {
   tagline,
   favicon: 'img/favicon.ico',
 
-  url: 'https://example.com',
-  baseUrl: '/',
+  // The deploy workflow passes the site's public address in from GitHub Pages,
+  // which knows it for whatever repository the build runs in, so nothing has to
+  // be written into this file per course. A local build keeps the placeholders;
+  // they only surface in absolute URLs such as the sitemap's.
+  url: process.env.CCB_SITE_URL || 'https://example.com',
+  baseUrl: process.env.CCB_BASE_URL || '/',
 
   onBrokenLinks: 'throw',
 

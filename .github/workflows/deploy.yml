@@ -1,0 +1,67 @@
+# Build the Docusaurus site and publish it to GitHub Pages.
+#
+# Nothing here is course-specific: GitHub Pages knows the address of whatever
+# repository the workflow runs in, and configure-pages hands it back, so the
+# same file serves every course built from this template. See docs/hosting.md.
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one concurrent deployment, cancelling in-progress runs.
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  # Publishing requires Settings > Pages > Source set to "GitHub Actions".
+  # Until it is, configure-pages fails. Running it here first turns that into
+  # a skipped run rather than a failure on every push for a course that does
+  # not publish; switch Pages on and the next push deploys.
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      enabled: ${{ steps.pages.outcome == 'success' }}
+    steps:
+      - id: pages
+        uses: actions/configure-pages@v5
+        continue-on-error: true
+
+  build:
+    needs: check
+    if: needs.check.outputs.enabled == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - id: pages
+        uses: actions/configure-pages@v5
+      # base_path is "/your-repo" or "" — Docusaurus wants a trailing slash.
+      - run: npm run build
+        env:
+          CCB_SITE_URL: ${{ steps.pages.outputs.origin }}
+          CCB_BASE_URL: ${{ steps.pages.outputs.base_path }}/
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: build
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
