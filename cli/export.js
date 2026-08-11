@@ -411,6 +411,11 @@ async function exportCmd(paths = [], options = {}) {
     const subtitle = options.subtitle || mode.defaultSubtitle;
     if (subtitle) meta.subtitle = subtitle;
     meta.toc = true;
+    // The cover prints `course` under the document title, so a module or a
+    // selection says which course it was cut from. Skipped when the document is
+    // already titled after the course, which would print the name twice. No
+    // title means no cover at all (template.typ gates the whole block on it).
+    if (meta.title !== title) meta.course = title;
   }
 
   const { linkMap, courseId } = buildLinkContext();

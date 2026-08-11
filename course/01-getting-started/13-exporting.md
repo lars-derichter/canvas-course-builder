@@ -106,7 +106,7 @@ git, so your documents never end up in your repository or on Canvas.
 Export the whole course and the document is titled after your course, filename
 included: `programming-fundamentals.pdf`. That name comes from `title` in
 `course.config.yml`. Export a single module and the module's own name is used
-instead.
+instead, with the course name printed under it on the PDF cover.
 
 ## Changing how exports look
 

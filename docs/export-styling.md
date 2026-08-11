@@ -60,7 +60,8 @@ the institution's colours in the neutral layout.
 
 Both axes are about the look. The cover's _words_ come from elsewhere: an export
 covering the whole course is headed by `title` from `course.config.yml`, a
-module export by the module's name, and `--title` overrides either.
+module export by the module's name with the course name beneath it, and
+`--title` overrides either.
 
 > [!IMPORTANT]
 >
@@ -223,6 +224,8 @@ DOCX is a lossy target next to the Typst PDF. These are known and accepted:
   styles are baked into `reference.docx`. `/export-style-edit` rewrites them.
 - **Cover logo** appears in the PDF only; the DOCX cover is typographic
   (Title/Subtitle styles).
+- **The course name under the title** appears in the PDF only. Word's writer
+  renders title, subtitle and date, and ignores any other metadata field.
 - **Alerts** keep their per-kind coloured border and localised title but have no
   icon.
 - **Inline SVG** renders natively in the PDF. For DOCX, pandoc needs
