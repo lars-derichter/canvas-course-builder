@@ -19,7 +19,7 @@ sources/
   lesson-plans/         # One-page class versions (lesson-plan-NN.md)
   reference-materials/  # Canonical course data, e.g. glossary.yml
   reports/              # Dated reports, e.g. from /coverage-map
-  rubrics/              # Grading rubrics from /rubric
+  rubrics/              # Grading rubrics from /rubric-build
   issues.md             # Issue queue: /report-issue appends, /fix-issues resolves
 ```
 

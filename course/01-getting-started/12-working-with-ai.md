@@ -43,8 +43,9 @@ built for course authoring. The main families:
   makes a one-page class version, and `/lesson-module-build` turns the plan into
   finished student pages. After teaching, `/lesson-retro` debriefs the lesson
   and folds your notes back in.
-- **Evaluation** — `/design-evaluation` blueprints an exam, `/build-quiz` turns
-  a question list into a Canvas quiz, and `/rubric` writes a grading rubric.
+- **Evaluation** — `/evaluation-design` blueprints an exam, `/quiz-build` turns
+  a question list into a Canvas quiz, and `/rubric-build` writes a grading
+  rubric.
 - **Quality** — `/consistency-check` sweeps the whole course for dead links and
   drift, `/coverage-map` checks which learning goals are taught and tested, and
   `/image-todos` lists the artwork you still owe.

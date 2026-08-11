@@ -118,16 +118,16 @@ picks them up later.
 ## Assessment
 
 The same design-first pattern extends to testing. The first three skills form a
-pipeline — `/design-evaluation` produces the approved blueprint, `/build-quiz`
-turns approved questions into a Canvas-import zip, and `/rubric` adds the
+pipeline — `/evaluation-design` produces the approved blueprint, `/quiz-build`
+turns approved questions into a Canvas-import zip, and `/rubric-build` adds the
 grading criteria — but each also works on its own:
 
-- `/design-evaluation` — draft an exam or test from the lessons taught so far,
+- `/evaluation-design` — draft an exam or test from the lessons taught so far,
   starting from a blueprint matrix (learning goals × questions × difficulty)
   that flags over- and under-tested goals.
-- `/rubric` — a grading rubric for an assignment, every criterion traced to the
-  assignment text or a learning goal.
-- `/build-quiz` — a QTI package Canvas imports as a quiz, from a question list
+- `/rubric-build` — a grading rubric for an assignment, every criterion traced
+  to the assignment text or a learning goal.
+- `/quiz-build` — a QTI package Canvas imports as a quiz, from a question list
   or straight from your lessons.
 - `/coverage-map` — the whole-course picture: which goals are taught, practised,
   and assessed, and where the gaps are.

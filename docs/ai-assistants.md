@@ -151,14 +151,14 @@ project whitelist.
 
 ### Evaluation
 
-- **/design-evaluation** designs an exam or test from the lessons taught so far.
+- **/evaluation-design** designs an exam or test from the lessons taught so far.
   It proposes a blueprint matrix in chat (per question: the learning goals it
   tests, difficulty, points) plus a coverage check that flags goals not tested,
   weighted out of proportion, or tested below the level they were taught at.
   After approval it writes the student-facing `instructions.md` and a
   colleague-facing `blueprint.md` under `evaluations/<year>/<slug>/`. It only
   tests what was taught.
-- **/build-quiz** turns a question list (a notes file, a `blueprint.md`,
+- **/quiz-build** turns a question list (a notes file, a `blueprint.md`,
   questions drafted in conversation) into a QTI 1.2 `.zip` that Canvas imports
   as a quiz. It first maps every question to a supported Canvas question type
   and flags anything that fits none; after approval it generates and verifies
@@ -166,7 +166,7 @@ project whitelist.
   Importing is manual: in Canvas, go to **Settings → Import Course Content**,
   content type **QTI .zip file**, import, then check the questions, set dates
   and time limit (QTI does not carry those), and publish.
-- **/rubric** builds a grading rubric for one assignment or evaluation. It
+- **/rubric-build** builds a grading rubric for one assignment or evaluation. It
   proposes the criteria-by-levels matrix, with every criterion traced to a
   requirement in the assignment text or a learning goal, then writes a
   colleague-facing markdown rubric next to the evaluation, or under

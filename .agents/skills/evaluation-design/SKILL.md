@@ -1,9 +1,9 @@
 ---
-name: design-evaluation
+name: evaluation-design
 description: Design an exam or test in evaluations/ from the lessons taught so far, following context/course-context.md and the student-facing register of context/writing-style.md. Phase A proposes a blueprint matrix (learning goals × questions × difficulty) and flags over- and under-tested goals; Phase B writes the evaluation only after approval. Use for "design evaluation", "design a test", "write an exam on lessons 1 to 4", "toets ontwerpen", "examen opstellen", "test maken over les 1 tot 4".
 ---
 
-# Design evaluation
+# Evaluation design
 
 Design an exam or test together with the author and write it under
 `evaluations/<year>/<slug>/`, following
@@ -79,8 +79,8 @@ sentence.
 
 7. **Style-check `instructions.md`** against the student-facing rules of
    `context/writing-style.md`, then report both paths and offer follow-ups, do
-   not run them: `/proofread` on `instructions.md`, `/rubric` for open
-   questions, `/build-quiz` if part should become a Canvas quiz, `/coverage-map`
+   not run them: `/proofread` on `instructions.md`, `/rubric-build` for open
+   questions, `/quiz-build` if part should become a Canvas quiz, `/coverage-map`
    for the whole-course picture, saving gathered facts into `course-context.md`.
 
 ## Rules

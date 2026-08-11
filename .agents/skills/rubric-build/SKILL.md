@@ -1,9 +1,9 @@
 ---
-name: rubric
+name: rubric-build
 description: Generate a grading rubric for an assignment or evaluation, with criteria drawn from the assignment text and aligned to the course's learning goals. Phase A proposes the criteria-by-levels matrix and stops for approval; Phase B writes a colleague-facing markdown rubric. Use for "rubric", "grading criteria", "marking key for the assignment", "rubric maken", "beoordelingsrubriek", "verbetersleutel voor de opdracht".
 ---
 
-# Rubric
+# Rubric build
 
 Build a grading rubric for one assignment — a homework page under `course/` or
 an evaluation under `evaluations/` — aligned with the learning goals it serves,

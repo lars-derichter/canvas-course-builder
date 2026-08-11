@@ -1,9 +1,9 @@
 ---
-name: build-quiz
+name: quiz-build
 description: Turn a question list into a QTI 1.2 package that Canvas can import as a quiz, plus import instructions. Phase A maps every question to a supported QTI type and stops for approval; Phase B generates and verifies the .zip. Use for "build quiz", "make a Canvas quiz from these questions", "generate QTI", "quiz maken", "QTI genereren", "Canvas quiz van deze vragen".
 ---
 
-# Build quiz
+# Quiz build
 
 Convert a list of questions into a QTI 1.2 `.zip` that imports into Canvas as a
 quiz, written under `evaluations/<year>/<slug>/`. No Canvas API is involved —
@@ -14,7 +14,7 @@ file.
 
 `$ARGUMENTS` may hold a path to a question list (markdown), a quiz title, and/or
 free text. Question sources, in order of preference: a markdown file given as a
-path (e.g. a `blueprint.md` from `/design-evaluation`); questions drafted
+path (e.g. a `blueprint.md` from `/evaluation-design`); questions drafted
 earlier in the conversation; or nothing yet — then draft questions from the
 lesson plans in scope as part of Phase A, after reading
 [`context/course-context.md`](../../../context/course-context.md).
