@@ -1,6 +1,6 @@
 ---
 name: consistency-check
-description: Whole-course consistency sweep of course/ — dead cross-links, terms used before their introducing lesson, glossary drift, duplicate or gapped numeric prefixes, frontmatter problems, stale prerequisite references. Complements /proofread, which checks a single file, and /coverage-map, which checks learning-goal alignment rather than structure. Reports findings grouped by severity; does not auto-fix. Use for "consistency check", "consistentiecheck", "dode links zoeken", "hele cursus nakijken", "check alle modules".
+description: Whole-course consistency sweep of course/ — dead cross-links, terms used before their introducing lesson, glossary drift, duplicate or gapped numeric prefixes, frontmatter problems, stale prerequisite references, a label language that does not match the prose language. Complements /proofread, which checks a single file, and /coverage-map, which checks learning-goal alignment rather than structure. Reports findings grouped by severity; does not auto-fix. Use for "consistency check", "consistentiecheck", "dode links zoeken", "hele cursus nakijken", "check alle modules".
 ---
 
 # Consistency check
@@ -70,6 +70,13 @@ still verified.
    - `_category_.json` whose `position` does not match the folder's numeric
      prefix, or module folders missing `_category_.json` where the other modules
      have one.
+   - Label language against prose language: the `language` key in
+     `course.config.yml` picks the label set the tooling generates (alert
+     titles, link and file cards, glossary headings), and it should match the
+     language `writing-style.md` states the course is written in. An English
+     guide under `language: nl` gives students English prose framed by Dutch
+     generated labels. Report the mismatch, not a fix — either side may be the
+     wrong one.
 
 6. **Stale prerequisites.** Grep for phrases that point back at earlier lessons
    or modules, and for cross-module links, then check each against the actual
@@ -91,7 +98,8 @@ still verified.
    - **Must fix** — dead links, `build-glossary --check` failures, duplicate
      prefixes, invalid frontmatter.
    - **Strongly suggest** — terms used before their introducing lesson, synonym
-     drift, stale prerequisite references, `_category_.json`/prefix mismatches.
+     drift, stale prerequisite references, `_category_.json`/prefix mismatches,
+     a label language that does not match the prose language.
    - **Consider** — prefix gaps, candidate glossary lemmas.
 
    For each finding: `file:line | quoted text | diagnosis | proposed fix`. Keep
