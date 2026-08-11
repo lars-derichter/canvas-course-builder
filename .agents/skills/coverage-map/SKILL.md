@@ -29,8 +29,8 @@ the whole course.
      scheme). If that fails, ask the author once — and at the end offer to save
      the answer into `course-context.md`.
    - If the course turns out to have no explicit learning-goal scheme at all,
-     say so, offer `/initialize-course-context` to help define one, and stop. Do
-     not invent goals to map.
+     say so, offer `/course-context-init` to help define one, and stop. Do not
+     invent goals to map.
 
 2. **Read the teaching side.** Every lesson plan in `sources/lessons/`, in full.
    Per plan, record which goals the lesson **actively practises** versus which

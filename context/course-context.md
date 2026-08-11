@@ -7,8 +7,8 @@ the course-design companion to [writing-style.md](writing-style.md), which
 covers writing style only. Both files are consumed by AI tools, so write them in
 whichever language you and your assistant work in, and keep the two consistent.
 
-This file ships as a template. Run `/initialize-course-context` to fill it in
-(the skill reads your repo and interviews you for the rest), or edit it by hand.
+This file ships as a template. Run `/course-context-init` to fill it in (the
+skill reads your repo and interviews you for the rest), or edit it by hand.
 Sections still marked `TODO` are treated as unanswered: a skill that needs one
 will gather the information itself and offer to save it here.
 

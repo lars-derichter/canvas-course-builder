@@ -49,7 +49,7 @@ phases, no auto-commits.
 - **/new-year**: interactive wrapper around the
   [new academic year](new-academic-year.md) guide: archive the previous year's
   `evaluations/` folder, reset sync state, update dates in homework frontmatter,
-  re-run `/initialize-course-context`.
+  re-run `/course-context-init`.
 
 ## Feature ideas
 

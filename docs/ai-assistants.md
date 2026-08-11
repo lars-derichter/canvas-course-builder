@@ -70,9 +70,9 @@ Where `writing-style.md` captures _how you write_,
 [course-context.md](../context/course-context.md) captures _what your course
 is_: subject, pedagogy, lesson-plan conventions, module structure, code and
 download rules, glossary, and scope boundaries. The lesson skills read it before
-generating anything. Run `/initialize-course-context` once when you set up a
-course, and again after your README, docs, or course structure change
-substantially. Like `writing-style.md`, you can also edit it by hand.
+generating anything. Run `/course-context-init` once when you set up a course,
+and again after your README, docs, or course structure change substantially.
+Like `writing-style.md`, you can also edit it by hand.
 
 How the lesson skills chain together, from idea to lesson plan to class version
 to published module, is described in the [lesson workflow](lesson-workflow.md).
@@ -224,7 +224,7 @@ project whitelist.
 
 ### Project
 
-- **/initialize-course-context** fills in or refreshes
+- **/course-context-init** fills in or refreshes
   [course-context.md](../context/course-context.md): it reads the repo, infers
   everything it can, interviews you only about what the repo did not answer, and
   writes the doc after per-section confirmation. Re-running is expected;

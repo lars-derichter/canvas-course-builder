@@ -27,7 +27,7 @@ lesson-plan and module conventions, code/download rules, glossary, scope
 boundaries — and drives the lesson skills (`/lesson-design`,
 `/lesson-summarize`, `/lesson-module-build`). Sections still marked `TODO` mean:
 gather the fact from the repo or the user, and offer to save it back into the
-doc. `/initialize-course-context` fills the doc in wholesale.
+doc. `/course-context-init` fills the doc in wholesale.
 
 ## Commands
 
