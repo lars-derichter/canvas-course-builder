@@ -163,6 +163,8 @@ STALE_PATHS=(
   "templates/style-generic-nl-be.md"
   "templates/style-generic-nl.md"
   "templates/README-course.md"
+  "cli/setup-pages.js"
+  "test/cli/setup-pages.test.js"
 )
 
 for path in "${STALE_PATHS[@]}"; do
