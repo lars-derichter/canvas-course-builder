@@ -59,10 +59,3 @@ Extend `npx course new-item` with template options: lab assignment, reading
 assignment, lecture notes, quiz instructions, and so on. Templates would provide
 pre-filled frontmatter and boilerplate markdown tailored to common course item
 patterns.
-
-### Language-aware quality skills
-
-`/proofread` now derives its checks from whatever `writing-style.md` says, but
-`/consistency-check` still carries assumptions from the shipped defaults. Make
-both read the course language from `course.config.yml` and adapt their checks
-accordingly.
