@@ -6,10 +6,11 @@ description: Read the repo and interview the user to fill in or refresh context/
 # Course context init
 
 Fill in or refresh `context/course-context.md` — the course-design companion to
-`context/writing-style.md` that describes the course's subject, pedagogy,
-lesson-plan conventions, module structure, code/download rules, glossary, and
-scope boundaries. The lesson skills read it before generating anything, so the
-more it reflects the real course, the fewer questions they need to ask.
+`context/writing-style.md` that describes the course's subject, learning goals,
+assessment, pedagogy, lesson-plan conventions, module structure, code/download
+rules, glossary, and scope boundaries. The lesson skills read it before
+generating anything, so the more it reflects the real course, the fewer
+questions they need to ask.
 
 Re-running is expected: after `README.md`, docs, or the course structure change,
 run this skill again to fold the new facts in. On a re-run, treat existing

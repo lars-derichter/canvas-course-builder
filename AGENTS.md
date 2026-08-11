@@ -22,12 +22,12 @@ If the user asks you to change how you write, offer to run
 as a durable rule.
 
 **Read [`context/course-context.md`](context/course-context.md) before designing
-lessons or generating modules.** It describes the course itself — pedagogy,
-lesson-plan and module conventions, code/download rules, glossary, scope
-boundaries — and drives the lesson skills (`/lesson-design`,
-`/lesson-summarize`, `/lesson-module-build`). Sections still marked `TODO` mean:
-gather the fact from the repo or the user, and offer to save it back into the
-doc. `/course-context-init` fills the doc in wholesale.
+lessons or generating modules.** It describes the course itself — learning
+goals, assessment, pedagogy, lesson-plan and module conventions, code/download
+rules, glossary, scope boundaries — and drives the lesson skills
+(`/lesson-design`, `/lesson-summarize`, `/lesson-module-build`). Sections still
+marked `TODO` mean: gather the fact from the repo or the user, and offer to save
+it back into the doc. `/course-context-init` fills the doc in wholesale.
 
 ## Commands
 
