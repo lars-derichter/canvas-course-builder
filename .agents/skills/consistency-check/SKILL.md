@@ -116,6 +116,8 @@ still verified.
 
 ## Rules
 
+- **Language.** Report in the language the author writes in; findings and
+  proposed fixes stay in the course's own language.
 - Every mechanical finding is verified against the filesystem or a command
   result; a grep hit alone is not a finding.
 - Skip code blocks, inline code, URLs, frontmatter, and HTML comments for every

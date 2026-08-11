@@ -50,6 +50,8 @@ Create a git commit following the project's commit message conventions.
 
 ## Rules
 
+- **Language.** Commit messages are English, whatever language the course is
+  written in. Reply in chat in the language the author writes in.
 - Never push or amend unless explicitly asked.
 - Never skip hooks (`--no-verify`). If a pre-commit hook fails, fix the issue,
   re-stage, and create a new commit — do not amend.

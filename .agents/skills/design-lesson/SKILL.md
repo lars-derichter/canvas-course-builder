@@ -101,6 +101,9 @@ logical lesson". Three modes, combinable:
 
 ## Rules
 
+- **Language.** Write everything in the language `context/writing-style.md`
+  states the course uses; `course.config.yml`'s `language` key only picks the
+  generated labels. Reply in chat in the language the author writes in.
 - Mirror the template lesson plan's conventions, not `course/`'s.
 - Do not invent learning goals or activities that follow from neither the
   author's input nor the course context; your own initiative belongs under _Pros

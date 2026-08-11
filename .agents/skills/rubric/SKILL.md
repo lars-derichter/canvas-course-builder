@@ -40,8 +40,8 @@ not a markdown file under `course/` or `evaluations/`.
    bundled question round: analytic (criteria × levels, the default) or
    holistic; number of levels and their labels (default four — the worked
    example's if there is one, otherwise insufficient / sufficient / good /
-   excellent, in the language `writing-style.md` states the course is written
-   in); point total and whether points sit per criterion or per cell.
+   excellent, in the course language); point total and whether points sit per
+   criterion or per cell.
 
 3. **Derive the criteria.** Each criterion must trace to a requirement in the
    assignment text or to a learning goal it practises. Typical count: three to
@@ -80,6 +80,9 @@ not a markdown file under `course/` or `evaluations/`.
 
 ## Rules
 
+- **Language.** Write everything in the language `context/writing-style.md`
+  states the course uses; `course.config.yml`'s `language` key only picks the
+  generated labels. Reply in chat in the language the author writes in.
 - No criteria from your own initiative without flagging them in Phase A.
 - One assignment per call.
 - Never change the assignment page or lesson plans without the explicit request

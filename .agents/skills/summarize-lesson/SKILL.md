@@ -41,11 +41,10 @@ not a `.md` under `sources/lessons/`.
    not repair it here.
 
 4. **Draft the class version.** Fixed structure (the worked example wins where
-   it deviates). Write every heading and every line of prose in the language
-   `writing-style.md` states the course is written in — the section names below
-   are roles, not literal headings, so translate them (a Dutch course heads
-   these `Leerdoelen`/`Inhouden`/`Tijdslijn`). The worked example, if there is
-   one, already carries the course's own wording; follow it.
+   it deviates). The section names below are roles, not literal headings, so
+   translate them into the course language (a Dutch course heads these
+   `Leerdoelen`/`Inhouden`/`Tijdslijn`). The worked example, if there is one,
+   already carries the course's own wording; follow it.
    - **H1** identical to the source title, then a single pointer line linking to
      the source and noting this is a teaching reminder, not a design document.
    - **Learning goals**: one telegram-style line per goal (kernel verb +
@@ -78,6 +77,9 @@ not a `.md` under `sources/lessons/`.
 
 ## Rules
 
+- **Language.** Write everything in the language `context/writing-style.md`
+  states the course uses; `course.config.yml`'s `language` key only picks the
+  generated labels. Reply in chat in the language the author writes in.
 - Mirror the worked example under `sources/lesson-plans/`, not `course/`.
 - Never invent activities or goals not in the source; if something belongs on
   the page but is missing from the source, surface the gap and stop.

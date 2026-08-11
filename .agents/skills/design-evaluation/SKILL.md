@@ -85,6 +85,9 @@ sentence.
 
 ## Rules
 
+- **Language.** Write everything in the language `context/writing-style.md`
+  states the course uses; `course.config.yml`'s `language` key only picks the
+  generated labels. Reply in chat in the language the author writes in.
 - Test only what was taught: every question maps to a learning goal a lesson in
   scope actively practised; a question on merely-seeded or out-of-scope material
   must be flagged in Phase A, never slipped in.

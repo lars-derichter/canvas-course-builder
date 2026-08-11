@@ -73,9 +73,8 @@ to `essay_question`, and let the author choose.
 6. **Write the companion file** `evaluations/<year>/<slug>/questions.md`: the
    approved question list with correct answers and points (colleague-facing —
    the readable source of truth for the zip), plus an import section titled in
-   the language `writing-style.md` states the course is written in ("Importing
-   into Canvas"; a Dutch course would title it "Importeren in Canvas") with
-   these steps:
+   the course language ("Importing into Canvas"; a Dutch course would title it
+   "Importeren in Canvas") with these steps:
    1. Canvas → course → **Settings** → **Import Course Content**.
    2. Content Type **QTI .zip file**; choose the generated zip.
    3. Leave the default question bank; check **Import existing quizzes as New
@@ -91,6 +90,9 @@ to `essay_question`, and let the author choose.
 
 ## Rules
 
+- **Language.** Write everything in the language `context/writing-style.md`
+  states the course uses; `course.config.yml`'s `language` key only picks the
+  generated labels. Reply in chat in the language the author writes in.
 - QTI only. No Canvas API calls; `lib/canvas/` has no quizzes module and the
   sync state does not track quizzes.
 - Every non-essay question needs a correct answer on record before Phase B.

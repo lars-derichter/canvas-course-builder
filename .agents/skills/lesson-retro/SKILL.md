@@ -13,9 +13,9 @@ list for the student material. This is the teaching counterpart of
 `/style-update`: the self-improvement loop closed at the level of the lesson,
 not the writing.
 
-The interview is a conversation, not a form. Ask **one question at a time**, in
-the language the author is chatting in, and follow up on what they say before
-moving on. Never bundle the whole interview into one question round.
+The interview is a conversation, not a form. Ask **one question at a time** and
+follow up on what they say before moving on. Never bundle the whole interview
+into one question round.
 
 ## Input
 
@@ -92,6 +92,9 @@ plausibly recent, propose it in the same breath.
 
 ## Rules
 
+- **Language.** Write everything in the language `context/writing-style.md`
+  states the course uses; `course.config.yml`'s `language` key only picks the
+  generated labels. Interview and reply in the language the author writes in.
 - Record what happened, in the author's words where possible. No editorialising,
   no invented observations, no padding a thin retro.
 - The retro is the one sanctioned way to modify an existing lesson plan; touch

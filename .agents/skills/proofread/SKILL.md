@@ -90,6 +90,8 @@ extensions, stop and explain.
 
 ## Rules
 
+- **Language.** Report in the language the author writes in; findings and
+  proposed replacements stay in the document's own language.
 - Treat the colleague-facing register as a peer dialect, not a watered-down
   student register: short fragments, dry humour, and parenthetical asides are
   welcome there.

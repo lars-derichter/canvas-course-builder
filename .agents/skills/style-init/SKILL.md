@@ -76,6 +76,9 @@ the course author's own voice and audience.
 
 ## Rules
 
+- **Language.** The guide is written in the language it prescribes, so a course
+  in another language gets a guide in that language. Interview and reply in the
+  language the author writes in.
 - Never guess beyond what samples plus interview support; when in doubt, ask.
 - Do not commit the changes automatically.
 

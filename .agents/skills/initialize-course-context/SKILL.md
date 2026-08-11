@@ -81,6 +81,9 @@ contradicts it, and say so explicitly in the report.
 
 ## Rules
 
+- **Language.** Write the doc in the language the author works in, as its own
+  opening paragraph asks — that need not be the course language, which
+  `context/writing-style.md` states. Interview and reply in the same language.
 - Never invent course facts. Everything in the doc comes from the repo or from
   the author; when in doubt, ask or leave `TODO`.
 - Do not modify `context/writing-style.md`, `AGENTS.md`, or course content — the

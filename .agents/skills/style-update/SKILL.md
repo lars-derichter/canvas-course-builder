@@ -35,6 +35,8 @@ drafts material.
 
 ## Rules
 
+- **Language.** Write new rules in the language `writing-style.md` itself uses.
+  Reply in chat in the language the author writes in.
 - If the conversation has no style signals, say so and stop — do not invent
   rules.
 - Prefer concrete examples over abstract rules: "avoid _utilise_, prefer _use_"

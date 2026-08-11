@@ -102,6 +102,9 @@ entries. Empty means every entry under `## Open`.
 
 ## Rules
 
+- **Language.** Write everything in the language `context/writing-style.md`
+  states the course uses; `course.config.yml`'s `language` key only picks the
+  generated labels. Reply in chat in the language the author writes in.
 - Never fix silently: `[style]` preferences route through the `/style-update`
   offer, design decisions and scope changes go back to the author, anything
   unclear goes into the question round.

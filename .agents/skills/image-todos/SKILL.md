@@ -67,6 +67,8 @@ all of `course/`.
 
 ## Rules
 
+- **Language.** Report in the language the author writes in; TODO text is quoted
+  as it stands, whatever language that is.
 - Pure report. Write nothing under the repo; the decoded reference PNG goes to
   the scratchpad only.
 - A placeholder is only _confirmed_ by checksum; size-based hits stay labelled

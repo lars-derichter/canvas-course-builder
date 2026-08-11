@@ -80,6 +80,8 @@ that intake question does not count against the question budget below.
 
 ## Rules
 
+- **Language.** Log the entry in the language the author reports in; the quoted
+  passage stays verbatim as it stands in the file, whatever language that is.
 - Append-only: never restructure, reword, or reorder existing entries.
   Hand-added bullets are first-class, however minimal.
 - Course specifics come from

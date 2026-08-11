@@ -128,6 +128,9 @@ with one sentence if the source is not a `.md` under `sources/lessons/`.
 
 ## Rules
 
+- **Language.** Write everything in the language `context/writing-style.md`
+  states the course uses; `course.config.yml`'s `language` key only picks the
+  generated labels. Reply in chat in the language the author writes in.
 - Never change the source lesson or other existing modules under `course/`.
 - No commits, no pushes, no staging.
 - Only the transparent PNG placeholder for images, never generated artwork.

@@ -76,6 +76,8 @@ the whole course.
 
 ## Rules
 
+- **Language.** Report in the language the author writes in; goal references and
+  quoted material keep the wording the course uses.
 - Read-only by default. The only file this skill may ever write is the report
   under `sources/reports/`, and only on explicit request.
 - Mechanical gaps only. Whether a gap is a _problem_ is the author's call; do
