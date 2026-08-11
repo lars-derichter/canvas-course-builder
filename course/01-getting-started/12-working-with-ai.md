@@ -38,7 +38,8 @@ built for course authoring. The main families:
 
 - **Writing style** — `/writing-style-init` adapts the style guide to your
   voice, `/writing-style-update` folds in new preferences, and `/proofread`
-  checks a page against it.
+  checks a page against it. `/translate` puts a page or a pasted passage into
+  another language without it sounding translated.
 - **Lessons** — `/lesson-design` helps you plan a lesson, `/lesson-summarize`
   makes a one-page class version, and `/lesson-module-build` turns the plan into
   finished student pages. After teaching, `/lesson-retro` debriefs the lesson

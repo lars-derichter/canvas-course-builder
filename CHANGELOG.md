@@ -2,6 +2,22 @@
 
 ## Unreleased
 
+- **`/translate` puts a document or a passage into another language.** A source
+  note in one language, a page a colleague needs in another, a fragment pasted
+  mid-conversation: the request came up often enough, and every time the answer
+  was improvised, which is how a translation ends up sounding like one. The
+  skill infers the source language, proposes the course language as the target
+  when the source is not already in it, and takes its register from the source
+  rather than from a fixed rule — `writing-style.md` governs when the target is
+  the course language, ordinary usage of the target language when it is not.
+  Code, identifiers, links, and alert markers come through the pass untouched,
+  while headings, link text, alt text, and captions are translated. Before it
+  reports anything it checks the result against the original claim by claim, so
+  no fact, number, or hedge is added or lost, then reads the translation on its
+  own for the calques and the borrowed sentence rhythm that give a translation
+  away. Fragments come back in chat; for a file it asks where to write, and it
+  says so when a translated copy under `course/` would reach Canvas as a second
+  page.
 - **The export-style skills are now `/export-style-init` and
   `/export-style-update`.** Every skill that configures a single artefact now
   answers to the same two verbs: `init` builds the thing from scratch, `update`

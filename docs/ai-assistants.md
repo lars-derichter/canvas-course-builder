@@ -111,6 +111,14 @@ skill commits to git (except `/commit`, whose whole job that is).
   line number, quote, diagnosis, and proposed replacement. Every check comes
   from `writing-style.md` itself, so it follows your rules and your language
   rather than a fixed list.
+- **/translate** renders a document, a passage, or text you paste with the call
+  in another language. It infers the source language, proposes the course
+  language as the target when the source is not already in it, and takes its
+  register from the source: `writing-style.md` governs when the target is the
+  course language, ordinary usage of the target language when it is not. Code,
+  links, and alert markers survive the pass untouched; the result is checked
+  against the original claim by claim, so nothing is added or dropped. It asks
+  where to write before it writes.
 - **/writing-style-init** rewrites `writing-style.md` to match your voice and
   audience. It asks for samples of your writing (strongly preferred) and
   interviews you only about what the samples did not answer. Without samples it
@@ -325,8 +333,10 @@ predictable for both the reader and the model:
   during the session (`/writing-style-update`). An `init` skill is not one-shot:
   re-running it after the course changes is expected. Read-only report skills
   take a result noun instead of a verb (`consistency-check`, `coverage-map`,
-  `image-todos`). Two names stay bare verbs because they are single words in
-  universal use: `/commit` and `/proofread`.
+  `image-todos`). Three names stay bare verbs because they are single words in
+  universal use, and because what they act on is whatever you hand them rather
+  than a course object worth putting first: `/commit`, `/proofread`, and
+  `/translate`.
 
 Contributing a skill back to the template itself? See
 [Contributing](contributing.md).
