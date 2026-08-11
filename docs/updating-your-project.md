@@ -116,6 +116,41 @@ overwritten. Commit the file after changing it.
 > `protected_files`, or choose `a` at the conflict prompt. See
 > [Customization](customization.md#branding).
 
+### Deleting files that belong to the tooling project
+
+"Use this template" copies the whole repository, so your course starts out with
+a handful of files that govern the upstream project rather than your course: the
+[code of conduct](../CODE_OF_CONDUCT.md), the [security policy](../SECURITY.md),
+`.github/ISSUE_TEMPLATE/`, `.github/PULL_REQUEST_TEMPLATE.md`,
+[CONTRIBUTING.md](../CONTRIBUTING.md) and the tooling's
+[CHANGELOG.md](../CHANGELOG.md). Each says up front which project it applies to,
+so leaving them costs nothing and keeps the bug-report route to the upstream
+project open. Most people leave them.
+
+If you would rather not carry them, deleting the files is only half the job: the
+next update delivers them again. Delete them, commit the deletions, then list
+them here:
+
+```ini
+protected_dirs = course evaluations sources .github/ISSUE_TEMPLATE
+protected_files = README.md AGENTS.md CLAUDE.md context/writing-style.md context/course-context.md update-from-upstream.conf course.config.yml CODE_OF_CONDUCT.md SECURITY.md .github/PULL_REQUEST_TEMPLATE.md
+```
+
+Protection restores a path from your own history, and a protected path absent
+from your history gets removed instead — which is what you want here. Commit the
+deletions first, so "absent from your history" is true by the time the next
+update runs.
+
+> [!WARNING]
+>
+> Protect the individual paths, not `.github` as a whole. That directory also
+> holds the CI workflow and, if you publish with [GitHub Pages](hosting.md), the
+> deploy workflow; protecting it wholesale would freeze both at the version you
+> happen to have today.
+
+`LICENSE` and `THIRD-PARTY.md` are a different case: they cover code that stays
+in your repository, so leave them alone.
+
 ### Renamed files and folders
 
 Upstream occasionally renames a skill folder or a docs file. A squash merge does
