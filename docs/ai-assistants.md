@@ -260,8 +260,10 @@ predictable for both the reader and the model:
 
 - **Frontmatter**: `name` (matching the folder) and a `description` that says
   what the skill does, where it writes, and the approval gate if any, ending in
-  four or five quoted trigger phrases in English and in your course language
-  (the shipped skills use Dutch).
+  four to six quoted trigger phrases: two or three in English first, then the
+  same request in your course language (the shipped skills add Dutch). English
+  leads because the skill itself is written in English; the second language is
+  what makes the skill fire on how you actually ask for it.
 - **Section order**: H1, a 2–4-line intro, `## Input` (only when the skill takes
   arguments), `## Steps`, `## Rules`, and a bare `$ARGUMENTS` line at the end.
 - **Approval gates** only when a skill writes something worth reviewing first.
@@ -280,6 +282,11 @@ predictable for both the reader and the model:
 - **Course-agnostic.** No hardcoded course vocabulary, module names, or paths
   that exist in only one course; course facts come from `course-context.md` at
   runtime.
+- **Language-agnostic.** The skill's own instructions are English; the language
+  it writes _in_ comes from `writing-style.md` at runtime, never from the skill.
+  Say so in one `**Language.**` bullet at the top of `## Rules`, as the shipped
+  skills do, and let examples lead with English while carrying the same example
+  in your course language where that helps the model match it.
 - **Temp files** go to the session scratchpad, never `/tmp`. Build zips and
   binaries there and copy them into the repo (cloud-synced folders can reject
   direct writes).

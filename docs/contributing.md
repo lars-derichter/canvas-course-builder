@@ -122,7 +122,9 @@ Skills follow a shared template, described in
 [Creating your own skills](ai-assistants.md#creating-your-own-skills). A skill
 that would help other courses is welcome as a pull request; keep it
 course-agnostic — course facts come from `course-context.md` at runtime, never
-hardcoded.
+hardcoded — and language-agnostic: write the skill in English, take the language
+it writes _in_ from `writing-style.md` at runtime, and lead trigger phrases and
+examples with English before any second language.
 
 If your change renames or removes a skill folder or a docs file, add the old
 path as it exists in downstream projects (e.g. `.agents/skills/<old-name>`) to
