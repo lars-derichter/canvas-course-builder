@@ -40,10 +40,13 @@ the [user guide](docs/user-guide.md) starts from zero, and there is a
 ## Quick start
 
 1. Click **Use this template** on GitHub and create your course repository.
-2. Follow the [user guide](docs/user-guide.md): install Node.js 24+, run
-   `npm install`, and preview the built-in getting-started course with
+2. Follow the [user guide](docs/user-guide.md): clone it, install Node.js 24+,
+   run `npm install`, and preview the built-in getting-started course with
    `npm start`.
-3. Connect Canvas with `npx course init` (see the
+3. Make it your course with `npx course setup` — it asks for the language, the
+   name and the look, and puts the matching templates in place (see
+   [customization](docs/customization.md)).
+4. Connect Canvas with `npx course init` (see the
    [Canvas setup guide](docs/canvas-setup.md)) and push your first module.
 
 ## Documentation

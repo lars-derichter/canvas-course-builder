@@ -17,6 +17,26 @@ pick decides which of the later templates you want.
 > deliberately unprotected: they hold shipped defaults, so take a copy rather
 > than editing one in place.
 
+## Run the wizard first
+
+```bash
+npx course setup
+```
+
+The wizard asks the questions on this page in this order, writes
+`course.config.yml`, and installs the templates that match the language you
+pick. It ends by offering the two things a fresh course still needs: removing
+the built-in tutorial module, and connecting Canvas. Run it again whenever you
+want to change an answer — it offers your current settings as the defaults, and
+never replaces a file you have written in without asking.
+
+That leaves the writing itself: the README prose, and the course context. Both
+sections below say what goes in them.
+
+The rest of this page is what each choice means and how to change it by hand
+afterwards. You never have to run the wizard; every question it asks is a file
+you can edit yourself.
+
 ## Language
 
 `course.config.yml` sets the language of every generated student-facing label:

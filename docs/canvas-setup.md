@@ -67,7 +67,8 @@ For more information, see the Canvas documentation:
 
 Once you have all three values, either:
 
-- Run `npx course init` for an interactive setup, or
+- Run `npx course init` for an interactive setup — `npx course setup` offers
+  this as its last question, so you may have done it already, or
 - Copy `.env.example` to `.env` and fill in the values manually:
   ```
   CANVAS_API_URL=https://school.instructure.com

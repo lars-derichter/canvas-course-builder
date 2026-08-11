@@ -1,7 +1,8 @@
 # Documentation
 
 All guides for Canvas Course Builder. New here? Start with the
-[user guide](user-guide.md).
+[user guide](user-guide.md), and run `npx course setup` when you are ready to
+turn the template into your own course.
 
 ## Getting started
 

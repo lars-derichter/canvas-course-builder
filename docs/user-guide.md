@@ -85,8 +85,21 @@ other guide. If anything fails along the way, check
    See [Exporting to PDF or DOCX](#exporting-to-pdf-or-docx) below. DOCX export
    needs only pandoc; PDF export also needs Typst.
 
-8. **Connect to Canvas** — when you are ready to publish, run the interactive
-   setup to configure your Canvas API credentials:
+8. **Make it yours** — the template ships as a working example. One command
+   turns it into your course:
+
+   ```bash
+   npx course setup
+   ```
+
+   It asks for the language of the student-facing labels, the course name, the
+   look of the site and the exports, and which templates to install, then offers
+   to connect Canvas. The [customization guide](customization.md) explains every
+   choice and how to change it by hand later.
+
+9. **Connect to Canvas** — if you skipped that last question, or you are
+   pointing the course at a new academic year, run the credential step on its
+   own:
 
    ```bash
    npx course init
@@ -95,16 +108,11 @@ other guide. If anything fails along the way, check
    See the [Canvas setup guide](canvas-setup.md) for detailed instructions on
    obtaining your API URL, token, and course ID.
 
-9. **Start writing** — add your own content to `course/` alongside or in place
-   of the example module:
+10. **Start writing** — add your own content to `course/`:
 
-   ```bash
-   npx course new-module    # create a module (asks for name and position)
-   ```
-
-10. **Make it yours** — swap the tooling README for your course's own, set the
-    course language, and add your own branding and content licence. The
-    [customization guide](customization.md) covers all four.
+    ```bash
+    npx course new-module    # create a module (asks for name and position)
+    ```
 
 ## Course structure
 
