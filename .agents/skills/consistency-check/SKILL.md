@@ -12,9 +12,9 @@ severity. Never auto-fix — propose, the author decides.
 
 ## Input
 
-`$ARGUMENTS` may name one or more module folders (e.g. `03-methoden`) to limit
-the sweep. Empty means all of `course/`. Link targets outside the scoped modules
-are still verified.
+`$ARGUMENTS` may name one or more module folders (e.g. `03-<slug>`) to limit the
+sweep. Empty means all of `course/`. Link targets outside the scoped modules are
+still verified.
 
 ## Steps
 
@@ -26,6 +26,13 @@ are still verified.
    content type. If the Glossary section is `TODO`, check whether the default
    glossary file exists; if the repo gives no answer, ask the author once and
    offer to save the answer into `course-context.md`.
+
+   [`context/writing-style.md`](../../../context/writing-style.md) — the
+   language and regional variety the course prose is written in. It is the
+   authority on that; do not assume a language it does not state, and do not
+   take it from `course.config.yml`, whose `language` key sets the generated
+   **label** language and cannot express a variety. Note the language before
+   running step 6, which greps prose.
 
 2. **Inventory the course.** List every module folder, its pages, and its
    `_files/` contents (`find course -type f`). Record each page's numeric
@@ -64,13 +71,20 @@ are still verified.
      prefix, or module folders missing `_category_.json` where the other modules
      have one.
 
-6. **Stale prerequisites.** Grep for phrases that reference earlier lessons or
-   modules, in the course language — for a Dutch course, for example, "de vorige
-   les", "vorige module", "in les [0-9]", "module [0-9]"; adapt the patterns to
-   the language and phrasing set in `course.config.yml` and `course-context.md`
-   — and for cross-module links, and check each against the actual current
-   numbering and folder names. A page that says "in les 3" about material that
-   now lives in lesson 4, or links to a renamed module, is a finding.
+6. **Stale prerequisites.** Grep for phrases that point back at earlier lessons
+   or modules, and for cross-module links, then check each against the actual
+   current numbering and folder names. Cover at least the backward references
+   ("the previous lesson", "the previous module", "we saw earlier") and the
+   number-bearing forms ("lesson 3", "module 2", "chapter 4").
+
+   Build the patterns, do not recall them. Translate those forms into the
+   language step 1 established, then confirm the wording against the pages
+   themselves — a course has one habitual word for a lesson and one for a
+   module, and it is the pages that show which. Grep for what this course
+   writes, not for what the language could write.
+
+   A page pointing at lesson 3 for material that now lives in lesson 4, or
+   linking to a renamed module, is a finding.
 
 7. **Group and report findings.** Three severity buckets:
 
@@ -98,8 +112,10 @@ are still verified.
   result; a grep hit alone is not a finding.
 - Skip code blocks, inline code, URLs, frontmatter, and HTML comments for
   terminology checks. Link extraction uses the raw file.
-- Course specifics (glossary path, module conventions) come from
-  `course-context.md` at runtime; hardcode nothing.
+- Course specifics come from the repo at runtime; hardcode nothing. Glossary
+  path and module conventions come from `course-context.md`, the prose language
+  and its variety from `writing-style.md`, and the phrasing this course actually
+  uses from the pages themselves.
 - No commits, no pushes, no staging.
 
 $ARGUMENTS
