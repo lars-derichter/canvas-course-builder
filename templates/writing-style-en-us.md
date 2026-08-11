@@ -2,12 +2,12 @@
 
 > [!TIP]
 >
-> This is a generic English writing-style guide, using UK spelling. Copy this
-> file over `context/writing-style.md` in your project and delete this tip. It
-> is a usable baseline, not a fill-in-the-blanks template: nothing is marked
-> `TODO`, and the rules work as written for most English-language courses.
-> Colleagues who write US English want
-> [`writing-style-en-us.md`](writing-style-en-us.md) instead. Adjust the few
+> This is a generic US-English writing-style guide. Copy this file over
+> `context/writing-style.md` in your project and delete this tip. It is a usable
+> baseline, not a fill-in-the-blanks template: nothing is marked `TODO`, and the
+> rules work as written for most English-language courses in the United States.
+> Colleagues who write UK English want
+> [`writing-style-en.md`](writing-style-en.md) instead. Adjust the few
 > course-specific spots (emoji meanings, code-comment language) to taste, or run
 > `/style-init` to have your AI assistant adapt the whole guide to samples of
 > your own writing. `context/writing-style.md` is protected during
@@ -22,7 +22,7 @@ Course writing has two audiences and two registers. Pick the right one for the
 file you are editing.
 
 - **Student-facing**: anything in `course/` and `evaluations/`, plus assignment
-  and exam instructions. Warm, accessible, CEFR B2.
+  and exam instructions. Warm, accessible, plain language.
 - **Colleague-facing**: lesson plans in `sources/lessons/`, class versions in
   `sources/lesson-plans/`, and source notes and drafting documents elsewhere in
   `sources/`. Direct, dry, no readability cap. Reads like talking to a fellow
@@ -38,12 +38,13 @@ The rest of this guide splits into **shared rules** (apply to both),
 
 ### Language
 
-- **UK spelling.** "colour", "customise", "-ise" over "-ize", "practise" for the
-  verb against "practice" for the noun. If your institution writes US English,
-  take [`writing-style-en-us.md`](writing-style-en-us.md) instead. The rule that
-  matters is that one variety wins throughout.
+- **US spelling.** "color", "customize", "-ize" over "-ise", "analyze", "gray",
+  "toward" without the s, and "practice" for both the noun and the verb. If your
+  institution writes UK English, take
+  [`writing-style-en.md`](writing-style-en.md) instead. The rule that matters is
+  that one variety wins throughout.
 - **Second person, plain vocabulary.** "you", never "one". Prefer "use" over
-  "utilise", "make sure" over "ensure that due care is taken", "help" over
+  "utilize", "make sure" over "ensure that due care is taken", "help" over
   "facilitate", "about" over "with regard to".
 - **Contractions are welcome** in explanatory prose: "you'll", "don't", "it's".
   They keep the tone human. Drop them in assignment and exam instructions, where
@@ -82,13 +83,13 @@ section, we will…" meta-introductions.
 
 ### Headings and Titles
 
-- **Title case, Chicago style.** Capitalise the first and last word plus every
+- **Title case, Chicago style.** Capitalize the first and last word plus every
   major word. Lowercase articles (a, an, the), coordinating conjunctions (and,
   but, or, nor, for, so, yet), and prepositions of three letters or fewer (in,
-  on, at, to, of, by, up, as). Capitalise both halves of a hyphenated compound.
+  on, at, to, of, by, up, as). Capitalize both halves of a hyphenated compound.
   - Good: `## A Logical Folder Structure for Your Website`
   - Bad, sentence case: `## A logical folder structure for your website`
-  - Bad, every word capitalised:
+  - Bad, every word capitalized:
     `## A Logical Folder Structure For Your Website`
 - Short and descriptive. No trailing punctuation except `?` for a real question.
 - Acronyms in their conventional form: URL, HTTP, API, PDF, FAQ.
@@ -103,9 +104,8 @@ section, we will…" meta-introductions.
 - **No em-dashes (—).** AI tell. Use a comma, a colon, parentheses, or a new
   sentence.
 - **En-dashes (–)** for ranges (`2023–2024`).
-- **Pick one serial-comma convention and keep it.** "red, white and blue" or
-  "red, white, and blue", but not both on the same page. Use the comma whenever
-  leaving it out creates ambiguity.
+- **Always the serial comma.** "red, white, and blue". Chicago's rule, and it
+  removes a whole class of ambiguity for free.
 - Smart quotes `‘’` and `“”`.
 - Ellipsis `…`, sparingly.
 - One exclamation mark at a time.
@@ -130,7 +130,7 @@ does. Sweep for these before publishing.
 - "It's important to note that…": just say the thing.
 - The "not just X, it's Y" construction, and its cousin "X isn't about A, it's
   about B".
-- Decorative tricolons: "fast, simple and efficient".
+- Decorative tricolons: "fast, simple, and efficient".
 - Stacked hedges: "may potentially help to some extent in certain cases".
 - Vocabulary that turns up far more often in generated text than in yours:
   _delve_, _leverage_, _robust_, _seamless_, _crucial_, _testament to_,
@@ -162,8 +162,9 @@ does. Sweep for these before publishing.
 
 ### Reading Level
 
-**CEFR B2.** Short, concrete sentences. Break a long sentence in two rather than
-stacking clauses. Explain a term on first use, then use it freely.
+**Plain language, roughly a ninth- to tenth-grade reading level.** Short,
+concrete sentences. Break a long sentence in two rather than stacking clauses.
+Explain a term on first use, then use it freely.
 
 ### Voice and Tone
 
@@ -192,7 +193,7 @@ voice where it costs clarity:
 
 ### Page-Title Emoji
 
-Page titles may start with a single emoji signalling the page type. Use at most
+Page titles may start with a single emoji signaling the page type. Use at most
 one, only on the title, never decoratively elsewhere.
 
 - ❗️ assignment (to hand in, graded or not)
@@ -245,22 +246,22 @@ is the example to mirror.
 
 ### Reading Level
 
-Native or C2. Skip simplification. Compound sentences are fine when they carry
-their weight; favour two short sentences over one stacked one anyway, because
-rhythm matters.
+Native or near-native. Skip simplification. Compound sentences are fine when
+they carry their weight; favor two short sentences over one stacked one anyway,
+because rhythm matters.
 
 ### Voice and Tone
 
 - **Direct, dry, occasionally playful.** Like talking to a colleague in the
-  staff room, or like a published teaching manual. Warmth comes from precision
-  and dry observation, not from cushioning.
+  teachers' lounge, or like a published teaching manual. Warmth comes from
+  precision and dry observation, not from cushioning.
 - **Front-load the point.** No setup paragraphs, no "In this lesson plan I
   describe…". Open with one context sentence, then get to it.
 - **Fragments are welcome** when they hit harder: _"Three concepts. No more."_
   _"Everybody passes."_
 - **Both "I" and "you" are fine.** _"You model learning goal 4 by debugging in
   front of them."_ _"I walk around and ask questions."_ Use "I" sparingly, for
-  personal experience or a judgement call you want to flag as yours.
+  personal experience or a judgment call you want to flag as yours.
 - **No trailing summaries.** Stop when the point is made.
 - **State expectations directly.** No defensive hedging ("it could be that some
   students…"). If you expect it, say so.
