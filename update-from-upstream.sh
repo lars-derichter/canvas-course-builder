@@ -145,6 +145,8 @@ STALE_PATHS=(
   ".claude/skills/update-style"
   ".claude/skills/create-export-style"
   ".claude/skills/edit-export-style"
+  ".agents/skills/export-style-create"
+  ".agents/skills/export-style-edit"
   "docs/claude-code.md"
   "templates/export/tm-logo.png"
   "templates/export"
