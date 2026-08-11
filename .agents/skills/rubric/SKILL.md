@@ -38,9 +38,10 @@ for a path. Stop with one sentence if the target is not a markdown file under
 
 2. **Settle the grading model.** From `$ARGUMENTS`, the worked example, or one
    bundled question round: analytic (criteria × levels, the default) or
-   holistic; number of levels and their labels (default four, in the course's
-   language — e.g. insufficient / sufficient / good / excellent, or the worked
-   example's); point total and whether points sit per criterion or per cell.
+   holistic; number of levels and their labels (default four — the worked
+   example's if there is one, otherwise insufficient / sufficient / good /
+   excellent, in the language `writing-style.md` states the course is written
+   in); point total and whether points sit per criterion or per cell.
 
 3. **Derive the criteria.** Each criterion must trace to a requirement in the
    assignment text or to a learning goal it practises. Typical count: three to
@@ -72,7 +73,7 @@ for a path. Stop with one sentence if the target is not a markdown file under
 
 7. **Offer, do not run:**
    - A student-facing summary of the criteria (no level descriptors, just what
-     is graded — in the course's language, e.g. "waarop word je beoordeeld")
+     is graded, headed by the course's own phrase for what you are marked on)
      appended to the assignment page — only on explicit request, since it edits
      student-facing material.
    - `/proofread` on the rubric.

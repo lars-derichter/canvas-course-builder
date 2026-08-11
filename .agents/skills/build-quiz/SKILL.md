@@ -73,7 +73,8 @@ to `essay_question`, and let the author choose.
 6. **Write the companion file** `evaluations/<year>/<slug>/questions.md`: the
    approved question list with correct answers and points (colleague-facing —
    the readable source of truth for the zip), plus an import section titled in
-   the course's language (e.g. "Importeren in Canvas") with these steps:
+   the language `writing-style.md` states the course is written in (a Dutch
+   course would title it "Importeren in Canvas") with these steps:
    1. Canvas → course → **Settings** → **Import Course Content**.
    2. Content Type **QTI .zip file**; choose the generated zip.
    3. Leave the default question bank; check **Import existing quizzes as New

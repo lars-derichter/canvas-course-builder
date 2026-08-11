@@ -41,12 +41,13 @@ not a `.md` under `sources/lessons/`.
    not repair it here.
 
 4. **Draft the class version.** Fixed structure (the worked example wins where
-   it deviates); section headings in the course's language (e.g.
-   `Leerdoelen`/`Inhouden`/`Tijdslijn`):
+   it deviates). Write every heading and every line of prose in the language
+   `writing-style.md` states the course is written in — the section names below
+   are roles, not literal headings, so translate them (a Dutch course heads
+   these `Leerdoelen`/`Inhouden`/`Tijdslijn`). The worked example, if there is
+   one, already carries the course's own wording; follow it.
    - **H1** identical to the source title, then a single pointer line linking to
-     the source and noting this is a teaching reminder, not a design document
-     (in the course's language, e.g.
-     `Klasversie van [lesson-NN.md](../lessons/lesson-NN.md). Geheugensteun, geen ontwerpdocument.`).
+     the source and noting this is a teaching reminder, not a design document.
    - **Learning goals**: one telegram-style line per goal (kernel verb +
      object), the goal-reference notation in compact form, 3–6 items.
    - **Content**: the lesson's concepts as a compact list, using the inventory
