@@ -1,4 +1,4 @@
-# Hosting your course on the web
+# Hosting Your Course on the Web
 
 Your course content lives as markdown and is served locally by Docusaurus with
 `npm start`. You can also publish it as a public website on **GitHub Pages** for
@@ -9,7 +9,7 @@ The website only contains your `course/` folder. The `evaluations/` and
 `sources/` folders are never built into the site, so your exam materials stay
 out of the public version even though they live in the same repository.
 
-## Public site, private repository
+## Public Site, Private Repository
 
 The published website is **public**: anyone with the link can read it. Your
 repository stays **private**, so your source files, exam materials, and Canvas
@@ -22,7 +22,7 @@ credentials are not exposed.
 > [GitHub Education](https://education.github.com). Apply there first if you
 > haven't already.
 
-## Setting it up
+## Setting It Up
 
 Publishing is a repository setting, not a command. On GitHub, go to **Settings >
 Pages** and set **Source** to **GitHub Actions**. That is the whole setup.
@@ -42,7 +42,7 @@ Until you switch Pages on, the workflow still starts on every push, sees that
 publishing is off, and skips the build. A course that never publishes collects
 skipped runs rather than failed ones.
 
-## Using your own domain
+## Using Your Own Domain
 
 If you own a domain and want to use it instead of the `github.io` address, enter
 it under **Settings > Pages** and point your domain's DNS at GitHub Pages.

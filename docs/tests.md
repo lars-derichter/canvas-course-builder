@@ -4,13 +4,13 @@ The project uses the built-in
 [Node.js test runner](https://nodejs.org/api/test.html) (`node:test` +
 `node:assert`) — no extra dependencies required.
 
-## Running tests
+## Running Tests
 
 ```bash
 npm test
 ```
 
-## Test structure
+## Test Structure
 
 Tests live in `test/` and mirror the layout of the source directories they
 cover: `test/canvas/` for `lib/canvas/`, `test/cli/` for `cli/`, `test/config/`
@@ -29,7 +29,7 @@ create a temporary directory with fixture files and clean it up afterwards. The
 export tests stay CI-safe by never spawning pandoc or Typst — `preflight` takes
 an injectable exec, and the rest operate on strings.
 
-## Manual end-to-end checks
+## Manual End-to-End Checks
 
 Some paths need the real pandoc/Typst toolchain (and, for the sidebar, VS Code),
 so they are verified by hand rather than in the automated suite:
@@ -47,7 +47,7 @@ so they are verified by hand rather than in the automated suite:
 - The `/export-style-init` and `/export-style-update` skills: derive or tweak a
   style and confirm the regenerated sample reflects it.
 
-## Writing new tests
+## Writing New Tests
 
 - Create a `*.test.js` file in the matching `test/` subdirectory.
 - Use `describe`/`it` from `node:test` and assertions from `node:assert/strict`.

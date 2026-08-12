@@ -4,7 +4,7 @@ All guides for Canvas Course Builder. New here? Start with
 [your first course](first-course.md), which walks the whole path from an empty
 computer to a published Canvas module.
 
-## Getting started
+## Getting Started
 
 - [Your first course, step by step](first-course.md): the beginner walkthrough,
   assuming no VS Code, terminal, or git experience
@@ -17,7 +17,7 @@ computer to a published Canvas module.
   instead
 - [Troubleshooting](troubleshooting.md): common errors and their fixes
 
-## Writing your course
+## Writing Your Course
 
 - [Markdown guide](markdown.md): supported syntax, links, and alerts
 - [Frontmatter reference](frontmatter.md): page, assignment, and file metadata
@@ -25,7 +25,7 @@ computer to a published Canvas module.
   the bundled skills
 - [The sources folder](sources.md): where lesson plans, notes, and issues live
 
-## Your course's own files
+## Your Course's Own Files
 
 These two are not documentation and do not live in `docs/`. They sit in
 [`context/`](../context/), they are yours to edit, they are protected during
@@ -48,7 +48,7 @@ upstream updates, and AI assistants read them before drafting anything.
   style and theme resolve
 - [Hosting](hosting.md): publishing the preview site to GitHub Pages
 
-## Making it yours
+## Making It Yours
 
 - [Customization](customization.md): README, language, colours and fonts,
   branding, and licence
@@ -57,7 +57,7 @@ upstream updates, and AI assistants read them before drafting anything.
 - [New academic year](new-academic-year.md): pointing your course at a fresh
   Canvas course
 
-## Advanced and project
+## Advanced and Project
 
 - [Advanced commands](advanced-commands.md): destructive operations, use with
   care

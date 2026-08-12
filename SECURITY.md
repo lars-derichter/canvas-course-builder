@@ -1,4 +1,4 @@
-# Security policy
+# Security Policy
 
 This policy covers the **Canvas Course Builder tooling** — the CLI, the
 libraries under `lib/`, the Docusaurus site, and the VS Code extension — as
@@ -9,7 +9,7 @@ It does not cover the course material in a repository built from this template,
 and it does not cover your Canvas instance. Problems with Canvas itself belong
 with Instructure or with your institution's IT department.
 
-## Supported versions
+## Supported Versions
 
 Only the latest `main` is supported. Canvas Course Builder is a template you
 copy rather than a package you install, so fixes reach you through
@@ -17,7 +17,7 @@ copy rather than a package you install, so fixes reach you through
 [Updating your project](docs/updating-your-project.md)) rather than through a
 patch release. There are no long-lived release branches and no backports.
 
-## Reporting a vulnerability
+## Reporting a Vulnerability
 
 Please report privately, not in a public issue:
 
@@ -35,7 +35,7 @@ If GitHub's private reporting is unavailable to you, open a public issue saying
 only that you have a security report and asking for a private channel. Do not
 describe the vulnerability there.
 
-## What happens next
+## What Happens Next
 
 This is a single-maintainer project, so treat the following as intent rather
 than a guarantee: an acknowledgement within a week, a fix on `main` once the
@@ -43,7 +43,7 @@ problem is confirmed, and a published advisory when the issue affects people who
 already copied the template. You will be credited in the advisory unless you
 would rather not be. There is no bug bounty.
 
-## Handling your Canvas API token
+## Handling Your Canvas API Token
 
 The most sensitive thing this project touches is your own Canvas API token. It
 acts with your full Canvas permissions — for a lecturer that means every course
@@ -61,7 +61,7 @@ you can edit, and for an admin it means considerably more.
 - Give the token an expiry date when you create one, and prefer an account with
   no more access than the courses you actually sync.
 
-## If you created a course from this template
+## If You Created a Course From This Template
 
 This file is the upstream project's policy, and it arrived in your repository
 because GitHub copies the whole template. It stays accurate for the tooling, so

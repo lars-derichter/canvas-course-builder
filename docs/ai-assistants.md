@@ -1,4 +1,4 @@
-# AI assistants
+# AI Assistants
 
 This project is set up for AI coding assistants that run in your terminal or
 inside VS Code, such as Claude Code and OpenAI Codex. They can read your project
@@ -9,7 +9,7 @@ context about the project structure, available commands, and conventions, so it
 can help effectively out of the box. [CLAUDE.md](../CLAUDE.md) is a one-line
 import of the same file, because Claude Code reads that name.
 
-## Supported tools
+## Supported Tools
 
 - **[Claude Code](https://claude.ai/code)** reads `AGENTS.md` through
   `CLAUDE.md`, discovers the skills through the `.claude/skills` alias, and
@@ -23,7 +23,7 @@ import of the same file, because Claude Code reads that name.
 On Windows, skills need one git setting before they are found; see
 [Troubleshooting](troubleshooting.md#skills-not-found-on-windows).
 
-## Use cases for course authors
+## Use Cases for Course Authors
 
 - **Setting up a new course**: `/course-setup` walks the whole first-run
   configuration with you and writes the parts a command cannot.
@@ -42,7 +42,7 @@ On Windows, skills need one git setting before they are found; see
 - **Exporting to PDF or Word**: turn pages, modules, or the whole course into
   printable documents, with a style derived from your own reference.
 
-## Writing style
+## Writing Style
 
 Your AI assistant follows the conventions in
 [writing-style.md](../context/writing-style.md) when drafting course content:
@@ -66,7 +66,7 @@ You can also edit `writing-style.md` by hand at any time. Treat it as a living
 document: the more it reflects your real preferences, the less you'll need to
 correct the assistant's output.
 
-## Course context
+## Course Context
 
 Where `writing-style.md` captures _how you write_,
 [course-context.md](../context/course-context.md) captures _what your course
@@ -104,7 +104,7 @@ write anything substantial propose a design first and stop for your approval;
 checking skills report findings and never auto-fix without confirmation; and no
 skill commits to git (except `/commit`, whose whole job that is).
 
-### Writing style
+### Writing Style
 
 - **/proofread** checks one markdown document against `writing-style.md` and
   your spelling. It picks the register from the file path (`course/` and
@@ -214,7 +214,7 @@ project whitelist.
   placeholder PNGs and image-TODO comments that `/lesson-module-build` leaves
   behind, as one table plus an orphan list. Pure report.
 
-### Issue queue
+### Issue Queue
 
 - **/issue-report** logs an error or a wanted change while you are checking
   course material, without pulling you out of your reviewing flow. Describe the
@@ -229,7 +229,7 @@ project whitelist.
   the fixes and moves handled entries to the queue's Resolved section. Canvas
   keeps serving the old text until you run `npx course push` yourself.
 
-### Export styling
+### Export Styling
 
 - **/export-style-init** derives a reusable PDF/DOCX export style from a
   reference you give it: a Word document, a PDF, a website, or a CSS file. It
@@ -273,7 +273,7 @@ project whitelist.
   project conventions — imperative, present tense, verb-first summaries (`Add`,
   `Fix`, `Update`), no `feat:`/`fix:` prefixes.
 
-## Writing your own skills
+## Writing Your Own Skills
 
 The bundled skills don't cover everything, and they don't have to: a skill is a
 plain markdown file, and your assistant can write one for you. See

@@ -1,4 +1,4 @@
-# Export styles
+# Export Styles
 
 An export style decides how `npx course export` lays out a PDF or a Word
 document: typography, margins, the cover, and the fonts it ships. Colour is not
@@ -7,7 +7,7 @@ part of a style — that comes from the theme in
 read. See [docs/export-styling.md](../docs/export-styling.md) for the pipeline
 and [docs/customization.md](../docs/customization.md) for making it yours.
 
-## Choosing one
+## Choosing One
 
 ```yml
 # course.config.yml
@@ -19,7 +19,7 @@ The value is a folder name below, or a path to a folder of your own (for example
 `sources/my-style`). For a single run, `npx course export --style thomas-more`
 overrides it.
 
-## What ships
+## What Ships
 
 | Style         | Look                                                                                                                                                                                                                    |
 | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -29,7 +29,7 @@ overrides it.
 The Thomas More logo belongs to its owner, and the bundled Nunito ships under
 the SIL Open Font License — see [THIRD-PARTY.md](../THIRD-PARTY.md).
 
-## What a style folder holds
+## What a Style Folder Holds
 
 | File             | Used for                                                                                               | Required |
 | ---------------- | ------------------------------------------------------------------------------------------------------ | -------- |
@@ -42,7 +42,7 @@ The three files at the root of this folder — `filter.lua`, `defaults.yml` and
 `sample.md` — drive the pandoc pipeline rather than the look, so every style
 shares one copy of each.
 
-## Adding your own
+## Adding Your Own
 
 Copy the closest style into `sources/` (which survives upstream updates) and
 point `export.style` at it:

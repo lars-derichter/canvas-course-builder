@@ -2,14 +2,14 @@
 
 Common issues and how to resolve them.
 
-## Connection errors
+## Connection Errors
 
 ### "CANVAS_COURSE_ID is not set"
 
 Run `npx course init` to configure your Canvas API credentials. This creates a
 `.env` file with your API URL, token, and course ID.
 
-### "fetch failed" or network timeout
+### "fetch failed" or Network Timeout
 
 - Verify your Canvas instance is reachable in a browser.
 - Check that `CANVAS_API_URL` in `.env` is the bare domain (e.g.
@@ -28,9 +28,9 @@ Your API token is invalid or expired. Generate a new token in Canvas under
 Your token lacks permissions for the target course. Verify you have a Teacher or
 Admin role in the Canvas course.
 
-## Push issues
+## Push Issues
 
-### Stale canvas_id (404 on update)
+### Stale canvas_id (404 on Update)
 
 If a page or assignment was deleted directly in Canvas, the local `canvas_id`
 becomes stale. Push detects this automatically via a 404 response and re-creates
@@ -41,7 +41,7 @@ the resource. No manual action needed.
 Check the `--module` flag value matches a folder name in `course/` (e.g.
 `--module 01-introduction`, not the display name).
 
-### Unresolved internal links
+### Unresolved Internal Links
 
 When pushing a course for the first time, pages that reference each other can't
 all resolve on the first pass. Push automatically runs a second pass to update
@@ -51,14 +51,14 @@ re-resolution.
 In `--dry-run` mode, unresolved links are reported as warnings since the second
 pass can't run without creating real pages.
 
-### File upload failures
+### File Upload Failures
 
 - Verify the file exists at the path shown in the error.
 - Check that the file isn't too large (Canvas has per-file limits).
 - Ensure the MIME type is supported — see `lib/canvas/files.js` for the full
   list.
 
-## Pull issues
+## Pull Issues
 
 ### "SKIPPED (locally modified since last sync)"
 
@@ -71,14 +71,14 @@ everything on a newly cloned project. That is the check working as designed, not
 a fault. See
 [Push and pull are not a merge](limitations.md#push-and-pull-are-not-a-merge).
 
-### Missing content after pull
+### Missing Content After Pull
 
 - Only pages, assignments, external URLs, files and text headers sync. Quizzes,
   discussions and external tools are skipped with a warning — see
   [Limitations](limitations.md#only-four-canvas-types-sync).
 - Empty pages on Canvas produce empty markdown files — this is normal.
 
-## Sync state
+## Sync State
 
 ### Corrupted .canvas-sync.json
 
@@ -86,30 +86,30 @@ If the sync file becomes corrupted (e.g. partial write during a crash), delete
 it and run `npx course push` to regenerate it. Items with `canvas_id` in their
 frontmatter will be matched to existing Canvas resources.
 
-### Starting fresh, or switching Canvas courses
+### Starting Fresh, or Switching Canvas Courses
 
 Both are covered by [Advanced commands](advanced-commands.md) and, for the
 yearly move to a new course, [New academic year](new-academic-year.md). Back the
 Canvas course up first: [Backups](backups.md).
 
-## Docusaurus issues
+## Docusaurus Issues
 
-### Build fails with broken links
+### Build Fails With Broken Links
 
 Docusaurus is configured to throw on broken links. Check that all relative `.md`
 links point to existing files. Run `npm run build` to see the exact error
 location.
 
-### Alerts not rendering
+### Alerts Not Rendering
 
 The custom remark plugin (`src/plugins/remark-gfm-alerts.js`) requires the exact
 syntax `> [!TYPE]` on a new line inside a blockquote. Make sure there's no space
 before the `[` and the type is one of: NOTE, TIP, IMPORTANT, WARNING, ATTENTION
 (or its synonym CAUTION), CHECK.
 
-## AI assistant issues
+## AI Assistant Issues
 
-### Skills not found on Windows
+### Skills Not Found on Windows
 
 `.claude/skills` is a git symlink, and git on Windows only creates real symlinks
 when `core.symlinks` is `true`, which requires Developer Mode (or admin rights).

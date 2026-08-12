@@ -1,4 +1,4 @@
-# Your first course, step by step
+# Your First Course, Step by Step
 
 This guide takes you from a computer with nothing installed to a course module
 published in Canvas. It assumes no experience with VS Code, the command line, or
@@ -12,7 +12,7 @@ failures. If you would rather read what the tool does before installing it, the
 [user guide](user-guide.md) is the reference and [limitations](limitations.md)
 is the honest list of what it will not do.
 
-## What you will install
+## What You Will Install
 
 Three programs, all free, all standard:
 
@@ -78,7 +78,7 @@ git config --global user.email "your.email@example.com"
 > application. You type a command, press Enter, and wait for the prompt to come
 > back before typing the next one.
 
-## 4. Create your GitHub account
+## 4. Create Your GitHub Account
 
 If you do not have one, sign up at
 [github.com/signup](https://github.com/signup) and verify your email address.
@@ -86,7 +86,7 @@ If you do not have one, sign up at
 GitHub is where your course files live online. It is your backup, your history,
 and the way you will pull in improvements to the tooling later.
 
-## 5. Create your course project
+## 5. Create Your Course Project
 
 Canvas Course Builder is a **template**: you make your own copy, and your copy
 is yours. Changes you make never affect the original, and you can make one copy
@@ -112,7 +112,7 @@ per course.
 Check the page header now says `github.com/YOUR-USERNAME/your-project-name`
 before continuing.
 
-## 6. Download it to your computer
+## 6. Download It to Your Computer
 
 **Cloning** means downloading your project so you can work on it locally.
 
@@ -132,7 +132,7 @@ before continuing.
 
 From here on, every command goes in VS Code's terminal, with this folder open.
 
-## 7. Install and preview
+## 7. Install and Preview
 
 Two commands. The first downloads what the tool needs; it takes a minute or two
 and prints a lot of text.
@@ -160,7 +160,7 @@ Read the Getting started module in the preview. It teaches markdown, the folder
 layout, and the daily commands, and it is a working example of everything this
 tool can publish.
 
-## 8. Make it your course
+## 8. Make It Your Course
 
 The template ships as a working example. One command turns it into yours:
 
@@ -183,7 +183,7 @@ later. If you work with an AI assistant, the `/course-setup` skill walks the
 same ground and writes the prose the command cannot; see
 [AI assistants](ai-assistants.md).
 
-## 9. Install the VS Code extension
+## 9. Install the VS Code Extension
 
 This puts every command in the sidebar, so day-to-day work needs no typing:
 
@@ -201,7 +201,7 @@ If this step fails with a message about `code` not being found, go back to step
 
 [VS Code integration](vscode.md) is the full reference for the panel.
 
-## 10. Back up the Canvas course
+## 10. Back up the Canvas Course
 
 Before you connect Canvas, read [Backing up a Canvas course](backups.md) — it
 takes five minutes and it is the one step in this guide you cannot undo by
@@ -222,7 +222,7 @@ It asks for three things: your Canvas web address, an access token, and the
 course ID. [Canvas setup](canvas-setup.md) shows where to find each one. They go
 into a `.env` file that stays on your computer and is never committed.
 
-## 12. Write something and publish it
+## 12. Write Something and Publish It
 
 Create a module:
 
@@ -251,7 +251,7 @@ npx course push
 
 Open the course in Canvas. Your module is there.
 
-## 13. Save your work
+## 13. Save Your Work
 
 Committing is how you keep a version you can return to. Three commands:
 
@@ -267,7 +267,7 @@ frequent commits are far easier to undo than one big one.
 
 [Git and GitHub](git-and-github.md) explains what is actually happening here.
 
-## Where to go next
+## Where to Go Next
 
 - **[User guide](user-guide.md)** — the course structure, every command, and the
   export to PDF or Word.

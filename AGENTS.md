@@ -8,7 +8,7 @@ Course development system that lets you write course materials as markdown,
 serve them via Docusaurus, and sync with Canvas LMS via its REST API. All
 tooling is JavaScript/Node.js (CommonJS).
 
-## Writing course materials
+## Writing Course Materials
 
 **Always read [`context/writing-style.md`](context/writing-style.md) before
 drafting or editing any file under `course/` or `evaluations/`.** The style
@@ -75,7 +75,7 @@ Three layers:
 3. **CLI tool** (`cli/`) — `commander`-based CLI with global
    `--verbose`/`--quiet` flags
 
-### Key directories
+### Key Directories
 
 - `course/` — Course materials (replaces default Docusaurus `docs/`). One folder
   per module, numbered 00-99. Subfolders become Canvas "Text Header" items. Each
@@ -92,13 +92,13 @@ Three layers:
   resolution
 - `cli/` — CLI entry point and command handlers
 
-### Canvas sync state
+### Canvas Sync State
 
 - `.env` — Canvas API credentials (gitignored).
 - `.canvas-sync.json` — Tracks Canvas IDs for modules, items, icons, and
   embedded files (gitignored).
 
-### Course configuration
+### Course Configuration
 
 - `course.config.yml` — Committed, per-course settings, loaded via
   `lib/config/course-config.js`:
@@ -126,7 +126,7 @@ Three layers:
     `lib/export/style-resolver.js`, which also honours per-file overrides in
     `sources/export-style/` and a `--style` flag.
 
-### Naming conventions
+### Naming Conventions
 
 All filenames and folder names are lowercase, hyphenated, and prefixed with a
 two-digit number (00-99) for ordering. The numeric prefix is stripped when
@@ -139,7 +139,7 @@ schema, resilience behaviour, content types, alerts, link resolution, and
 embedded files. Frontmatter fields are documented in
 [`docs/frontmatter.md`](docs/frontmatter.md).
 
-## Skills and agent conventions
+## Skills and Agent Conventions
 
 - Skills (packaged workflows) live in `.agents/skills/<name>/SKILL.md`,
   following the open Agent Skills format. `.claude/skills` is a committed

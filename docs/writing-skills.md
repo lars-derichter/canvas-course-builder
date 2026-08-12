@@ -1,4 +1,4 @@
-# Writing your own skills
+# Writing Your Own Skills
 
 The bundled [skills](ai-assistants.md) don't cover everything, and they don't
 have to: a skill is a plain markdown file, and your AI assistant can write one
@@ -9,7 +9,7 @@ and the model.
 Using the bundled skills needs none of this. Start at
 [AI assistants](ai-assistants.md) instead.
 
-## Asking an assistant to write one
+## Asking an Assistant to Write One
 
 Say what you want automated and point the assistant at this page. For example:
 
@@ -21,7 +21,7 @@ Say what you want automated and point the assistant at this page. For example:
 The [ideas list](roadmap.md) has more candidates; most are within reach of a
 single AI-assisted session.
 
-## Where skills live
+## Where Skills Live
 
 Skills live in `.agents/skills/<name>/SKILL.md` (`.claude/skills` is a committed
 symlink to the same directory). The frontmatter, just `name` and `description`,
@@ -29,7 +29,7 @@ is the portable [Agent Skills](https://agentskills.io) format, so the same files
 work in every tool that reads skills. `$ARGUMENTS` is substituted by Claude Code
 and Codex, and reads as an obvious placeholder anywhere else.
 
-## The shared template
+## The Shared Template
 
 The shipped skills follow a shared template; new ones should too, so they stay
 predictable for both the reader and the model:
@@ -40,12 +40,12 @@ predictable for both the reader and the model:
   same request in your course language (the shipped skills add Dutch). English
   leads because the skill itself is written in English; the second language is
   what makes the skill fire on how you actually ask for it.
-- **Section order**: H1 (the name with the hyphens as spaces, in sentence case),
-  a 2–4-line intro, `## Input` (only when the skill takes arguments),
-  `## Steps`, `## Rules`, and a bare `$ARGUMENTS` line at the end.
+- **Section order**: H1 (the name with the hyphens as spaces, in title case), a
+  2–4-line intro, `## Input` (only when the skill takes arguments), `## Steps`,
+  `## Rules`, and a bare `$ARGUMENTS` line at the end.
 - **Approval gates** only when a skill writes something worth reviewing first.
-  Split `## Steps` into `### Phase A — <Verb> (writes nothing)` and
-  `### Phase B — <Verb> (only after approval)`, and end Phase A with the
+  Split `## Steps` into `### Phase A — <Verb> (Writes Nothing)` and
+  `### Phase B — <Verb> (Only After Approval)`, and end Phase A with the
   canonical sentence: "Stop. Wait for explicit approval before starting Phase
   B."
 - **State each rule once.** A rule already carried by a step does not reappear

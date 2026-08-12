@@ -1,4 +1,4 @@
-# Making the template yours
+# Making the Template Yours
 
 The template ships as a working example: a README about the tooling, English
 student-facing labels, an English writing style guide, and a neutral look for
@@ -17,7 +17,7 @@ pick decides which of the later templates you want.
 > deliberately unprotected: they hold shipped defaults, so take a copy rather
 > than editing one in place.
 
-## Run the wizard first
+## Run the Wizard First
 
 ```bash
 npx course setup
@@ -61,7 +61,7 @@ After changing the language or a label, re-push modules whose pages contain
 alerts (`npx course push`) and regenerate the glossary pages
 (`npx course build-glossary`), so Canvas picks up the new wording.
 
-## The course name
+## The Course Name
 
 `course.config.yml` holds the name of the course. It titles the preview site and
 its navbar, and heads the cover of a full-course PDF or Word export:
@@ -104,7 +104,7 @@ list to the guides your colleagues will actually need. Delete the tip at the top
 when you are done. The TODO comments in the template mark the sections that need
 writing.
 
-## The course context
+## The Course Context
 
 [`context/course-context.md`](../context/course-context.md) describes what your
 course _is_: learning goals, assessment, pedagogy, module conventions, scope
@@ -143,7 +143,7 @@ it rather than restating it. `/course-context-init` reads `course.config.yml`
 and `README.md` before it asks you anything, so writing a fact in the README
 saves you typing it again.
 
-## The writing style guide
+## The Writing Style Guide
 
 [`context/writing-style.md`](../context/writing-style.md) holds the rules the
 authoring skills follow: language, tone, headings, callouts, punctuation. It
@@ -185,7 +185,7 @@ The shipped defaults are deliberately neutral. `thomas-more` is available for
 both keys as a worked example of full institutional branding; set both to it for
 the complete house style.
 
-### Colour: the theme
+### Colour: The Theme
 
 A theme is a CSS file of custom properties, and it is the single source of truth
 for colour. The preview site, the alert colours in Canvas pages, the alert icons
@@ -232,7 +232,7 @@ maps the `--ccb-*` tokens onto Docusaurus's `--ifm-*` variables and styles the
 components. The site title and navbar label come from `title` in
 `course.config.yml`, above.
 
-### Layout: the export style
+### Layout: The Export Style
 
 An export style decides how a PDF or Word document is laid out: typography,
 margins, the cover, and any fonts it ships. Built-in styles live in
@@ -280,7 +280,7 @@ The licences follow the tooling/content split:
   change or replace the licence for your own material, and update the licence
   section of your README to match.
 
-## The built-in tutorial module
+## The Built-in Tutorial Module
 
 `course/01-getting-started/` is two things at once: a friendly walkthrough of
 the project — markdown, alerts, course structure, syncing, exporting, working
@@ -305,7 +305,7 @@ it. To keep it locally without publishing it, rename the folder with a leading
 underscore — `_01-getting-started` — which excludes it from Canvas syncing while
 the preview site still ignores it too.
 
-## Files that belong to the tooling project
+## Files That Belong to the Tooling Project
 
 "Use this template" copies the whole repository, so your course also inherits
 the files that govern the upstream project: its code of conduct, security

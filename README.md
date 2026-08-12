@@ -9,7 +9,7 @@ way to review changes before students see them. Canvas Course Builder moves the
 source of truth to plain markdown files on your computer and treats Canvas as a
 publishing target.
 
-## What you get
+## What You Get
 
 - **Your own tools.** Write in VS Code or any editor, keep everything in git,
   and review every change before it goes live.
@@ -30,7 +30,7 @@ publishing target.
   keep pulling tooling improvements later; your course content is never
   overwritten.
 
-## What it does not do
+## What It Does Not Do
 
 Worth knowing before you commit a semester to it:
 
@@ -49,14 +49,14 @@ The full list, with what to do instead, is in
 [limitations](docs/limitations.md). Before pointing it at a course that already
 has content, read [backups](docs/backups.md).
 
-## Who it's for
+## Who It's For
 
 Lecturers and teaching teams who maintain course material in Canvas and want the
 comfort of files, folders and version control. You don't need to be technical:
 the [user guide](docs/user-guide.md) starts from zero, and there is a
 [git and GitHub guide](docs/git-and-github.md) for complete beginners.
 
-## Quick start
+## Quick Start
 
 **New to this?** [Your first course, step by step](docs/first-course.md) goes
 from a computer with nothing installed to a published Canvas module, assuming no

@@ -1,4 +1,4 @@
-# Ideas list
+# Ideas List
 
 Possible future skills and features. These are ideas, not plans: nothing here is
 scheduled, and none of it is a commitment from the maintainer. If one of them
@@ -9,7 +9,7 @@ would help you, there are two good routes:
   [Writing your own skills](writing-skills.md) — most of the skill ideas below
   are within reach of a single AI-assisted session.
 
-## Skill ideas
+## Skill Ideas
 
 All would follow the established pattern: read
 [`course-context.md`](../context/course-context.md) and
@@ -18,13 +18,13 @@ phases, no auto-commits, and an `<object>-<verb>` name so the skill sorts with
 its relatives (see [Writing your own skills](writing-skills.md)). The names
 below are provisional; they firm up when someone builds one.
 
-### Course quality
+### Course Quality
 
 - **/accessibility-pass**: alt-texts present and meaningful, heading hierarchy,
   contrast in embedded images, link texts that work for screenreaders. Canvas's
   own checker is weak; doing it at the markdown source is more durable.
 
-### Teaching cycle
+### Teaching Cycle
 
 - **/semester-plan**: map lessons onto the academic calendar (holidays, exam
   weeks), propose which lesson lands on which date, generate a schedule page.
@@ -33,7 +33,7 @@ below are provisional; they firm up when someone builds one.
   student announcement from the git log and the calendar; push as a Canvas
   announcement (needs a small `lib/canvas/announcements.js`, the API is simple).
 
-### Content intake
+### Content Intake
 
 - **/slides-import**: convert an existing slide deck or PDF (most courses start
   from a pile of these) into a draft module: one page per topic, images
@@ -49,9 +49,9 @@ below are provisional; they firm up when someone builds one.
   `evaluations/` folder, reset sync state, update dates in homework frontmatter,
   re-run `/course-context-init`.
 
-## Feature ideas
+## Feature Ideas
 
-### Content templates
+### Content Templates
 
 Extend `npx course new-item` with template options: lab assignment, reading
 assignment, lecture notes, quiz instructions, and so on. Templates would provide

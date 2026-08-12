@@ -8,7 +8,7 @@ project, clone it, publish a module — follow
 [Your first course, step by step](first-course.md), which installs git along the
 way.
 
-## What are Git and GitHub?
+## What Are Git and GitHub?
 
 **Git** is a version control tool that keeps track of every change you make to
 your files. Think of it as an unlimited undo history for your entire project. If
@@ -19,7 +19,7 @@ easy.
 backup of your work in the cloud, collaborate with others, and easily get
 updates from the original Canvas Course Builder project.
 
-## Creating a GitHub account
+## Creating a GitHub Account
 
 If you already have a GitHub account, skip ahead to
 [Installing Git](#installing-git).
@@ -33,7 +33,7 @@ That's it — you're ready to use GitHub.
 
 ## Installing Git
 
-### Check if Git is already installed
+### Check If Git Is Already Installed
 
 Open a terminal (on macOS: **Terminal**, on Windows: **Command Prompt** or
 **PowerShell**) and run:
@@ -89,7 +89,7 @@ sudo dnf install git
 > git config --global user.email "your.email@example.com"
 > ```
 
-## Template repositories
+## Template Repositories
 
 Canvas Course Builder is a **template repository** — you create your own
 independent copy from it. Your project won't affect the original, and you can
@@ -100,7 +100,7 @@ improvements to the tooling without touching your content; see
 [Your first course](first-course.md#5-create-your-course-project) walks through
 making that copy.
 
-## Keeping your project private
+## Keeping Your Project Private
 
 If you plan to store evaluation materials (exams, tests) in the `evaluations/`
 folder, make sure your project is **private** — otherwise students can find your
@@ -117,7 +117,7 @@ You can keep your repository private and still publish a public website with
 your course materials (without exposing `evaluations/`). See the
 [hosting guide](hosting.md).
 
-## Basic Git workflow
+## Basic Git Workflow
 
 As you work on your course materials, use these three commands to save your
 changes:
@@ -157,7 +157,7 @@ changes:
 > quizzes, or student submissions. Backing those up is a separate job: see
 > [Backing up a Canvas course](backups.md).
 
-## Next steps
+## Next Steps
 
 With git and GitHub set up, continue with
 [Your first course, step by step](first-course.md).

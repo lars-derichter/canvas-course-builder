@@ -1,10 +1,10 @@
-# Third-party assets
+# Third-Party Assets
 
 This repository is licensed under the MIT licence (tooling, see `LICENSE`) and
 CC BY-NC-SA 4.0 (course content, see `course/LICENSE.md`). The files listed
 below come from elsewhere and keep the licence of their own authors.
 
-## Bundled under a free licence
+## Bundled Under a Free Licence
 
 - `export-styles/thomas-more/fonts/Nunito-*.ttf` — the Nunito typeface,
   copyright 2014 The Nunito Project Authors, under the SIL Open Font License
@@ -22,7 +22,7 @@ below come from elsewhere and keep the licence of their own authors.
 The alert icons are uploaded to your Canvas course as files and embedded in PDF
 exports, so those notices travel with the icons.
 
-## Property of their owners
+## Property of Their Owners
 
 These ship as a worked example of institutional branding, in the `thomas-more`
 export style and theme. They are covered by **neither** of this repository's
@@ -33,7 +33,7 @@ licences.
   in that style.
 - The colours in `src/css/themes/thomas-more.css` are Thomas More's.
 
-## Fonts referenced but not bundled
+## Fonts Referenced but Not Bundled
 
 - **Century Gothic** (© Monotype Imaging Inc.) is the first choice for headings
   in the `thomas-more` style and is named in its `reference.docx`. The font

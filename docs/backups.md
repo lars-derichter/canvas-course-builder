@@ -1,4 +1,4 @@
-# Backing up a Canvas course
+# Backing up a Canvas Course
 
 Canvas has no undo. Delete a page in the web interface and it goes to the course
 bin for a while; delete a module through the API and it is gone. Canvas Course
@@ -19,7 +19,7 @@ a bad semester.
 > out of those modules. See [Limitations](limitations.md) for exactly what each
 > one touches.
 
-## Route 1: export the course to a file
+## Route 1: Export the Course to a File
 
 The quickest backup, and the one to take before your first push. It produces a
 single `.imscc` file you download and keep.
@@ -39,7 +39,7 @@ It does **not** carry student submissions, grades, or announcements sent to
 students. If those matter, back the course up before anyone submits anything, or
 export the gradebook separately from **Grades > Export**.
 
-## Route 2: copy the course into a sandbox
+## Route 2: Copy the Course Into a Sandbox
 
 A copy gives you a working Canvas course to compare against, rather than a file
 you have to import before you can look at it.
@@ -54,7 +54,7 @@ Whether you can do this depends on your Canvas permissions. If the button is not
 there, ask whoever administers Canvas at your institution for a sandbox course;
 most institutions hand them out on request.
 
-## Route 3: work in a sandbox, then copy over
+## Route 3: Work in a Sandbox, Then Copy Over
 
 The safest way to start, and the one to use while you are still learning what
 push does.
@@ -74,7 +74,7 @@ The cost of this route is that the Canvas ids differ between the two courses, so
 your `.canvas-sync.json` describes the sandbox, not the real course. Run
 `npx course reset-sync-state` when you switch.
 
-## What git backs up, and what it does not
+## What Git Backs up, and What It Does Not
 
 [Git and GitHub](git-and-github.md) call your repository a backup, and for your
 own writing it is: every version of every markdown file, recoverable. That is
@@ -85,7 +85,7 @@ colleague wrote in the web editor, the quiz you built by hand, the discussion
 threads, or the student submissions. Pushing your markdown to GitHub protects
 your markdown. Only a Canvas export or a course copy protects the course.
 
-## When to take one
+## When to Take One
 
 - **Before the first push to any course that already has content.** The CLI
   warns you at this point and asks for confirmation.

@@ -1,5 +1,5 @@
 ---
-title: "Style sample"
+title: "Style Sample"
 subtitle: "Every element an export can contain"
 course: "Example course"
 date: "2026-08-10"
@@ -18,33 +18,33 @@ labels:
   attachment: "Attachment:"
 ---
 
-# First chapter
+# First Chapter
 
 An ordinary paragraph with **bold**, _italic_ and a
 [link to example.com](https://example.com), so you can judge how running text
 sits in the style. Typst handles the line breaking and hyphenation itself.
 
-## A subheading
+## A Subheading
 
 A second paragraph, to show the vertical rhythm between headings and text. Here
 is some `inline code` in the middle of a sentence.
 
-### A sub-subheading
+### A Sub-Subheading
 
 A short paragraph under the third heading level. This sentence carries a
 footnote so you can see how notes are set.[^1]
 
 [^1]: This is what a footnote looks like at the foot of the page.
 
-#### A fourth heading level
+#### A Fourth Heading Level
 
 The fourth level is the last one that is numbered.
 
-##### A fifth heading level
+##### A Fifth Heading Level
 
 Levels five and six are small label headings rather than numbered sections.
 
-## Quotation and definitions
+## Quotation and Definitions
 
 A block quotation:
 
@@ -110,7 +110,7 @@ An ordered list:
 | 1        | 2        | 3        |
 | a        | b        | c        |
 
-## Special blocks
+## Special Blocks
 
 ::: {.link-card title="External resource" url="https://example.com/article"} :::
 
@@ -118,7 +118,7 @@ An ordered list:
 
 ::: {.page-break} :::
 
-# Second chapter
+# Second Chapter
 
 This chapter starts on a new page, so you can see how an H1 forces the page
 break.

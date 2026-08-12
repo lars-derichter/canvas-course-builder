@@ -27,7 +27,7 @@ No folders are required — add what you need, when you need it. `issues.md` is
 created by `/issue-report` on first use and is safe to hand-edit; its header
 documents the entry format.
 
-## Lesson plans
+## Lesson Plans
 
 Three of the suggested folders carry the [lesson workflow](lesson-workflow.md):
 
@@ -48,11 +48,11 @@ These conventions are defaults, not requirements — the skills follow whatever
   Numeric prefixes are optional — use them only when ordering matters.
 - **Any file type** is welcome: `.md`, `.pdf`, `.png`, `.js`, `.py`, etc.
 
-## Optional frontmatter for markdown files
+## Optional Frontmatter for Markdown Files
 
 ```yaml
 ---
-title: "Name of source"
+title: "Name of Source"
 url: "https://example.com/original"
 tags: [topic-a, topic-b]
 ---

@@ -1,11 +1,11 @@
-# Lesson workflow
+# Lesson Workflow
 
 Canvas Course Builder includes a set of [AI-assistant](ai-assistants.md) skills
 that take a lesson from rough idea to published Canvas module. Using them is
 optional — you can keep writing modules by hand — but together they form a
 complete authoring flow.
 
-## Where to start
+## Where to Start
 
 Not with lesson one. The skills are built around a chain that runs backwards
 from what you want to be true at the end:
@@ -41,7 +41,7 @@ practised.
 [Adopting the workflow mid-course](#adopting-the-workflow-mid-course). You do
 not have to start over to start here.
 
-## The pipeline
+## The Pipeline
 
 ```
 idea/notes
@@ -57,7 +57,7 @@ lesson-plan-NN.md                     (student-facing module)
                                       npx course push
 ```
 
-## The two registers
+## The Two Registers
 
 The workflow produces material for two audiences, defined in
 [writing-style.md](../context/writing-style.md):
@@ -68,7 +68,7 @@ The workflow produces material for two audiences, defined in
 - **Student-facing** — the module under `course/`; served by Docusaurus and
   pushed to Canvas.
 
-## Course context
+## Course Context
 
 All lesson skills read [course-context.md](../context/course-context.md) first:
 your course's learning goals, assessment, pedagogy, lesson-plan template, module
@@ -98,7 +98,7 @@ The richer that file, the less the skills need to ask.
 
 See [ai-assistants.md](ai-assistants.md) for what each skill does in detail.
 
-## The glossary pipeline
+## The Glossary Pipeline
 
 If your course maintains a canonical glossary, per-module glossary pages are
 _generated_, never hand-written:
@@ -171,7 +171,7 @@ starts from. Written after, it is a report on what you happened to teach. The
 skills work either way and it is your call — but that is the difference the
 first section of this page is pointing at.
 
-## After teaching: the retro
+## After Teaching: The Retro
 
 `/lesson-retro` closes the loop. Right after a lesson, it interviews you — one
 question at a time — about timing, comprehension, what worked, and material
@@ -181,7 +181,7 @@ the lesson starts better than this year's. Content fixes for the student pages
 that surface in the retro can be logged with `/issue-report` so `/issue-fix`
 picks them up later.
 
-## Course quality
+## Course Quality
 
 Two report-only sweeps complement the single-file `/proofread`:
 
@@ -198,7 +198,7 @@ each fix has wider implications, from the same defect on other pages to a style
 rule that belongs in `writing-style.md` — and applies the fixes after you
 approve its plan.
 
-## Adopting the workflow mid-course
+## Adopting the Workflow Mid-Course
 
 Nothing requires starting from scratch. Point `course-context.md` at your
 existing modules as worked examples, put any existing lesson plans in
@@ -212,7 +212,7 @@ alignment checked. Run `/course-context-init` to get the goals on paper, then
 practises and assesses. Fixing the gaps it finds is cheaper than redesigning
 anything.
 
-## Further reading
+## Further Reading
 
 The two ideas this workflow is built on, if you want the originals:
 

@@ -4,7 +4,7 @@ Standard
 [GitHub Flavoured Markdown](https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax)
 is supported.
 
-## Internal links
+## Internal Links
 
 Use standard relative markdown links to reference other course pages:
 
@@ -27,7 +27,7 @@ These links work across all three layers:
 Only `.md` links are transformed. External URLs, fragment-only links
 (`#heading`), and non-markdown file links are left unchanged.
 
-## Images and files
+## Images and Files
 
 Store images and other embedded files in a `_files/` subdirectory within your
 module folder:
@@ -56,7 +56,7 @@ These references work across all three layers:
 - **Pull from Canvas** — Canvas file URLs are downloaded to `_files/` and
   converted back to relative paths.
 
-### Linking to `.html` files
+### Linking to `.html` Files
 
 Inline links to `.html` files are a special case. Docusaurus treats `.html`
 (like `.md`) as a page reference rather than a downloadable asset, so a plain
@@ -88,7 +88,7 @@ Only `.html` and `.htm` are affected; `.md`/`.mdx` stay page links, and other
 file types (`.pdf`, `.zip`, `.docx`, images) already worked. A link with an
 anchor (`_files/example.html#top`) is left as navigation.
 
-## Underscore prefix convention
+## Underscore Prefix Convention
 
 Files and folders whose names start with `_` (underscore) are treated as
 internal and are excluded from Canvas syncing. Docusaurus also skips them by
@@ -98,7 +98,7 @@ convention. Examples:
 - `_category_.json` — Docusaurus sidebar configuration
 - `_draft-notes.md` — any file you want to keep local-only
 
-## Custom alerts
+## Custom Alerts
 
 Use GitHub-style blockquote alerts for callout boxes. These render with
 appropriate styling in both the Docusaurus preview and Canvas.

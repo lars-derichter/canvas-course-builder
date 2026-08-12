@@ -1,4 +1,4 @@
-# Updating your project
+# Updating Your Project
 
 The original Canvas Course Builder project may receive bug fixes, new features,
 or improved documentation over time. This guide shows you how to pull those
@@ -9,7 +9,7 @@ updates into your project.
 > Before updating, make sure all your local changes are committed. Run
 > `git status` to check — if it shows nothing to commit, you're good to go.
 
-## One-time setup
+## One-Time Setup
 
 Add the original Canvas Course Builder project as a remote called `upstream`.
 You only need to do this once:
@@ -33,7 +33,7 @@ file, commit it, then run the script again. See
 [Configuring what's protected](#configuring-whats-protected) for what the
 settings mean.
 
-## Pulling updates
+## Pulling Updates
 
 The easiest way to update is with the included script:
 
@@ -68,7 +68,7 @@ Then push your updated branch to GitHub:
 git push
 ```
 
-## Configuring what's protected
+## Configuring What's Protected
 
 The script reads its settings from `update-from-upstream.conf`. The file uses a
 simple `key = value` format with space-separated lists; lines starting with `#`
@@ -116,7 +116,7 @@ overwritten. Commit the file after changing it.
 > `protected_files`, or choose `a` at the conflict prompt. See
 > [Customization](customization.md#branding).
 
-### Deleting files that belong to the tooling project
+### Deleting Files That Belong to the Tooling Project
 
 "Use this template" copies the whole repository, so your course starts out with
 a handful of files that govern the upstream project rather than your course: the
@@ -151,7 +151,7 @@ update runs.
 `LICENSE` and `THIRD-PARTY.md` are a different case: they cover code that stays
 in your repository, so leave them alone.
 
-### Renamed files and folders
+### Renamed Files and Folders
 
 Upstream occasionally renames a skill folder or a docs file. A squash merge does
 not delete the old path in your project, so the update script prunes known old
@@ -166,7 +166,7 @@ it restores your version at the old path before pruning would run, so deleting
 the old path automatically would throw your customisations away. Move those by
 hand.
 
-### Moving to `context/` (one-off)
+### Moving to `context/` (One-Off)
 
 The style guide and the course context used to live in `docs/`. They now sit in
 `context/`, which holds the files that are yours rather than the tooling
@@ -193,7 +193,7 @@ fix anything left in `course/`, `evaluations/` or `sources/` — those are
 protected, so upstream never touches them and they may still point at the old
 locations.
 
-### The course title moved into `course.config.yml` (one-off)
+### The Course Title Moved Into `course.config.yml` (One-Off)
 
 The preview site used to be titled from `docusaurus.config.js`. It now reads
 `title` from `course.config.yml`, which is protected, so your choice survives
@@ -203,7 +203,7 @@ so until you add it the site falls back to the generic label for your course
 language: "Course", or "Cursus". Nothing breaks, but nothing names your course
 either.
 
-### Publishing moved out of `docusaurus.config.js` (one-off)
+### Publishing Moved Out of `docusaurus.config.js` (One-Off)
 
 The site's public address used to be written into `docusaurus.config.js` by
 `npx course setup-pages`, which also generated a deploy workflow. Both now come
@@ -226,7 +226,7 @@ generates.
 > rename it before updating. Upstream now ships a file at that path, and the
 > conflict prompt is your only chance to keep yours.
 
-## Resolving conflicts
+## Resolving Conflicts
 
 A conflict only happens when a file outside your protected paths was changed
 **both** locally and upstream. For each such file the script shows when each
@@ -254,7 +254,7 @@ The `a` option is the clean way to "pin" a tooling file you've customised: the
 next update restores it from your version before the resolver ever runs, so you
 won't be asked again.
 
-## Recovering local changes to tooling files
+## Recovering Local Changes to Tooling Files
 
 If you took the upstream version (`u`, or the default) of a file you'd actually
 customised, you can recover your version afterwards.
@@ -284,7 +284,7 @@ git checkout HEAD~1 -- path/to/file
 > To stop being asked about a file you always want to keep, choose `a` (always
 > keep local) at the prompt, or add it to `protected_files` yourself.
 
-## Manual workflow
+## Manual Workflow
 
 If you prefer to run the steps yourself instead of using the script:
 

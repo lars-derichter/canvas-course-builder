@@ -1,4 +1,4 @@
-# Export styling
+# Export Styling
 
 `npx course export` turns course markdown into a printable PDF or an editable
 Word document. This guide explains how the export pipeline is put together and
@@ -9,7 +9,7 @@ how to customise the look, either by hand or with the
 For prerequisites and everyday usage, see the
 [export section of the user guide](user-guide.md#exporting-to-pdf-or-docx).
 
-## The pipeline
+## The Pipeline
 
 One export is a single [pandoc](https://pandoc.org/) run over one combined
 markdown string that the exporter assembles from the selected items:
@@ -28,7 +28,7 @@ DOCX through pandoc's Word writer using `reference.docx`. A single Lua filter
 translates the exporter's fenced divs (alerts, link cards, attachments, page
 breaks) into the right thing for each renderer.
 
-## Two axes: style and theme
+## Two Axes: Style and Theme
 
 What an export looks like is decided by two settings in `course.config.yml`, on
 purpose kept apart:
@@ -70,7 +70,7 @@ name beneath it. `--title` and `--subtitle` override either.
 > recolours the site, Canvas and the PDF but leaves Word output alone.
 > `/export-style-update` rewrites `reference.docx` to match.
 
-## The style files
+## The Style Files
 
 Each style folder holds the files that decide the look. The three files at the
 root of `export-styles/` drive the pandoc pipeline rather than the look, so
@@ -98,7 +98,7 @@ spaced display names): `Alert Title <Kind>` and `Alert Body <Kind>` for each of
 Note, Tip, Important, Warning, Caution, and Check, plus `Link Card Title`,
 `Link Card`, `Attachment`, and `Source Code`.
 
-### How a colour reaches the PDF
+### How a Colour Reaches the PDF
 
 `template.typ` never hardcodes a palette. The exporter reads the theme file,
 keeps every token whose value is a plain hex colour, and passes them to pandoc
@@ -120,7 +120,7 @@ compiles on its own:
 > `reference.docx` as the one place holding its own copy of the alert colours —
 > everything else derives from the theme.
 
-## Overriding layout with `--var`
+## Overriding Layout With `--var`
 
 `--var key=value` passes a variable straight into the Typst template, so you can
 tweak the PDF without editing any file:
@@ -147,7 +147,7 @@ Typst falls back and the result will not match. Install the font, drop its files
 in `sources/export-style/fonts/` (only if its licence allows redistribution), or
 pick one `typst fonts` lists.
 
-### Microsoft Office fonts on macOS
+### Microsoft Office Fonts on macOS
 
 Office fonts are a special case worth knowing about. On Windows, Office installs
 typefaces like Century Gothic into the system font folder, so Typst finds them
@@ -169,7 +169,7 @@ machine without one of them, Typst prints a `unknown font family` warning and
 uses the next in the list; that is informational, not an error. Silence it with
 `--var mainfont=Arial`, or drop font files into `sources/export-style/fonts/`.
 
-## Deriving a style from a reference
+## Deriving a Style From a Reference
 
 Two skills automate the editing described above:
 
@@ -184,7 +184,7 @@ Two skills automate the editing described above:
 Both edit the DOCX by unzipping it, editing its XML, and rezipping — never in
 Word, which would drop the custom alert and link-card styles.
 
-## Previewing a style
+## Previewing a Style
 
 `--sample` renders a kitchen-sink document that exercises every element (all
 alert kinds, code, tables, lists, a link card, an attachment, a page break):
@@ -199,7 +199,7 @@ The sample is shared by every style, so pandoc gets both its directory and the
 selected style's on the resource path — that is what lets `![](logo.png)` inside
 it resolve to whichever style's cover logo is active.
 
-### Regenerating the watermark logo
+### Regenerating the Watermark Logo
 
 `export-styles/generic/logo.png` is generated from `logo.typ` beside it, using
 the Typst binary the PDF export already needs:
@@ -211,7 +211,7 @@ typst compile export-styles/generic/logo.typ export-styles/generic/logo.png --pp
 The source sets `fill: none` and an auto-sized page, so the PNG comes out
 transparent and cropped to the wordmark.
 
-## DOCX degradations
+## DOCX Degradations
 
 DOCX is a lossy target next to the Typst PDF. These are known and accepted:
 
@@ -234,7 +234,7 @@ DOCX is a lossy target next to the Typst PDF. These are known and accepted:
   directly in Word also needs Word 2016 or newer. Use PNG for images that must
   appear in DOCX everywhere.
 
-## Further reading
+## Further Reading
 
 - [Pandoc manual — Templates](https://pandoc.org/MANUAL.html#templates)
 - [Pandoc manual — Creating a PDF with Typst](https://pandoc.org/MANUAL.html#creating-a-pdf)

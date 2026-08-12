@@ -1,9 +1,9 @@
-# Frontmatter reference
+# Frontmatter Reference
 
 Every markdown file in `course/` uses YAML frontmatter to define its Canvas type
 and metadata.
 
-## Common fields
+## Common Fields
 
 | Field         | Type          | Description                                                                                                                               |
 | ------------- | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
@@ -16,7 +16,7 @@ and metadata.
 
 ```yaml
 ---
-title: Getting started
+title: Getting Started
 canvas_type: page
 ---
 ```
@@ -68,7 +68,7 @@ external_url: https://canvas.instructure.com/doc/api/
 External URL items appear in the Canvas module as clickable links. They have no
 markdown body.
 
-## File item
+## File Item
 
 A file item puts a downloadable file (PDF, DOCX, ZIP, ...) in a Canvas module.
 The recommended form is a small markdown wrapper, with the binary itself in the
@@ -76,7 +76,7 @@ module's `_files/` folder:
 
 ```yaml
 ---
-title: Course syllabus
+title: Course Syllabus
 canvas_type: file
 file_ref: _files/syllabus.pdf
 ---

@@ -1,12 +1,12 @@
 <!-- Thanks for contributing. Delete any section that does not apply. -->
 
-## What this changes
+## What This Changes
 
 <!-- What does it do, and why? One or two paragraphs is plenty. -->
 
 Fixes #
 
-## How to check it
+## How to Check It
 
 <!--
 Which commands did you run, on which files? If the change is visible in the

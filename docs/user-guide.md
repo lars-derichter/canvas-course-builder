@@ -1,4 +1,4 @@
-# User guide
+# User Guide
 
 Canvas Course Builder lets you write course materials as markdown files on your
 own computer, preview them on a local website
@@ -8,7 +8,7 @@ covers the course structure and the daily workflow; the [docs index](README.md)
 lists every other guide. If anything fails along the way, check
 [Troubleshooting](troubleshooting.md).
 
-## Getting started
+## Getting Started
 
 [Your first course, step by step](first-course.md) is the full walkthrough:
 installing VS Code, Node.js and git, creating the project from the template,
@@ -56,9 +56,9 @@ winget install --id JohnMacFarlane.Pandoc --id Typst.Typst
 
 See [Exporting to PDF or DOCX](#exporting-to-pdf-or-docx) below.
 
-## Course structure
+## Course Structure
 
-### Course modules (sync with Canvas / preview locally with Docusaurus)
+### Course Modules (Sync With Canvas / Preview Locally With Docusaurus)
 
 ```
 course/
@@ -89,7 +89,7 @@ course/
   (`![Alt](_files/image.png)`) — these are embedded in page content, not added
   as separate module items
 
-### Evaluations (private)
+### Evaluations (Private)
 
 ```
 evaluations/
@@ -100,12 +100,12 @@ evaluations/
       solution/              # example solution
 ```
 
-### Sources (private)
+### Sources (Private)
 
 Reference materials, inspiration, and notes. Not served by Docusaurus or synced
 to Canvas. See the [sources guide](sources.md) for conventions.
 
-## Course name, language and labels
+## Course Name, Language and Labels
 
 `course.config.yml` at the project root names the course and sets the language
 of every generated, student-facing label in one place: alert titles (Canvas
@@ -144,7 +144,7 @@ alerts (`npx course push`) and regenerate glossary pages
 (`npx course build-glossary`) so Canvas picks up the new labels. The file is
 listed in `protected_files`, so upstream updates never overwrite your choice.
 
-## Markdown files
+## Markdown Files
 
 Markdown is a simple way to format text using plain characters — for example,
 `**bold**` for **bold** and `# Heading` for a heading. Your course materials are
@@ -153,7 +153,7 @@ written as markdown files, which are just regular text files that end in `.md`.
 See the [markdown guide](markdown.md) for supported syntax and custom alerts,
 and the [frontmatter guide](frontmatter.md) for the metadata fields.
 
-### Keeping your course files tidy
+### Keeping Your Course Files Tidy
 
 `npm run format` runs Prettier over your markdown. It rewraps prose at 80
 characters and normalises list markers, emphasis, table alignment and
@@ -190,9 +190,9 @@ evaluations/
 sources/
 ```
 
-## Managing course materials
+## Managing Course Materials
 
-### Managing modules
+### Managing Modules
 
 ```bash
 npx course new-module     # create a new module (asks for name and position)
@@ -203,7 +203,7 @@ npx course delete-module  # delete a module and renumber remaining
 
 All commands are interactive and handle renumbering automatically.
 
-### Managing items
+### Managing Items
 
 ```bash
 npx course new-item           # create a page, assignment, url, subsection, or add a file
@@ -218,7 +218,7 @@ npx course split-item         # split an item into two files at a given line
 Item commands auto-detect the current module when run from inside a module
 folder. Items can be added to the module root or into subsections.
 
-### Generated glossary pages
+### Generated Glossary Pages
 
 ```bash
 npx course build-glossary          # regenerate module glossary pages from the canonical glossary
@@ -230,7 +230,7 @@ If your course keeps a canonical glossary in
 glossary page per module. See the [lesson workflow](lesson-workflow.md) for the
 file format and how it fits the authoring flow.
 
-### Searching course content
+### Searching Course Content
 
 ```bash
 npx course search "flexbox"                          # find a word or phrase in course/
@@ -243,7 +243,7 @@ Results are grouped per file with the module and item they belong to, line
 numbers, and a few lines of context around each match. By default only `course/`
 is searched; `--evaluations` and `--sources` widen the scope.
 
-### Docusaurus preview
+### Docusaurus Preview
 
 ```bash
 npm start          # start Docusaurus dev server
@@ -253,7 +253,7 @@ npm run build      # production build
 You can also publish the preview as a free public website on GitHub Pages — a
 handy fallback when Canvas is unavailable. See the [hosting guide](hosting.md).
 
-### Canvas sync
+### Canvas Sync
 
 > [!WARNING]
 >
@@ -276,14 +276,14 @@ npx course diff                  # show what changed locally since the last sync
 npx course validate              # check course content for errors before pushing
 ```
 
-#### Global flags
+#### Global Flags
 
 ```bash
 npx course --verbose <command>   # show API request details
 npx course --quiet <command>     # only show errors
 ```
 
-#### New academic year
+#### New Academic Year
 
 See the [new academic year guide](new-academic-year.md) for switching your
 materials to a new Canvas course at the start of a new academic year.
@@ -330,7 +330,7 @@ layout for one run. See [export styling](export-styling.md) for the pipeline,
 `/export-style-init` and `/export-style-update` skills for deriving a house
 style from a Word template.
 
-## Advanced commands
+## Advanced Commands
 
 ```bash
 npx course reset-sync-state      # remove canvas_id fields and delete .canvas-sync.json
@@ -340,7 +340,7 @@ npx course reset-canvas          # delete all modules, pages, assignments, and f
 See [advanced commands](advanced-commands.md) for details on these destructive
 operations.
 
-## Further guides
+## Further Guides
 
 The [docs index](README.md) lists every guide, grouped by what you are trying to
 do.

@@ -1,10 +1,10 @@
-# New academic year
+# New Academic Year
 
 How to switch your course materials to a new Canvas course at the start of a new
 academic year. Your markdown content stays the same — you just point it at the
 new course and push.
 
-## 1. Find the new course ID
+## 1. Find the New Course ID
 
 Open the new Canvas course in your browser. The course ID is the number after
 `/courses/` in the URL:
@@ -15,7 +15,7 @@ https://school.instructure.com/courses/67890
 
 In this example the course ID is `67890`.
 
-## 2. Update your configuration
+## 2. Update Your Configuration
 
 Open `.env` and change `CANVAS_COURSE_ID` to the new value:
 
@@ -34,7 +34,7 @@ npx course init
 > The API URL and token usually stay the same between years — only the course ID
 > changes.
 
-## 3. Clean the remote course (if needed)
+## 3. Clean the Remote Course (If Needed)
 
 If the new Canvas course already contains content — imported materials, starter
 templates, or leftover items from a previous setup — clear it first:
@@ -53,7 +53,7 @@ Canvas course. The command asks for confirmation before making any changes.
 
 Skip this step if the new course is already empty.
 
-## 4. Update assignment dates and links
+## 4. Update Assignment Dates and Links
 
 Review your assignment frontmatter and update dates for the new academic year:
 
@@ -81,7 +81,7 @@ materials).
 > Search your `course/` folder for `due_at` to quickly find all assignments that
 > need updated dates.
 
-## 5. Reset sync state
+## 5. Reset Sync State
 
 Remove all Canvas IDs from your local files so the next push creates everything
 fresh on the new course:
@@ -120,7 +120,7 @@ npx course status --remote
 Then open the new Canvas course in your browser and spot-check a few pages and
 assignments.
 
-## Quick reference
+## Quick Reference
 
 The full workflow in one block:
 

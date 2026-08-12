@@ -1,4 +1,4 @@
-# VS Code integration
+# VS Code Integration
 
 All course commands are available in the VS Code command palette (Cmd+Shift+P /
 Ctrl+Shift+P). Type "Course:" to filter the list.
@@ -18,7 +18,7 @@ The extension adds a **Course Manager** panel to the VS Code activity bar (book
 icon on the left). It shows a tree view of all modules and items in the
 `course/` directory.
 
-### Tree structure
+### Tree Structure
 
 - **Modules** — shown as folders, labelled from `_category_.json` or derived
   from the folder name. The numeric prefix is shown as a description.
@@ -28,7 +28,7 @@ icon on the left). It shows a tree view of all modules and items in the
   Canvas and Docusaurus show); the filename is shown in the tooltip. Clicking an
   item opens the file in the editor.
 
-### Inline actions
+### Inline Actions
 
 Hover over a tree item to see inline action buttons:
 
@@ -42,7 +42,7 @@ the `canvas_id` from the file's frontmatter and the Canvas URL from `.env`.
 Pages and assignments open their Canvas page, file items open the Canvas file
 view, and external URL items open the URL itself.
 
-### Context menu
+### Context Menu
 
 Right-click a module or item to access management commands. The command acts on
 the element you clicked — names, positions, and confirmation are collected
@@ -68,7 +68,7 @@ the `npx course` CLI with non-interactive flags, so renumbering and Canvas sync
 state behave exactly like the terminal commands. Full output is available in the
 **Canvas Course Builder** output channel (View → Output).
 
-### Drag and drop
+### Drag and Drop
 
 Drag tree items to reorder them:
 
@@ -88,12 +88,12 @@ Drops are translated into the corresponding CLI commands (`move-module`,
 `move-item`, `movetomodule-item`, `new-item --type file`), so Canvas sync state
 stays correct and the next push picks the changes up cleanly.
 
-### Auto-refresh
+### Auto-Refresh
 
 The tree refreshes automatically when files in `course/` are created, deleted,
 or modified. Use the refresh button in the view title bar to manually refresh.
 
-### Title bar menu
+### Title Bar Menu
 
 The title bar has a **Search** button that asks for a word or phrase and shows
 all matches (with context) in the terminal, and a **Preview** button that starts
@@ -125,7 +125,7 @@ ready.
 | Course: Diff                     | Show what changed locally since last sync |
 | Course: Validate                 | Check course content for errors           |
 
-### Module management
+### Module Management
 
 | Command               | Description                                      |
 | --------------------- | ------------------------------------------------ |
@@ -134,7 +134,7 @@ ready.
 | Course: Rename Module | Rename a module                                  |
 | Course: Delete Module | Delete a module and renumber remaining           |
 
-### Item management
+### Item Management
 
 | Command                      | Description                                               |
 | ---------------------------- | --------------------------------------------------------- |
@@ -164,7 +164,7 @@ ready.
 See [export styling](export-styling.md) for customising fonts, colours, and
 margins.
 
-## How it works
+## How It Works
 
 - Long-running sync commands (push, pull, status, diff, validate, init) run in a
   single shared **Canvas Course Builder** terminal so you can follow their

@@ -5,7 +5,7 @@ whether that's a bug report, a feature suggestion, or a pull request with a fix.
 Everyone taking part is expected to follow the
 [code of conduct](../CODE_OF_CONDUCT.md).
 
-## Reporting an issue
+## Reporting an Issue
 
 If something isn't working as expected, open an issue on GitHub:
 
@@ -40,7 +40,7 @@ A good issue report includes:
 > [security policy](../SECURITY.md). The same page explains how to handle your
 > Canvas API token — never paste it into an issue or a log excerpt.
 
-## Suggesting improvements
+## Suggesting Improvements
 
 Have an idea for a new feature or a better workflow? Open an issue the same way,
 but describe:
@@ -52,7 +52,7 @@ but describe:
 
 Check the [ideas list](roadmap.md) first — your idea may already be there.
 
-## Contributing with a pull request
+## Contributing With a Pull Request
 
 If you'd like to contribute a fix or improvement yourself, follow these steps:
 
@@ -97,7 +97,7 @@ If you'd like to contribute a fix or improvement yourself, follow these steps:
    description comes prefilled with a short template; write over the prompts and
    tick the checklist.
 
-### What makes a good pull request
+### What Makes a Good Pull Request
 
 - **Keep it focused** — one fix or feature per pull request. Smaller changes are
   easier to review and merge.
@@ -116,7 +116,7 @@ If you'd like to contribute a fix or improvement yourself, follow these steps:
 The tooling is [MIT licensed](../LICENSE); by opening a pull request you agree
 your contribution is released under the same licence.
 
-## Contributing a skill
+## Contributing a Skill
 
 Skills follow a shared template, described in
 [Writing your own skills](writing-skills.md). A skill that would help other
@@ -131,7 +131,7 @@ path as it exists in downstream projects (e.g. `.agents/skills/<old-name>`) to
 `STALE_PATHS` in [update-from-upstream.sh](../update-from-upstream.sh), so
 downstream projects prune it on their next update.
 
-## Code style
+## Code Style
 
 Prettier owns formatting and ESLint reports defects, so neither needs to come up
 in review. Run `npm run format` before you commit; `npm run lint` and
@@ -158,37 +158,44 @@ automatically; to skip it locally too:
 git config blame.ignoreRevsFile .git-blame-ignore-revs
 ```
 
-## Documentation style
+## Documentation Style
 
-The project's own docs (`docs/`, the README, and `AGENTS.md`) are written in
-English with UK spelling (customise, colour), sentence-case headings, and lines
-wrapped at 80 characters. In register they follow the **colleague-facing** rules
-in [`context/writing-style.md`](../context/writing-style.md): direct and dry, no
-readability cap, front-load the point, no trailing summaries, and the same list
-of AI tells to avoid. Write for a colleague who teaches, not for a student and
-not for a compiler.
+Everything in this project is written in English, and every heading takes its
+case from [`context/writing-style.md`](../context/writing-style.md): Chicago
+title case, capitalising the first and last word plus every major word, and
+lowercasing articles, coordinating conjunctions, and prepositions of three
+letters or fewer. That covers headings you write, not the labels the tooling
+generates — alert titles, link and file cards, and the glossary heading come
+from `lib/config/labels.js` and are sentence case by design.
 
-The getting-started module under `course/` is a half-exception. It follows the
-same mechanical rules — UK spelling, sentence-case headings, 80 columns — but
-its voice is **student-facing**: warm, direct, second person, CEFR B2, with the
-page-title emoji and callouts that writing-style.md defines for course pages. It
-ships as a course, it is what a new user reads first, and it doubles as the
-end-to-end acceptance test for Canvas sync, so it has to keep exercising every
-supported content type.
+The project's own docs (`docs/`, the README, and `AGENTS.md`) add UK spelling
+(customise, colour), lines wrapped at 80 characters, and the
+**colleague-facing** register from the same guide: direct and dry, no
+readability cap, front-load the point, no trailing summaries, and a list of AI
+tells to avoid. Write for a colleague who teaches, not for a student and not for
+a compiler.
+
+`course/` and `evaluations/` follow the guide in full, in its **student-facing**
+register: warm, direct, second person, CEFR B2, with the page-title emoji and
+callouts it defines for course pages. The getting-started module ships as a
+course, it is what a new user reads first, and it doubles as the end-to-end
+acceptance test for Canvas sync, so it has to keep exercising every supported
+content type.
 
 The per-course guides in `context/` govern course content. A course author is
 free to rewrite them; the project's own docs are not theirs to restyle, because
 an upstream update overwrites them.
 
-The style baselines in `templates/` are the deliberate exception. Each one is
-written in the language and variety it prescribes, so two of the four are in
-Dutch, one is in US English, and both English baselines use title-case headings
-because they state a title-case rule and apply it to themselves. Leave them that
+Two sets of files are deliberate exceptions. The style baselines in `templates/`
+are each written in the language and variety they prescribe, so two of the four
+are in Dutch and one is in US English. And the Dutch course scaffolds
+(`course-context-nl.md`, `README-course-nl.md`, `course-index-nl.md`) keep
+sentence-case headings, because that is Dutch convention. Leave both sets that
 way. Prettier does reflow their prose and normalise their list markers, but it
-changes neither language nor heading case, so what that exception protects is
+changes neither language nor heading case, so what the exception protects is
 untouched.
 
-## Understanding the codebase
+## Understanding the Codebase
 
 See [Architecture](architecture.md) for a technical overview of the three-layer
 design, sync state format, push/pull algorithms, and link resolution.
