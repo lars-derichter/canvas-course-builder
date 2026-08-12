@@ -36,6 +36,11 @@ const {
   deleteDiscussion,
   gradedDiscussionWarning,
 } = require('../lib/canvas/discussions');
+const {
+  listExternalTools,
+  findToolForUrl,
+  describeInstalledTools,
+} = require('../lib/canvas/external-tools');
 const { uploadFile, deleteFile } = require('../lib/canvas/files');
 const { get } = require('../lib/canvas/client');
 const { ensureIcons, getIconUrls } = require('../lib/canvas/icons');
@@ -341,7 +346,12 @@ function registerItem(
     canvas_type: canvasType,
   };
   if (pageUrl) entry.page_url = pageUrl;
-  if (canvasType === 'external_url' && externalUrl)
+  // Both link types live only as a module item, whose Canvas id is reissued on
+  // every push, so the URL is the identity prune has to match them on.
+  if (
+    (canvasType === 'external_url' || canvasType === 'external_tool') &&
+    externalUrl
+  )
     entry.external_url = externalUrl;
 
   moduleEntry.items[key] = entry;
@@ -660,6 +670,13 @@ async function pushItem(
     );
   } else if (canvasType === 'external_url') {
     await pushExternalUrl(
+      courseId,
+      moduleId,
+      { title, filePath, position, indent, frontmatter },
+      dryRun,
+    );
+  } else if (canvasType === 'external_tool') {
+    await pushExternalTool(
       courseId,
       moduleId,
       { title, filePath, position, indent, frontmatter },
@@ -1127,6 +1144,104 @@ async function pushExternalUrl(
   }
 }
 
+/**
+ * Say that no installed tool claims this launch URL, and what to do about it.
+ *
+ * The remedies are the two that outlive a single push. An account-level install
+ * is inherited by every course in the account — a course resolves a tool by
+ * searching itself and then its account chain — so it keeps working after a
+ * rollover to next year's course, which a stored tool id never would. Course
+ * Copy is the other one: Canvas carries the tool installation over itself.
+ *
+ * The tool list is fetched only here, on the failure path, and only to name
+ * what is installed: it cannot decide the question, because for LTI 1.3 it
+ * over-reports tools that Canvas then filters by context controls.
+ */
+async function warnNoMatchingTool(courseId, title, url) {
+  log.warn(
+    `  [push] WARNING: no external tool in this course matches the launch URL of "${title}" (${url}). ` +
+      'Canvas creates the module item anyway and reports no error; the failure only shows when a ' +
+      'student clicks it and gets "Couldn\'t find valid settings for this link".',
+  );
+
+  let installed;
+  try {
+    installed = describeInstalledTools(await listExternalTools(courseId));
+  } catch (err) {
+    installed = `the tools installed here could not be listed (${err.message})`;
+  }
+  log.warn(`    [push] Right now ${installed}.`);
+
+  log.warn(
+    '    [push] Two ways to fix it for good: ask your Canvas admin to install the tool at ACCOUNT ' +
+      'level, because a course resolves a tool by searching itself and then its account chain — an ' +
+      'account-level tool is therefore present in every future course and survives a rollover; or ' +
+      "seed the new course with Canvas's own Course Copy, which carries the tool installation over " +
+      'with it.',
+  );
+}
+
+/**
+ * Push an LTI link as a module item.
+ *
+ * Like an external URL, an external tool has no Canvas object of its own to
+ * create or update — the module item is the whole of it, and Canvas resolves
+ * which tool answers it from the launch URL every time. That is also what makes
+ * the type survive a rollover: a launch URL still means something in next
+ * year's course, a tool id from this year's does not.
+ */
+async function pushExternalTool(
+  courseId,
+  moduleId,
+  { title, filePath, position, indent, frontmatter },
+  dryRun,
+) {
+  const url = frontmatter.external_url;
+  if (!url) {
+    log.warn(
+      `  [push] WARNING: Skipping "${title}" — canvas_type is external_tool but external_url field is missing in frontmatter`,
+    );
+    return;
+  }
+
+  log.info(`  [push] Creating external tool module item: ${title} -> ${url}`);
+  if (dryRun) return;
+
+  // Canvas fails silently on an unmatched launch URL, so ask first. Whatever
+  // the answer, the item is still created: a visible broken item the author can
+  // see and fix beats dropping their content on the floor.
+  const probe = await findToolForUrl(courseId, url);
+  if (probe.status === 'no-match') {
+    await warnNoMatchingTool(courseId, title, url);
+  } else if (probe.status === 'unknown') {
+    log.warn(
+      `  [push] WARNING: could not check whether an external tool matches the launch URL of ` +
+        `"${title}" (${url}): ${probe.reason}. The item is created without the check — this says ` +
+        'nothing about whether it works, so open it in Canvas to be sure.',
+    );
+  }
+
+  const result = await createModuleItem(courseId, moduleId, {
+    title,
+    type: 'ExternalTool',
+    externalUrl: url,
+    position,
+    indent,
+    ...(frontmatter.new_tab != null ? { newTab: frontmatter.new_tab } : {}),
+  });
+
+  // Module items are recreated on every push, so the id changes each time.
+  // Only write it to frontmatter once (first push) to mark the item as
+  // synced; the sync state tracks the current id by external_url.
+  if (result && result.id) {
+    if (frontmatter.canvas_id == null) {
+      updateFrontmatter(filePath, { canvas_id: result.id });
+      log.verbose(`Wrote canvas_id=${result.id} to external tool item`);
+    }
+    frontmatter.canvas_id = result.id;
+  }
+}
+
 async function pushFile(
   courseId,
   moduleId,
@@ -1251,8 +1366,11 @@ function collectLocalClaims(localModules) {
       if (fm.canvas_id != null) {
         claims.add(`${canvasType}:${fm.canvas_id}`);
       }
-      if (canvasType === 'external_url' && fm.external_url) {
-        claims.add(`external_url:${fm.external_url}`);
+      if (
+        (canvasType === 'external_url' || canvasType === 'external_tool') &&
+        fm.external_url
+      ) {
+        claims.add(`${canvasType}:${fm.external_url}`);
       }
     }
   }
@@ -1276,9 +1394,9 @@ function isItemClaimed(entry, claims) {
   )
     return true;
   if (
-    type === 'external_url' &&
+    (type === 'external_url' || type === 'external_tool') &&
     entry.external_url &&
-    claims.has(`external_url:${entry.external_url}`)
+    claims.has(`${type}:${entry.external_url}`)
   )
     return true;
   if (
@@ -1372,6 +1490,25 @@ async function deleteCanvasItemByType(courseId, item, errors) {
       } else {
         log.warn(
           `    [push] External URL item not found on Canvas, may already be deleted: ${item.relativePath}`,
+        );
+      }
+    } else if (item.canvasType === 'external_tool') {
+      // An LTI link is a module item pointing at a tool this project did not
+      // install and does not own: other courses launch the same installation,
+      // so prune removes the link and never the tool behind it.
+      const moduleItems = await listModuleItems(courseId, item.moduleId);
+      const match = moduleItems.find(
+        (mi) =>
+          mi.type === 'ExternalTool' && mi.external_url === item.externalUrl,
+      );
+      if (match) {
+        await deleteModuleItem(courseId, item.moduleId, match.id);
+        log.info(
+          `    [push] Removed the LTI link only; the tool installation stays in Canvas for every other course using it.`,
+        );
+      } else {
+        log.warn(
+          `    [push] External tool item not found on Canvas, may already be deleted: ${item.relativePath}`,
         );
       }
     } else {
@@ -1592,3 +1729,4 @@ push._pageStrategy = pageStrategy;
 push._assignmentStrategy = assignmentStrategy;
 push._discussionStrategy = discussionStrategy;
 push._pushContentItem = pushContentItem;
+push._pushExternalTool = pushExternalTool;

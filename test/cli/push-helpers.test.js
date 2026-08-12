@@ -17,6 +17,7 @@ const {
   _assignmentStrategy: assignmentStrategy,
   _discussionStrategy: discussionStrategy,
   _pushContentItem: pushContentItem,
+  _pushExternalTool: pushExternalTool,
   _warnGradeImpact: warnGradeImpact,
   _collectUpdatedAssignments: collectUpdatedAssignments,
 } = push;
@@ -481,6 +482,215 @@ describe('pushing a discussion', () => {
       'expected the graded-discussion warning',
     );
     assert.ok(lines.some((line) => /live only in Canvas/.test(line)));
+  });
+});
+
+describe('pushing an external tool', () => {
+  const tmpDirs = [];
+
+  afterEach(() => {
+    mock.restoreAll();
+    while (tmpDirs.length) {
+      fs.rmSync(tmpDirs.pop(), { recursive: true, force: true });
+    }
+  });
+
+  /**
+   * Run one external-tool markdown file through pushExternalTool with Canvas
+   * mocked out, and hand back every request it made plus what it warned about.
+   */
+  async function pushTool({ frontmatter: extra = {}, routes, dryRun = false }) {
+    mock.method(console, 'log', () => {});
+    const warned = mock.method(console, 'warn', () => {});
+
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'push-external-tool-'));
+    tmpDirs.push(dir);
+    const filePath = path.join(dir, '04-lab.md');
+    const frontmatter = {
+      title: 'Week 1 lab',
+      canvas_type: 'external_tool',
+      external_url: LAUNCH_URL,
+      ...extra,
+    };
+    if (frontmatter.external_url === null) delete frontmatter.external_url;
+    fs.writeFileSync(filePath, serializeFrontmatter(frontmatter, ''), 'utf8');
+
+    const calls = mockCanvas(routes || []);
+    await pushExternalTool(
+      42,
+      9,
+      { title: 'Week 1 lab', filePath, position: 4, indent: 0, frontmatter },
+      dryRun,
+    );
+
+    return { calls, filePath, frontmatter, warned };
+  }
+
+  const LAUNCH_URL = 'https://tool.example.com/launch';
+  const toolResolves = {
+    method: 'GET',
+    path: '/external_tools/sessionless_launch',
+    body: { id: 7, name: 'Codegrade', url: 'https://canvas/launch?verifier=1' },
+  };
+  const toolDoesNotResolve = {
+    method: 'GET',
+    path: '/external_tools/sessionless_launch',
+    body: {
+      errors: { external_tool: 'Unable to find a matching external tool' },
+    },
+    status: 400,
+  };
+  const probeFails = {
+    method: 'GET',
+    path: '/external_tools/sessionless_launch',
+    body: { errors: [{ message: 'user not authorized' }] },
+    status: 401,
+  };
+  const toolsInstalled = {
+    method: 'GET',
+    path: '/external_tools?include_parents',
+    body: [{ name: 'Panopto' }, { name: 'Zoom' }],
+  };
+  const moduleItemCreated = {
+    method: 'POST',
+    path: '/modules/9/items',
+    body: { id: 1000 },
+  };
+
+  it('adds the launch URL to the module as an ExternalTool item', async () => {
+    const { calls } = await pushTool({
+      routes: [toolResolves, moduleItemCreated],
+    });
+
+    const moduleItem = calls.find((c) => c.url.includes('/modules/9/items'));
+    assert.ok(moduleItem, 'expected a module item request');
+    assert.deepEqual(moduleItem.body.module_item, {
+      title: 'Week 1 lab',
+      type: 'ExternalTool',
+      external_url: LAUNCH_URL,
+      position: 4,
+      indent: 0,
+    });
+  });
+
+  it('probes the launch URL before creating the item', async () => {
+    const { calls } = await pushTool({
+      routes: [toolResolves, moduleItemCreated],
+    });
+
+    assert.equal(calls.length, 2, 'one probe, one create');
+    assert.match(calls[0].url, /\/external_tools\/sessionless_launch\?url=/);
+    assert.match(calls[1].url, /\/modules\/9\/items$/);
+  });
+
+  it('says nothing when a tool answers the launch URL', async () => {
+    const { warned } = await pushTool({
+      routes: [toolResolves, moduleItemCreated],
+    });
+
+    assert.equal(warned.mock.callCount(), 0);
+  });
+
+  it('writes the module item id back to the frontmatter on the first push', async () => {
+    const { filePath } = await pushTool({
+      routes: [toolResolves, moduleItemCreated],
+    });
+
+    assert.match(fs.readFileSync(filePath, 'utf8'), /canvas_id: 1000/);
+  });
+
+  it('leaves an existing canvas_id alone, since the item id changes every push', async () => {
+    const { filePath } = await pushTool({
+      frontmatter: { canvas_id: 555 },
+      routes: [toolResolves, moduleItemCreated],
+    });
+
+    assert.match(fs.readFileSync(filePath, 'utf8'), /canvas_id: 555/);
+  });
+
+  it('warns and skips when the frontmatter has no external_url', async () => {
+    const { calls, warned } = await pushTool({
+      frontmatter: { external_url: null },
+      routes: [],
+    });
+
+    assert.equal(calls.length, 0, 'nothing is created without a launch URL');
+    const lines = warned.mock.calls.map((c) => c.arguments[0]);
+    assert.equal(lines.length, 1);
+    assert.match(lines[0], /Skipping "Week 1 lab"/);
+    assert.match(lines[0], /external_url field is missing/);
+  });
+
+  it('warns with both remedies but still creates the item when no tool matches', async () => {
+    const { calls, warned } = await pushTool({
+      routes: [toolDoesNotResolve, toolsInstalled, moduleItemCreated],
+    });
+
+    const text = warned.mock.calls.map((c) => c.arguments[0]).join('\n');
+    assert.match(
+      text,
+      /no external tool in this course matches the launch URL/,
+    );
+    assert.match(text, /Week 1 lab/);
+    assert.match(text, /https:\/\/tool\.example\.com\/launch/);
+    assert.match(text, /Couldn't find valid settings for this link/);
+    assert.match(text, /ACCOUNT level/);
+    assert.match(text, /survives a rollover/);
+    assert.match(text, /Course Copy/);
+    assert.match(text, /Panopto, Zoom/);
+
+    const moduleItem = calls.find((c) => c.url.includes('/modules/9/items'));
+    assert.ok(
+      moduleItem,
+      'a visible broken item beats silently dropping the author content',
+    );
+    assert.equal(moduleItem.body.module_item.external_url, LAUNCH_URL);
+  });
+
+  it('still names the remedies when the installed tools cannot be listed', async () => {
+    const { calls, warned } = await pushTool({
+      routes: [toolDoesNotResolve, moduleItemCreated],
+    });
+
+    const text = warned.mock.calls.map((c) => c.arguments[0]).join('\n');
+    assert.match(text, /could not be listed/);
+    assert.match(text, /ACCOUNT level/);
+    assert.ok(calls.find((c) => c.url.includes('/modules/9/items')));
+  });
+
+  it('says the check could not be run when the probe itself fails', async () => {
+    const { calls, warned } = await pushTool({
+      routes: [probeFails, moduleItemCreated],
+    });
+
+    const text = warned.mock.calls.map((c) => c.arguments[0]).join('\n');
+    assert.match(text, /could not check whether an external tool matches/);
+    assert.doesNotMatch(
+      text,
+      /no external tool in this course matches/,
+      'an unrunnable check must not be reported as a verdict',
+    );
+    assert.ok(
+      !calls.some((c) => c.url.includes('include_parents')),
+      'no point listing the tools when nothing was established',
+    );
+    assert.ok(calls.find((c) => c.url.includes('/modules/9/items')));
+  });
+
+  it('sends new_tab only when the frontmatter asks for it', async () => {
+    const { calls } = await pushTool({
+      frontmatter: { new_tab: true },
+      routes: [toolResolves, moduleItemCreated],
+    });
+
+    const moduleItem = calls.find((c) => c.url.includes('/modules/9/items'));
+    assert.equal(moduleItem.body.module_item.new_tab, true);
+  });
+
+  it('makes no request at all on a dry run', async () => {
+    const { calls } = await pushTool({ routes: [], dryRun: true });
+
+    assert.equal(calls.length, 0);
   });
 });
 

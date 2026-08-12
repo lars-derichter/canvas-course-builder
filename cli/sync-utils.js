@@ -31,12 +31,16 @@ const SCHEMA_VERSION = 3;
 
 /**
  * Compute the sync-state key for an item from its Canvas identity.
- * External URLs key on the URL itself because their Canvas module-item id
- * changes on every push; everything else keys on canvas_type + canvas_id.
+ * External URLs and external tools key on the URL itself because they exist
+ * only as a module item, whose Canvas id changes on every push; everything else
+ * keys on canvas_type + canvas_id.
  */
 function itemKey(canvasType, { canvasId, externalUrl } = {}) {
-  if (canvasType === 'external_url' && externalUrl) {
-    return `external_url:${externalUrl}`;
+  if (
+    (canvasType === 'external_url' || canvasType === 'external_tool') &&
+    externalUrl
+  ) {
+    return `${canvasType}:${externalUrl}`;
   }
   return `${canvasType}:${canvasId}`;
 }

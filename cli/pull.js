@@ -880,6 +880,21 @@ const pullStrategies = {
       external_url: item.external_url,
     }),
   },
+  ExternalTool: {
+    // An LTI link has no Canvas object behind it to fetch: the module item's
+    // own external_url is the whole of it, and Canvas resolves the tool from
+    // that URL on every launch.
+    getId: (item) => item.id,
+    idLabel: null, // always present, no precondition check
+    fetch: null, // no API fetch needed
+    getBody: null,
+    canvasType: 'external_tool',
+    buildSyncEntry: (item) => ({
+      canvas_id: item.id,
+      canvas_type: 'external_tool',
+      external_url: item.external_url,
+    }),
+  },
 };
 
 async function pullItem(
@@ -953,7 +968,12 @@ async function pullItem(
   } else {
     log.verbose(`Fetching ${strategy.canvasType}: ${title}`);
     markdown = canvasItemToMarkdown(
-      { title, external_url: item.external_url, id: item.id },
+      {
+        title,
+        external_url: item.external_url,
+        id: item.id,
+        new_tab: item.new_tab,
+      },
       strategy.canvasType,
       { existingFrontmatter },
     );

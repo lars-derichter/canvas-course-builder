@@ -14,6 +14,7 @@ const VALID_CANVAS_TYPES = new Set([
   'assignment',
   'discussion',
   'external_url',
+  'external_tool',
   'file',
 ]);
 
@@ -96,6 +97,14 @@ function validateModules(modules, courseDir) {
       if (data.canvas_type === 'external_url' && !data.external_url) {
         errors.push(
           `${item.relativePath}: external_url type requires an external_url field`,
+        );
+      }
+
+      // An LTI link is nothing without its launch URL: that URL, not a tool id,
+      // is what Canvas resolves the tool from.
+      if (data.canvas_type === 'external_tool' && !data.external_url) {
+        errors.push(
+          `${item.relativePath}: external_tool type requires an external_url field (the tool's launch URL)`,
         );
       }
 

@@ -133,8 +133,12 @@ async function diff() {
         if (item.canvasType === 'page')
           claimedIds.add(`page_url:${item.frontmatter.canvas_id}`);
       }
-      if (item.canvasType === 'external_url' && item.frontmatter.external_url) {
-        claimedIds.add(`external_url:${item.frontmatter.external_url}`);
+      if (
+        (item.canvasType === 'external_url' ||
+          item.canvasType === 'external_tool') &&
+        item.frontmatter.external_url
+      ) {
+        claimedIds.add(`${item.canvasType}:${item.frontmatter.external_url}`);
       }
     }
     for (const entry of Object.values(syncItems)) {
@@ -144,9 +148,10 @@ async function diff() {
         (entry.canvas_type === 'page' &&
           entry.page_url != null &&
           claimedIds.has(`page_url:${entry.page_url}`)) ||
-        (entry.canvas_type === 'external_url' &&
+        ((entry.canvas_type === 'external_url' ||
+          entry.canvas_type === 'external_tool') &&
           entry.external_url &&
-          claimedIds.has(`external_url:${entry.external_url}`)) ||
+          claimedIds.has(`${entry.canvas_type}:${entry.external_url}`)) ||
         (entry.canvas_type === 'file' &&
           entry.path &&
           fs.existsSync(path.join(COURSE_DIR, entry.path)));
