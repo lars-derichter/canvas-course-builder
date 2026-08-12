@@ -58,21 +58,30 @@ the [user guide](docs/user-guide.md) starts from zero, and there is a
 
 ## Quick start
 
+**New to this?** [Your first course, step by step](docs/first-course.md) goes
+from a computer with nothing installed to a published Canvas module, assuming no
+experience with VS Code, the terminal, or git.
+
+The short version, if you have done this sort of thing before:
+
 1. Click **Use this template** on GitHub and create your course repository.
-2. Follow the [user guide](docs/user-guide.md): clone it, install Node.js 24+,
-   run `npm install`, and preview the built-in getting-started course with
-   `npm start`.
+2. Clone it, install Node.js 24+, run `npm install`, and preview the built-in
+   getting-started course with `npm start`.
 3. Make it your course with `npx course setup` — it asks for the language, the
    name and the look, and puts the matching templates in place (see
    [customization](docs/customization.md)).
-4. Connect Canvas with `npx course init` (see the
-   [Canvas setup guide](docs/canvas-setup.md)) and push your first module.
+4. Back up the Canvas course ([how](docs/backups.md)), connect it with
+   `npx course init` (see the [Canvas setup guide](docs/canvas-setup.md)), and
+   push your first module.
 
 ## Documentation
 
 The [docs folder](docs/README.md) has the full map. Start with:
 
-- [User guide](docs/user-guide.md): setup, course structure, daily commands
+- [Your first course](docs/first-course.md): the complete beginner walkthrough
+- [User guide](docs/user-guide.md): course structure and every daily command
+- [Limitations](docs/limitations.md): what the tool does not do
+- [Backups](docs/backups.md): protecting a Canvas course before you sync
 - [Customization](docs/customization.md): README, language, branding, and
   licence
 - [AI assistants](docs/ai-assistants.md): the bundled skills and how to add your

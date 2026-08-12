@@ -1,14 +1,16 @@
 # Documentation
 
-All guides for Canvas Course Builder. New here? Start with the
-[user guide](user-guide.md), and run `npx course setup` when you are ready to
-turn the template into your own course.
+All guides for Canvas Course Builder. New here? Start with
+[your first course](first-course.md), which walks the whole path from an empty
+computer to a published Canvas module.
 
 ## Getting started
 
-- [User guide](user-guide.md): setup, course structure, and every daily command
-- [Git and GitHub basics](git-and-github.md): for complete beginners, from
-  installing git to your first commit
+- [Your first course, step by step](first-course.md): the beginner walkthrough,
+  assuming no VS Code, terminal, or git experience
+- [User guide](user-guide.md): course structure and every daily command
+- [Git and GitHub basics](git-and-github.md): what they are and the commands you
+  need
 - [Canvas setup](canvas-setup.md): API URL, access token, and course ID
 - [Backups](backups.md): back the Canvas course up before your first push
 - [Limitations](limitations.md): what the tool does not do, and what to do

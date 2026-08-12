@@ -1,7 +1,12 @@
 # Git and GitHub
 
-This guide helps you get set up with Git and GitHub so you can start working
-with Canvas Course Builder. No prior experience required.
+What git and GitHub are, why this project uses them, and the handful of commands
+you need. No prior experience required.
+
+This is the background reading. For the steps in order — install, create the
+project, clone it, publish a module — follow
+[Your first course, step by step](first-course.md), which installs git along the
+way.
 
 ## What are Git and GitHub?
 
@@ -84,18 +89,16 @@ sudo dnf install git
 > git config --global user.email "your.email@example.com"
 > ```
 
-## Creating your project
+## Template repositories
 
 Canvas Course Builder is a **template repository** — you create your own
 independent copy from it. Your project won't affect the original, and you can
-create as many copies as you need (one per course, for example).
+create as many copies as you need, one per course. Later you can still pull in
+improvements to the tooling without touching your content; see
+[Updating your project](updating-your-project.md).
 
-1. Make sure you're logged in to GitHub.
-2. Go to the Canvas Course Builder project page.
-3. Click **Use this template** in the top-right corner, then select **Create a
-   new repository**.
-4. Choose a descriptive name (e.g. `course-web-development`), set the visibility
-   (public or private), and click **Create repository**.
+[Your first course](first-course.md#5-create-your-course-project) walks through
+making that copy.
 
 ## Keeping your project private
 
@@ -113,35 +116,6 @@ unlimited private repositories and other benefits. You can apply at
 You can keep your repository private and still publish a public website with
 your course materials (without exposing `evaluations/`). See the
 [hosting guide](hosting.md).
-
-## Cloning your project
-
-**Cloning** downloads your project from GitHub to your computer so you can work
-on it locally.
-
-1. On your project's GitHub page, click the green **Code** button.
-2. Copy the URL (it looks like
-   `https://github.com/YOUR-USERNAME/your-project-name.git`).
-3. Open a terminal and navigate to where you want to store the project. For
-   example:
-
-   ```bash
-   cd ~/Documents
-   ```
-
-4. Run the clone command with the URL you copied:
-
-   ```bash
-   git clone https://github.com/YOUR-USERNAME/your-project-name.git
-   ```
-
-5. Move into the project folder (use the name of your project):
-
-   ```bash
-   cd your-project-name
-   ```
-
-You now have a local copy of your project, ready to go.
 
 ## Basic Git workflow
 
@@ -176,8 +150,14 @@ changes:
 > Commit early and often. Small, frequent commits are easier to understand and
 > undo than one large commit with many changes.
 
+> [!IMPORTANT]
+>
+> Git backs up your markdown, not your Canvas course. Your repository knows
+> nothing about the pages a colleague wrote in the Canvas web editor, the
+> quizzes, or student submissions. Backing those up is a separate job: see
+> [Backing up a Canvas course](backups.md).
+
 ## Next steps
 
-With Git and GitHub set up, head back to the
-[Getting Started](user-guide.md#getting-started) section to continue with
-installing Node.js and setting up the project.
+With git and GitHub set up, continue with
+[Your first course, step by step](first-course.md).

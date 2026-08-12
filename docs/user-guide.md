@@ -4,27 +4,29 @@ Canvas Course Builder lets you write course materials as markdown files on your
 own computer, preview them on a local website
 ([Docusaurus](https://docusaurus.io/)), and sync them with
 [Canvas LMS](https://www.instructure.com/canvas) in one command. This guide
-covers setup and the daily workflow; the [docs index](README.md) lists every
-other guide. If anything fails along the way, check
+covers the course structure and the daily workflow; the [docs index](README.md)
+lists every other guide. If anything fails along the way, check
 [Troubleshooting](troubleshooting.md).
 
 ## Getting started
 
-1. **Create a [GitHub](https://github.com/) account** if you don't have one yet,
-   and **install [Git](https://git-scm.com/downloads)** — see the
-   [Git and GitHub guide](git-and-github.md) if you need help with these steps
+[Your first course, step by step](first-course.md) is the full walkthrough:
+installing VS Code, Node.js and git, creating the project from the template,
+cloning it, and publishing a first module. It assumes no prior experience.
 
-2. **Create your own copy** — click **Use this template** at the top-right of
-   [this project's homepage](https://github.com/lars-derichter/canvas-course-builder),
-   then select **Create a new repository**. Pick a descriptive name that
-   reflects the course, like `course-web-development` or `course-databases` —
-   this makes it much easier to find your materials, especially if you manage
-   multiple courses (each as its own project). Choose whether it should be
-   public or private
+The short version, for the impatient:
 
-3. **Navigate to your project** — after creating it, GitHub takes you to the new
-   repository. Verify that the page header shows your own username
-   (`github.com/YOUR-USERNAME/YOUR-PROJECT-NAME`) before continuing
+```bash
+git clone https://github.com/YOUR-USERNAME/your-project-name.git
+cd your-project-name
+npm install
+npm start          # preview at localhost:3000
+npx course setup   # name, language, look, templates
+npx course init    # Canvas credentials
+```
+
+Node.js 24+ is the only requirement. `npx` runs the `course` tool that ships
+with the project, so there is nothing else to install.
 
 > [!WARNING]
 >
@@ -34,90 +36,25 @@ other guide. If anything fails along the way, check
 > [Keeping your project private](git-and-github.md#keeping-your-project-private)
 > for how to change this setting.
 
-4. **Clone your project** to your computer — on your project's GitHub page,
-   click the green **Code** button, then copy the HTTPS URL. Open a terminal (on
-   macOS: **Terminal**, on Windows: **Command Prompt** or **PowerShell**) and
-   run the following command, replacing the URL with the one you just copied:
+`course/01-getting-started/` is a real module, so it would be published to your
+students along with your own. The setup wizard offers to remove it; see
+[the built-in tutorial module](customization.md#the-built-in-tutorial-module)
+for how to keep it locally without publishing it.
 
-   ```bash
-   # paste your URL after "git clone"
-   git clone https://github.com/YOUR-USERNAME/your-project-name.git
-   ```
+### Optional: pandoc and Typst
 
-   Then move into the project folder (use the name of your project):
+Only needed to export course materials to PDF or Word. DOCX export needs pandoc;
+PDF export also needs Typst.
 
-   ```bash
-   cd your-project-name
-   ```
+```bash
+# macOS
+brew install pandoc typst
+# Windows
+winget install --id JohnMacFarlane.Pandoc --id Typst.Typst
+# Linux: use your package manager for pandoc; see the Typst releases page
+```
 
-5. **Install [Node.js 24+](https://nodejs.org/)** — download the installer from
-   the link, run it, and accept the default settings
-
-6. **Install dependencies and start the preview** — run these two commands to
-   download the required packages and open a local preview in your browser:
-
-   ```bash
-   npm install
-   npm start
-   ```
-
-   The included **Getting started** module walks you through writing markdown,
-   organising content, syncing with Canvas, and using the VS Code extension.
-
-   > [!NOTE]
-   >
-   > `npm start` keeps running while the preview is open — the terminal is busy
-   > until you stop it with **Ctrl+C**. Open a second terminal for other
-   > commands. Those other commands start with `npx course`: `npx` runs the
-   > `course` tool that ships with the project, no extra installation needed.
-
-7. **(Optional) Install pandoc and Typst for PDF/DOCX export** — only needed if
-   you want to export course materials to printable documents. Install both:
-
-   ```bash
-   # macOS
-   brew install pandoc typst
-   # Windows
-   winget install --id JohnMacFarlane.Pandoc --id Typst.Typst
-   # Linux: use your package manager for pandoc; see the Typst releases page
-   ```
-
-   See [Exporting to PDF or DOCX](#exporting-to-pdf-or-docx) below. DOCX export
-   needs only pandoc; PDF export also needs Typst.
-
-8. **Make it yours** — the template ships as a working example. One command
-   turns it into your course:
-
-   ```bash
-   npx course setup
-   ```
-
-   It asks for the language of the student-facing labels, the course name, the
-   look of the site and the exports, and which templates to install, then offers
-   to connect Canvas. The [customization guide](customization.md) explains every
-   choice and how to change it by hand later.
-
-9. **Connect to Canvas** — if you skipped that last question, or you are
-   pointing the course at a new academic year, run the credential step on its
-   own:
-
-   ```bash
-   npx course init
-   ```
-
-   See the [Canvas setup guide](canvas-setup.md) for detailed instructions on
-   obtaining your API URL, token, and course ID.
-
-10. **Start writing** — add your own content to `course/`:
-
-    ```bash
-    npx course new-module    # create a module (asks for name and position)
-    ```
-
-    `course/01-getting-started/` is a real module, so it would be published to
-    your students along with your own. The setup wizard offers to remove it; see
-    [the built-in tutorial module](customization.md#the-built-in-tutorial-module)
-    for how to keep it locally without publishing it.
+See [Exporting to PDF or DOCX](#exporting-to-pdf-or-docx) below.
 
 ## Course structure
 
@@ -405,13 +342,5 @@ operations.
 
 ## Further guides
 
-| Guide                                             | What it covers                                         |
-| ------------------------------------------------- | ------------------------------------------------------ |
-| [VS Code integration](vscode.md)                  | The sidebar and command palette                        |
-| [AI assistants](ai-assistants.md)                 | Assistant setup, the bundled skills, creating your own |
-| [Lesson workflow](lesson-workflow.md)             | From lesson idea to published module with the skills   |
-| [Customization](customization.md)                 | README, language, branding, and licence                |
-| [Hosting](hosting.md)                             | Publishing the preview site on GitHub Pages            |
-| [Updating your project](updating-your-project.md) | Pulling in upstream improvements                       |
-| [Troubleshooting](troubleshooting.md)             | Common errors and their fixes                          |
-| [Contributing](contributing.md)                   | Issues, ideas, and pull requests                       |
+The [docs index](README.md) lists every guide, grouped by what you are trying to
+do.
