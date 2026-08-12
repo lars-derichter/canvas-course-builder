@@ -74,4 +74,10 @@ describe('the deploy workflow', () => {
       /if:\s*needs\.check\.outputs\.enabled\s*==\s*'true'/,
     );
   });
+
+  // Cancelling a deployment mid-publish leaves the Pages site unpublished, and
+  // every later run then reports success against a site that serves a 404.
+  it('lets a running deployment finish', () => {
+    assert.match(workflow, /cancel-in-progress:\s*false/);
+  });
 });

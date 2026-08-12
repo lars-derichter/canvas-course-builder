@@ -15,10 +15,12 @@ permissions:
   pages: write
   id-token: write
 
-# Allow one concurrent deployment, cancelling in-progress runs.
+# One deployment at a time, but never cancel one that is already running: a
+# publish killed halfway through leaves the Pages site unpublished, and every
+# later push then deploys successfully to a site that serves a 404.
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   # Publishing requires Settings > Pages > Source set to "GitHub Actions".
