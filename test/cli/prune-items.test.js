@@ -1,4 +1,4 @@
-const { describe, it } = require('node:test');
+const { describe, it, mock, afterEach } = require('node:test');
 const assert = require('node:assert/strict');
 
 const push = require('../../cli/push');
@@ -8,6 +8,8 @@ const {
   _collectDeletedItems: collectDeletedItems,
   _collectLocalClaims: collectLocalClaims,
   _isItemClaimed: isItemClaimed,
+  _annotateSubmissions: annotateSubmissions,
+  _describeDoomedItem: describeDoomedItem,
 } = push;
 
 describe('collectDeletedModules', () => {
@@ -471,6 +473,171 @@ describe('collectDeletedItems per type', () => {
     assert.equal(items[0].canvasType, 'external_url');
     assert.equal(items[0].moduleId, 100);
     assert.equal(items[0].externalUrl, 'http://example.com');
+  });
+});
+
+describe('annotateSubmissions', () => {
+  afterEach(() => {
+    mock.restoreAll();
+  });
+
+  const states = new Map([
+    ['500', true],
+    ['501', false],
+  ]);
+
+  it('flags a doomed assignment that has student submissions', async () => {
+    const items = [
+      {
+        relativePath: '01-mod/01-hw.md',
+        canvasType: 'assignment',
+        canvasId: 500,
+      },
+    ];
+
+    await annotateSubmissions(42, items, async () => states);
+
+    assert.equal(items[0].hasSubmissions, true);
+  });
+
+  it('does not flag a doomed assignment without submissions', async () => {
+    const items = [
+      {
+        relativePath: '01-mod/02-hw.md',
+        canvasType: 'assignment',
+        canvasId: 501,
+      },
+    ];
+
+    await annotateSubmissions(42, items, async () => states);
+
+    assert.equal(items[0].hasSubmissions, false);
+  });
+
+  it('treats an assignment Canvas no longer lists as nothing left to lose', async () => {
+    const items = [
+      {
+        relativePath: '01-mod/03-hw.md',
+        canvasType: 'assignment',
+        canvasId: 777,
+      },
+    ];
+
+    await annotateSubmissions(42, items, async () => states);
+
+    assert.equal(items[0].hasSubmissions, false);
+  });
+
+  it('marks the state unknown when the lookup fails', async () => {
+    mock.method(console, 'warn', () => {});
+    const items = [
+      {
+        relativePath: '01-mod/01-hw.md',
+        canvasType: 'assignment',
+        canvasId: 500,
+      },
+    ];
+
+    await annotateSubmissions(42, items, async () => {
+      throw new Error('403 Forbidden');
+    });
+
+    assert.equal(
+      items[0].hasSubmissions,
+      null,
+      'a failed check must never read as "no submissions"',
+    );
+  });
+
+  it('makes no request when no assignment is being deleted', async () => {
+    const items = [
+      {
+        relativePath: '01-mod/01-page.md',
+        canvasType: 'page',
+        canvasId: 'slug',
+      },
+      { relativePath: '01-mod/doc.pdf', canvasType: 'file', canvasId: 400 },
+    ];
+
+    await annotateSubmissions(42, items, async () => {
+      throw new Error('the submission lookup should not have run');
+    });
+
+    assert.equal(items[0].hasSubmissions, undefined);
+    assert.equal(items[1].hasSubmissions, undefined);
+  });
+
+  it('looks the whole course up once for many doomed assignments', async () => {
+    let calls = 0;
+    const items = [
+      {
+        relativePath: '01-mod/01-hw.md',
+        canvasType: 'assignment',
+        canvasId: 500,
+      },
+      {
+        relativePath: '01-mod/02-hw.md',
+        canvasType: 'assignment',
+        canvasId: 501,
+      },
+      {
+        relativePath: '01-mod/01-page.md',
+        canvasType: 'page',
+        canvasId: 'slug',
+      },
+    ];
+
+    await annotateSubmissions(42, items, async () => {
+      calls++;
+      return states;
+    });
+
+    assert.equal(calls, 1);
+  });
+});
+
+describe('describeDoomedItem', () => {
+  it('names the grades on an assignment that has submissions', () => {
+    const line = describeDoomedItem({
+      relativePath: '01-mod/01-hw.md',
+      canvasType: 'assignment',
+      hasSubmissions: true,
+    });
+
+    assert.match(line, /HAS STUDENT SUBMISSIONS/);
+    assert.match(line, /gradebook column/);
+    assert.match(line, /01-mod\/01-hw\.md/);
+  });
+
+  it('leaves an assignment without submissions unmarked', () => {
+    const line = describeDoomedItem({
+      relativePath: '01-mod/02-hw.md',
+      canvasType: 'assignment',
+      hasSubmissions: false,
+    });
+
+    assert.equal(line, '  - 01-mod/02-hw.md (assignment)');
+  });
+
+  it('says so when the submission status could not be determined', () => {
+    const line = describeDoomedItem({
+      relativePath: '01-mod/03-hw.md',
+      canvasType: 'assignment',
+      hasSubmissions: null,
+    });
+
+    assert.match(line, /SUBMISSION STATUS UNKNOWN/);
+    assert.match(line, /assume grades will be lost/);
+  });
+
+  it('leaves other item types as they were', () => {
+    assert.equal(
+      describeDoomedItem({
+        relativePath: '01-mod/01-page.md',
+        canvasType: 'page',
+      }),
+      '  - 01-mod/01-page.md (page)',
+    );
   });
 });
 

@@ -101,6 +101,16 @@ frontmatter, a module folder claims its id via `_category_.json`. Identity
 claims are collected over the whole course, so items moved to another module —
 even one outside a `--module` filter — are never mistaken for deletions.
 
+Before it asks for confirmation, prune checks whether the assignments on its
+list already hold student submissions, because deleting an assignment takes its
+gradebook column and every grade in it. The doomed items come from sync state,
+so all prune has is Canvas ids: it reads `has_submitted_submissions` off a
+single `listAssignments` call for the course rather than fetching each
+assignment, and skips the call entirely when no assignment is being deleted. An
+assignment with submissions is flagged in the listing and named in the
+confirmation question; a lookup that fails is reported as "could not determine",
+never as "no submissions".
+
 ## Push Algorithm
 
 ```

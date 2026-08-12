@@ -4,9 +4,17 @@ const { listPages, deletePage } = require('../lib/canvas/pages');
 const {
   listAssignments,
   deleteAssignment,
+  hasStudentSubmissions,
 } = require('../lib/canvas/assignments');
 const { listFiles, deleteFile } = require('../lib/canvas/files');
-const { BACKUP_HINT, confirm, describeContents } = require('./backup-warning');
+const {
+  BACKUP_HINT,
+  confirm,
+  countSubmissionRisk,
+  describeContents,
+  submissionRiskSuffix,
+  submissionWarningLines,
+} = require('./backup-warning');
 
 async function resetCanvas(options = {}) {
   const courseId = process.env.CANVAS_COURSE_ID;
@@ -50,6 +58,33 @@ async function resetCanvas(options = {}) {
       'but the modules that linked them are not.',
   );
 
+  // The assignments were listed above, and a Canvas Assignment object carries
+  // has_submitted_submissions, so counting the graded ones costs no extra call.
+  const submissionStates = assignments.map((assignment) => ({
+    assignment,
+    state: hasStudentSubmissions(assignment),
+  }));
+  const risk = countSubmissionRisk(submissionStates.map((s) => s.state));
+
+  for (const line of submissionWarningLines(risk)) {
+    log.warn(`[reset-canvas] ${line}`);
+  }
+  for (const { assignment, state } of submissionStates) {
+    if (state === true) {
+      log.warn(`  - ${assignment.name} (has student submissions)`);
+    } else if (state === null) {
+      log.warn(`  - ${assignment.name} (submission status unknown)`);
+    }
+  }
+  if (assignments.length > 0 && risk.graded === 0 && risk.unknown === 0) {
+    log.info(
+      assignments.length === 1
+        ? '[reset-canvas] The assignment has no student submissions.'
+        : `[reset-canvas] None of the ${assignments.length} assignments has ` +
+            'student submissions.',
+    );
+  }
+
   if (dryRun) {
     log.info('[reset-canvas] DRY RUN - nothing was deleted.');
     return;
@@ -58,7 +93,8 @@ async function resetCanvas(options = {}) {
   log.info(`[reset-canvas] ${BACKUP_HINT}`);
 
   const ok = await confirm(
-    `[reset-canvas] Delete all content on course ${courseId}? (y/N)`,
+    `[reset-canvas] Delete all content on course ${courseId}` +
+      `${submissionRiskSuffix(risk)}? (y/N)`,
   );
   if (!ok) {
     log.info('[reset-canvas] Aborted.');

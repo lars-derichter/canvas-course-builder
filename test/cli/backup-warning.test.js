@@ -5,7 +5,10 @@ const {
   BACKUP_DOC,
   confirmFirstPush,
   confirmForcedPull,
+  countSubmissionRisk,
   describeContents,
+  submissionRiskSuffix,
+  submissionWarningLines,
 } = require('../../cli/backup-warning');
 
 describe('describeContents', () => {
@@ -24,6 +27,80 @@ describe('describeContents', () => {
       describeContents({ modules: 0, pages: 0, assignments: 0, files: 0 }),
       '',
     );
+  });
+});
+
+describe('countSubmissionRisk', () => {
+  it('counts the assignments that hold graded work', () => {
+    assert.deepEqual(countSubmissionRisk([true, false, true]), {
+      graded: 2,
+      unknown: 0,
+    });
+  });
+
+  it('counts an undetermined state as its own risk, not as safe', () => {
+    assert.deepEqual(countSubmissionRisk([null, false, undefined]), {
+      graded: 0,
+      unknown: 2,
+    });
+  });
+
+  it('returns zeroes when nothing is at stake', () => {
+    assert.deepEqual(countSubmissionRisk([]), { graded: 0, unknown: 0 });
+    assert.deepEqual(countSubmissionRisk([false, false]), {
+      graded: 0,
+      unknown: 0,
+    });
+  });
+});
+
+describe('submissionWarningLines', () => {
+  it('warns about student submissions and the gradebook column', () => {
+    const [line, ...rest] = submissionWarningLines({ graded: 2, unknown: 0 });
+    assert.equal(rest.length, 0);
+    assert.match(line, /2 assignments being deleted have student submissions/);
+    assert.match(line, /gradebook column and every submission and grade/);
+  });
+
+  it('agrees with a single assignment', () => {
+    const [line] = submissionWarningLines({ graded: 1, unknown: 0 });
+    assert.match(line, /1 assignment being deleted has student submissions/);
+  });
+
+  it('warns separately that a status could not be determined', () => {
+    const [line] = submissionWarningLines({ graded: 0, unknown: 1 });
+    assert.match(line, /could not determine whether 1 assignment/);
+    assert.match(line, /Treat it as if it does/);
+  });
+
+  it('warns twice when some are graded and others unchecked', () => {
+    assert.equal(submissionWarningLines({ graded: 1, unknown: 2 }).length, 2);
+  });
+
+  it('says nothing when no assignment carries student work', () => {
+    assert.deepEqual(submissionWarningLines({ graded: 0, unknown: 0 }), []);
+    assert.deepEqual(submissionWarningLines(), []);
+  });
+});
+
+describe('submissionRiskSuffix', () => {
+  it('names the grades in the question when submissions exist', () => {
+    assert.equal(
+      submissionRiskSuffix({ graded: 1, unknown: 0 }),
+      ', including the student submissions and grades',
+    );
+  });
+
+  it('hedges when the status could not be determined', () => {
+    assert.equal(
+      submissionRiskSuffix({ graded: 0, unknown: 3 }),
+      ', including any student submissions and grades',
+    );
+  });
+
+  it('adds nothing when no grades are at stake', () => {
+    assert.equal(submissionRiskSuffix({ graded: 0, unknown: 0 }), '');
+    assert.equal(submissionRiskSuffix(), '');
   });
 });
 

@@ -57,16 +57,25 @@ the gradebook first — see [Backing up a Canvas course](backups.md).
 Quizzes, discussions, announcements and rubrics survive — there is no API call
 for them here — but the modules that linked them do not.
 
-The command lists what the course holds, then asks:
+The command lists what the course holds, names the assignments that students
+have already submitted to, then asks:
 
 ```
 [reset-canvas] Canvas course 123 contains 4 modules, 18 pages, 2 assignments.
 [reset-canvas] All of it will be deleted, including content this project never created.
 [reset-canvas] Every assignment is deleted, and its gradebook column and its student submissions go with it.
 [reset-canvas] Quizzes, discussions and announcements are left alone, but the modules that linked them are not.
+[reset-canvas] WARNING: 1 assignment being deleted has student submissions. Deleting an assignment deletes its gradebook column and every submission and grade in it.
+  - Exercise 2 (has student submissions)
 [reset-canvas] Canvas has no undo. Back the course up first — see docs/backups.md.
-[reset-canvas] Delete all content on course 123? (y/N)
+[reset-canvas] Delete all content on course 123, including the student submissions and grades? (y/N)
 ```
+
+The submission check costs no extra request: Canvas puts
+`has_submitted_submissions` on the assignments the command already listed. When
+Canvas does not answer it — an older instance, a trimmed response — the
+assignment is reported as `submission status unknown` and the warning says the
+status could not be determined. It is never reported as safe.
 
 Anything other than `y` cancels, so a piped or non-interactive run cancels
 rather than deleting.

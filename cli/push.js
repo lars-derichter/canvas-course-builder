@@ -27,6 +27,7 @@ const {
   updateAssignment,
   deleteAssignment,
   listAssignments,
+  getSubmissionStates,
 } = require('../lib/canvas/assignments');
 const { uploadFile, deleteFile } = require('../lib/canvas/files');
 const { get } = require('../lib/canvas/client');
@@ -50,7 +51,13 @@ const {
   readModuleCanvasId,
   writeModuleCanvasId,
 } = require('./module-utils');
-const { BACKUP_HINT, confirmFirstPush } = require('./backup-warning');
+const {
+  BACKUP_HINT,
+  confirmFirstPush,
+  countSubmissionRisk,
+  submissionRiskSuffix,
+  submissionWarningLines,
+} = require('./backup-warning');
 const log = require('./logger');
 
 async function push(options) {
@@ -1118,6 +1125,65 @@ async function deleteCanvasItemByType(courseId, item, errors) {
 }
 
 /**
+ * Annotate the doomed assignments with whether Canvas already holds student
+ * submissions for them, as `hasSubmissions`: true, false, or null when the
+ * lookup failed.
+ *
+ * Prune works from sync state, so all it has is Canvas ids. One list call for
+ * the whole course is cheaper than one fetch per doomed assignment, and the
+ * Assignment objects a list returns carry the flag already. Items of other
+ * types cost nothing: with no assignment in the list, no call is made.
+ *
+ * A failed lookup leaves null behind, which the listing and the prompt report
+ * as "could not determine" — never as "safe".
+ *
+ * @param {string|number} courseId
+ * @param {object[]} items          - Doomed items; annotated in place.
+ * @param {Function} [fetchStates]  - Injection point for tests.
+ */
+async function annotateSubmissions(
+  courseId,
+  items,
+  fetchStates = getSubmissionStates,
+) {
+  const assignments = items.filter((item) => item.canvasType === 'assignment');
+  if (assignments.length === 0) return items;
+
+  let states;
+  try {
+    states = await fetchStates(courseId);
+  } catch (err) {
+    log.warn(
+      `[push] Could not check the assignments for student submissions: ${err.message}`,
+    );
+    for (const item of assignments) item.hasSubmissions = null;
+    return items;
+  }
+
+  for (const item of assignments) {
+    const key = String(item.canvasId);
+    // An id Canvas no longer lists is already gone, so there is no student
+    // work left to lose: that is a real "no", not an unknown.
+    item.hasSubmissions = states.has(key) ? states.get(key) : false;
+  }
+  return items;
+}
+
+/**
+ * The listing line for one doomed item. An assignment with grades behind it
+ * must not scan like a stray page, so it carries the reason on the same line.
+ */
+function describeDoomedItem(item) {
+  const line = `  - ${item.relativePath} (${item.canvasType})`;
+  if (item.canvasType !== 'assignment') return line;
+  if (item.hasSubmissions === true)
+    return `${line}  <-- HAS STUDENT SUBMISSIONS: deletes the gradebook column and every grade in it`;
+  if (item.hasSubmissions === null)
+    return `${line}  <-- SUBMISSION STATUS UNKNOWN: could not be checked, assume grades will be lost`;
+  return line;
+}
+
+/**
  * Unified prune: detect and delete Canvas modules and items that no longer exist locally.
  */
 async function pruneDeleted(
@@ -1156,13 +1222,26 @@ async function pruneDeleted(
     }
   }
 
+  // Ask Canvas which of the doomed assignments carry student work before
+  // listing them, so the listing can say so item by item.
+  await annotateSubmissions(courseId, itemsToDelete);
+  const risk = countSubmissionRisk(
+    itemsToDelete
+      .filter((item) => item.canvasType === 'assignment')
+      .map((item) => item.hasSubmissions),
+  );
+
   if (itemsToDelete.length > 0) {
     log.info(
       `\n[push] Prune: ${itemsToDelete.length} locally-deleted item(s) to remove from Canvas:`,
     );
-    for (const { relativePath, canvasType } of itemsToDelete) {
-      log.info(`  - ${relativePath} (${canvasType})`);
+    for (const item of itemsToDelete) {
+      log.info(describeDoomedItem(item));
     }
+  }
+
+  for (const line of submissionWarningLines(risk)) {
+    log.warn(`\n[push] ${line}`);
   }
 
   // Confirm with user (unless dry-run)
@@ -1173,7 +1252,10 @@ async function pruneDeleted(
       output: process.stdout,
     });
     const answer = await new Promise((resolve) => {
-      rl.question('[push] Delete these from Canvas? (y/N) ', resolve);
+      rl.question(
+        `[push] Delete these from Canvas${submissionRiskSuffix(risk)}? (y/N) `,
+        resolve,
+      );
     });
     rl.close();
 
@@ -1227,6 +1309,8 @@ push._collectDeletedItems = collectDeletedItems;
 push._collectLocalClaims = collectLocalClaims;
 push._isItemClaimed = isItemClaimed;
 push._deleteCanvasItemByType = deleteCanvasItemByType;
+push._annotateSubmissions = annotateSubmissions;
+push._describeDoomedItem = describeDoomedItem;
 push._buildFileResolver = buildFileResolver;
 push._registerItem = registerItem;
 push._pageStrategy = pageStrategy;

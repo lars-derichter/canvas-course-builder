@@ -39,6 +39,74 @@ function describeContents({ modules, pages, assignments, files }) {
 }
 
 /**
+ * Split a list of submission states — true, false, or null for "could not be
+ * determined" — into the two counts every deletion warning needs.
+ *
+ * Unknown is never folded into the safe count: a lookup that failed gets its
+ * own warning rather than passing for "no grades at stake".
+ *
+ * @param {Array<boolean|null>} states
+ * @returns {{graded: number, unknown: number}}
+ */
+function countSubmissionRisk(states) {
+  let graded = 0;
+  let unknown = 0;
+  for (const state of states) {
+    if (state === true) graded++;
+    else if (state !== false) unknown++;
+  }
+  return { graded, unknown };
+}
+
+/**
+ * The warning lines that precede a confirmation when assignments are about to
+ * be deleted. Deleting an assignment is the one irreversible step that takes
+ * student work with it, so both commands say so in the same words.
+ *
+ * Returns an empty array when nothing being deleted carries that risk; the
+ * caller prefixes each line with its own command tag.
+ *
+ * @param {{graded: number, unknown: number}} risk
+ * @returns {string[]}
+ */
+function submissionWarningLines({ graded = 0, unknown = 0 } = {}) {
+  const lines = [];
+  if (graded > 0) {
+    lines.push(
+      `WARNING: ${graded} assignment${graded === 1 ? '' : 's'} being deleted ` +
+        `${graded === 1 ? 'has' : 'have'} student submissions. Deleting an ` +
+        'assignment deletes its gradebook column and every submission and ' +
+        'grade in it.',
+    );
+  }
+  if (unknown > 0) {
+    lines.push(
+      `WARNING: could not determine whether ${unknown} assignment` +
+        `${unknown === 1 ? '' : 's'} being deleted ` +
+        `${unknown === 1 ? 'has' : 'have'} student submissions. Treat ` +
+        `${unknown === 1 ? 'it' : 'them'} as if ` +
+        `${unknown === 1 ? 'it does' : 'they do'}: deleting an assignment ` +
+        'takes its gradebook column, submissions and grades with it.',
+    );
+  }
+  return lines;
+}
+
+/**
+ * What a confirmation question adds when grades are at stake, so the last
+ * thing read before typing "y" names the student work, not just the files.
+ * Empty when no assignment being deleted carries any.
+ *
+ * @param {{graded: number, unknown: number}} risk
+ * @returns {string}
+ */
+function submissionRiskSuffix({ graded = 0, unknown = 0 } = {}) {
+  if (graded > 0) return ', including the student submissions and grades';
+  if (unknown > 0) return ', including any student submissions and grades';
+  return '';
+}
+
+/**
  * Warn before the first push to a Canvas course that already holds content.
  *
  * A first push is the moment the tool starts managing a course it did not
@@ -133,5 +201,8 @@ module.exports = {
   confirm,
   confirmFirstPush,
   confirmForcedPull,
+  countSubmissionRisk,
   describeContents,
+  submissionRiskSuffix,
+  submissionWarningLines,
 };
