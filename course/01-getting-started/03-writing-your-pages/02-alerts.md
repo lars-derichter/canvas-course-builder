@@ -21,7 +21,7 @@ the text on the following line(s):
 > This is a note.
 ```
 
-## Available types
+## Available Types
 
 > [!NOTE]
 >
@@ -53,7 +53,7 @@ the text on the following line(s):
 > Use **CHECK** to highlight verification steps or success criteria. Useful for
 > checklists and validation points.
 
-## Tips for using alerts
+## Tips for Using Alerts
 
 - Use alerts sparingly. Too many callout boxes make content harder to scan.
 - Pick the type that matches the intent, not the colour you prefer.

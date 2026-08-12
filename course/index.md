@@ -4,7 +4,7 @@ title: Canvas Course Builder
 sidebar_position: 0
 ---
 
-# Write your course in markdown. Publish it to Canvas.
+# Write Your Course in Markdown, Publish It to Canvas
 
 **Canvas Course Builder** moves your course out of the Canvas web editor and
 into plain files on your computer — with version control, search and replace,
@@ -20,7 +20,7 @@ tool, and published straight from the repository.
 > working with an AI assistant — and every page of it is a working example of
 > something the tool can publish.
 
-## The problem it solves
+## The Problem It Solves
 
 The Canvas editor is fine for a page or two. Maintaining a whole course in it is
 another matter: no history, no search and replace across pages, no offline work,
@@ -31,7 +31,7 @@ Canvas Course Builder treats your markdown as the source of truth and Canvas as
 a publishing target. You write in your own editor, review every change, and push
 when you are ready.
 
-## What you get
+## What You Get
 
 - **Your own tools.** Write in VS Code or any editor, keep everything in git,
   and review every change before it goes live.
@@ -50,7 +50,7 @@ when you are ready.
 - **A template that stays updatable.** Create your course from the template and
   keep pulling in tooling improvements; your content is never overwritten.
 
-## Who it is for
+## Who It Is For
 
 Lecturers and teaching teams who maintain course material in Canvas and want the
 comfort of files, folders and version control. You do not need to be technical —
@@ -60,7 +60,7 @@ It is also opinionated, and honest about it: four Canvas content types sync,
 quizzes are import-only, and the folder layout is a contract. Better to know
 that now than in week six.
 
-## Start here
+## Start Here
 
 - **[Your first course, step by step](https://github.com/lars-derichter/canvas-course-builder/blob/main/docs/first-course.md)**
   — from nothing installed to a published Canvas module.

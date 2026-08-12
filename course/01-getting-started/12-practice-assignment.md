@@ -1,5 +1,5 @@
 ---
-title: ❗️ Practice assignment
+title: ❗️ Practice Assignment
 canvas_type: assignment
 points_possible: 10
 submission_types:
@@ -10,7 +10,7 @@ lock_at: "2026-10-07T21:59:00Z"
 published: true
 ---
 
-# Practice assignment
+# Practice Assignment
 
 You have made it through the Getting started module. Nice work. Now try it
 yourself.

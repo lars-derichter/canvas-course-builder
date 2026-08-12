@@ -1,9 +1,9 @@
 ---
-title: Git workflow
+title: Git Workflow
 canvas_type: page
 ---
 
-# Git workflow
+# Git Workflow
 
 By now you have Git installed, a GitHub account, and a local copy of your course
 project. This page shows you how to use Git as part of your daily workflow —
@@ -14,7 +14,7 @@ If you still need to set up Git or GitHub, work through the git and GitHub guide
 first (`docs/git-and-github.md` in your project folder, also readable on
 GitHub).
 
-## Saving your work (terminal)
+## Saving Your Work (Terminal)
 
 Every time you finish a piece of work — a new page, an updated assignment, a
 reorganised module — you should save it in Git. The process has three steps:
@@ -40,7 +40,7 @@ your course.
 > of the day. Small commits are easier to understand and easier to undo if
 > something goes wrong.
 
-### What makes a good commit message?
+### What Makes a Good Commit Message?
 
 A commit message should describe _what_ you changed in a few words. Some
 examples:
@@ -53,7 +53,7 @@ examples:
 You are writing these for your future self — make them clear enough that you can
 scan a list of commits and find what you are looking for.
 
-## Saving your work (VS Code)
+## Saving Your Work (VS Code)
 
 If you prefer a visual approach, VS Code has a built-in Source Control panel
 that handles everything without touching the terminal.
@@ -66,7 +66,7 @@ branching line with dots. You can also press **Ctrl+Shift+G** (Windows/Linux) or
 
 The panel shows a list of all files you have changed since your last commit.
 
-### Viewing changes
+### Viewing Changes
 
 Click any file in the Source Control panel to see a **diff** — a side-by-side
 comparison showing exactly what you added, removed, or changed. Green lines are
@@ -74,7 +74,7 @@ additions, red lines are deletions.
 
 This is a great way to review your work before saving it.
 
-### Staging changes
+### Staging Changes
 
 Before you can commit, you need to **stage** the files you want to include:
 
@@ -111,7 +111,7 @@ online:
 The first time you push, VS Code may ask you to sign in to GitHub. Follow the
 prompts — after that it remembers your credentials.
 
-### Pulling changes
+### Pulling Changes
 
 If you work on multiple computers or collaborate with someone, you may need to
 pull changes that were pushed from elsewhere:
@@ -121,12 +121,12 @@ pull changes that were pushed from elsewhere:
 - Or use the command palette (**Cmd+Shift+P** / **Ctrl+Shift+P**) and search for
   **Git: Pull**
 
-## Viewing history and getting things back
+## Viewing History and Getting Things Back
 
 One of the biggest benefits of Git is that nothing is ever truly lost. Every
 commit is a snapshot of your entire project that you can go back to at any time.
 
-### Browsing history on GitHub
+### Browsing History on GitHub
 
 The easiest way to explore your project's history is on GitHub:
 
@@ -136,7 +136,7 @@ The easiest way to explore your project's history is on GitHub:
    of all your commits, newest first
 3. Click on any commit to see exactly what changed in that commit
 
-### Viewing an older version of a file
+### Viewing an Older Version of a File
 
 If you want to see what a file looked like at an earlier point in time:
 
@@ -146,7 +146,7 @@ If you want to see what a file looked like at an earlier point in time:
 3. Click on a commit, then click **View file** to see the complete file as it
    was at that moment
 
-### Restoring a previous version
+### Restoring a Previous Version
 
 If you made a mistake and want to get back an older version of a file:
 
@@ -174,7 +174,7 @@ and commit the change as usual.
 > is often the quickest way to find and restore old content, especially if you
 > are not comfortable with the terminal.
 
-## Keep your repository private
+## Keep Your Repository Private
 
 > [!WARNING]
 >
@@ -190,7 +190,7 @@ Educators are eligible for a **free GitHub Pro account**, which includes
 unlimited private repositories and other benefits. You can apply at
 [GitHub Education](https://education.github.com/discount_requests/application).
 
-## Publishing your course online
+## Publishing Your Course Online
 
 Since your repository is on GitHub anyway, you can also publish the Docusaurus
 site for free with GitHub Pages. Go to **Settings > Pages** and set **Source**
@@ -206,7 +206,7 @@ settings page.
 > but make sure you are comfortable with your course content being readable by
 > anyone before enabling this.
 
-## Learning resources
+## Learning Resources
 
 Want to learn more about Git and GitHub? These tutorials are designed to be
 beginner-friendly:

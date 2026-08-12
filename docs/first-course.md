@@ -147,7 +147,7 @@ The second starts a preview of your course as a website:
 npm start
 ```
 
-Your browser opens at `localhost:3000` showing the built-in **Getting started**
+Your browser opens at `localhost:3000` showing the built-in **Getting Started**
 module. Leave it running — it updates as you write.
 
 > [!NOTE]
@@ -156,7 +156,7 @@ module. Leave it running — it updates as you write.
 > **Ctrl+C** to stop it, or open a second terminal for other commands with the
 > **+** button at the top right of the terminal panel.
 
-Read the Getting started module in the preview. It teaches markdown, the folder
+Read the Getting Started module in the preview. It teaches markdown, the folder
 layout, and the daily commands, and it is a working example of everything this
 tool can publish.
 

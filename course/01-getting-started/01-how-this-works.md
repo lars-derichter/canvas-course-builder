@@ -1,9 +1,9 @@
 ---
-title: 📘 How this works
+title: 📘 How This Works
 canvas_type: page
 ---
 
-# How this works
+# How This Works
 
 You are looking at a course built with Canvas Course Builder. Every page in this
 module is a plain markdown file in a folder on a computer, previewed as this
@@ -12,7 +12,7 @@ website, and published to Canvas with one command.
 This module walks you through doing that yourself. Work through it in order —
 each page assumes the one before it.
 
-## The three places your course lives
+## The Three Places Your Course Lives
 
 - **Your computer** is where you write. Markdown files in a `course/` folder,
   one folder per module, edited in VS Code or any editor you like.
@@ -24,7 +24,7 @@ each page assumes the one before it.
 Your files are the source of truth. Canvas is a publishing target, the way a
 website is a publishing target for a document you wrote.
 
-## What that buys you
+## What That Buys You
 
 - **A history.** Every version of every page, and the ability to go back.
 - **Search and replace** across the whole course, in seconds.
@@ -33,7 +33,7 @@ website is a publishing target for a document you wrote.
 - **Reuse.** Next year's course starts from this year's files, not from clicking
   through Canvas.
 
-## What you will do in this module
+## What You Will Do in This Module
 
 1. Write pages in markdown, with headings, images, code and coloured callouts.
 2. Organise them into modules and subsections, and learn which file becomes
@@ -51,7 +51,7 @@ website is a publishing target for a document you wrote.
 > with one answer during `npx course setup`, and it stays readable on the
 > project's website afterwards.
 
-## A word on the numbers
+## A Word on the Numbers
 
 Every file and folder starts with a two-digit number: `01-`, `02-`, and so on.
 That number sets the order, in this preview and in Canvas, and it is stripped

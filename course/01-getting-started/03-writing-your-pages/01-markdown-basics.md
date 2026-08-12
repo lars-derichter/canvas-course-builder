@@ -1,16 +1,16 @@
 ---
-title: Markdown basics
+title: Markdown Basics
 canvas_type: page
 ---
 
-# Markdown basics
+# Markdown Basics
 
 All course content is written in **Markdown** — a simple way to format text that
 is easy to read and write. You do not need any technical background to use it.
 This page walks you through the most common formatting options so you can start
 writing right away.
 
-## Text formatting
+## Text Formatting
 
 You can make text **bold**, _italic_, or **_both_**. Use ~~strikethrough~~ for
 deleted text and `inline code` for code references.
@@ -43,7 +43,7 @@ Link to external resources with `[text](url)`:
 - [Canvas LMS Documentation](https://canvas.instructure.com/doc/api/)
 - [Markdown Guide](https://www.markdownguide.org/)
 
-### Internal links
+### Internal Links
 
 You can link to other course pages using relative paths. These links work in
 both the Docusaurus preview and Canvas — during push, they are automatically
@@ -75,7 +75,7 @@ Here is an embedded example:
 During push, images are automatically uploaded to Canvas and their paths are
 rewritten to Canvas file URLs. During pull, they are downloaded back.
 
-## Linking to files
+## Linking to Files
 
 You can link to any file in `_files/` the same way — handy for handouts,
 templates, or starter files students should download:
@@ -102,7 +102,7 @@ file. Internal links to course pages must always use the `.md` path, never
 > page — use a file item. See
 > [Content types](../04-organising-your-course/02-content-types.md).
 
-## Code blocks
+## Code Blocks
 
 Use triple backticks for code blocks with optional language highlighting:
 
@@ -135,7 +135,7 @@ Use `>` for blockquotes:
 >
 > — John Gruber
 
-## Horizontal rules
+## Horizontal Rules
 
 Three dashes create a horizontal rule:
 

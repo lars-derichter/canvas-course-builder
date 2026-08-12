@@ -1,14 +1,14 @@
 ---
-title: ⚠️ Before you publish
+title: ⚠️ Before You Publish
 canvas_type: page
 ---
 
-# Before you publish
+# Before You Publish
 
 Publishing is the one part of this tool that can lose work, so it gets its own
 page before the page that shows you how.
 
-## Canvas has no undo
+## Canvas Has No Undo
 
 Delete a page in the Canvas web editor and it sits in the course bin for a
 while. Delete it through the API — which is what this tool uses — and it is
@@ -31,7 +31,7 @@ institutions hand out sandbox courses on request. When your material looks
 right, copy it into the real course from Canvas's own **Import Course Content**
 screen.
 
-## What push actually does
+## What Push Actually Does
 
 `npx course push` does not merge. It makes Canvas match your files:
 
@@ -46,7 +46,7 @@ That last point is the one that surprises people. Treat a module this tool
 manages as generated output: if you want something in it, it belongs in your
 `course/` folder.
 
-## The commands that delete
+## The Commands That Delete
 
 Three of them, in increasing order of how much you should think first:
 
@@ -65,7 +65,7 @@ one does not ask, because it runs every time you publish.
 > course and you delete your colleagues' files along with your own. It tells you
 > what the course holds before it asks, so read that line.
 
-## Two habits worth forming
+## Two Habits Worth Forming
 
 - **`npx course push --dry-run` first.** It reports what would happen and
   changes nothing. Read it. Then run the real push.

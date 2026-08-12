@@ -1,15 +1,15 @@
 ---
-title: Content types
+title: Content Types
 canvas_type: page
 ---
 
-# Content types
+# Content Types
 
 Every item in a module has a type that determines how it appears on Canvas. You
 set the type by adding a `canvas_type` field at the top of your markdown file
 (in the frontmatter). Here are the four types you can use.
 
-## Page (default)
+## Page (Default)
 
 The most common type. Rendered as a Canvas wiki page.
 

@@ -50,7 +50,7 @@ const TUTORIAL_MODULE = path.join(PROJECT_ROOT, 'course', '01-getting-started');
  * course that still carries it is publishing a pitch for the tooling to its
  * students, and setup should offer to replace it.
  */
-const TOOLING_INDEX_HEADING = 'Write your course in markdown';
+const TOOLING_INDEX_HEADING = 'Write Your Course in Markdown';
 
 /** Where the tutorial module stays readable after a course deletes its copy. */
 const TUTORIAL_UPSTREAM_URL =

@@ -50,7 +50,7 @@ It is free, open-source, and runs on Windows, macOS, and Linux.
 > Command: Install 'code' command in PATH** from the command palette (macOS),
 > you can open your project from the terminal: `code canvas-course-builder`
 
-## Installing the Course Manager extension
+## Installing the Course Manager Extension
 
 From the project root, run:
 
@@ -60,7 +60,7 @@ npm run vscode:install
 
 You only need to do this once (or again after the extension is updated).
 
-## The Course Manager sidebar
+## The Course Manager Sidebar
 
 After installing the extension, you will see a **Course Manager** panel in the
 VS Code activity bar (the book icon). It shows a tree view of all your modules
@@ -71,7 +71,7 @@ item opens the file in the editor.
 The tree updates automatically whenever you add, rename, or delete files — no
 need to refresh manually.
 
-### Inline actions
+### Inline Actions
 
 Hover over a module or item in the sidebar for quick-action buttons:
 
@@ -79,7 +79,7 @@ Hover over a module or item in the sidebar for quick-action buttons:
 - **Open in Canvas** (link icon) — open the item directly on Canvas in your
   browser (works once the item has been pushed at least once)
 
-### Right-click menu
+### Right-Click Menu
 
 Right-click any module or item in the sidebar to see context actions:
 
@@ -102,7 +102,7 @@ dialogs, and the command runs quietly in the background — no terminal pops up.
 You get a notification when it is done, and the full output is available in the
 **Canvas Course Builder** output channel (View > Output).
 
-### Drag and drop
+### Drag and Drop
 
 The fastest way to reorganise is dragging things around the tree:
 
@@ -116,7 +116,7 @@ The fastest way to reorganise is dragging things around the tree:
 Renumbering and Canvas sync state are handled automatically, exactly as if you
 had run the CLI commands yourself.
 
-## Title bar buttons
+## Title Bar Buttons
 
 At the top of the sidebar sit a **Search** button (find a word or phrase across
 your course files), a **Preview** button (starts the Docusaurus dev server if it
@@ -132,7 +132,7 @@ and export commands:
 - **Export** — export the full course, only flagged items, or a curated
   selection via a table of contents
 
-## Command palette
+## Command Palette
 
 Open the command palette with **Cmd+Shift+P** (macOS) or **Ctrl+Shift+P**
 (Windows/Linux) and type **"Course:"** to see all available commands:
@@ -163,7 +163,7 @@ Open the command palette with **Cmd+Shift+P** (macOS) or **Ctrl+Shift+P**
 | Course: Export via TOC...              | Render the curated `exports/toc.md`                  |
 | Course: Preview                        | Start the dev server and open the course             |
 
-## How it works
+## How It Works
 
 Everything the extension does goes through the same `npx course` CLI you use in
 the terminal, so renumbering and Canvas sync state behave exactly the same

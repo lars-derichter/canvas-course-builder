@@ -19,7 +19,7 @@ This is optional. If you only ever publish to Canvas, you can skip it.
 > `npx course export --flagged` picks it up. It is a way to mark the handful of
 > pages that belong in a printed handout without listing them every time.
 
-## What you need
+## What You Need
 
 Export relies on two free, open-source tools:
 
@@ -37,7 +37,7 @@ Install both:
 >
 > Word export needs only pandoc. Typst is what produces the PDF.
 
-## Exporting from the terminal
+## Exporting From the Terminal
 
 The `export` command takes whatever you point it at and writes a document to the
 `exports/` folder:
@@ -59,7 +59,7 @@ frontmatter:
 
 ```yaml
 ---
-title: Exam review
+title: Exam Review
 export: true
 ---
 ```
@@ -70,7 +70,7 @@ Then export just the flagged pages:
 npx course export --flagged
 ```
 
-## Exporting a custom selection
+## Exporting a Custom Selection
 
 Want a specific set of pages, in a specific order, without flagging each one?
 Use the two-step table-of-contents flow.
@@ -92,7 +92,7 @@ Use the two-step table-of-contents flow.
    npx course export --toc exports/toc.md
    ```
 
-## Exporting from VS Code
+## Exporting From VS Code
 
 With the Course Manager sidebar you do not have to type anything:
 
@@ -105,7 +105,7 @@ With the Course Manager sidebar you do not have to type anything:
 You choose PDF or Word each time. Export runs in the Canvas Course Builder
 terminal so you can follow its progress.
 
-## Where your files go
+## Where Your Files Go
 
 Exports land in the `exports/` folder in your project. That folder is ignored by
 git, so your documents never end up in your repository or on Canvas.
@@ -115,7 +115,7 @@ included: `programming-fundamentals.pdf`. That name comes from `title` in
 `course.config.yml`. Export a single module and the module's own name is used
 instead, with the course name printed under it on the PDF cover.
 
-## Changing how exports look
+## Changing How Exports Look
 
 Out of the box, exports use a clean, neutral style. Two settings in
 `course.config.yml` decide the look:

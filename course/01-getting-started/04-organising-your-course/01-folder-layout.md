@@ -1,15 +1,15 @@
 ---
-title: Folder layout
+title: Folder Layout
 canvas_type: page
 ---
 
-# Folder layout
+# Folder Layout
 
 All your course content lives in the `course/` folder. The way you organise
 files and folders here directly controls how content appears in both the local
 preview and on Canvas — no configuration needed.
 
-## Module folders
+## Module Folders
 
 Each top-level folder in `course/` becomes a Canvas module:
 
@@ -23,7 +23,7 @@ course/
 The two-digit prefix (`01`, `02`, ...) controls the order. It is stripped when
 generating the display title, so `01-getting-started` becomes "Getting Started".
 
-## Items inside a module
+## Items Inside a Module
 
 Files inside a module folder become module items:
 
@@ -38,7 +38,7 @@ course/01-getting-started/
 The same numbering convention applies: prefix controls order, and is stripped
 from the title.
 
-## Subsections (subfolders)
+## Subsections (Subfolders)
 
 A subfolder inside a module becomes a **SubHeader** in Canvas, which groups
 related items under a heading:
@@ -60,7 +60,7 @@ Items inside a subsection appear indented under the SubHeader in Canvas.
 > Every subfolder needs a `_category_.json` file with at least a `label` and
 > `position` field, just like module folders.
 
-## The `_category_.json` file
+## The `_category_.json` File
 
 This file controls how a folder appears in the Docusaurus sidebar:
 
