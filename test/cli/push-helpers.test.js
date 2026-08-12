@@ -1,4 +1,4 @@
-const { describe, it } = require('node:test');
+const { describe, it, mock, afterEach } = require('node:test');
 const assert = require('node:assert/strict');
 
 const push = require('../../cli/push');
@@ -7,6 +7,8 @@ const {
   _buildFileResolver: buildFileResolver,
   _pageStrategy: pageStrategy,
   _assignmentStrategy: assignmentStrategy,
+  _warnGradeImpact: warnGradeImpact,
+  _collectUpdatedAssignments: collectUpdatedAssignments,
 } = push;
 
 describe('buildFileResolver', () => {
@@ -173,3 +175,337 @@ describe('assignmentStrategy', () => {
     assert.equal(assignmentStrategy.extractSlug, null);
   });
 });
+
+describe('collectUpdatedAssignments', () => {
+  it('collects only the assignments Canvas already holds', () => {
+    const updated = collectUpdatedAssignments([
+      courseModule([
+        assignmentItem({ canvas_id: 500, points_possible: 10 }),
+        assignmentItem(
+          { points_possible: 20 },
+          { title: 'New', relativePath: '01-mod/04-new.md' },
+        ),
+        {
+          canvasType: 'page',
+          title: 'Intro',
+          relativePath: '01-mod/01-intro.md',
+          frontmatter: { canvas_id: 700 },
+          position: 3,
+        },
+      ]),
+    ]);
+
+    assert.equal(updated.length, 1);
+    assert.equal(updated[0].canvasId, 500);
+    assert.equal(updated[0].relativePath, '01-mod/03-homework.md');
+  });
+
+  it('carries the options push itself would send', () => {
+    const [entry] = collectUpdatedAssignments([
+      courseModule([
+        assignmentItem({
+          canvas_id: 500,
+          points_possible: 12,
+          due_at: '2026-03-08T23:59:00Z',
+          submission_types: ['online_url'],
+        }),
+      ]),
+    ]);
+
+    assert.equal(entry.opts.pointsPossible, 12);
+    assert.equal(entry.opts.dueAt, '2026-03-08T23:59:00Z');
+    assert.deepEqual(entry.opts.submissionTypes, ['online_url']);
+  });
+
+  it('looks inside subfolders', () => {
+    const updated = collectUpdatedAssignments([
+      courseModule([
+        {
+          type: 'subheader',
+          title: 'Week 1',
+          position: 1,
+          indent: 0,
+          items: [assignmentItem({ canvas_id: 501 })],
+        },
+      ]),
+    ]);
+
+    assert.equal(updated.length, 1);
+    assert.equal(updated[0].canvasId, 501);
+  });
+});
+
+describe('warnGradeImpact', () => {
+  afterEach(() => {
+    mock.restoreAll();
+  });
+
+  /** Silence the warnings the helper logs on its way out. */
+  function quiet() {
+    mock.method(console, 'warn', () => {});
+  }
+
+  it('warns that a new denominator leaves the grades already given unscaled', async () => {
+    quiet();
+    const lines = await warnGradeImpact(
+      42,
+      [courseModule([assignmentItem({ canvas_id: 500, points_possible: 12 })])],
+      async () => [canvasAssignment()],
+    );
+
+    assert.equal(lines.length, 1);
+    assert.match(lines[0], /"Homework" \(01-mod\/03-homework\.md\)/);
+    assert.match(lines[0], /has student submissions/);
+    assert.match(lines[0], /changes points_possible from 10 to 12/);
+    assert.match(lines[0], /does not rescale the grades already given/);
+  });
+
+  it('stays silent when the points possible are unchanged', async () => {
+    quiet();
+    const lines = await warnGradeImpact(
+      42,
+      [courseModule([assignmentItem({ canvas_id: 500, points_possible: 10 })])],
+      async () => [canvasAssignment()],
+    );
+
+    assert.deepEqual(lines, []);
+  });
+
+  it('warns that a new due date re-runs the late policy', async () => {
+    quiet();
+    const lines = await warnGradeImpact(
+      42,
+      [
+        courseModule([
+          assignmentItem({ canvas_id: 500, due_at: '2026-03-08T23:59:00Z' }),
+        ]),
+      ],
+      async () => [canvasAssignment()],
+    );
+
+    assert.equal(lines.length, 1);
+    assert.match(
+      lines[0],
+      /changes due_at from 2026-03-01T23:59:00Z to 2026-03-08T23:59:00Z/,
+    );
+    assert.match(lines[0], /recomputes late status/);
+  });
+
+  it('reads a due date as an instant, not as a string', async () => {
+    quiet();
+    const lines = await warnGradeImpact(
+      42,
+      [
+        courseModule([
+          assignmentItem({
+            canvas_id: 500,
+            due_at: new Date('2026-03-02T00:59:00+01:00'),
+          }),
+        ]),
+      ],
+      async () => [canvasAssignment()],
+    );
+
+    assert.deepEqual(lines, [], 'the same moment, written differently');
+  });
+
+  it('warns that Canvas ignores a submission type change once work is in', async () => {
+    quiet();
+    const lines = await warnGradeImpact(
+      42,
+      [
+        courseModule([
+          assignmentItem({
+            canvas_id: 500,
+            submission_types: ['online_text_entry'],
+          }),
+        ]),
+      ],
+      async () => [canvasAssignment()],
+    );
+
+    assert.equal(lines.length, 1);
+    assert.match(
+      lines[0],
+      /changes submission_types from online_upload to online_text_entry/,
+    );
+    assert.match(lines[0], /it ignores this one/);
+    assert.match(lines[0], /reports the push as a success/);
+  });
+
+  it('says nothing about an assignment without student submissions', async () => {
+    quiet();
+    const lines = await warnGradeImpact(
+      42,
+      [
+        courseModule([
+          assignmentItem({
+            canvas_id: 500,
+            points_possible: 12,
+            due_at: '2026-03-08T23:59:00Z',
+            submission_types: ['online_text_entry'],
+          }),
+        ]),
+      ],
+      async () => [canvasAssignment({ has_submitted_submissions: false })],
+    );
+
+    assert.deepEqual(lines, []);
+  });
+
+  it('hedges when the submission state could not be read', async () => {
+    quiet();
+    const lines = await warnGradeImpact(
+      42,
+      [courseModule([assignmentItem({ canvas_id: 500, points_possible: 12 })])],
+      async () => [canvasAssignment({ has_submitted_submissions: undefined })],
+    );
+
+    assert.equal(lines.length, 1);
+    assert.match(lines[0], /could not determine whether/);
+    assert.match(lines[0], /Treat it as if it does/);
+  });
+
+  it('warns once per changed field', async () => {
+    quiet();
+    const lines = await warnGradeImpact(
+      42,
+      [
+        courseModule([
+          assignmentItem({
+            canvas_id: 500,
+            points_possible: 12,
+            due_at: '2026-03-08T23:59:00Z',
+            submission_types: ['online_text_entry'],
+          }),
+        ]),
+      ],
+      async () => [canvasAssignment()],
+    );
+
+    assert.equal(lines.length, 3);
+  });
+
+  it('looks the whole course up once however many assignments are pushed', async () => {
+    quiet();
+    let calls = 0;
+    const lines = await warnGradeImpact(
+      42,
+      [
+        courseModule([
+          assignmentItem({ canvas_id: 500, points_possible: 12 }),
+          assignmentItem(
+            { canvas_id: 501, points_possible: 12 },
+            { title: 'Second', relativePath: '01-mod/04-second.md' },
+          ),
+        ]),
+        courseModule(
+          [
+            assignmentItem(
+              { canvas_id: 502, points_possible: 12 },
+              { title: 'Third', relativePath: '02-mod/03-third.md' },
+            ),
+          ],
+          '02-mod',
+        ),
+      ],
+      async () => {
+        calls++;
+        return [
+          canvasAssignment(),
+          canvasAssignment({ id: 501 }),
+          canvasAssignment({ id: 502 }),
+        ];
+      },
+    );
+
+    assert.equal(calls, 1);
+    assert.equal(lines.length, 3);
+  });
+
+  it('makes no request when no assignment exists on Canvas yet', async () => {
+    quiet();
+    const lines = await warnGradeImpact(
+      42,
+      [
+        courseModule([
+          assignmentItem({ points_possible: 12 }),
+          {
+            canvasType: 'page',
+            title: 'Intro',
+            relativePath: '01-mod/01-intro.md',
+            frontmatter: { canvas_id: 700 },
+            position: 2,
+          },
+        ]),
+      ],
+      async () => {
+        throw new Error('the assignment lookup should not have run');
+      },
+    );
+
+    assert.deepEqual(lines, []);
+  });
+
+  it('leaves an assignment Canvas no longer lists alone', async () => {
+    quiet();
+    const lines = await warnGradeImpact(
+      42,
+      [courseModule([assignmentItem({ canvas_id: 999, points_possible: 12 })])],
+      async () => [canvasAssignment()],
+    );
+
+    assert.deepEqual(lines, []);
+  });
+
+  it('degrades to a warning when the lookup fails, and lets the push run', async () => {
+    const warned = mock.method(console, 'warn', () => {});
+    const lines = await warnGradeImpact(
+      42,
+      [courseModule([assignmentItem({ canvas_id: 500, points_possible: 12 })])],
+      async () => {
+        throw new Error('403 Forbidden');
+      },
+    );
+
+    assert.deepEqual(lines, [], 'a failed lookup warns instead of throwing');
+    assert.equal(warned.mock.callCount(), 1);
+    assert.match(warned.mock.calls[0].arguments[0], /could not check/);
+    assert.match(warned.mock.calls[0].arguments[0], /403 Forbidden/);
+  });
+});
+
+/** A scanned module, shaped as scanCourse returns it. */
+function courseModule(items, folderName = '01-mod') {
+  return {
+    folderName,
+    moduleName: 'Module',
+    position: 1,
+    items,
+  };
+}
+
+/** A scanned assignment item carrying the given frontmatter. */
+function assignmentItem(frontmatter, overrides = {}) {
+  return {
+    canvasType: 'assignment',
+    title: 'Homework',
+    relativePath: '01-mod/03-homework.md',
+    frontmatter,
+    position: 1,
+    indent: 0,
+    ...overrides,
+  };
+}
+
+/** A Canvas Assignment object as a list response returns it. */
+function canvasAssignment(overrides = {}) {
+  return {
+    id: 500,
+    has_submitted_submissions: true,
+    points_possible: 10,
+    due_at: '2026-03-01T23:59:00Z',
+    submission_types: ['online_upload'],
+    ...overrides,
+  };
+}
