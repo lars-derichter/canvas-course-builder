@@ -1,4 +1,4 @@
-# QTI 1.2 package format for Canvas import
+# QTI 1.2 Package Format for Canvas Import
 
 Read this before generating the package. The zip layout Canvas expects:
 
