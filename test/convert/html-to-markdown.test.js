@@ -257,4 +257,56 @@ describe('canvasItemToMarkdown', () => {
     assert.match(md, /title: Empty/);
     assert.match(md, /canvas_type: page/);
   });
+
+  it('carries over frontmatter keys Canvas knows nothing about', () => {
+    const item = {
+      title: 'Welcome',
+      page_id: 100,
+      url: 'welcome',
+      body: '<p>Hello.</p>',
+    };
+    const md = canvasItemToMarkdown(item, 'page', {
+      existingFrontmatter: {
+        title: 'Stale local title',
+        canvas_type: 'page',
+        canvas_id: 100,
+        export: true,
+        lesson: 3,
+        anything_at_all: 'kept',
+      },
+    });
+
+    assert.match(md, /export: true/);
+    assert.match(md, /lesson: 3/);
+    assert.match(md, /anything_at_all: kept/);
+    // Canvas stays authoritative for the keys it owns.
+    assert.match(md, /title: Welcome/);
+    assert.ok(
+      !md.includes('Stale local title'),
+      'Expected the Canvas title to win',
+    );
+  });
+
+  it('drops a Canvas-owned field the Canvas item no longer has', () => {
+    const item = {
+      name: 'Homework 1',
+      id: 300,
+      description: '<p>Do this.</p>',
+      points_possible: 10,
+    };
+    const md = canvasItemToMarkdown(item, 'assignment', {
+      existingFrontmatter: {
+        due_at: '2025-03-15T23:59:00Z',
+        lock_at: '2025-03-22T23:59:00Z',
+        export: true,
+      },
+    });
+
+    assert.ok(
+      !md.includes('due_at'),
+      'Expected a due date cleared in Canvas to clear locally',
+    );
+    assert.ok(!md.includes('lock_at'), 'Expected the same for lock_at');
+    assert.match(md, /export: true/);
+  });
 });

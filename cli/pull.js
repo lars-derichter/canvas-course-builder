@@ -8,6 +8,10 @@ const { getAssignment } = require('../lib/canvas/assignments');
 const { get } = require('../lib/canvas/client');
 const { canvasItemToMarkdown } = require('../lib/convert/html-to-markdown');
 const {
+  parseFrontmatter,
+  serializeFrontmatter,
+} = require('../lib/convert/frontmatter');
+const {
   buildLinkMap,
   resolveCanvasLink,
   buildFileMap,
@@ -633,6 +637,21 @@ function isLocallyModified(filePath, syncData) {
   return stat.mtime > lastSync;
 }
 
+/**
+ * Read the frontmatter of the local file a pull is about to overwrite, so keys
+ * Canvas knows nothing about survive. Returns an empty object when the file is
+ * new or unreadable — a pull must not fail over a malformed local file.
+ */
+function readLocalFrontmatter(filePath) {
+  if (!fs.existsSync(filePath)) return {};
+  try {
+    return parseFrontmatter(fs.readFileSync(filePath, 'utf8')).data || {};
+  } catch (err) {
+    log.verbose(`Could not read frontmatter of ${filePath}: ${err.message}`);
+    return {};
+  }
+}
+
 function sha256File(filePath) {
   return crypto
     .createHash('sha256')
@@ -716,18 +735,21 @@ async function pullFileItem(
     }
   }
 
-  // Create markdown wrapper
+  // Create markdown wrapper, keeping any keys the author added to it.
   const fileRef = `_files/${originalName}`;
-  const frontmatter = [
-    '---',
-    `title: "${title.replace(/"/g, '\\"')}"`,
-    'canvas_type: file',
-    `canvas_id: ${contentId}`,
-    `file_ref: ${fileRef}`,
-    '---',
-    '',
-  ].join('\n');
-  fs.writeFileSync(wrapperPath, frontmatter, 'utf8');
+  const wrapperData = {
+    title,
+    canvas_type: 'file',
+    canvas_id: contentId,
+    file_ref: fileRef,
+  };
+  for (const [key, value] of Object.entries(
+    readLocalFrontmatter(wrapperPath),
+  )) {
+    if (key in wrapperData) continue;
+    wrapperData[key] = value;
+  }
+  fs.writeFileSync(wrapperPath, serializeFrontmatter(wrapperData, ''), 'utf8');
   log.verbose(`Wrote ${targetFileName}`);
 
   // Update sync state
@@ -826,6 +848,7 @@ async function pullItem(
   }
 
   const relativePath = computeRelativePath(folderName, filePath, COURSE_DIR);
+  const existingFrontmatter = readLocalFrontmatter(filePath);
   let markdown;
   let fetchResult = null;
 
@@ -850,12 +873,14 @@ async function pullItem(
     markdown = canvasItemToMarkdown(fetchResult, strategy.canvasType, {
       linkResolver,
       fileResolver,
+      existingFrontmatter,
     });
   } else {
     log.verbose(`Fetching ${strategy.canvasType}: ${title}`);
     markdown = canvasItemToMarkdown(
       { title, external_url: item.external_url, id: item.id },
       strategy.canvasType,
+      { existingFrontmatter },
     );
   }
 
