@@ -127,6 +127,8 @@ describe('assignmentStrategy', () => {
       points_possible: 100,
       submission_types: ['online_upload'],
       due_at: '2025-06-01T23:59:00Z',
+      unlock_at: '2025-05-01T08:00:00Z',
+      lock_at: '2025-06-08T23:59:00Z',
       published: true,
     };
     const opts = assignmentStrategy.buildOpts(
@@ -137,6 +139,8 @@ describe('assignmentStrategy', () => {
     assert.equal(opts.pointsPossible, 100);
     assert.deepEqual(opts.submissionTypes, ['online_upload']);
     assert.equal(opts.dueAt, '2025-06-01T23:59:00Z');
+    assert.equal(opts.unlockAt, '2025-05-01T08:00:00Z');
+    assert.equal(opts.lockAt, '2025-06-08T23:59:00Z');
     assert.equal(opts.published, true);
   });
 
@@ -145,6 +149,8 @@ describe('assignmentStrategy', () => {
     assert.equal(opts.pointsPossible, undefined);
     assert.equal(opts.submissionTypes, undefined);
     assert.equal(opts.dueAt, undefined);
+    assert.equal(opts.unlockAt, undefined);
+    assert.equal(opts.lockAt, undefined);
     assert.equal(opts.published, undefined);
   });
 

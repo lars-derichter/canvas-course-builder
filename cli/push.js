@@ -747,6 +747,8 @@ const assignmentStrategy = {
     if (frontmatter.submission_types)
       opts.submissionTypes = frontmatter.submission_types;
     if (frontmatter.due_at) opts.dueAt = frontmatter.due_at;
+    if (frontmatter.unlock_at) opts.unlockAt = frontmatter.unlock_at;
+    if (frontmatter.lock_at) opts.lockAt = frontmatter.lock_at;
     if (frontmatter.published != null) opts.published = frontmatter.published;
     return opts;
   },
