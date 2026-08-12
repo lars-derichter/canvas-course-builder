@@ -70,7 +70,7 @@ program
 program
   .command('pull')
   .description('Pull course content from Canvas into local markdown files')
-  .option('-f, --force', 'Overwrite locally modified files without warning')
+  .option('-f, --force', 'Overwrite local files pull would otherwise skip')
   .action(require('./pull'));
 
 program

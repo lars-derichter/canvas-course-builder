@@ -91,10 +91,47 @@ async function confirmFirstPush({ courseId, syncData, dryRun, fetchCounts }) {
   return ok;
 }
 
+/**
+ * Warn before a pull rewrites the working tree, and stop for confirmation on
+ * the one combination that can wipe hand-written markdown in a single run.
+ *
+ * A pull always overwrites — it is not a merge — but the per-file guard skips
+ * anything it cannot prove is Canvas's own output, so an ordinary pull only
+ * needs the pointer to the backup routes and must stay scriptable. `--force`
+ * switches that guard off. With no sync state there is no "since last sync"
+ * left to reason about either, so every existing local file is replaced by the
+ * markdown conversion of whatever Canvas holds, and git is the only way back.
+ * That combination asks first.
+ *
+ * Returns true when the pull should continue.
+ *
+ * @param {object} opts
+ * @param {object} opts.syncData         - Loaded sync state; may be empty.
+ * @param {boolean} opts.force           - The --force flag.
+ * @param {boolean} opts.hasLocalContent - Whether course/ already holds markdown.
+ */
+async function confirmForcedPull({ syncData, force, hasLocalContent }) {
+  log.info(`[pull] ${BACKUP_HINT}`);
+
+  if (!force || !hasLocalContent) return true;
+  if (syncData && syncData.last_sync) return true;
+
+  log.info(
+    '[pull] --force with no sync state: every local file is overwritten with ' +
+      'the Canvas version, including files this project has never synced. ' +
+      'Nothing is skipped and nothing is merged.',
+  );
+
+  const ok = await confirm('[pull] Overwrite local course files? (y/N)');
+  if (!ok) log.info('[pull] Cancelled.');
+  return ok;
+}
+
 module.exports = {
   BACKUP_DOC,
   BACKUP_HINT,
   confirm,
   confirmFirstPush,
+  confirmForcedPull,
   describeContents,
 };

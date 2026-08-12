@@ -71,6 +71,19 @@ everything on a newly cloned project. That is the check working as designed, not
 a fault. See
 [Push and pull are not a merge](limitations.md#push-and-pull-are-not-a-merge).
 
+### "SKIPPED (no sync state, cannot tell if it was modified)"
+
+There is no `.canvas-sync.json` to compare timestamps against — you ran
+`reset-sync-state`, or the project has never synced — so pull cannot tell your
+own writing from Canvas's output. It writes the files it is adding and leaves
+every file that already exists alone.
+
+Push first if the local version is the one you want to keep. If Canvas holds the
+truth and the local files are expendable, `npx course pull --force` overwrites
+them; it asks for confirmation first, because in this state it overwrites
+everything rather than only what changed. Back the course up before answering:
+see [Backing up a Canvas course](backups.md).
+
 ### Missing Content After Pull
 
 - Only pages, assignments, external URLs, files and text headers sync. Quizzes,

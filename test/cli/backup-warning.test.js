@@ -4,6 +4,7 @@ const assert = require('node:assert/strict');
 const {
   BACKUP_DOC,
   confirmFirstPush,
+  confirmForcedPull,
   describeContents,
 } = require('../../cli/backup-warning');
 
@@ -101,6 +102,59 @@ describe('confirmFirstPush', () => {
       }),
     );
     assert.equal(ok, true);
+  });
+});
+
+describe('confirmForcedPull', () => {
+  // A prompt with no stdin behind it would hang, so any test that reaches one
+  // without withStdin() would time out rather than pass by accident.
+  it('does not ask on an ordinary pull', async () => {
+    const ok = await confirmForcedPull({
+      syncData: {},
+      force: false,
+      hasLocalContent: true,
+    });
+    assert.equal(ok, true);
+  });
+
+  it('does not ask when --force has sync state to compare against', async () => {
+    const ok = await confirmForcedPull({
+      syncData: { last_sync: '2026-01-01T00:00:00Z' },
+      force: true,
+      hasLocalContent: true,
+    });
+    assert.equal(ok, true);
+  });
+
+  it('does not ask when --force lands on an empty tree', async () => {
+    const ok = await confirmForcedPull({
+      syncData: {},
+      force: true,
+      hasLocalContent: false,
+    });
+    assert.equal(ok, true, 'a first import must stay scriptable');
+  });
+
+  it('asks when --force meets an authored course with no sync state', async () => {
+    const ok = await withStdin('y\n', () =>
+      confirmForcedPull({
+        syncData: {},
+        force: true,
+        hasLocalContent: true,
+      }),
+    );
+    assert.equal(ok, true);
+  });
+
+  it('cancels when the answer is not "y"', async () => {
+    const ok = await withStdin('n\n', () =>
+      confirmForcedPull({
+        syncData: {},
+        force: true,
+        hasLocalContent: true,
+      }),
+    );
+    assert.equal(ok, false);
   });
 });
 

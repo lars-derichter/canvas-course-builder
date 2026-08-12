@@ -32,8 +32,26 @@ const {
   toFileSlug,
   computeRelativePath,
 } = require('./naming');
+const { confirmForcedPull } = require('./backup-warning');
 const log = require('./logger');
 const { loadCourseConfig } = require('../lib/config/course-config');
+
+/**
+ * Whether course/ already holds markdown a pull could overwrite. Used to tell
+ * a first import onto an empty tree — harmless — from a forced pull over an
+ * authored course, which is not.
+ */
+function courseHasMarkdown(courseDir = COURSE_DIR) {
+  if (!fs.existsSync(courseDir)) return false;
+  try {
+    return fs
+      .readdirSync(courseDir, { recursive: true })
+      .some((entry) => String(entry).endsWith('.md'));
+  } catch (err) {
+    log.verbose(`Could not scan ${courseDir}: ${err.message}`);
+    return false;
+  }
+}
 
 async function pull(options) {
   const courseId = process.env.CANVAS_COURSE_ID;
@@ -56,6 +74,15 @@ async function pull(options) {
   }
 
   log.info(`[pull] Found ${modules.length} module(s).\n`);
+
+  // From here on the pull writes to the working tree. Say so, and stop for an
+  // answer when --force is about to overwrite an authored course blind.
+  const proceed = await confirmForcedPull({
+    syncData,
+    force,
+    hasLocalContent: courseHasMarkdown(),
+  });
+  if (!proceed) return;
 
   // Initialize file tracking
   if (!syncData.files) syncData.files = {};
@@ -625,16 +652,37 @@ function reconcileExistingFiles(planned, moduleItems, moduleDir, folderName) {
 }
 
 /**
- * Check if a local file has been modified since the last sync.
- * Returns true if the file exists and was modified after last_sync.
+ * Decide whether a pull may overwrite a local file, and say why not.
+ *
+ * There are three states here, not two. A file that does not exist yet is
+ * always safe to write, so a first import onto an empty tree is unaffected. A
+ * file older than the last sync is Canvas's own output coming back, so it is
+ * safe too. Everything else is local work that a write would destroy: a file
+ * touched since the last sync, and — the case that used to be overwritten
+ * silently — a file that cannot be judged at all because there is no sync
+ * state to compare it against (right after `reset-sync-state`, or on a clone
+ * that never synced). "Cannot tell" is not "unmodified": skip it, and let
+ * --force say otherwise.
+ *
+ * @param {string} filePath
+ * @param {object} syncData - Loaded sync state; may be empty.
+ * @param {boolean} force   - --force writes regardless.
+ * @returns {string|null} Why the file was skipped, or null when it may be written.
  */
-function isLocallyModified(filePath, syncData) {
-  if (!fs.existsSync(filePath)) return false;
-  if (!syncData.last_sync) return false;
+function overwriteSkipReason(filePath, syncData, force) {
+  if (force) return null;
+  if (!fs.existsSync(filePath)) return null;
+
+  const lastSync = syncData && syncData.last_sync;
+  if (!lastSync) {
+    return 'no sync state, cannot tell if it was modified; use --force to overwrite';
+  }
 
   const stat = fs.statSync(filePath);
-  const lastSync = new Date(syncData.last_sync);
-  return stat.mtime > lastSync;
+  if (stat.mtime > new Date(lastSync)) {
+    return 'locally modified since last sync, use --force to overwrite';
+  }
+  return null;
 }
 
 /**
@@ -682,10 +730,9 @@ async function pullFileItem(
 
   const wrapperPath = path.join(targetDir, targetFileName);
 
-  if (!force && isLocallyModified(wrapperPath, syncData)) {
-    log.info(
-      `    [pull] SKIPPED ${targetFileName} (locally modified since last sync, use --force to overwrite)`,
-    );
+  const wrapperSkip = overwriteSkipReason(wrapperPath, syncData, force);
+  if (wrapperSkip) {
+    log.info(`    [pull] SKIPPED ${targetFileName} (${wrapperSkip})`);
     return;
   }
 
@@ -711,9 +758,10 @@ async function pullFileItem(
   // Never clobber a binary the user edited locally; and skip the download
   // entirely when nothing changed on Canvas since the last sync.
   const binaryExists = fs.existsSync(binaryPath);
-  if (binaryExists && !force && isLocallyModified(binaryPath, syncData)) {
+  const binarySkip = overwriteSkipReason(binaryPath, syncData, force);
+  if (binarySkip) {
     log.info(
-      `    [pull] SKIPPED download of _files/${originalName} (locally modified since last sync, use --force to overwrite)`,
+      `    [pull] SKIPPED download of _files/${originalName} (${binarySkip})`,
     );
   } else {
     const remoteChanged =
@@ -840,10 +888,9 @@ async function pullItem(
 
   const filePath = path.join(moduleDir, targetFileName);
 
-  if (!force && isLocallyModified(filePath, syncData)) {
-    log.info(
-      `    [pull] SKIPPED ${targetFileName} (locally modified since last sync, use --force to overwrite)`,
-    );
+  const skipReason = overwriteSkipReason(filePath, syncData, force);
+  if (skipReason) {
+    log.info(`    [pull] SKIPPED ${targetFileName} (${skipReason})`);
     return;
   }
 
@@ -988,6 +1035,7 @@ module.exports = pull;
 // Exported for testing
 pull._buildIdentifierMap = buildIdentifierMap;
 pull._findOldSyncPath = findOldSyncPath;
-pull._isLocallyModified = isLocallyModified;
+pull._overwriteSkipReason = overwriteSkipReason;
+pull._courseHasMarkdown = courseHasMarkdown;
 pull._createPullFileResolver = createPullFileResolver;
 pull._pullStrategies = pullStrategies;

@@ -116,7 +116,10 @@ edits.
   every file's timestamp to checkout time, so pull will skip everything as
   "locally modified"; and push updates the last-sync timestamp too, so a file
   you have just pushed counts as unmodified and a later pull will overwrite it
-  with the round-tripped Canvas version.
+  with the round-tripped Canvas version. With no sync state at all — right after
+  `reset-sync-state`, or on a clone that has never synced — there is no
+  timestamp to compare against, so pull skips every file that already exists
+  locally and writes only the ones it is adding.
 - **The round trip is lossy.** Canvas HTML becomes markdown through a converter.
   Raw HTML, anything the Canvas rich-content editor added, and formatting
   nuances are normalised away.

@@ -9,7 +9,8 @@ const pull = require('../../cli/pull');
 const {
   _buildIdentifierMap: buildIdentifierMap,
   _findOldSyncPath: findOldSyncPath,
-  _isLocallyModified: isLocallyModified,
+  _overwriteSkipReason: overwriteSkipReason,
+  _courseHasMarkdown: courseHasMarkdown,
   _createPullFileResolver: createPullFileResolver,
   _pullStrategies: pullStrategies,
 } = pull;
@@ -117,8 +118,14 @@ describe('findOldSyncPath', () => {
   });
 });
 
-describe('isLocallyModified', () => {
+describe('overwriteSkipReason', () => {
   let tmpDir;
+
+  const existingFile = (name = 'test.md') => {
+    const file = path.join(tmpDir, name);
+    fs.writeFileSync(file, 'hand-written markdown');
+    return file;
+  };
 
   beforeEach(() => {
     tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'pull-test-'));
@@ -128,39 +135,103 @@ describe('isLocallyModified', () => {
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 
-  it('returns false if file does not exist', () => {
+  it('writes a file that does not exist yet', () => {
     assert.equal(
-      isLocallyModified(path.join(tmpDir, 'nope.md'), {
-        last_sync: '2020-01-01T00:00:00Z',
-      }),
+      overwriteSkipReason(
+        path.join(tmpDir, 'nope.md'),
+        { last_sync: '2020-01-01T00:00:00Z' },
+        false,
+      ),
+      null,
+    );
+  });
+
+  it('writes a file that has not been touched since the last sync', () => {
+    // last_sync is in the future, so the file predates it
+    assert.equal(
+      overwriteSkipReason(
+        existingFile(),
+        { last_sync: '2099-01-01T00:00:00Z' },
+        false,
+      ),
+      null,
+    );
+  });
+
+  it('skips a file modified since the last sync', () => {
+    // last_sync is in the past, so the file was touched after it
+    const reason = overwriteSkipReason(
+      existingFile(),
+      { last_sync: '2000-01-01T00:00:00Z' },
       false,
     );
+    assert.match(reason, /locally modified since last sync/);
+    assert.match(reason, /--force/);
   });
 
-  it('returns false if no last_sync', () => {
-    const file = path.join(tmpDir, 'test.md');
-    fs.writeFileSync(file, 'hello');
-    assert.equal(isLocallyModified(file, {}), false);
+  it('skips an existing file when there is no sync state', () => {
+    const reason = overwriteSkipReason(existingFile(), {}, false);
+    assert.ok(reason, 'a file that cannot be judged must not be overwritten');
+    assert.match(reason, /no sync state/);
+    assert.match(reason, /--force/);
   });
 
-  it('returns true if file is newer than last_sync', () => {
-    const file = path.join(tmpDir, 'test.md');
-    fs.writeFileSync(file, 'hello');
-    // last_sync is in the past
+  it('explains the missing sync state rather than claiming a local edit', () => {
+    const reason = overwriteSkipReason(existingFile(), {}, false);
+    assert.doesNotMatch(reason, /locally modified/);
+  });
+
+  it('treats a missing sync file the same as an empty one', () => {
+    assert.ok(overwriteSkipReason(existingFile(), undefined, false));
+    assert.ok(overwriteSkipReason(existingFile('other.md'), null, false));
+  });
+
+  it('still writes a missing file when there is no sync state', () => {
+    // A first import onto an empty tree must work exactly as before.
     assert.equal(
-      isLocallyModified(file, { last_sync: '2000-01-01T00:00:00Z' }),
-      true,
+      overwriteSkipReason(path.join(tmpDir, 'new.md'), {}, false),
+      null,
     );
   });
 
-  it('returns false if file is older than last_sync', () => {
-    const file = path.join(tmpDir, 'test.md');
-    fs.writeFileSync(file, 'hello');
-    // last_sync is in the future
+  it('overwrites everything under --force', () => {
+    const file = existingFile();
+    assert.equal(overwriteSkipReason(file, {}, true), null);
     assert.equal(
-      isLocallyModified(file, { last_sync: '2099-01-01T00:00:00Z' }),
-      false,
+      overwriteSkipReason(file, { last_sync: '2000-01-01T00:00:00Z' }, true),
+      null,
     );
+  });
+});
+
+describe('courseHasMarkdown', () => {
+  let tmpDir;
+
+  beforeEach(() => {
+    tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'pull-course-'));
+  });
+
+  afterEach(() => {
+    fs.rmSync(tmpDir, { recursive: true, force: true });
+  });
+
+  it('is false for a missing directory', () => {
+    assert.equal(courseHasMarkdown(path.join(tmpDir, 'absent')), false);
+  });
+
+  it('is false for an empty course directory', () => {
+    assert.equal(courseHasMarkdown(tmpDir), false);
+  });
+
+  it('finds markdown nested in a module folder', () => {
+    fs.mkdirSync(path.join(tmpDir, '01-intro'));
+    fs.writeFileSync(path.join(tmpDir, '01-intro', '01-page.md'), '# hi');
+    assert.equal(courseHasMarkdown(tmpDir), true);
+  });
+
+  it('ignores non-markdown files', () => {
+    fs.writeFileSync(path.join(tmpDir, '_category_.json'), '{}');
+    assert.equal(courseHasMarkdown(tmpDir), false);
   });
 });
 

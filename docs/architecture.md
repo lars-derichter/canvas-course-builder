@@ -157,7 +157,8 @@ second pass updates their HTML with correct links.
          with try/catch recovery on failure)
       - Update sync state keys to reflect new paths
    e. Phase 3 — Write content:
-      - Skip locally modified files (mtime > last_sync)
+      - Skip existing files that may hold local work
+        (mtime > last_sync, or no last_sync to compare against)
       - Pages/assignments: fetch HTML, convert to markdown,
         resolve Canvas URLs back to relative paths,
         download embedded files to _files/
