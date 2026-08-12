@@ -3,7 +3,7 @@ name: consistency-check
 description: Whole-course consistency sweep of course/ — dead cross-links, terms used before their introducing lesson, glossary drift, duplicate or gapped numeric prefixes, frontmatter problems, stale prerequisite references, a label language that does not match the prose language. Complements /proofread, which checks a single file, and /coverage-map, which checks learning-goal alignment rather than structure. Reports findings grouped by severity; does not auto-fix. Use for "consistency check", "check the whole course", "find dead links", "consistentiecheck", "dode links zoeken", "hele cursus nakijken".
 ---
 
-# Consistency check
+# Consistency Check
 
 Sweep every module under `course/` for cross-file problems that a single-file
 `/proofread` cannot see: dead links, glossary and terminology drift, structural

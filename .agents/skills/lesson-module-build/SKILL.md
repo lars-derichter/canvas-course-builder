@@ -3,7 +3,7 @@ name: lesson-module-build
 description: Generate a complete student-facing module under course/ from a lesson plan in sources/lessons/ — pages (overview, content, reference cards, summary, glossary, optional homework), downloadable code archives, and transparent PNG placeholders with TODO notes for images. Phase A proposes the design and stops for approval; Phase B writes the files. Use for "build lesson module", "turn this lesson plan into a module", "generate the student material", "module maken van les", "lesplan omzetten naar course", "student-materiaal genereren".
 ---
 
-# Lesson module build
+# Lesson Module Build
 
 Turn a lesson plan under `sources/lessons/lesson-NN.md` into a complete
 student-facing module under `course/`.
@@ -17,7 +17,7 @@ with one sentence if the source is not a `.md` under `sources/lessons/`.
 
 ## Steps
 
-### Phase A — Design (writes nothing)
+### Phase A — Design (Writes Nothing)
 
 1. **Read**, in order: the source lesson plan (full);
    [`context/course-context.md`](../../../context/course-context.md) — module
@@ -50,13 +50,13 @@ with one sentence if the source is not a `.md` under `sources/lessons/`.
      normal.
 
 3. **Propose in chat**: the module name and label (next free two-digit `NN`
-   prefix in `course/`, kebab-case ASCII slug, sentence-case label — or the
-   naming convention in `course-context.md`); the numbered page split — overview
-   first, one content page per concept cluster (title + one-line summary),
-   reference cards directly after their introducing page with a short callout
-   pointer back from that page, then summary, glossary (only if the course
-   generates one), homework last; the code archives (name, file count, layout,
-   referencing pages); the image placeholders (filename, page, TODO text).
+   prefix in `course/`, kebab-case ASCII slug, title-case label — or the naming
+   convention in `course-context.md`); the numbered page split — overview first,
+   one content page per concept cluster (title + one-line summary), reference
+   cards directly after their introducing page with a short callout pointer back
+   from that page, then summary, glossary (only if the course generates one),
+   homework last; the code archives (name, file count, layout, referencing
+   pages); the image placeholders (filename, page, TODO text).
 
    Close the proposal with **goals against pages**: one line per lesson goal,
    naming the pages that practise it. Flag any goal no page practises, and any
@@ -66,7 +66,7 @@ with one sentence if the source is not a `.md` under `sources/lessons/`.
 
    Stop. Wait for explicit approval before starting Phase B.
 
-### Phase B — Write (only after approval)
+### Phase B — Write (Only After Approval)
 
 4. **Code archives.** Build each project in a fresh directory in the session
    scratchpad, laid out per the course's conventions: a `<project>/` root folder

@@ -3,7 +3,7 @@ name: lesson-design
 description: Help draft a new lesson plan in sources/lessons/, following context/course-context.md and the colleague-facing register of context/writing-style.md. Accepts rough notes, a request for the next logical lesson, or pure Q&A. Phase A presents a design with pros/cons of the author's suggestions and its own; Phase B writes the draft only after approval. Use for "design lesson", "design the next lesson", "draft a lesson plan", "nieuwe les ontwerpen", "lesplan opzetten", "vervolg op les X".
 ---
 
-# Lesson design
+# Lesson Design
 
 Design a new lesson plan together with the author and write it to
 `sources/lessons/lesson-NN.md` in the colleague-facing register of
@@ -28,7 +28,7 @@ logical lesson". Three modes, combinable:
 
 ## Steps
 
-### Phase A — Design (writes nothing)
+### Phase A — Design (Writes Nothing)
 
 1. **Read the fixed inputs**: `course-context.md` — pedagogy, learning-goal
    scheme, lesson-plan conventions, scope boundaries; follow the documents it
@@ -68,7 +68,7 @@ logical lesson". Three modes, combinable:
    Adjust on request and stay in Phase A until the author explicitly approves.
    Stop. Wait for explicit approval before starting Phase B.
 
-### Phase B — Draft (only after approval)
+### Phase B — Draft (Only After Approval)
 
 4. **Draft and write the lesson plan** with the template lesson's structure,
    section order, heading levels, and separators. Typical elements (the template

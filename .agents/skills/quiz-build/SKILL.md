@@ -3,7 +3,7 @@ name: quiz-build
 description: Turn a question list into a QTI 1.2 package that Canvas can import as a quiz, plus import instructions. Phase A maps every question to a supported QTI type and stops for approval; Phase B generates and verifies the .zip. Use for "build quiz", "make a Canvas quiz from these questions", "generate QTI", "quiz maken", "QTI genereren", "Canvas quiz van deze vragen".
 ---
 
-# Quiz build
+# Quiz Build
 
 Convert a list of questions into a QTI 1.2 `.zip` that imports into Canvas as a
 quiz, written under `evaluations/<year>/<slug>/`. No Canvas API is involved —
@@ -19,7 +19,7 @@ earlier in the conversation; or nothing yet — then draft questions from the
 lesson plans in scope as part of Phase A, after reading
 [`context/course-context.md`](../../../context/course-context.md).
 
-## Supported question types
+## Supported Question Types
 
 Canvas's QTI 1.2 import understands these `question_type` values; map every
 question to one:
@@ -39,7 +39,7 @@ to `essay_question`, and let the author choose.
 
 ## Steps
 
-### Phase A — Inventory (writes nothing)
+### Phase A — Inventory (Writes Nothing)
 
 1. **Read** [`context/writing-style.md`](../../../context/writing-style.md) —
    question text is student-facing — and the question source; draft questions
@@ -66,7 +66,7 @@ to `essay_question`, and let the author choose.
 
    Stop. Wait for explicit approval before starting Phase B.
 
-### Phase B — Generate (only after approval)
+### Phase B — Generate (Only After Approval)
 
 4. **Generate the package with a throwaway Node script** in the session
    scratchpad — never hand-write the XML; the script must escape question text

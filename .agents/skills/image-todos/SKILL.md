@@ -3,7 +3,7 @@ name: image-todos
 description: List all outstanding image work across the course — the transparent placeholder PNGs and image-TODO comment blocks that /lesson-module-build leaves behind. Pure report, writes nothing. Use for "image todos", "placeholder images", "which images do I still have to make", "openstaande afbeeldingen", "welke afbeeldingen moet ik nog maken", "beeldwerk oplijsten".
 ---
 
-# Image todos
+# Image Todos
 
 List every image that still needs to be made across the course:
 `/lesson-module-build` drops a 1x1 transparent PNG per planned image in

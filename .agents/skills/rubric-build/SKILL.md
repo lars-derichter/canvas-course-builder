@@ -3,7 +3,7 @@ name: rubric-build
 description: Generate a grading rubric for an assignment or evaluation, with criteria drawn from the assignment text and aligned to the course's learning goals. Phase A proposes the criteria-by-levels matrix and stops for approval; Phase B writes a colleague-facing markdown rubric. Use for "rubric", "grading criteria", "marking key for the assignment", "rubric maken", "beoordelingsrubriek", "verbetersleutel voor de opdracht".
 ---
 
-# Rubric build
+# Rubric Build
 
 Build a grading rubric for one assignment — a homework page under `course/` or
 an evaluation under `evaluations/` — aligned with the learning goals it serves,
@@ -20,7 +20,7 @@ not a markdown file under `course/` or `evaluations/`.
 
 ## Steps
 
-### Phase A — Design (writes nothing)
+### Phase A — Design (Writes Nothing)
 
 1. **Read the fixed inputs**, in this order:
    - The assignment itself, in full. Its stated requirements are the primary
@@ -58,7 +58,7 @@ not a markdown file under `course/` or `evaluations/`.
 
 5. Adjust on request. Stop. Wait for explicit approval before starting Phase B.
 
-### Phase B — Write (only after approval)
+### Phase B — Write (Only After Approval)
 
 6. **Write the rubric file.** Destination:
    - Assignment under `evaluations/<year>/<slug>/` → `rubric.md` in that same

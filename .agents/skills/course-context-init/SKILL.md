@@ -3,7 +3,7 @@ name: course-context-init
 description: Read the repo and interview the user to fill in or refresh context/course-context.md, the per-course design context the lesson skills (lesson-design, lesson-summarize, lesson-module-build) rely on. Run once when setting up a course, and again after README, docs, or course structure change substantially. Use for "initialize course context", "set up the course context", "refresh the course context", "cursuscontext invullen", "course context verversen".
 ---
 
-# Course context init
+# Course Context Init
 
 Fill in or refresh `context/course-context.md` — the course-design companion to
 `context/writing-style.md` that describes the course's subject, learning goals,

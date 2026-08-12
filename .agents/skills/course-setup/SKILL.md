@@ -3,7 +3,7 @@ name: course-setup
 description: Turn a fresh copy of the Canvas Course Builder template into a real course — course.config.yml, the README, the course context and the writing style guide — by gathering the answers, running npx course setup, and writing the prose the command cannot. Phase A proposes every answer and stops for approval; Phase B applies them. Use for "set up the course", "set up this template", "make this template my course", "cursus opzetten", "dit template mijn cursus maken".
 ---
 
-# Course setup
+# Course Setup
 
 Configure a new course end to end. `npx course setup` owns the mechanical part —
 writing `course.config.yml` without disturbing its comments, copying the
@@ -17,7 +17,7 @@ confirmed and change only what the author asks for.
 
 ## Steps
 
-### Phase A — Gather and propose (writes nothing)
+### Phase A — Gather and Propose (Writes Nothing)
 
 1. **Read what is already set.** In order:
    - `course.config.yml` — `title`, `tagline`, `language`, `theme`,
@@ -57,7 +57,7 @@ confirmed and change only what the author asks for.
 
    Stop. Wait for explicit approval before starting Phase B.
 
-### Phase B — Apply (only after approval)
+### Phase B — Apply (Only After Approval)
 
 4. **Run the command** with the approved flags, always with `--yes` so it never
    tries to prompt:

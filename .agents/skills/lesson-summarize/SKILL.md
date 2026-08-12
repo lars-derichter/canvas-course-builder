@@ -3,7 +3,7 @@ name: lesson-summarize
 description: Generate a concise class version (one-page teaching reminder) of a full lesson plan from sources/lessons/ and write it to sources/lesson-plans/. Use for "summarize lesson", "class version", "make a one-page teaching reminder", "klasversie maken", "bondig lesplan", "lesplan samenvatten".
 ---
 
-# Lesson summarize
+# Lesson Summarize
 
 Turn a full lesson design under `sources/lessons/` into a class version under
 `sources/lesson-plans/`: one page (think A5) with learning goals, content, and

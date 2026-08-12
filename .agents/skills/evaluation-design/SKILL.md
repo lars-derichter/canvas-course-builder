@@ -3,7 +3,7 @@ name: evaluation-design
 description: Design an exam or test in evaluations/ from the lessons taught so far, following context/course-context.md and the student-facing register of context/writing-style.md. Phase A proposes a blueprint matrix (learning goals × questions × difficulty) and flags over- and under-tested goals; Phase B writes the evaluation only after approval. Use for "design evaluation", "design a test", "write an exam on lessons 1 to 4", "toets ontwerpen", "examen opstellen", "test maken over les 1 tot 4".
 ---
 
-# Evaluation design
+# Evaluation Design
 
 Design an exam or test together with the author and write it under
 `evaluations/<year>/<slug>/`, following
@@ -23,7 +23,7 @@ sentence.
 
 ## Steps
 
-### Phase A — Blueprint (writes nothing)
+### Phase A — Blueprint (Writes Nothing)
 
 1. **Read the fixed inputs**: `course-context.md` — the Learning goals section
    (the goals and their reference notation), the Assessment section (evaluation
@@ -67,7 +67,7 @@ sentence.
    Adjust on request and stay in Phase A until the author explicitly approves.
    Stop. Wait for explicit approval before starting Phase B.
 
-### Phase B — Write (only after approval)
+### Phase B — Write (Only After Approval)
 
 5. **Write the evaluation** to `evaluations/<year>/<slug>/instructions.md`,
    mirroring the worked example (or the format agreed in Phase A): full question

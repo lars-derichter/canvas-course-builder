@@ -3,7 +3,7 @@ name: issue-report
 description: Quickly log an error or wanted change in course material into the issue queue at sources/issues.md — locates the file, quotes the passage to confirm, asks at most one clarifying question, and never diagnoses or fixes anything (that is /issue-fix). Use for "report issue", "log this for later", "found a mistake on page X", "issue melden", "noteer deze fout", "dit wil ik nog aanpassen".
 ---
 
-# Issue report
+# Issue Report
 
 Capture an error or a wanted change while the author is reviewing course
 material, without breaking their flow. One bullet is appended to the issue queue

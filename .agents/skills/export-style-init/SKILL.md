@@ -3,7 +3,7 @@ name: export-style-init
 description: Derive a reusable PDF/DOCX export style from a reference — a Word document, a PDF, a website URL, or a CSS file — and write it to sources/export-style/ so course exports match that look. Phase A proposes a style spec and stops for approval; Phase B writes template.typ + reference.docx and regenerates the sample. Use for "initialize export style", "set up an export style", "match this Word template", "build a house style for the export", "exportstijl opzetten", "maak een huisstijl voor de export".
 ---
 
-# Export style init
+# Export Style Init
 
 Turn a reference document, website, or stylesheet into a custom export style for
 `npx course export`. The style lives in `sources/export-style/` (protected from
@@ -26,7 +26,7 @@ source is not a document, URL, or stylesheet.
 
 ## Steps
 
-### Phase A — Inspect and propose (writes nothing)
+### Phase A — Inspect and Propose (Writes Nothing)
 
 1. **Read first**: [`docs/export-styling.md`](../../../docs/export-styling.md) —
    what `template.typ` (PDF via Typst) and `reference.docx` (DOCX via Word
@@ -77,7 +77,7 @@ source is not a document, URL, or stylesheet.
 
    Stop. Wait for explicit approval before starting Phase B.
 
-### Phase B — Write and regenerate (only after approval)
+### Phase B — Write and Regenerate (Only After Approval)
 
 4. **Fork the selected style** into `sources/export-style/` (create the folder
    if absent). Resolve the style from `export.style` in `course.config.yml`,

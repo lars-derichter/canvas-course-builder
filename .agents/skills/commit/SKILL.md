@@ -34,7 +34,7 @@ Create a git commit following the project's commit message conventions.
    )"
    ```
 
-## Message style
+## Message Style
 
 - Imperative, present tense, verb-first (Add, Fix, Update, Replace, Remove,
   Rewrite, …); no conventional-commit prefixes (`feat:`, `fix:`).

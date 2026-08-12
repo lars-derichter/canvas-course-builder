@@ -3,7 +3,7 @@ name: issue-fix
 description: Work through the open issues in sources/issues.md. Phase A verifies and groups every entry, checks wider implications (same defect elsewhere, style-rule drift, glossary, course context, lesson plans, evaluations), bundles all clarifying questions into one round, and presents one fix plan; Phase B applies the fixes only after approval and moves entries to Resolved. Never fixes style preferences silently, never commits. Use for "fix issues", "work the issue queue", "fix the queue", "issues afwerken", "werk de foutenlijst af", "los de issues op".
 ---
 
-# Issue fix
+# Issue Fix
 
 Work through the issue queue that `/issue-report` — and the author's own hand —
 filled in `sources/issues.md`.
@@ -16,7 +16,7 @@ entries. Empty means every entry under `## Open`.
 
 ## Steps
 
-### Phase A — Triage (writes nothing)
+### Phase A — Triage (Writes Nothing)
 
 1. **Read the fixed inputs**: `sources/issues.md` in full — `## Open` _and_
    `## Resolved` —,
@@ -75,7 +75,7 @@ entries. Empty means every entry under `## Open`.
 7. Adjust the plan on request and stay in Phase A until the author explicitly
    approves. Stop. Wait for explicit approval before starting Phase B.
 
-### Phase B — Fix (only after approval)
+### Phase B — Fix (Only After Approval)
 
 8. **Apply the fixes serially**, group by group: minimal edits, one concern per
    edit, including the approved same-defect-elsewhere hits. Re-grep after each

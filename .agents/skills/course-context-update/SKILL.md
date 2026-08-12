@@ -3,7 +3,7 @@ name: course-context-update
 description: Review course-design decisions and corrections the author settled in this conversation, and fold them into context/course-context.md as durable facts. Use for "update course context", "save this to the course context", "remember this course decision", "cursuscontext bijwerken", "onthoud deze cursusafspraak".
 ---
 
-# Course context update
+# Course Context Update
 
 Turn course-design facts settled in the current conversation into permanent
 entries in [`context/course-context.md`](../../../context/course-context.md), so

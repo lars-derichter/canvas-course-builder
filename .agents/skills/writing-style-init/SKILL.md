@@ -3,7 +3,7 @@ name: writing-style-init
 description: Interview the user and analyse samples of their writing to rewrite context/writing-style.md to match their voice, audience, and formatting preferences. Use for "initialize style", "set up the style guide", "configure the writing style", "stijlgids opzetten", "schrijfstijl instellen".
 ---
 
-# Writing style init
+# Writing Style Init
 
 Adapt [`context/writing-style.md`](../../../context/writing-style.md) — the
 writing-style guide your AI assistant follows when drafting course content — to

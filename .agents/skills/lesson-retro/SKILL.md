@@ -3,7 +3,7 @@ name: lesson-retro
 description: Debrief a lesson right after teaching it, in a conversational interview — one question at a time, following up on the answers. Folds timing corrections and tips into the lesson plan's notes-to-self, durable course-wide insights into context/course-context.md, and lists content fixes for the student material. Use for "lesson retro", "debrief after teaching", "how the lesson went", "les nabespreken", "retro les 3", "hoe de les gegaan is".
 ---
 
-# Lesson retro
+# Lesson Retro
 
 Capture how a lesson actually went while the author still remembers, and turn
 that into durable improvements: timing corrections and notes-to-self in the
@@ -26,7 +26,7 @@ plausibly recent, propose it in the same breath.
 
 ## Steps
 
-### Prepare (silently)
+### Prepare (Silently)
 
 1. **Read before asking:**
    - `sources/lessons/lesson-NN.md`, in full — especially the timed blocks and
@@ -38,7 +38,7 @@ plausibly recent, propose it in the same breath.
    Do not summarise these back to the author. They taught the lesson; go
    straight to the first question.
 
-### Interview (one question at a time)
+### Interview (One Question at a Time)
 
 2. **Open wide.** First question: how the lesson went, in their own words.
    Everything they volunteer here is material you do not have to ask about.
@@ -62,7 +62,7 @@ plausibly recent, propose it in the same breath.
    confirm you have what you need and move on. A useful retro can be four
    questions long.
 
-### Propose (in chat, no files yet)
+### Propose (in Chat, No Files Yet)
 
 5. **Sort every observation into a destination** and show the sorted list:
    - **Lesson plan `lesson-NN.md`** — timing corrections in the affected blocks

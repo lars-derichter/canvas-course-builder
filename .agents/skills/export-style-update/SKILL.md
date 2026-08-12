@@ -3,7 +3,7 @@ name: export-style-update
 description: Make a plain-language change to how course exports look — heading colour, fonts, margins, alert colours, paper size — by editing the theme (colour) and/or sources/export-style/template.typ and reference.docx (layout), then regenerating the sample to show the result. Forks the shipped defaults on first use. Use for "update export style", "headings dark blue", "different font for the export", "exportstijl aanpassen", "koppen donkerblauw", "ander lettertype voor de export".
 ---
 
-# Export style update
+# Export Style Update
 
 Apply a small, plain-language change to how `npx course export` looks, and show
 the result. The iterate-in-place companion to
