@@ -114,6 +114,14 @@ document to hand a colleague who takes the course over, a co-teacher joining
 you, or yourself next academic year — it holds the reasoning behind the course
 rather than its contents.
 
+Those first three sections are in that order on purpose: what students should be
+able to do, how you will know they can, and only then how you teach it. That is
+backward design, and it is the chain every lesson skill reads from top to
+bottom, so a lesson starts from the goals it serves rather than from a topic
+list. [Where to start](lesson-workflow.md#where-to-start) explains what that
+buys you. Filling in the first two sections is the single highest-value thing
+you can do for the skills.
+
 It ships as the English fill-in template, every section marked `TODO`.
 `/course-context-init` completes it in whatever language you work in, reading
 the repo first and interviewing you for the rest, and `/course-context-update`

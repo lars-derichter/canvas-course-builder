@@ -3,7 +3,45 @@
 Canvas Course Builder includes a set of [AI-assistant](ai-assistants.md) skills
 that take a lesson from rough idea to published Canvas module. Using them is
 optional — you can keep writing modules by hand — but together they form a
-complete authoring flow:
+complete authoring flow.
+
+## Where to start
+
+Not with lesson one. The skills are built around a chain that runs backwards
+from what you want to be true at the end:
+
+```
+what students should be able to do        (learning goals)
+   ↓
+how you will know they can                (assessment)
+   ↓
+what gets them there                      (lessons)
+   ↓
+what they read and hand in                (the module under course/)
+```
+
+This is [backward design](#further-reading): decide the destination and the
+evidence first, and the teaching follows from both. Its companion idea is
+constructive alignment — that goals, assessment and teaching activities should
+point at the same thing, and at the same level. A goal phrased as "apply" is not
+served by an exam that only asks students to reproduce.
+
+You write the first two links of that chain into
+[course-context.md](../context/course-context.md), once, and every skill reads
+them from there. That is why the file's sections run in that order, and why
+`/coverage-map` can tell you which goals are taught but never assessed.
+
+Nothing enforces this. You can run the whole pipeline with the goals section
+left as `TODO`, and the skills will ask instead of refusing. But a course whose
+goals are written down is one where the skills stop guessing, and where
+`/evaluation-design` can flag a question that tests something no lesson
+practised.
+
+**Adopting mid-course?** Skip ahead to
+[Adopting the workflow mid-course](#adopting-the-workflow-mid-course). You do
+not have to start over to start here.
+
+## The pipeline
 
 ```
 idea/notes
@@ -108,6 +146,31 @@ _generated_, never hand-written:
 New terms enter the YAML file when you design a lesson (`/lesson-design` adds
 them) or build a module; the pages then follow from one command.
 
+## Assessment
+
+The second link in the chain, and the one it is easiest to leave until it is too
+late to change anything. The same design-first pattern applies: the first three
+skills form a pipeline — `/evaluation-design` produces the approved blueprint,
+`/quiz-build` turns approved questions into a Canvas-import zip, and
+`/rubric-build` adds the grading criteria — but each also works on its own:
+
+- `/evaluation-design` — draft an exam or test, starting from a blueprint matrix
+  (learning goals × questions × difficulty) that flags over- and under-tested
+  goals. It refuses to test what no lesson in scope actually practised.
+- `/rubric-build` — a grading rubric for an assignment, every criterion traced
+  to the assignment text or a learning goal.
+- `/quiz-build` — a QTI package Canvas imports as a quiz, from a question list
+  or straight from your lessons. Canvas quizzes are import-only; see
+  [Limitations](limitations.md#quizzes-are-outside-the-sync-loop).
+- `/coverage-map` — the whole-course picture: which goals are taught, practised,
+  and assessed, and where the gaps are. This is the alignment check; run it
+  before you write an exam, not after.
+
+Written in full, before the lessons, the blueprint is what a course design
+starts from. Written after, it is a report on what you happened to teach. The
+skills work either way and it is your call — but that is the difference the
+first section of this page is pointing at.
+
 ## After teaching: the retro
 
 `/lesson-retro` closes the loop. Right after a lesson, it interviews you — one
@@ -117,23 +180,6 @@ plan and course-wide insights into `course-context.md`. Next year's version of
 the lesson starts better than this year's. Content fixes for the student pages
 that surface in the retro can be logged with `/issue-report` so `/issue-fix`
 picks them up later.
-
-## Assessment
-
-The same design-first pattern extends to testing. The first three skills form a
-pipeline — `/evaluation-design` produces the approved blueprint, `/quiz-build`
-turns approved questions into a Canvas-import zip, and `/rubric-build` adds the
-grading criteria — but each also works on its own:
-
-- `/evaluation-design` — draft an exam or test from the lessons taught so far,
-  starting from a blueprint matrix (learning goals × questions × difficulty)
-  that flags over- and under-tested goals.
-- `/rubric-build` — a grading rubric for an assignment, every criterion traced
-  to the assignment text or a learning goal.
-- `/quiz-build` — a QTI package Canvas imports as a quiz, from a question list
-  or straight from your lessons.
-- `/coverage-map` — the whole-course picture: which goals are taught, practised,
-  and assessed, and where the gaps are.
 
 ## Course quality
 
@@ -158,3 +204,19 @@ Nothing requires starting from scratch. Point `course-context.md` at your
 existing modules as worked examples, put any existing lesson plans in
 `sources/lessons/` (numbered `lesson-NN.md`), and the skills pick up your
 conventions from there.
+
+The same goes for the design chain at the top of this page. A course already
+running has its lessons; what it often lacks is the goals written down and the
+alignment checked. Run `/course-context-init` to get the goals on paper, then
+`/coverage-map` to see which of them your existing material actually teaches,
+practises and assesses. Fixing the gaps it finds is cheaper than redesigning
+anything.
+
+## Further reading
+
+The two ideas this workflow is built on, if you want the originals:
+
+- Biggs, J. (1996). Enhancing teaching through constructive alignment. _Higher
+  Education, 32_(3), 347–364. https://doi.org/10.1007/BF00138871
+- Wiggins, G., & McTighe, J. (2005). _Understanding by design_ (Expanded 2nd
+  ed.). ASCD.
