@@ -7,6 +7,31 @@
   grades were left alone, while the command deletes every assignment in the
   course — which takes its gradebook column and the student submissions on it.
   Quizzes, discussions, announcements and rubrics do survive, and still say so.
+- **`pull` no longer overwrites files it cannot judge.** With no
+  `.canvas-sync.json` to compare timestamps against — right after
+  `reset-sync-state`, or on a clone that has never synced — every local file
+  counted as unmodified, so the guard meant to protect your writing never fired
+  and the first pull behaved exactly like `--force`, with no prompt and no
+  warning. "Cannot tell" is now its own answer: such a file is skipped, with the
+  reason printed, and only `--force` overrides it. Pull also prints the backup
+  hint before it writes, and asks first when `--force` meets a `course/` tree
+  that already holds markdown with no sync state to judge it by.
+- **Deleting an assignment now says that it deletes the grades too.**
+  `push --prune` and `reset-canvas` both call `DELETE` on the assignment object,
+  which takes its gradebook column and every submission on it, and the prune
+  listing showed a semester of graded work as an ordinary filename. Both now
+  read `has_submitted_submissions`, flag the assignments that hold student work,
+  and name those grades in the confirmation question itself. A check that fails
+  reports "could not determine" and never passes for "no submissions".
+- **`push` now warns when it changes a field that moves grades already given.**
+  `points_possible` leaves the raw scores untouched, so a new denominator shifts
+  every percentage in the column; `due_at` re-runs the late policy over graded
+  submissions; and `submission_types` is ignored outright once anyone has
+  submitted, while the push still reports success. Canvas's web editor warns
+  about all three, its API does not. Each warning names the assignment and both
+  values, and `--dry-run` gets it too — the only moment the warning arrives
+  before the change instead of with it. Nothing is blocked: only the author
+  knows whether a re-weighting is deliberate.
 - **A second push no longer cancels a Pages deployment that is halfway through
   publishing.** The deploy workflow shared GitHub's `pages` concurrency group
   but set `cancel-in-progress: true`, so two pushes in quick succession could
