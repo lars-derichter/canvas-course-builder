@@ -93,6 +93,16 @@ describe('validateModules — file items', () => {
     assert.deepEqual(warnings, []);
   });
 
+  it('accepts canvas_type: discussion as a known type', () => {
+    writeItem(
+      '01-debate.md',
+      '---\ntitle: Week 1 debate\ncanvas_type: discussion\n---\n\nSay something.\n',
+    );
+
+    const { errors } = run();
+    assert.deepEqual(errors, []);
+  });
+
   it('accepts canvas_type: file as a known type', () => {
     writeItem('_files/syllabus.pdf', 'binary');
     writeItem(

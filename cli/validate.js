@@ -12,6 +12,7 @@ const { COURSE_DIR } = require('./module-utils');
 const VALID_CANVAS_TYPES = new Set([
   'page',
   'assignment',
+  'discussion',
   'external_url',
   'file',
 ]);

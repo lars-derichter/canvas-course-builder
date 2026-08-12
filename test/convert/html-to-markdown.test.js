@@ -231,6 +231,60 @@ describe('canvasItemToMarkdown', () => {
     assert.match(md, /Do this assignment\./);
   });
 
+  it('converts a Canvas discussion with its metadata', () => {
+    const item = {
+      title: 'Week 1 debate',
+      id: 77,
+      message: '<p>Say something.</p>',
+      discussion_type: 'threaded',
+      require_initial_post: true,
+      published: true,
+      delayed_post_at: '2026-03-01T08:00:00Z',
+      lock_at: '2026-03-08T23:59:00Z',
+    };
+    const md = canvasItemToMarkdown(item, 'discussion');
+
+    assert.match(md, /title: Week 1 debate/);
+    assert.match(md, /canvas_type: discussion/);
+    assert.match(md, /canvas_id: 77/);
+    assert.match(md, /discussion_type: threaded/);
+    assert.match(md, /require_initial_post: true/);
+    assert.match(md, /published: true/);
+    assert.ok(md.includes('delayed_post_at:'), 'Expected delayed_post_at');
+    assert.ok(md.includes('lock_at:'), 'Expected lock_at');
+    assert.match(md, /Say something\./);
+  });
+
+  it('writes the discussion message as the markdown body', () => {
+    const item = {
+      title: 'Week 1 debate',
+      id: 77,
+      message: '<h2>Prompt</h2><p>What do you think?</p>',
+    };
+    const md = canvasItemToMarkdown(item, 'discussion');
+
+    assert.match(md, /## Prompt/);
+    assert.match(md, /What do you think\?/);
+  });
+
+  it('drops a discussion field the Canvas topic no longer has', () => {
+    const item = { title: 'Week 1 debate', id: 77, message: '<p>Hi.</p>' };
+    const md = canvasItemToMarkdown(item, 'discussion', {
+      existingFrontmatter: {
+        discussion_type: 'threaded',
+        lock_at: '2026-03-08T23:59:00Z',
+        lesson: 3,
+      },
+    });
+
+    assert.ok(
+      !md.includes('discussion_type'),
+      'Expected a threading change in Canvas to reach the file',
+    );
+    assert.ok(!md.includes('lock_at'), 'Expected the same for lock_at');
+    assert.match(md, /lesson: 3/);
+  });
+
   it('converts an external URL item', () => {
     const item = {
       title: 'Resource',

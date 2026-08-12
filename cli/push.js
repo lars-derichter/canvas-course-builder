@@ -30,6 +30,12 @@ const {
   getSubmissionStates,
   hasStudentSubmissions,
 } = require('../lib/canvas/assignments');
+const {
+  createDiscussion,
+  updateDiscussion,
+  deleteDiscussion,
+  gradedDiscussionWarning,
+} = require('../lib/canvas/discussions');
 const { uploadFile, deleteFile } = require('../lib/canvas/files');
 const { get } = require('../lib/canvas/client');
 const { ensureIcons, getIconUrls } = require('../lib/canvas/icons');
@@ -236,6 +242,8 @@ async function push(options) {
           await updatePage(cId, canvasId, { body: html });
         } else if (canvasType === 'assignment') {
           await updateAssignment(cId, canvasId, { description: html });
+        } else if (canvasType === 'discussion') {
+          await updateDiscussion(cId, canvasId, { message: html });
         }
         log.info(`  [push] Updated links in: ${relativePath}`);
       } catch (err) {
@@ -630,6 +638,26 @@ async function pushItem(
       syncData,
       assignmentStrategy,
     );
+  } else if (canvasType === 'discussion') {
+    await pushContentItem(
+      courseId,
+      moduleId,
+      {
+        title,
+        filePath,
+        relativePath,
+        canvasId,
+        position,
+        indent,
+        frontmatter,
+      },
+      dryRun,
+      iconUrls,
+      relativeToCanvas,
+      unresolvedItems,
+      syncData,
+      discussionStrategy,
+    );
   } else if (canvasType === 'external_url') {
     await pushExternalUrl(
       courseId,
@@ -801,6 +829,47 @@ const assignmentStrategy = {
   buildModuleItem: (title, contentId, position, indent) => ({
     title,
     type: 'Assignment',
+    contentId,
+    position,
+    indent,
+  }),
+};
+
+/**
+ * Say so when Canvas reports the topic it just took as graded, and hand the
+ * result straight back so this can wrap create and update.
+ */
+function warnIfGradedDiscussion(result) {
+  const line = gradedDiscussionWarning(result);
+  if (line) log.warn(`    [push] ${line}`);
+  return result;
+}
+
+/** Strategy for pushing discussions. */
+const discussionStrategy = {
+  canvasType: 'discussion',
+  label: 'Discussion',
+  buildOpts: (title, html, frontmatter) => {
+    const opts = { title, message: html };
+    if (frontmatter.discussion_type)
+      opts.discussionType = frontmatter.discussion_type;
+    if (frontmatter.require_initial_post != null)
+      opts.requireInitialPost = frontmatter.require_initial_post;
+    if (frontmatter.delayed_post_at)
+      opts.delayedPostAt = frontmatter.delayed_post_at;
+    if (frontmatter.lock_at) opts.lockAt = frontmatter.lock_at;
+    if (frontmatter.published != null) opts.published = frontmatter.published;
+    return opts;
+  },
+  create: async (courseId, opts) =>
+    warnIfGradedDiscussion(await createDiscussion(courseId, opts)),
+  update: async (courseId, id, opts) =>
+    warnIfGradedDiscussion(await updateDiscussion(courseId, id, opts)),
+  extractId: (result) => result.id,
+  extractSlug: null,
+  buildModuleItem: (title, contentId, position, indent) => ({
+    title,
+    type: 'Discussion',
     contentId,
     position,
     indent,
@@ -1285,6 +1354,10 @@ async function deleteCanvasItemByType(courseId, item, errors) {
       await deletePage(courseId, item.pageUrl || item.canvasId);
     } else if (item.canvasType === 'assignment') {
       await deleteAssignment(courseId, item.canvasId);
+    } else if (item.canvasType === 'discussion') {
+      // A discussion is authored content like a page, so prune deletes the
+      // topic itself, not just its place in the module.
+      await deleteDiscussion(courseId, item.canvasId);
     } else if (item.canvasType === 'file') {
       await deleteFile(item.canvasId);
     } else if (item.canvasType === 'external_url') {
@@ -1517,3 +1590,5 @@ push._buildFileResolver = buildFileResolver;
 push._registerItem = registerItem;
 push._pageStrategy = pageStrategy;
 push._assignmentStrategy = assignmentStrategy;
+push._discussionStrategy = discussionStrategy;
+push._pushContentItem = pushContentItem;

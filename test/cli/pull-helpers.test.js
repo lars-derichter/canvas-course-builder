@@ -1,8 +1,12 @@
-const { describe, it, beforeEach, afterEach } = require('node:test');
+const { describe, it, beforeEach, afterEach, mock } = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('fs');
 const path = require('path');
 const os = require('os');
+
+// Set required env vars before requiring anything that loads the client.
+process.env.CANVAS_API_URL = 'https://canvas.example.com';
+process.env.CANVAS_API_TOKEN = 'test-token-123';
 
 const pull = require('../../cli/pull');
 
@@ -328,6 +332,49 @@ describe('pullStrategies', () => {
     assert.deepEqual(entry, { canvas_id: 99, canvas_type: 'assignment' });
   });
 
+  it('Discussion strategy extracts content_id as id', () => {
+    assert.equal(pullStrategies.Discussion.getId({ content_id: 77 }), 77);
+  });
+
+  it('Discussion strategy reads the message as the body', () => {
+    assert.equal(
+      pullStrategies.Discussion.getBody({ message: '<p>Say something.</p>' }),
+      '<p>Say something.</p>',
+    );
+    assert.equal(pullStrategies.Discussion.getBody({}), '');
+  });
+
+  it('Discussion strategy builds sync entry', () => {
+    const entry = pullStrategies.Discussion.buildSyncEntry({ content_id: 77 });
+    assert.deepEqual(entry, { canvas_id: 77, canvas_type: 'discussion' });
+  });
+
+  it('Discussion strategy fetches the topic the module item names', async () => {
+    mock.method(global, 'fetch', async (url) =>
+      fakeResponse({ id: 77, title: 'Week 1 debate', _url: url }),
+    );
+
+    const topic = await pullStrategies.Discussion.fetch(42, 77);
+
+    assert.equal(topic.id, 77);
+    assert.match(topic._url, /\/courses\/42\/discussion_topics\/77$/);
+    mock.restoreAll();
+  });
+
+  it('Discussion strategy warns about a graded topic', async () => {
+    const warned = mock.method(console, 'warn', () => {});
+    mock.method(global, 'fetch', async () =>
+      fakeResponse({ id: 77, title: 'Week 1 debate', assignment_id: 900 }),
+    );
+
+    await pullStrategies.Discussion.fetch(42, 77);
+
+    assert.equal(warned.mock.callCount(), 1);
+    assert.match(warned.mock.calls[0].arguments[0], /is graded/);
+    assert.match(warned.mock.calls[0].arguments[0], /live only in Canvas/);
+    mock.restoreAll();
+  });
+
   it('ExternalUrl strategy has no fetch function', () => {
     assert.equal(pullStrategies.ExternalUrl.fetch, null);
   });
@@ -344,3 +391,14 @@ describe('pullStrategies', () => {
     });
   });
 });
+
+/** A fake Response object compatible with the fetch API. */
+function fakeResponse(body, { status = 200 } = {}) {
+  return {
+    ok: status >= 200 && status < 300,
+    status,
+    headers: { get: () => null },
+    json: async () => body,
+    text: async () => JSON.stringify(body),
+  };
+}

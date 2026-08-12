@@ -1,12 +1,22 @@
 const { describe, it, mock, afterEach } = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
+
+// Set required env vars before requiring anything that loads the client.
+process.env.CANVAS_API_URL = 'https://canvas.example.com';
+process.env.CANVAS_API_TOKEN = 'test-token-123';
 
 const push = require('../../cli/push');
+const { serializeFrontmatter } = require('../../lib/convert/frontmatter');
 
 const {
   _buildFileResolver: buildFileResolver,
   _pageStrategy: pageStrategy,
   _assignmentStrategy: assignmentStrategy,
+  _discussionStrategy: discussionStrategy,
+  _pushContentItem: pushContentItem,
   _warnGradeImpact: warnGradeImpact,
   _collectUpdatedAssignments: collectUpdatedAssignments,
 } = push;
@@ -173,6 +183,304 @@ describe('assignmentStrategy', () => {
 
   it('has no slug extraction', () => {
     assert.equal(assignmentStrategy.extractSlug, null);
+  });
+});
+
+describe('discussionStrategy', () => {
+  afterEach(() => {
+    mock.restoreAll();
+  });
+
+  it('builds options with title and message', () => {
+    const opts = discussionStrategy.buildOpts(
+      'Week 1 debate',
+      '<p>Say something.</p>',
+      {},
+    );
+    assert.deepEqual(opts, {
+      title: 'Week 1 debate',
+      message: '<p>Say something.</p>',
+    });
+  });
+
+  it('maps frontmatter fields to discussion options', () => {
+    const frontmatter = {
+      discussion_type: 'threaded',
+      require_initial_post: true,
+      delayed_post_at: '2026-03-01T08:00:00Z',
+      lock_at: '2026-03-08T23:59:00Z',
+      published: true,
+    };
+    const opts = discussionStrategy.buildOpts(
+      'Title',
+      '<p>Body</p>',
+      frontmatter,
+    );
+
+    assert.equal(opts.discussionType, 'threaded');
+    assert.equal(opts.requireInitialPost, true);
+    assert.equal(opts.delayedPostAt, '2026-03-01T08:00:00Z');
+    assert.equal(opts.lockAt, '2026-03-08T23:59:00Z');
+    assert.equal(opts.published, true);
+  });
+
+  it('keeps a frontmatter false rather than dropping it', () => {
+    const opts = discussionStrategy.buildOpts('Title', '<p>Body</p>', {
+      require_initial_post: false,
+      published: false,
+    });
+
+    assert.equal(opts.requireInitialPost, false);
+    assert.equal(opts.published, false);
+  });
+
+  it('omits optional fields when not in frontmatter', () => {
+    const opts = discussionStrategy.buildOpts('Title', '<p>Body</p>', {});
+    assert.equal(opts.discussionType, undefined);
+    assert.equal(opts.requireInitialPost, undefined);
+    assert.equal(opts.delayedPostAt, undefined);
+    assert.equal(opts.lockAt, undefined);
+    assert.equal(opts.published, undefined);
+  });
+
+  it('builds a Discussion module item', () => {
+    const item = discussionStrategy.buildModuleItem('Week 1 debate', 77, 3, 1);
+    assert.deepEqual(item, {
+      title: 'Week 1 debate',
+      type: 'Discussion',
+      contentId: 77,
+      position: 3,
+      indent: 1,
+    });
+  });
+
+  it('extracts id from result', () => {
+    assert.equal(discussionStrategy.extractId({ id: 77 }), 77);
+  });
+
+  it('has no slug extraction', () => {
+    assert.equal(discussionStrategy.extractSlug, null);
+  });
+
+  it('warns that a graded discussion keeps its grading settings in Canvas', async () => {
+    const warned = mock.method(console, 'warn', () => {});
+    mock.method(global, 'fetch', async () =>
+      fakeResponse({ id: 77, title: 'Week 1 debate', assignment_id: 900 }),
+    );
+
+    const result = await discussionStrategy.create(42, {
+      title: 'Week 1 debate',
+    });
+
+    assert.equal(result.id, 77, 'the result still reaches the caller');
+    assert.equal(warned.mock.callCount(), 1);
+    assert.match(warned.mock.calls[0].arguments[0], /is graded/);
+    assert.match(warned.mock.calls[0].arguments[0], /live only in Canvas/);
+  });
+
+  it('warns on an update that returns a graded topic', async () => {
+    const warned = mock.method(console, 'warn', () => {});
+    mock.method(global, 'fetch', async () =>
+      fakeResponse({ id: 77, title: 'Week 1 debate', assignment_id: 900 }),
+    );
+
+    await discussionStrategy.update(42, 77, { message: '<p>Hi</p>' });
+
+    assert.equal(warned.mock.callCount(), 1);
+    assert.match(warned.mock.calls[0].arguments[0], /is graded/);
+  });
+
+  it('says nothing about an ungraded discussion', async () => {
+    const warned = mock.method(console, 'warn', () => {});
+    mock.method(global, 'fetch', async () =>
+      fakeResponse({ id: 77, title: 'Week 1 debate', assignment_id: null }),
+    );
+
+    await discussionStrategy.create(42, { title: 'Week 1 debate' });
+
+    assert.equal(warned.mock.callCount(), 0);
+  });
+});
+
+describe('pushing a discussion', () => {
+  const tmpDirs = [];
+
+  afterEach(() => {
+    mock.restoreAll();
+    while (tmpDirs.length) {
+      fs.rmSync(tmpDirs.pop(), { recursive: true, force: true });
+    }
+  });
+
+  /**
+   * Run one discussion markdown file through pushContentItem with Canvas
+   * mocked out, and hand back every request it made.
+   */
+  async function pushDiscussion({ canvasId = null, routes }) {
+    mock.method(console, 'log', () => {});
+    const warned = mock.method(console, 'warn', () => {});
+
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'push-discussion-'));
+    tmpDirs.push(dir);
+    const filePath = path.join(dir, '03-debate.md');
+    const frontmatter = {
+      title: 'Week 1 debate',
+      canvas_type: 'discussion',
+      ...(canvasId != null ? { canvas_id: canvasId } : {}),
+    };
+    fs.writeFileSync(
+      filePath,
+      serializeFrontmatter(frontmatter, 'Say something.\n'),
+      'utf8',
+    );
+
+    const calls = mockCanvas(routes);
+    await pushContentItem(
+      42,
+      9,
+      {
+        title: 'Week 1 debate',
+        filePath,
+        relativePath: '01-mod/03-debate.md',
+        canvasId,
+        position: 3,
+        indent: 0,
+        frontmatter,
+      },
+      false,
+      {},
+      new Map(),
+      [],
+      { files: {} },
+      discussionStrategy,
+    );
+
+    return { calls, filePath, warned };
+  }
+
+  const createdTopic = {
+    method: 'POST',
+    path: '/discussion_topics',
+    body: { id: 77, title: 'Week 1 debate' },
+  };
+  const moduleItemCreated = {
+    method: 'POST',
+    path: '/modules/9/items',
+    body: { id: 1000 },
+  };
+
+  it('creates the topic when the file has no canvas_id', async () => {
+    const { calls, filePath } = await pushDiscussion({
+      routes: [createdTopic, moduleItemCreated],
+    });
+
+    const created = calls.find((c) => c.url.endsWith('/discussion_topics'));
+    assert.ok(created, 'expected a create request');
+    assert.equal(created.method, 'POST');
+    assert.equal(created.body.title, 'Week 1 debate');
+    assert.match(created.body.message, /Say something\./);
+    assert.ok(
+      !calls.some((c) => c.method === 'PUT'),
+      'nothing to update when there is no id yet',
+    );
+    assert.match(
+      fs.readFileSync(filePath, 'utf8'),
+      /canvas_id: 77/,
+      'the new id is written back to the frontmatter',
+    );
+  });
+
+  it('updates the topic the frontmatter already names', async () => {
+    const { calls } = await pushDiscussion({
+      canvasId: 55,
+      routes: [
+        {
+          method: 'PUT',
+          path: '/discussion_topics/55',
+          body: { id: 55, title: 'Week 1 debate' },
+        },
+        moduleItemCreated,
+      ],
+    });
+
+    const updated = calls.find((c) => c.method === 'PUT');
+    assert.ok(updated, 'expected an update request');
+    assert.match(
+      updated.url,
+      /\/courses\/42\/discussion_topics\/55$/,
+      'the update goes to the id the frontmatter holds',
+    );
+    assert.match(updated.body.message, /Say something\./);
+    assert.ok(
+      !calls.some(
+        (c) => c.method === 'POST' && c.url.endsWith('/discussion_topics'),
+      ),
+      'an existing topic is never created a second time',
+    );
+  });
+
+  it('creates a new topic when Canvas 404s the id in the frontmatter', async () => {
+    const { calls, filePath } = await pushDiscussion({
+      canvasId: 55,
+      routes: [
+        {
+          method: 'PUT',
+          path: '/discussion_topics/55',
+          body: { message: 'not found' },
+          status: 404,
+        },
+        createdTopic,
+        moduleItemCreated,
+      ],
+    });
+
+    assert.ok(
+      calls.some((c) => c.method === 'PUT'),
+      'the update is tried first',
+    );
+    assert.ok(
+      calls.some(
+        (c) => c.method === 'POST' && c.url.endsWith('/discussion_topics'),
+      ),
+      'and the 404 falls back to a create',
+    );
+    assert.match(fs.readFileSync(filePath, 'utf8'), /canvas_id: 77/);
+  });
+
+  it('adds the topic to the module as a Discussion item', async () => {
+    const { calls } = await pushDiscussion({
+      routes: [createdTopic, moduleItemCreated],
+    });
+
+    const moduleItem = calls.find((c) => c.url.includes('/modules/9/items'));
+    assert.ok(moduleItem, 'expected a module item request');
+    assert.deepEqual(moduleItem.body.module_item, {
+      title: 'Week 1 debate',
+      type: 'Discussion',
+      content_id: 77,
+      position: 3,
+      indent: 0,
+    });
+  });
+
+  it('warns when the topic Canvas returns is graded', async () => {
+    const { warned } = await pushDiscussion({
+      routes: [
+        {
+          method: 'POST',
+          path: '/discussion_topics',
+          body: { id: 77, title: 'Week 1 debate', assignment_id: 900 },
+        },
+        moduleItemCreated,
+      ],
+    });
+
+    const lines = warned.mock.calls.map((c) => c.arguments[0]);
+    assert.ok(
+      lines.some((line) => /is graded/.test(line)),
+      'expected the graded-discussion warning',
+    );
+    assert.ok(lines.some((line) => /live only in Canvas/.test(line)));
   });
 });
 
@@ -474,6 +782,48 @@ describe('warnGradeImpact', () => {
     assert.match(warned.mock.calls[0].arguments[0], /403 Forbidden/);
   });
 });
+
+/** A fake Response object compatible with the fetch API. */
+function fakeResponse(body, { status = 200 } = {}) {
+  return {
+    ok: status >= 200 && status < 300,
+    status,
+    headers: { get: () => null },
+    json: async () => body,
+    text: async () => JSON.stringify(body),
+  };
+}
+
+/**
+ * Answer Canvas requests from a route table of { method, path, body, status },
+ * and record every request that was made. An unrouted request gets a 400, so a
+ * missing route fails the test instead of hanging on the client's retries.
+ */
+function mockCanvas(routes) {
+  const calls = [];
+  const remaining = routes.map((route) => ({ ...route }));
+  mock.method(global, 'fetch', async (url, opts) => {
+    calls.push({
+      url,
+      method: opts.method,
+      body: opts.body ? JSON.parse(opts.body) : null,
+    });
+    const index = remaining.findIndex(
+      (route) => route.method === opts.method && url.includes(route.path),
+    );
+    if (index === -1) {
+      return fakeResponse(
+        { message: `unrouted ${opts.method} ${url}` },
+        {
+          status: 400,
+        },
+      );
+    }
+    const [route] = remaining.splice(index, 1);
+    return fakeResponse(route.body, { status: route.status || 200 });
+  });
+  return calls;
+}
 
 /** A scanned module, shaped as scanCourse returns it. */
 function courseModule(items, folderName = '01-mod') {

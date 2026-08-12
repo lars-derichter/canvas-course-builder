@@ -5,6 +5,10 @@ const crypto = require('crypto');
 const { listModules, listModuleItems } = require('../lib/canvas/modules');
 const { listPages, getPage } = require('../lib/canvas/pages');
 const { getAssignment } = require('../lib/canvas/assignments');
+const {
+  getDiscussion,
+  gradedDiscussionWarning,
+} = require('../lib/canvas/discussions');
 const { get } = require('../lib/canvas/client');
 const { canvasItemToMarkdown } = require('../lib/convert/html-to-markdown');
 const {
@@ -812,6 +816,16 @@ async function pullFileItem(
 }
 
 /**
+ * Say so when the topic just fetched is graded, and hand it straight back so
+ * this can wrap the fetch.
+ */
+function warnIfGradedDiscussion(topic) {
+  const line = gradedDiscussionWarning(topic);
+  if (line) log.warn(`    [pull] ${line}`);
+  return topic;
+}
+
+/**
  * Strategy definitions for each pullable Canvas item type.
  * Each strategy defines how to extract the identifier, fetch content,
  * get the HTML body, and build the sync state entry.
@@ -838,6 +852,20 @@ const pullStrategies = {
     buildSyncEntry: (item) => ({
       canvas_id: item.content_id,
       canvas_type: 'assignment',
+    }),
+  },
+  Discussion: {
+    // Announcements are discussion topics too, but a module item never points
+    // at one, so fetching the topic the item names can only be a discussion.
+    getId: (item) => item.content_id,
+    idLabel: 'content_id',
+    fetch: async (courseId, id) =>
+      warnIfGradedDiscussion(await getDiscussion(courseId, id)),
+    getBody: (result) => result.message || '',
+    canvasType: 'discussion',
+    buildSyncEntry: (item) => ({
+      canvas_id: item.content_id,
+      canvas_type: 'discussion',
     }),
   },
   ExternalUrl: {
