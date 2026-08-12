@@ -33,6 +33,11 @@ const SYNC_DATA = {
           canvas_id: 300,
           canvas_type: 'assignment',
         },
+        'discussion:77': {
+          path: '01-intro/03-debate.md',
+          canvas_id: 77,
+          canvas_type: 'discussion',
+        },
       },
     },
   },
@@ -69,6 +74,20 @@ describe('buildLinkMap', () => {
       canvasToRelative.get('/courses/42/assignments/300'),
       '02-advanced/01-deep-dive.md',
     );
+  });
+
+  it('maps a discussion to a discussion_topics URL', () => {
+    const { relativeToCanvas, canvasToRelative } = buildLinkMap(SYNC_DATA);
+
+    assert.deepEqual(relativeToCanvas.get('01-intro/03-debate.md'), {
+      canvasType: 'discussion',
+      canvasId: 77,
+    });
+    assert.equal(
+      canvasToRelative.get('/courses/42/discussion_topics/77'),
+      '01-intro/03-debate.md',
+    );
+    assert.equal(canvasToRelative.get('/courses/42/pages/77'), undefined);
   });
 
   it('skips items without canvas_id', () => {
@@ -115,6 +134,27 @@ describe('resolveRelativeLink', () => {
       42,
     );
     assert.equal(result.resolved, '/courses/42/assignments/300');
+  });
+
+  it('resolves a link to a discussion to a discussion_topics URL', () => {
+    const result = resolveRelativeLink(
+      './03-debate.md',
+      '01-intro/01-welcome.md',
+      relativeToCanvas,
+      42,
+    );
+    assert.equal(result.resolved, '/courses/42/discussion_topics/77');
+    assert.equal(result.wasInternal, false);
+  });
+
+  it('preserves fragment identifiers on discussion links', () => {
+    const result = resolveRelativeLink(
+      './03-debate.md#rules',
+      '01-intro/01-welcome.md',
+      relativeToCanvas,
+      42,
+    );
+    assert.equal(result.resolved, '/courses/42/discussion_topics/77#rules');
   });
 
   it('preserves fragment identifiers', () => {
@@ -204,6 +244,24 @@ describe('resolveCanvasLink', () => {
       canvasToRelative,
     );
     assert.equal(result, '../02-advanced/01-deep-dive.md');
+  });
+
+  it('resolves a Canvas discussion URL', () => {
+    const result = resolveCanvasLink(
+      '/courses/42/discussion_topics/77',
+      '01-intro/01-welcome.md',
+      canvasToRelative,
+    );
+    assert.equal(result, './03-debate.md');
+  });
+
+  it('resolves an absolute Canvas discussion URL with a fragment', () => {
+    const result = resolveCanvasLink(
+      'https://canvas.example.com/courses/42/discussion_topics/77#rules',
+      '02-advanced/01-deep-dive.md',
+      canvasToRelative,
+    );
+    assert.equal(result, '../01-intro/03-debate.md#rules');
   });
 
   it('preserves fragment identifiers', () => {

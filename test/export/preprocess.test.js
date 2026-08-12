@@ -138,6 +138,32 @@ describe('rewriteCrossLinks', () => {
     assert.equal(out, 'X^[Online: /courses/42/pages/x-slug]');
   });
 
+  it('footnotes a discussion target with its discussion_topics URL', () => {
+    const ctx = {
+      includedPaths: new Set(),
+      anchorFor,
+      linkMap: new Map([
+        ['01-mod/99-x.md', { canvasType: 'discussion', canvasId: 77 }],
+      ]),
+      courseId: 42,
+    };
+    const out = rewriteCrossLinks('[X](99-x.md)', '01-mod/01-page.md', ctx);
+    assert.equal(out, 'X^[Online: /courses/42/discussion_topics/77]');
+  });
+
+  it('footnotes an assignment target with its assignments URL', () => {
+    const ctx = {
+      includedPaths: new Set(),
+      anchorFor,
+      linkMap: new Map([
+        ['01-mod/99-x.md', { canvasType: 'assignment', canvasId: 300 }],
+      ]),
+      courseId: 42,
+    };
+    const out = rewriteCrossLinks('[X](99-x.md)', '01-mod/01-page.md', ctx);
+    assert.equal(out, 'X^[Online: /courses/42/assignments/300]');
+  });
+
   it('uses ctx.onlineLabel as the footnote prefix', () => {
     const ctx = {
       includedPaths: new Set(),

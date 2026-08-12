@@ -367,6 +367,34 @@ describe('VS Code extension: search command', () => {
   });
 });
 
+describe('VS Code extension: open in Canvas', () => {
+  const start = extensionSource.indexOf("register('course.openInCanvas'");
+  const handler = extensionSource.slice(start, start + 2500);
+
+  it('registers the command', () => {
+    assert.ok(start !== -1);
+  });
+
+  it('builds a discussion_topics URL for a discussion', () => {
+    assert.match(
+      handler,
+      /canvasType === 'discussion'[\s\S]*?\/courses\/\$\{courseId\}\/discussion_topics\/\$\{canvasId\}/,
+    );
+  });
+
+  it('still builds assignment, file and page URLs', () => {
+    assert.match(
+      handler,
+      /canvasType === 'assignment'[\s\S]*?\/courses\/\$\{courseId\}\/assignments\/\$\{canvasId\}/,
+    );
+    assert.match(
+      handler,
+      /canvasType === 'file'[\s\S]*?\/courses\/\$\{courseId\}\/files\/\$\{canvasId\}/,
+    );
+    assert.match(handler, /\/courses\/\$\{courseId\}\/pages\/\$\{canvasId\}/);
+  });
+});
+
 describe('VS Code extension: activate and deactivate', () => {
   it('exports activate function', () => {
     assert.match(extensionSource, /module\.exports\s*=\s*\{[^}]*activate/);

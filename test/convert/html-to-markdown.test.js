@@ -167,6 +167,21 @@ describe('htmlToMarkdown link resolution', () => {
     assert.match(md, /\[Assignment\]\(\.\.\/02-mod\/01-hw\.md\)/);
   });
 
+  it('resolves Canvas discussion links', () => {
+    const html = '<a href="/courses/42/discussion_topics/77">Debate</a>';
+    const md = htmlToMarkdown(html, {
+      linkResolver: (href) =>
+        href === '/courses/42/discussion_topics/77' ? './03-debate.md' : null,
+    });
+    assert.match(md, /\[Debate\]\(\.\/03-debate\.md\)/);
+  });
+
+  it('leaves an unresolvable Canvas discussion link as-is', () => {
+    const html = '<a href="/courses/42/discussion_topics/999">Gone</a>';
+    const md = htmlToMarkdown(html, { linkResolver: () => null });
+    assert.match(md, /\[Gone\]\(\/courses\/42\/discussion_topics\/999\)/);
+  });
+
   it('leaves non-Canvas links unchanged', () => {
     const html = '<a href="https://example.com">External</a>';
     const md = htmlToMarkdown(html, {

@@ -763,6 +763,8 @@ function activate(context) {
     let url;
     if (canvasType === 'assignment') {
       url = `${baseUrl}/courses/${courseId}/assignments/${canvasId}`;
+    } else if (canvasType === 'discussion') {
+      url = `${baseUrl}/courses/${courseId}/discussion_topics/${canvasId}`;
     } else if (canvasType === 'file') {
       url = `${baseUrl}/courses/${courseId}/files/${canvasId}`;
     } else {
