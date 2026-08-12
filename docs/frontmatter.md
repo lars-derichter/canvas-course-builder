@@ -100,6 +100,10 @@ export, list it by path or add it to a TOC file — see
 ## Notes
 
 - `canvas_id` is managed by the CLI. Editing it manually may cause sync issues.
-- Fields not recognised by Canvas are silently ignored during push.
-- Pull writes all known fields back to frontmatter, preserving any extra fields
-  you added manually.
+- Fields not recognised by Canvas are silently ignored during push. Only the
+  fields listed above reach Canvas — see
+  [Limitations](limitations.md#assignment-fields-that-reach-canvas) for what
+  that leaves out.
+- Pull takes the fields above from Canvas, including clearing one that Canvas no
+  longer has, and carries over every other key you added — `export`, `lesson`,
+  anything of your own.

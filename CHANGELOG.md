@@ -2,6 +2,80 @@
 
 ## Unreleased
 
+- **The documentation now says what the tool does not do, and how to back up a
+  Canvas course before finding out.** The only statement of unsupported Canvas
+  types anywhere in the project used to be one line inside a pull FAQ, and a
+  search of the whole repository for "backup" returned a single hit, about
+  GitHub. [`docs/limitations.md`](docs/limitations.md) is the honest list — the
+  four types that sync, quizzes being import-only through a QTI package, the
+  one-level nesting limit that drops a sub-subfolder without a warning, the
+  reasons push and pull are not a merge — and
+  [`docs/backups.md`](docs/backups.md) has the three ways to protect a course
+  first. Three statements that were simply wrong are corrected: pull does not
+  preserve extra frontmatter (now it does, see below), `reset-sync-state` does
+  prompt, and `lock_at`/`unlock_at` never reached Canvas (now they do).
+- **A plain `push` rebuilds the item list of every module it manages, and that
+  is now written down.** The pages and assignments survive, but a quiz, a
+  discussion or an external tool that you placed in one of those modules by hand
+  in Canvas drops out of it on the next push, and nothing said so anywhere. Also
+  new: `push` warns and asks before its first push to a Canvas course that
+  already holds content, `reset-canvas` lists what the course contains before
+  asking rather than prompting blind and gained a `--dry-run`, and the `--prune`
+  prompt points at the backup guide.
+- **Assignment `lock_at` and `unlock_at` are pushed.** Both were documented in
+  three places and written back by `pull`, but neither string appeared in the
+  push path, so the dates round-tripped locally and never reached Canvas.
+- **`pull` no longer drops frontmatter keys it does not recognise.** It rebuilt
+  each file's frontmatter from the Canvas response, so `export: true`, a
+  `lesson:` number, or anything else you had added disappeared the moment pull
+  rewrote the file. Canvas stays authoritative for the fields it owns —
+  including clearing a due date you cleared in Canvas — and every other key is
+  carried over.
+- **`docs/first-course.md` starts from a computer with nothing installed.** The
+  stated audience is colleagues who have never opened VS Code or a terminal, but
+  nothing linked to code.visualstudio.com, `docs/vscode.md` opened on a command
+  that needs the `code` CLI on `PATH` without saying how to get it, and Node.js
+  got one sentence. The new walkthrough runs from installing the three programs
+  to a published module, entirely inside VS Code's built-in terminal.
+  `git-and-github.md` is now the concept explainer it was always trying to be,
+  and the triplicated "Use this template" steps are gone.
+- **The getting-started module is rebuilt around what you are doing rather than
+  what the tool can do.** Understand, write, organise, work in VS Code, publish,
+  export, save, automate, practise — with a new page on backing Canvas up before
+  the page that shows you how to push. It also exercises more of the pipeline
+  than before, since it doubles as the end-to-end sync test: three text headers
+  instead of one, an assignment carrying all three date fields, a page carrying
+  a live `export: true`, and pages that link to pages.
+- **`course/index.md` is the project's landing page upstream, and a course home
+  everywhere else.** This repository publishes its own `course/` to GitHub
+  Pages, so that file is what a stranger sees first; it now says what Canvas
+  Course Builder is and why it is worth a semester. Because the same file ships
+  to every course built from the template, `npx course setup` now offers the
+  language-matched `templates/course-index-*.md` alongside the README and
+  course-context templates (`--course-home copy|keep`), so no course
+  accidentally publishes a pitch for the tooling to its own students.
+- **The lesson workflow points at the design chain it was always built on.**
+  `course-context.md` has run goals, assessment, pedagogy from the start, and
+  `/evaluation-design` already refused to test what no lesson practised — but
+  `docs/lesson-workflow.md` diagrammed idea → plan → module → push and put
+  assessment structurally last, below the retro. Assessment moves up, the page
+  opens on the chain, and both sources are cited. `/lesson-module-build` and
+  `/quiz-build` contained the word "goal" zero times; both now close Phase A by
+  reporting the work against the goals it serves. Nothing is enforced: a course
+  with no goals still runs the whole pipeline, and is offered
+  `/course-context-init` once.
+- **`docs/`, `README.md` and `AGENTS.md` finally have a register.**
+  `writing-style.md` assigned registers by path and covered `course/`,
+  `evaluations/` and `sources/`, which left the project's own documentation
+  governed by nothing — which is why drift went unnoticed and why `/proofread`
+  could not pick a register for a file under `docs/` without asking. All four
+  style baselines now say those files belong to the tooling project and are not
+  the course author's to restyle. Separately, the skill-authoring reference
+  moved out of `ai-assistants.md` into
+  [`docs/writing-skills.md`](docs/writing-skills.md): the page switched from
+  addressing a course author to addressing a skill author halfway down, without
+  signposting it.
+
 - **Publishing to GitHub Pages is now a repository setting, and
   `npx course setup-pages` is gone.** That command wrote your site's public
   address into `docusaurus.config.js`, a file no upstream update protects, so a
