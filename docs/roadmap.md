@@ -126,3 +126,18 @@ language hints, links and lists are covered in one direction only. Separately,
 turndown escapes `_`, `*`, backticks and brackets globally, so every pulled file
 comes back with backslash noise — `snake_case` returns as `snake\_case` — which
 makes a pull diff hard to read.
+
+### Clearing an Assignment Date
+
+`assignmentStrategy.buildOpts` in `cli/push.js` adds `due_at`, `unlock_at` and
+`lock_at` to the update only when the frontmatter value is truthy, so deleting
+one of those keys omits it from the request and Canvas keeps the old date
+forever. There is currently no way to clear a date from the markdown side, and
+the local file quietly disagrees with Canvas from then on. `points_possible` and
+`published` guard on `!= null` and behave correctly; the three dates are the
+outliers.
+
+The fix is to send an explicit `null`, but it needs a decision first:
+frontmatter that never carried the key is not the same as frontmatter that just
+lost it, and clearing a due date is itself a late-policy event on an assignment
+that already has submissions.
