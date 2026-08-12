@@ -432,6 +432,7 @@ async function exportCmd(paths = [], options = {}) {
     includedPaths: collectIncludedPaths(mode.groups),
     linkMap,
     courseId,
+    labels,
     onlineLabel: labels.export.online,
   });
 

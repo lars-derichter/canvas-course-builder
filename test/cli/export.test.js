@@ -1,5 +1,7 @@
 const { describe, it } = require('node:test');
 const assert = require('node:assert/strict');
+const fs = require('fs');
+const path = require('path');
 
 const { exportSlug } = require('../../cli/export');
 const { getLabels } = require('../../lib/config/labels');
@@ -36,5 +38,25 @@ describe('exportSlug', () => {
     const slug = exportSlug('word '.repeat(100), labels);
     assert.ok(slug.length <= 100, `too long: ${slug.length}`);
     assert.doesNotMatch(slug, /-$/);
+  });
+});
+
+describe('export label wiring', () => {
+  // buildCombinedMarkdown falls back to getLabels(meta.lang) when the caller
+  // passes no label set, which resolves the language but silently drops any
+  // per-label override from course.config.yml. Overrides then show in the
+  // preview and not in the PDF. Running the real export needs pandoc, so pin
+  // the wiring at the source, as the VS Code extension tests do.
+  const source = fs.readFileSync(
+    path.join(__dirname, '..', '..', 'cli', 'export.js'),
+    'utf8',
+  );
+
+  it('hands the resolved labels to buildCombinedMarkdown', () => {
+    const call = source.slice(
+      source.indexOf('buildCombinedMarkdown(mode.groups'),
+    );
+    const ctx = call.slice(0, call.indexOf('});'));
+    assert.match(ctx, /^\s*labels,$/m);
   });
 });

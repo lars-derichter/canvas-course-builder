@@ -182,6 +182,113 @@ describe('buildCombinedMarkdown', () => {
     assert.match(md, /::: \{\.attachment name="workflow\.svg"\}/);
   });
 
+  // Reference items (quiz, external_tool) have no body of their own: rendering
+  // them must never reach the filesystem, which `ctx` guarantees by pointing at
+  // a course dir that does not exist.
+  describe('reference items', () => {
+    /** Build a quiz / external tool item with the given frontmatter. */
+    function reference(canvasType, relativePath, title, frontmatter = {}) {
+      return {
+        type: 'item',
+        canvasType,
+        relativePath,
+        file: relativePath.split('/').pop(),
+        title,
+        frontmatter,
+        indent: 0,
+      };
+    }
+
+    /** Render one item as a single-module flat export. */
+    function render(item, meta = {}, context = ctx) {
+      return buildCombinedMarkdown(
+        [{ moduleTitle: 'A', moduleFolder: '01-a', items: [item] }],
+        { regime: 'flat', ...meta },
+        context,
+      );
+    }
+
+    it('renders an external tool as a link card labelled by type', () => {
+      const md = render(
+        reference('external_tool', '01-a/04-tool.md', 'Coding Lab', {
+          external_url: 'https://lti.example.com/launch',
+          new_tab: true,
+        }),
+      );
+      assert.match(md, /# Coding Lab \{#sec-01-a-04-tool\}/);
+      assert.match(
+        md,
+        /::: \{\.link-card title="External tool" url="https:\/\/lti\.example\.com\/launch"\}/,
+      );
+      assert.match(md, /\*This item is managed in Canvas\./);
+    });
+
+    it('renders a quiz as a bare type label, with no empty link card', () => {
+      const md = render(
+        reference('quiz', '01-a/05-test.md', 'Week 1 Test', {
+          canvas_id: 77,
+          quiz_ref: 'quizzes/01-week.zip',
+        }),
+      );
+      assert.match(md, /# Week 1 Test \{#sec-01-a-05-test\}/);
+      assert.match(md, /\*\*Quiz\*\*/);
+      assert.doesNotMatch(md, /link-card/);
+      assert.match(md, /managed in Canvas/);
+    });
+
+    it('falls back to the label when a tool has no launch URL', () => {
+      const md = render(
+        reference('external_tool', '01-a/04-tool.md', 'Coding Lab', {
+          external_url: '   ',
+        }),
+      );
+      assert.match(md, /\*\*External tool\*\*/);
+      assert.doesNotMatch(md, /link-card/);
+    });
+
+    it('follows the document language', () => {
+      const md = render(
+        reference('external_tool', '01-a/04-tool.md', 'Coding Lab', {
+          external_url: 'https://lti.example.com/launch',
+        }),
+        { lang: 'nl' },
+      );
+      assert.match(md, /title="Externe tool"/);
+      assert.match(md, /\*Dit item wordt beheerd in Canvas\./);
+    });
+
+    it('prefers labels supplied by the caller, escaping them for the card', () => {
+      const md = render(
+        reference('quiz', '01-a/05-test.md', 'Week 1 Test'),
+        { lang: 'nl' },
+        {
+          ...ctx,
+          labels: {
+            cards: { quiz: 'Toets' },
+            reference: { notice: 'Staat in Canvas.' },
+          },
+        },
+      );
+      assert.match(md, /\*\*Toets\*\*/);
+      assert.match(md, /\*Staat in Canvas\.\*/);
+
+      const tool = render(
+        reference('external_tool', '01-a/04-tool.md', 'Lab', {
+          external_url: 'https://lti.example.com/launch',
+        }),
+        {},
+        {
+          ...ctx,
+          labels: {
+            cards: { external_tool: 'The "tool"' },
+            reference: { notice: 'n' },
+          },
+        },
+      );
+      assert.match(tool, /title="The \\"tool\\""/);
+    });
+  });
+
   it('nests subheader children one level deeper', () => {
     const groups = [
       {
