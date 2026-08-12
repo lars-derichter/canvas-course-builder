@@ -19,7 +19,7 @@ each page assumes the one before it.
 - **The preview** is this website. It runs locally with `npm start` and updates
   as you type, so you see what you are making before anyone else does.
 - **Canvas** is where students read it. `npx course push` converts your markdown
-  to Canvas pages, assignments, links and files, and puts them in modules.
+  to Canvas pages, assignments, links, and files, and puts them in modules.
 
 Your files are the source of truth. Canvas is a publishing target, the way a
 website is a publishing target for a document you wrote.
@@ -35,7 +35,7 @@ website is a publishing target for a document you wrote.
 
 ## What You Will Do in This Module
 
-1. Write pages in markdown, with headings, images, code and coloured callouts.
+1. Write pages in markdown, with headings, images, code, and coloured callouts.
 2. Organise them into modules and subsections, and learn which file becomes
    which kind of Canvas item.
 3. Work from the VS Code sidebar instead of typing commands.

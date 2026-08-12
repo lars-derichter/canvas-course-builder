@@ -20,7 +20,7 @@ course/
   03-javascript/          -> Module: "Javascript"
 ```
 
-The two-digit prefix (`01`, `02`, ...) controls the order. It is stripped when
+The two-digit prefix (`01`, `02`, …) controls the order. It is stripped when
 generating the display title, so `01-getting-started` becomes “Getting Started”.
 
 ## Items Inside a Module
@@ -71,5 +71,5 @@ This file controls how a folder appears in the Docusaurus sidebar:
 }
 ```
 
-- **label**: The display name in the sidebar
-- **position**: Sort order (matches the numeric folder prefix)
+- **label**: the display name in the sidebar
+- **position**: sort order, matching the numeric folder prefix

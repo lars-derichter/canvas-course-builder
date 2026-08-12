@@ -38,7 +38,7 @@ when you are ready.
 - **Instant preview.** A local website shows your course as you write, in the
   structure students will see. That is what you are looking at now.
 - **One-command Canvas sync.** `npx course push` creates and updates modules,
-  pages, assignments and files. `pull` brings remote edits back into markdown,
+  pages, assignments, and files. `pull` brings remote edits back into markdown,
   and `status` shows what would change.
 - **PDF and Word export.** Hand out a styled course text or a single chapter,
   with your institution’s branding.
@@ -53,7 +53,7 @@ when you are ready.
 ## Who It Is For
 
 Lecturers and teaching teams who maintain course material in Canvas and want the
-comfort of files, folders and version control. You do not need to be technical:
+comfort of files, folders, and version control. You do not need to be technical:
 the beginner walkthrough starts from a computer with nothing installed.
 
 It is also opinionated, and honest about it: four Canvas content types sync,

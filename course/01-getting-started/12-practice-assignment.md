@@ -12,7 +12,7 @@ published: true
 
 # Practice Assignment
 
-You have made it through the Getting started module. Nice work. Now try it
+You have made it through the Getting Started module. Nice work. Now try it
 yourself.
 
 > [!NOTE]
@@ -39,7 +39,7 @@ yourself.
    - A heading (`##`)
    - **Bold** and _italic_ text
    - A list (numbered or bulleted)
-   - One alert (e.g., `> [!TIP]`)
+   - One alert (e.g. `> [!TIP]`)
 
 4. **Preview your page** locally by running `npm start` or clicking the Preview
    button in the VS Code sidebar. Check that everything looks the way you want.

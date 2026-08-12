@@ -15,7 +15,7 @@ The most common type. Rendered as a Canvas wiki page.
 
 ```yaml
 ---
-title: My page
+title: My Page
 canvas_type: page
 ---
 ```
@@ -71,7 +71,7 @@ actual file lives in `_files/` and the markdown wrapper points to it with
 
 ```yaml
 ---
-title: Workflow diagram
+title: Workflow Diagram
 canvas_type: file
 file_ref: _files/workflow-diagram.svg
 ---
