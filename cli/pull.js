@@ -868,6 +868,26 @@ const pullStrategies = {
       canvas_type: 'discussion',
     }),
   },
+  Quiz: {
+    // A quiz has no markdown source and never gets one: its questions come from
+    // a QTI package that Canvas imported by hand, and pulling them back would
+    // invent a source this project cannot push. What is written is a reference
+    // file, so the quiz keeps its place among the module's items.
+    //
+    // Writing it also closes a gap in the file numbering. Phase 1 above numbers
+    // every module item before phase 3 decides whether to write anything for
+    // it, so an item that phase 3 skips still consumes its position: a quiz
+    // between two pages used to leave 01- and 03- with nothing at 02-.
+    getId: (item) => item.content_id,
+    idLabel: 'content_id',
+    fetch: null, // nothing to fetch: the questions are not ours to hold
+    getBody: null,
+    canvasType: 'quiz',
+    buildSyncEntry: (item) => ({
+      canvas_id: item.content_id,
+      canvas_type: 'quiz',
+    }),
+  },
   ExternalUrl: {
     getId: (item) => item.id,
     idLabel: null, // always present, no precondition check
@@ -971,6 +991,9 @@ async function pullItem(
       {
         title,
         external_url: item.external_url,
+        // A quiz item names the quiz it links in content_id; the two link types
+        // have no content behind them and carry none.
+        content_id: item.content_id,
         id: item.id,
         new_tab: item.new_tab,
       },

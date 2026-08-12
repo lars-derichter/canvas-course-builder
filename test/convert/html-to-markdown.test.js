@@ -300,6 +300,49 @@ describe('canvasItemToMarkdown', () => {
     assert.match(md, /lesson: 3/);
   });
 
+  it('writes a quiz reference file from a module item', () => {
+    const item = { title: 'Test 1', id: 800, content_id: 12 };
+    const md = canvasItemToMarkdown(item, 'quiz');
+
+    assert.match(md, /title: Test 1/);
+    assert.match(md, /canvas_type: quiz/);
+    assert.match(
+      md,
+      /canvas_id: 12/,
+      'the quiz id, not the id of the module item that links it',
+    );
+  });
+
+  it('reads a quiz object that names itself in id', () => {
+    const md = canvasItemToMarkdown({ title: 'Test 1', id: 12 }, 'quiz');
+    assert.match(md, /canvas_id: 12/);
+  });
+
+  it('gives a quiz no body, since its questions are not held here', () => {
+    const md = canvasItemToMarkdown(
+      { title: 'Test 1', content_id: 12, description: '<p>Read this.</p>' },
+      'quiz',
+    );
+
+    assert.ok(!md.includes('Read this.'), 'Expected a frontmatter-only file');
+  });
+
+  it('keeps the quiz_ref a pull found in the local file', () => {
+    const md = canvasItemToMarkdown(
+      { title: 'Test 1', content_id: 12 },
+      'quiz',
+      {
+        existingFrontmatter: {
+          canvas_id: 999,
+          quiz_ref: 'evaluations/2526/test-1/test-1-qti.zip',
+        },
+      },
+    );
+
+    assert.match(md, /quiz_ref: evaluations\/2526\/test-1\/test-1-qti\.zip/);
+    assert.match(md, /canvas_id: 12/, 'Canvas still owns the id');
+  });
+
   it('converts an external URL item', () => {
     const item = {
       title: 'Resource',

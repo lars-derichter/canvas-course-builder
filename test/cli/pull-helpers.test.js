@@ -375,6 +375,26 @@ describe('pullStrategies', () => {
     mock.restoreAll();
   });
 
+  it('Quiz strategy extracts content_id as id', () => {
+    assert.equal(pullStrategies.Quiz.getId({ content_id: 12 }), 12);
+  });
+
+  it('Quiz strategy fetches nothing', () => {
+    // The questions live in Canvas and in the QTI package; pulling them back
+    // would invent a source this project cannot push.
+    assert.equal(pullStrategies.Quiz.fetch, null);
+    assert.equal(pullStrategies.Quiz.getBody, null);
+  });
+
+  it('Quiz strategy builds sync entry keyed on the quiz id', () => {
+    const entry = pullStrategies.Quiz.buildSyncEntry({ content_id: 12 });
+    assert.deepEqual(entry, { canvas_id: 12, canvas_type: 'quiz' });
+  });
+
+  it('Quiz strategy requires a content_id, so a quiz item is not written blind', () => {
+    assert.equal(pullStrategies.Quiz.idLabel, 'content_id');
+  });
+
   it('ExternalUrl strategy has no fetch function', () => {
     assert.equal(pullStrategies.ExternalUrl.fetch, null);
   });

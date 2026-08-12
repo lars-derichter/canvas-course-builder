@@ -38,6 +38,11 @@ const SYNC_DATA = {
           canvas_id: 77,
           canvas_type: 'discussion',
         },
+        'quiz:88': {
+          path: '01-intro/04-check.md',
+          canvas_id: 88,
+          canvas_type: 'quiz',
+        },
       },
     },
   },
@@ -88,6 +93,21 @@ describe('buildLinkMap', () => {
       '01-intro/03-debate.md',
     );
     assert.equal(canvasToRelative.get('/courses/42/pages/77'), undefined);
+  });
+
+  it('maps a quiz to a quizzes URL', () => {
+    const { relativeToCanvas, canvasToRelative } = buildLinkMap(SYNC_DATA);
+
+    assert.deepEqual(relativeToCanvas.get('01-intro/04-check.md'), {
+      canvasType: 'quiz',
+      canvasId: 88,
+    });
+    assert.equal(
+      canvasToRelative.get('/courses/42/quizzes/88'),
+      '01-intro/04-check.md',
+    );
+    // The page fallback would collide with a real page whose numeric id is 88.
+    assert.equal(canvasToRelative.get('/courses/42/pages/88'), undefined);
   });
 
   it('skips items without canvas_id', () => {
@@ -253,6 +273,15 @@ describe('resolveCanvasLink', () => {
       canvasToRelative,
     );
     assert.equal(result, './03-debate.md');
+  });
+
+  it('resolves a Canvas quiz URL', () => {
+    const result = resolveCanvasLink(
+      '/courses/42/quizzes/88',
+      '01-intro/01-welcome.md',
+      canvasToRelative,
+    );
+    assert.equal(result, './04-check.md');
   });
 
   it('resolves an absolute Canvas discussion URL with a fragment', () => {

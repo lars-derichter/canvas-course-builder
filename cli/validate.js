@@ -8,11 +8,13 @@ const {
   maskCodeRegions,
 } = require('../lib/convert/link-resolver');
 const { COURSE_DIR } = require('./module-utils');
+const { PROJECT_ROOT } = require('./project-root');
 
 const VALID_CANVAS_TYPES = new Set([
   'page',
   'assignment',
   'discussion',
+  'quiz',
   'external_url',
   'external_tool',
   'file',
@@ -24,9 +26,10 @@ const VALID_CANVAS_TYPES = new Set([
  *
  * @param {Array<object>} modules - Modules from scanCourse().
  * @param {string} courseDir - Absolute path to the scanned course directory.
+ * @param {string} [projectRoot] - Repo root, which `quiz_ref` is resolved from.
  * @returns {{ errors: string[], warnings: string[] }}
  */
-function validateModules(modules, courseDir) {
+function validateModules(modules, courseDir, projectRoot = PROJECT_ROOT) {
   const errors = [];
   const warnings = [];
 
@@ -106,6 +109,34 @@ function validateModules(modules, courseDir) {
         errors.push(
           `${item.relativePath}: external_tool type requires an external_url field (the tool's launch URL)`,
         );
+      }
+
+      // A quiz item is a reference, not a source: the questions live in the QTI
+      // package it names and in Canvas, never in this file. The path is relative
+      // to the repo root, because the zip lives under evaluations/, outside
+      // course/.
+      //
+      // A missing quiz_ref is a warning, not an error. A quiz pulled from Canvas
+      // has never had one — Canvas does not know the zip exists — so erroring
+      // would make every pull of a Canvas-authored quiz produce a tree that
+      // fails validation. It is still worth saying out loud, because a quiz with
+      // no local package is exactly the one a rollover cannot rebuild.
+      //
+      // A quiz_ref that names a file which is not there is a different thing: a
+      // reference the author wrote and the repo cannot honour. That is an error.
+      if (data.canvas_type === 'quiz') {
+        if (!data.quiz_ref || typeof data.quiz_ref !== 'string') {
+          warnings.push(
+            `${item.relativePath}: quiz has no quiz_ref, so a rollover to a fresh Canvas course cannot rebuild it. Point quiz_ref at the QTI zip (relative to the repo root) once you have one.`,
+          );
+        } else {
+          const refPath = path.resolve(projectRoot, data.quiz_ref);
+          if (!fs.existsSync(refPath)) {
+            errors.push(
+              `${item.relativePath}: quiz_ref not found: ${data.quiz_ref} (resolved from the repo root)`,
+            );
+          }
+        }
       }
 
       // Check file wrapper has a file_ref pointing at a file on disk

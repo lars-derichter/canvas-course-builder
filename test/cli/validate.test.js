@@ -118,13 +118,16 @@ describe('validateModules — file items', () => {
   });
 
   it('still reports an unknown canvas_type', () => {
-    writeItem('01-mystery.md', '---\ntitle: Mystery\ncanvas_type: quiz\n---\n');
+    writeItem(
+      '01-mystery.md',
+      '---\ntitle: Mystery\ncanvas_type: announcement\n---\n',
+    );
 
     const { errors } = run();
     assert.equal(errors.length, 1);
     assert.match(
       errors[0],
-      /^01-module\/01-mystery\.md: unknown canvas_type "quiz" \(expected: /,
+      /^01-module\/01-mystery\.md: unknown canvas_type "announcement" \(expected: /,
     );
   });
 
@@ -141,5 +144,96 @@ describe('validateModules — file items', () => {
     ]);
     assert.equal(errors.length, 1);
     assert.match(errors[0], /broken link to "\.\/99-nope\.md"/);
+  });
+});
+
+describe('validateModules — quiz items', () => {
+  let root;
+  let courseDir;
+  let quizModuleDir;
+
+  /**
+   * Validate a repo-shaped temp tree: course/ holds the modules, and quiz_ref
+   * paths resolve from the root above it, where evaluations/ lives.
+   */
+  function runFromRoot() {
+    return validateModules(scanCourse(courseDir), courseDir, root);
+  }
+
+  /** Write a quiz item with the given frontmatter lines. */
+  function writeQuiz(lines) {
+    fs.writeFileSync(
+      path.join(quizModuleDir, '05-test.md'),
+      `---\ntitle: Test 1\ncanvas_type: quiz\n${lines}---\n`,
+    );
+  }
+
+  beforeEach(() => {
+    root = fs.mkdtempSync(path.join(os.tmpdir(), 'validate-quiz-'));
+    courseDir = path.join(root, 'course');
+    quizModuleDir = path.join(courseDir, '01-module');
+    fs.mkdirSync(quizModuleDir, { recursive: true });
+  });
+
+  afterEach(() => {
+    fs.rmSync(root, { recursive: true, force: true });
+  });
+
+  it('accepts a quiz whose quiz_ref zip is on disk', () => {
+    const zipDir = path.join(root, 'evaluations', '2526', 'test-1');
+    fs.mkdirSync(zipDir, { recursive: true });
+    fs.writeFileSync(path.join(zipDir, 'test-1-qti.zip'), 'binary');
+    writeQuiz('quiz_ref: evaluations/2526/test-1/test-1-qti.zip\n');
+
+    const { errors, warnings } = runFromRoot();
+    assert.deepEqual(errors, []);
+    assert.deepEqual(warnings, []);
+  });
+
+  it('warns about a quiz without a quiz_ref, but does not error', () => {
+    // A quiz pulled from Canvas has no quiz_ref and never will until the author
+    // points it at a package, so this state has to stay valid. It is still the
+    // one a rollover cannot rebuild, so it has to be said out loud.
+    writeQuiz('');
+
+    const { errors, warnings } = runFromRoot();
+    assert.deepEqual(errors, []);
+    assert.equal(warnings.length, 1);
+    assert.match(warnings[0], /^01-module\/05-test\.md: quiz has no quiz_ref/);
+    assert.match(warnings[0], /rollover/);
+  });
+
+  it('reports a quiz_ref that points at nothing', () => {
+    writeQuiz('quiz_ref: evaluations/2526/test-1/missing-qti.zip\n');
+
+    const { errors } = runFromRoot();
+    assert.deepEqual(errors, [
+      '01-module/05-test.md: quiz_ref not found: evaluations/2526/test-1/missing-qti.zip (resolved from the repo root)',
+    ]);
+  });
+
+  it('resolves quiz_ref from the repo root, not from the item', () => {
+    // The zip lives under evaluations/, outside course/, so a path that would
+    // resolve relative to the markdown file must not be accepted.
+    fs.mkdirSync(path.join(quizModuleDir, 'evaluations'), { recursive: true });
+    fs.writeFileSync(
+      path.join(quizModuleDir, 'evaluations', 'test-1-qti.zip'),
+      'binary',
+    );
+    writeQuiz('quiz_ref: evaluations/test-1-qti.zip\n');
+
+    const { errors } = runFromRoot();
+    assert.equal(errors.length, 1);
+    assert.match(errors[0], /quiz_ref not found/);
+  });
+
+  it('accepts canvas_type: quiz as a known type', () => {
+    writeQuiz('quiz_ref: evaluations/2526/test-1/test-1-qti.zip\n');
+
+    const { errors } = runFromRoot();
+    assert.equal(
+      errors.some((e) => e.includes('unknown canvas_type')),
+      false,
+    );
   });
 });

@@ -41,6 +41,7 @@ const {
   findToolForUrl,
   describeInstalledTools,
 } = require('../lib/canvas/external-tools');
+const { listQuizzes } = require('../lib/canvas/quizzes');
 const { uploadFile, deleteFile } = require('../lib/canvas/files');
 const { get } = require('../lib/canvas/client');
 const { ensureIcons, getIconUrls } = require('../lib/canvas/icons');
@@ -682,6 +683,13 @@ async function pushItem(
       { title, filePath, position, indent, frontmatter },
       dryRun,
     );
+  } else if (canvasType === 'quiz') {
+    await pushQuiz(
+      courseId,
+      moduleId,
+      { title, filePath, position, indent, frontmatter },
+      dryRun,
+    );
   } else if (canvasType === 'file') {
     // Resolve file_ref from markdown wrapper to actual binary path
     let binaryPath = filePath;
@@ -1242,6 +1250,129 @@ async function pushExternalTool(
   }
 }
 
+/**
+ * Say that the quiz this item points at is not in the course, and how to put it
+ * there.
+ *
+ * The steps are the ones `/quiz-build` prints beside the package it generated
+ * (`.agents/skills/quiz-build/SKILL.md`), because a QTI package has no API
+ * import: Canvas takes it only through the web interface. Naming the zip is the
+ * point — it is the one thing that says which package this item is waiting for.
+ */
+function warnQuizNotImported(title, quizRef) {
+  log.warn(
+    `  [push] WARNING: Skipping "${title}" — this course holds no quiz by that name yet. ` +
+      `Import ${quizRef} by hand first; Canvas has no API for a QTI import:`,
+  );
+  log.warn(
+    '    [push] 1. Canvas -> the course -> Settings -> Import Course Content.',
+  );
+  log.warn(`    [push] 2. Content Type "QTI .zip file"; choose ${quizRef}.`);
+  log.warn(
+    '    [push] 3. Leave the default question bank; tick "Import existing quizzes as New ' +
+      'Quizzes" only if the course uses New Quizzes.',
+  );
+  log.warn(
+    '    [push] 4. Import, and wait for "Completed" under Current Jobs.',
+  );
+  log.warn(
+    '    [push] 5. The quiz arrives unpublished: check every question and point value, set ' +
+      'the availability dates and the time limit (QTI carries none of those), then publish.',
+  );
+  log.warn(
+    `    [push] Then push again. The quiz is found by its title, so leave it named "${title}" ` +
+      'in Canvas, and its id is written back to this file.',
+  );
+}
+
+/**
+ * Add a quiz to a module as an item, and never touch the quiz itself.
+ *
+ * A Classic Quiz has no markdown source: the QTI package named by `quiz_ref` is
+ * what produced it, and it entered Canvas through a manual import. So this
+ * creates the module item and stops there — no create, no update, no delete on
+ * the quiz object, which holds questions and submissions that nothing here
+ * could reconstruct.
+ *
+ * Which quiz an item names is resolved from `canvas_id` while the course still
+ * lists it, and by title otherwise, writing the id it found back to the
+ * frontmatter. That is the stale-id recovery `pushContentItem` already does for
+ * pages and assignments, with the one difference that a quiz can only ever be
+ * found: when the title matches nothing there is no falling back to creating
+ * it, and the item is skipped with the import procedure printed.
+ *
+ * Two quizzes under one title are ambiguous and also skipped. A guess would
+ * link students to the wrong quiz, and this is exactly the state a second
+ * import of the same package leaves behind, so it is a case that happens.
+ */
+async function pushQuiz(
+  courseId,
+  moduleId,
+  { title, filePath, position, indent, frontmatter },
+  dryRun,
+) {
+  const quizRef = frontmatter.quiz_ref;
+  if (!quizRef) {
+    log.warn(
+      `  [push] WARNING: Skipping "${title}" — canvas_type is quiz but quiz_ref field is missing in frontmatter`,
+    );
+    return;
+  }
+
+  log.info(`  [push] Adding quiz module item: ${title}`);
+  if (dryRun) return;
+
+  const quizzes = (await listQuizzes(courseId)) || [];
+  const canvasId = frontmatter.canvas_id;
+  let quizId = null;
+
+  if (
+    canvasId != null &&
+    quizzes.some((quiz) => String(quiz.id) === String(canvasId))
+  ) {
+    quizId = canvasId;
+  } else {
+    if (canvasId != null) {
+      log.warn(
+        `    [push] Quiz ${canvasId} is no longer in this course, matching "${title}" by title instead`,
+      );
+    }
+
+    const wanted = String(title).trim();
+    const matches = quizzes.filter(
+      (quiz) => String(quiz.title || '').trim() === wanted,
+    );
+
+    if (matches.length > 1) {
+      log.warn(
+        `  [push] WARNING: Skipping "${title}" — ${matches.length} quizzes in this course carry ` +
+          `that title (ids ${matches.map((quiz) => quiz.id).join(', ')}), and picking one would be ` +
+          'a guess. Importing a QTI package a second time adds a quiz rather than replacing the ' +
+          "first: delete the stale one in Canvas, or put the id you mean in this file's canvas_id.",
+      );
+      return;
+    }
+
+    if (matches.length === 0) {
+      warnQuizNotImported(title, quizRef);
+      return;
+    }
+
+    quizId = matches[0].id;
+    updateFrontmatter(filePath, { canvas_id: quizId });
+    frontmatter.canvas_id = quizId;
+    log.verbose(`Matched quiz "${title}" by title, wrote canvas_id=${quizId}`);
+  }
+
+  await createModuleItem(courseId, moduleId, {
+    title,
+    type: 'Quiz',
+    contentId: quizId,
+    position,
+    indent,
+  });
+}
+
 async function pushFile(
   courseId,
   moduleId,
@@ -1511,6 +1642,25 @@ async function deleteCanvasItemByType(courseId, item, errors) {
           `    [push] External tool item not found on Canvas, may already be deleted: ${item.relativePath}`,
         );
       }
+    } else if (item.canvasType === 'quiz') {
+      // The quiz is not this project's to delete: a QTI import created it,
+      // push never writes to it, and deleting it would take every student
+      // submission with it. Prune removes the module item that links it.
+      const moduleItems = await listModuleItems(courseId, item.moduleId);
+      const match = moduleItems.find(
+        (mi) =>
+          mi.type === 'Quiz' && String(mi.content_id) === String(item.canvasId),
+      );
+      if (match) {
+        await deleteModuleItem(courseId, item.moduleId, match.id);
+        log.info(
+          `    [push] Removed the module item only; the quiz and its submissions stay in Canvas.`,
+        );
+      } else {
+        log.warn(
+          `    [push] Quiz item not found on Canvas, may already be deleted: ${item.relativePath}`,
+        );
+      }
     } else {
       log.warn(
         `    [push] Unknown canvas_type "${item.canvasType}" for ${item.relativePath}, skipping`,
@@ -1730,3 +1880,4 @@ push._assignmentStrategy = assignmentStrategy;
 push._discussionStrategy = discussionStrategy;
 push._pushContentItem = pushContentItem;
 push._pushExternalTool = pushExternalTool;
+push._pushQuiz = pushQuiz;

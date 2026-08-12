@@ -15,6 +15,12 @@ describe('itemKey', () => {
     assert.equal(itemKey('file', { canvasId: 7 }), 'file:7');
   });
 
+  it('keys quizzes on the quiz id, like a page', () => {
+    // A quiz outlives the module item that links it, so the item id is not its
+    // identity: prune and diff have to recognise it by the quiz it points at.
+    assert.equal(itemKey('quiz', { canvasId: 12 }), 'quiz:12');
+  });
+
   it('keys external URLs on the URL (module-item ids change every push)', () => {
     assert.equal(
       itemKey('external_url', {

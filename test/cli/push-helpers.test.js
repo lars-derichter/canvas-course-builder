@@ -18,6 +18,7 @@ const {
   _discussionStrategy: discussionStrategy,
   _pushContentItem: pushContentItem,
   _pushExternalTool: pushExternalTool,
+  _pushQuiz: pushQuiz,
   _warnGradeImpact: warnGradeImpact,
   _collectUpdatedAssignments: collectUpdatedAssignments,
 } = push;
@@ -689,6 +690,184 @@ describe('pushing an external tool', () => {
 
   it('makes no request at all on a dry run', async () => {
     const { calls } = await pushTool({ routes: [], dryRun: true });
+
+    assert.equal(calls.length, 0);
+  });
+});
+
+describe('pushing a quiz', () => {
+  const tmpDirs = [];
+
+  afterEach(() => {
+    mock.restoreAll();
+    while (tmpDirs.length) {
+      fs.rmSync(tmpDirs.pop(), { recursive: true, force: true });
+    }
+  });
+
+  /**
+   * Run one quiz markdown file through pushQuiz with Canvas mocked out, and
+   * hand back every request it made plus what it warned about.
+   */
+  async function pushQuizItem({
+    frontmatter: extra = {},
+    routes,
+    dryRun = false,
+  }) {
+    mock.method(console, 'log', () => {});
+    const warned = mock.method(console, 'warn', () => {});
+
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'push-quiz-'));
+    tmpDirs.push(dir);
+    const filePath = path.join(dir, '05-test.md');
+    const frontmatter = {
+      title: 'Test 1',
+      canvas_type: 'quiz',
+      quiz_ref: QUIZ_REF,
+      ...extra,
+    };
+    if (frontmatter.quiz_ref === null) delete frontmatter.quiz_ref;
+    fs.writeFileSync(filePath, serializeFrontmatter(frontmatter, ''), 'utf8');
+
+    const calls = mockCanvas(routes || []);
+    await pushQuiz(
+      42,
+      9,
+      { title: 'Test 1', filePath, position: 5, indent: 0, frontmatter },
+      dryRun,
+    );
+
+    return { calls, filePath, frontmatter, warned };
+  }
+
+  const QUIZ_REF = 'evaluations/2526/test-1/test-1-qti.zip';
+  const quizListed = {
+    method: 'GET',
+    path: '/quizzes',
+    body: [
+      { id: 12, title: 'Test 1' },
+      { id: 13, title: 'Practice' },
+    ],
+  };
+  const noQuizzes = { method: 'GET', path: '/quizzes', body: [] };
+  const twoOfTheSameName = {
+    method: 'GET',
+    path: '/quizzes',
+    body: [
+      { id: 12, title: 'Test 1' },
+      { id: 44, title: 'Test 1' },
+    ],
+  };
+  const moduleItemCreated = {
+    method: 'POST',
+    path: '/modules/9/items',
+    body: { id: 1000 },
+  };
+
+  it('adds the quiz to the module as a Quiz item', async () => {
+    const { calls } = await pushQuizItem({
+      frontmatter: { canvas_id: 12 },
+      routes: [quizListed, moduleItemCreated],
+    });
+
+    const moduleItem = calls.find((c) => c.url.includes('/modules/9/items'));
+    assert.ok(moduleItem, 'expected a module item request');
+    assert.deepEqual(moduleItem.body.module_item, {
+      title: 'Test 1',
+      type: 'Quiz',
+      content_id: 12,
+      position: 5,
+      indent: 0,
+    });
+  });
+
+  it('never writes to the quiz itself', async () => {
+    const { calls } = await pushQuizItem({
+      frontmatter: { canvas_id: 12 },
+      routes: [quizListed, moduleItemCreated],
+    });
+
+    assert.ok(
+      !calls.some((c) => c.url.includes('/quizzes') && c.method !== 'GET'),
+      'the quiz object is read and nothing more',
+    );
+  });
+
+  it('matches by title and writes the id back when the file has no canvas_id', async () => {
+    const { calls, filePath } = await pushQuizItem({
+      routes: [quizListed, moduleItemCreated],
+    });
+
+    assert.match(
+      fs.readFileSync(filePath, 'utf8'),
+      /canvas_id: 12/,
+      'the resolved id is written back so the next push skips the lookup',
+    );
+    const moduleItem = calls.find((c) => c.url.includes('/modules/9/items'));
+    assert.equal(moduleItem.body.module_item.content_id, 12);
+  });
+
+  it('recovers by title when the canvas_id is no longer in the course', async () => {
+    const { calls, filePath, warned } = await pushQuizItem({
+      frontmatter: { canvas_id: 999 },
+      routes: [quizListed, moduleItemCreated],
+    });
+
+    const text = warned.mock.calls.map((c) => c.arguments[0]).join('\n');
+    assert.match(text, /Quiz 999 is no longer in this course/);
+    assert.match(fs.readFileSync(filePath, 'utf8'), /canvas_id: 12/);
+    const moduleItem = calls.find((c) => c.url.includes('/modules/9/items'));
+    assert.equal(moduleItem.body.module_item.content_id, 12);
+  });
+
+  it('warns and skips when two quizzes carry the same title', async () => {
+    const { calls, filePath, warned } = await pushQuizItem({
+      routes: [twoOfTheSameName],
+    });
+
+    const text = warned.mock.calls.map((c) => c.arguments[0]).join('\n');
+    assert.match(text, /2 quizzes in this course carry that title/);
+    assert.match(text, /ids 12, 44/);
+    assert.ok(
+      !calls.some((c) => c.url.includes('/modules/9/items')),
+      'an ambiguous match must never be guessed at',
+    );
+    assert.doesNotMatch(fs.readFileSync(filePath, 'utf8'), /canvas_id/);
+  });
+
+  it('prints the import procedure and skips when the quiz is not in Canvas', async () => {
+    const { calls, warned } = await pushQuizItem({ routes: [noQuizzes] });
+
+    const text = warned.mock.calls.map((c) => c.arguments[0]).join('\n');
+    assert.match(text, /holds no quiz by that name yet/);
+    assert.match(text, /Import Course Content/);
+    assert.match(text, /QTI \.zip file/);
+    assert.match(text, /Current Jobs/);
+    assert.ok(
+      text.includes(QUIZ_REF),
+      'the message names the package the item is waiting for',
+    );
+    assert.ok(
+      !calls.some((c) => c.url.includes('/modules/9/items')),
+      'a module item pointing at nothing is worse than no item',
+    );
+  });
+
+  it('warns and skips when the frontmatter has no quiz_ref', async () => {
+    const { calls, warned } = await pushQuizItem({
+      frontmatter: { quiz_ref: null },
+      routes: [],
+    });
+
+    assert.equal(calls.length, 0, 'nothing is looked up without a quiz_ref');
+    const lines = warned.mock.calls.map((c) => c.arguments[0]);
+    assert.equal(lines.length, 1);
+    assert.match(lines[0], /Skipping "Test 1"/);
+    assert.match(lines[0], /quiz_ref field is missing/);
+  });
+
+  it('makes no request at all on a dry run', async () => {
+    const { calls } = await pushQuizItem({ routes: [], dryRun: true });
 
     assert.equal(calls.length, 0);
   });
