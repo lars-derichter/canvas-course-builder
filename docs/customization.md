@@ -97,7 +97,7 @@ Courses taught in Dutch want
 is the same template with its headings, prose and TODO comments in Dutch, and it
 links to the same English guides under `docs/`.
 
-Then work through the copy: change `Course name` to the name of your course,
+Then work through the copy: change `Course Name` to the name of your course,
 write the course overview, fill in the module table, check that the licence line
 matches [`course/LICENSE.md`](../course/LICENSE.md), and trim the "Useful links"
 list to the guides your colleagues will actually need. Delete the tip at the top

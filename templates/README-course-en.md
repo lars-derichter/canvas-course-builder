@@ -1,18 +1,18 @@
-# Course name
+# Course Name
 
 > [!TIP]
 >
 > This is the README template for your course repository, in English. Copy this
 > file over the `README.md` in your project root (which describes the Canvas
-> Course Builder tooling), change `Course name` to the name of your course, fill
+> Course Builder tooling), change `Course Name` to the name of your course, fill
 > in the sections below, and delete this tip. Dutch-language courses want
 > [`README-course-nl.md`](README-course-nl.md) instead.
 
-Course materials for **Course name**, written in markdown and synced with Canvas
+Course materials for **Course Name**, written in markdown and synced with Canvas
 LMS using
 [Canvas Course Builder](https://github.com/lars-derichter/canvas-course-builder).
 
-## Course overview
+## Course Overview
 
 <!-- TODO: Describe your course here. For example: -->
 
@@ -37,7 +37,7 @@ The course content in `course/` is licensed under
 The Canvas Course Builder tooling is [MIT licensed](LICENSE); keep that file and
 this line in place.
 
-## Useful links
+## Useful Links
 
 - [Your first course](docs/first-course.md): the step-by-step beginner
   walkthrough

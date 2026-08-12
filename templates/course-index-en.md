@@ -1,6 +1,6 @@
 ---
 slug: /
-title: Course home
+title: Course Home
 sidebar_position: 0
 ---
 
@@ -24,7 +24,7 @@ sidebar_position: 0
 
 Use the sidebar to work through the modules.
 
-## How this course works
+## How This Course Works
 
 Replace this section with the practicalities: when the course meets, what
 students should do before each session, and how the material is organised.

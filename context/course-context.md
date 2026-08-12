@@ -1,4 +1,4 @@
-# Course context
+# Course Context
 
 > [!TIP]
 >
@@ -20,7 +20,7 @@
 > `update-from-upstream.conf`, so upstream updates never overwrite your version.
 > See [Customization](../docs/customization.md).
 
-## Course overview
+## Course Overview
 
 <!-- Subject, course name, institution, programme, language of instruction,
 students' level (year, prior knowledge, CEFR level if relevant), course length
@@ -31,7 +31,7 @@ with what you write here. -->
 
 TODO
 
-## Learning goals
+## Learning Goals
 
 <!-- The course's overarching learning goals: what a student can do at the end
 of the course. List them here, or point to the document that holds them, and
@@ -66,7 +66,7 @@ live coding, PRIMM, worked examples) if lesson plans refer to them. -->
 
 TODO
 
-## Lesson plans
+## Lesson Plans
 
 <!-- Where full lesson designs live and how they are structured. Defaults the
 skills assume when this section is TODO:
@@ -79,7 +79,7 @@ them to the course goals above. -->
 
 TODO
 
-## Class versions
+## Class Versions
 
 <!-- Whether you distill lesson plans into one-page class versions (a teaching
 reminder for in the classroom). Defaults: written to
@@ -90,7 +90,7 @@ and their labels here. -->
 
 TODO
 
-## Module conventions
+## Module Conventions
 
 <!-- How a generated student-facing module under `course/` is built beyond
 what docs/frontmatter.md and writing-style.md already define: the page roles and their
@@ -101,7 +101,7 @@ Point to one or two existing modules as worked examples. -->
 
 TODO
 
-## Code and downloads
+## Code and Downloads
 
 <!-- Only for courses with code. The programming language(s), how downloadable
 code projects in `_files/` are laid out (e.g. zip containing
@@ -121,7 +121,7 @@ path, or state that the course has no glossary. -->
 
 TODO
 
-## Scope boundaries
+## Scope Boundaries
 
 <!-- Topics deliberately outside this course, so design conversations flag
 them instead of silently including them. List each with a one-line reason
