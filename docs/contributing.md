@@ -160,10 +160,22 @@ git config blame.ignoreRevsFile .git-blame-ignore-revs
 
 ## Documentation style
 
-The project's own docs (`docs/`, the README, and the getting-started module) are
-written in English with UK spelling (customise, colour), sentence-case headings,
-and lines wrapped at 80 characters. The per-course guides in `context/` govern
-course content, not these docs.
+The project's own docs (`docs/`, the README, and `AGENTS.md`) are written in
+English with UK spelling (customise, colour), sentence-case headings, and lines
+wrapped at 80 characters. In register they follow the **colleague-facing** rules
+in [`context/writing-style.md`](../context/writing-style.md): direct and dry, no
+readability cap, front-load the point, no trailing summaries, and the same list
+of AI tells to avoid. Write for a colleague who teaches, not for a student and
+not for a compiler.
+
+The getting-started module under `course/` is the exception among the project's
+own writing. It ships as a course, it is served to whoever previews the site,
+and it doubles as the sync acceptance test, so it takes the **student-facing**
+register: warm, accessible, CEFR B2.
+
+The per-course guides in `context/` govern course content. A course author is
+free to rewrite them; the project's own docs are not theirs to restyle, because
+an upstream update overwrites them.
 
 The style baselines in `templates/` are the deliberate exception. Each one is
 written in the language and variety it prescribes, so two of the four are in

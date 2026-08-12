@@ -19,9 +19,12 @@ extensions, stop and explain.
 ## Steps
 
 1. **Determine the register** from the path: `course/**` or `evaluations/**` →
-   student-facing; anywhere under `sources/` → colleague-facing; otherwise ask.
-   The lowest-numbered lesson under `sources/lessons/` (if any) is the worked
-   example for the colleague-facing register.
+   student-facing; anywhere under `sources/` → colleague-facing; `docs/**`,
+   `README.md` and `AGENTS.md` → colleague-facing, plus the rules in
+   `docs/contributing.md` § Documentation style (UK spelling, sentence-case
+   headings, 80 columns) which override writing-style.md where they differ;
+   otherwise ask. The lowest-numbered lesson under `sources/lessons/` (if any)
+   is the worked example for the colleague-facing register.
 
 2. **Read `context/writing-style.md` in full.** Apply the shared rules plus the
    section matching the register. writing-style.md is the authoritative ruleset

@@ -31,6 +31,13 @@ voor het bestand dat je onder handen hebt.
 Het laagst genummerde lesplan in `sources/lessons/` is het uitgewerkte voorbeeld
 voor het collegagerichte register.
 
+Al het overige in de repository hoort bij het toolingproject, niet bij je
+cursus: `README.md`, `AGENTS.md` en de gidsen in `docs/`. Die volgen het
+collegagerichte register plus de regels in
+[Contributing](../docs/contributing.md#documentation-style), en het is niet aan
+jou om ze te herschrijven — een upstream-update overschrijft ze toch. Pas hier
+de stem van je cursus aan; laat die bestanden met rust.
+
 De rest van deze gids valt uiteen in **gedeelde regels** (voor allebei),
 **studentgericht** en **collegagericht**.
 
