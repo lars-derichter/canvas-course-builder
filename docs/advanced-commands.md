@@ -3,6 +3,11 @@
 Commands for managing sync state and Canvas content. These commands modify state
 destructively — only use them if you know what you are doing.
 
+> [!WARNING]
+>
+> Canvas has no undo. Back the course up before running anything on this page:
+> see [Backing up a Canvas course](backups.md).
+
 ## reset-sync-state
 
 ```bash
@@ -25,26 +30,39 @@ next `push` will create everything fresh on Canvas.
 - Preparing the repo for sharing (strip instance-specific IDs).
 - Testing the full sync flow from scratch.
 
-**Note:** The command runs immediately with no confirmation prompt.
+**Note:** The command asks for confirmation, and touches nothing on Canvas. The
+Canvas course keeps all its content — which is the trap: push after this on a
+course that still holds the old content and you get a duplicate of everything.
 
 ## reset-canvas
 
 ```bash
 npx course reset-canvas
+npx course reset-canvas --dry-run   # show what would go, delete nothing
 ```
 
-Deletes **all** content from the Canvas course configured in `.env`:
+Deletes **all** content from the Canvas course configured in `.env`, not only
+content this tool created:
 
 - All modules
 - All pages
 - All assignments
 - All files
 
-The command asks for interactive confirmation before making any changes:
+Quizzes, discussions, announcements, rubrics and grades survive — there is no
+API call for them here — but the modules that linked them do not.
+
+The command lists what the course holds, then asks:
 
 ```
-Are you sure you want to delete all content on the Canvas course with id 123? (y/n)
+[reset-canvas] Canvas course 123 contains 4 modules, 18 pages, 2 assignments.
+[reset-canvas] All of it will be deleted, including content this project never created.
+[reset-canvas] Canvas has no undo. Back the course up first — see docs/backups.md.
+[reset-canvas] Delete all content on course 123? (y/N)
 ```
+
+Anything other than `y` cancels, so a piped or non-interactive run cancels
+rather than deleting.
 
 If individual deletions fail the command continues with the remaining items and
 reports a summary of errors at the end.

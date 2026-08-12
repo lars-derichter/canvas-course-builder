@@ -10,6 +10,9 @@ turn the template into your own course.
 - [Git and GitHub basics](git-and-github.md): for complete beginners, from
   installing git to your first commit
 - [Canvas setup](canvas-setup.md): API URL, access token, and course ID
+- [Backups](backups.md): back the Canvas course up before your first push
+- [Limitations](limitations.md): what the tool does not do, and what to do
+  instead
 - [Troubleshooting](troubleshooting.md): common errors and their fixes
 
 ## Writing your course

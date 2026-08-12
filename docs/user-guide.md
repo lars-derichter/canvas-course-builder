@@ -318,6 +318,14 @@ handy fallback when Canvas is unavailable. See the [hosting guide](hosting.md).
 
 ### Canvas sync
 
+> [!WARNING]
+>
+> Before your first push to a Canvas course that already has content, back it
+> up: see [Backing up a Canvas course](backups.md). Push takes over the modules
+> it manages, `--prune` deletes what you removed locally, and Canvas has no
+> undo. [Limitations](limitations.md) sets out exactly what each command
+> touches.
+
 ```bash
 npx course push                  # push all modules to Canvas
 npx course push --dry-run        # preview without making changes
