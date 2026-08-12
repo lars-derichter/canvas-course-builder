@@ -62,3 +62,16 @@ the build on broken internal links (`onBrokenLinks: 'throw'` in
 If a run succeeds but nothing is published, and every job after the first is
 greyed out as skipped, Pages is not enabled yet or its source is still set to a
 branch. Set **Source** to **GitHub Actions** and push again.
+
+If every job is green, the deploy step ends in `Reported success!`, and the
+address still shows GitHub's own "Site not found" page, the publish hung after
+the build rather than in it. Ask GitHub how far the deployment got:
+
+```bash
+gh api repos/YOUR-USERNAME/your-project-name/pages/deployments/COMMIT-SHA
+```
+
+A status of `purging_cdn` that does not change within a few minutes means the
+site is stuck on GitHub's side. Re-running the workflow usually clears it. If it
+does not, set **Settings > Pages > Source** to **None**, save, set it back to
+**GitHub Actions**, and push again.

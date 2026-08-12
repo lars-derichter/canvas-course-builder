@@ -2,6 +2,14 @@
 
 ## Unreleased
 
+- **A second push no longer cancels a Pages deployment that is halfway through
+  publishing.** The deploy workflow shared GitHub's `pages` concurrency group
+  but set `cancel-in-progress: true`, so two pushes in quick succession could
+  kill a publish mid-flight and leave the site unpublished — after which every
+  later run went green while the address served GitHub's "Site not found" page.
+  [`docs/hosting.md`](docs/hosting.md) now covers that symptom too: how to read
+  the deployment's own status, and the off-and-on-again that clears it when a
+  publish hangs on GitHub's side.
 - **The documentation now says what the tool does not do, and how to back up a
   Canvas course before finding out.** The only statement of unsupported Canvas
   types anywhere in the project used to be one line inside a pull FAQ, and a
