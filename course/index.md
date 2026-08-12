@@ -1,24 +1,73 @@
 ---
 slug: /
-title: Course home
+title: Canvas Course Builder
 sidebar_position: 0
 ---
 
-# Welcome
+# Write your course in markdown. Publish it to Canvas.
 
-This course is built and maintained with **Canvas Course Builder**, a tool that
-lets you write all your course materials as markdown files, preview them locally
-with Docusaurus, and sync everything to Canvas LMS with a single command.
+**Canvas Course Builder** moves your course out of the Canvas web editor and
+into plain files on your computer — with version control, search and replace,
+offline work, a local preview, and one command to publish.
 
-## How it works
+This site is the proof: it is a course built with the tool, previewed with the
+tool, and published straight from the repository.
 
-1. **Write** your pages, assignments, and links as markdown in the `course/`
-   folder
-2. **Preview** locally by running `npm start` — you are looking at this preview
-   right now
-3. **Push** to Canvas with `npx course push` to publish your content to students
+> [!TIP]
+>
+> New here? Head into the **Getting started** module in the sidebar. It walks
+> through writing markdown, organising a course, syncing with Canvas, and
+> working with an AI assistant — and every page of it is a working example of
+> something the tool can publish.
 
-All formatting, alerts, images, and file uploads are handled automatically.
-Changes you make on Canvas can be pulled back with `npx course pull`.
+## The problem it solves
 
-Head into the **Getting Started** module to learn the basics.
+The Canvas editor is fine for a page or two. Maintaining a whole course in it is
+another matter: no history, no search and replace across pages, no offline work,
+no way to review a change before students see it, and no way to reuse last
+year's material without clicking through it all again.
+
+Canvas Course Builder treats your markdown as the source of truth and Canvas as
+a publishing target. You write in your own editor, review every change, and push
+when you are ready.
+
+## What you get
+
+- **Your own tools.** Write in VS Code or any editor, keep everything in git,
+  and review every change before it goes live.
+- **Instant preview.** A local website shows your course as you write, in the
+  structure students will see. That is what you are looking at now.
+- **One-command Canvas sync.** `npx course push` creates and updates modules,
+  pages, assignments and files. `pull` brings remote edits back into markdown,
+  and `status` shows what would change.
+- **PDF and Word export.** Hand out a styled course text or a single chapter,
+  with your institution's branding.
+- **A VS Code extension.** Every command in the sidebar, so daily work needs no
+  terminal.
+- **AI-assisted authoring.** Bundled skills help design lessons from their
+  learning goals, build student modules, generate Canvas quizzes, proofread, and
+  check a whole course for consistency.
+- **A template that stays updatable.** Create your course from the template and
+  keep pulling in tooling improvements; your content is never overwritten.
+
+## Who it is for
+
+Lecturers and teaching teams who maintain course material in Canvas and want the
+comfort of files, folders and version control. You do not need to be technical —
+the beginner walkthrough starts from a computer with nothing installed.
+
+It is also opinionated, and honest about it: four Canvas content types sync,
+quizzes are import-only, and the folder layout is a contract. Better to know
+that now than in week six.
+
+## Start here
+
+- **[Your first course, step by step](https://github.com/lars-derichter/canvas-course-builder/blob/main/docs/first-course.md)**
+  — from nothing installed to a published Canvas module.
+- **[What it does not do](https://github.com/lars-derichter/canvas-course-builder/blob/main/docs/limitations.md)**
+  — read this before committing a semester to it.
+- **[The project on GitHub](https://github.com/lars-derichter/canvas-course-builder)**
+  — the code, the documentation, and the **Use this template** button.
+
+The tooling is MIT licensed; the example course content on this site is CC
+BY-NC-SA 4.0.
