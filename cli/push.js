@@ -12,14 +12,21 @@ const {
   updateModule,
   createModuleItem,
   deleteModule: deleteCanvasModule,
+  listModules,
   listModuleItems,
   deleteModuleItem,
 } = require('../lib/canvas/modules');
-const { createPage, updatePage, deletePage } = require('../lib/canvas/pages');
+const {
+  createPage,
+  updatePage,
+  deletePage,
+  listPages,
+} = require('../lib/canvas/pages');
 const {
   createAssignment,
   updateAssignment,
   deleteAssignment,
+  listAssignments,
 } = require('../lib/canvas/assignments');
 const { uploadFile, deleteFile } = require('../lib/canvas/files');
 const { get } = require('../lib/canvas/client');
@@ -43,6 +50,7 @@ const {
   readModuleCanvasId,
   writeModuleCanvasId,
 } = require('./module-utils');
+const { BACKUP_HINT, confirmFirstPush } = require('./backup-warning');
 const log = require('./logger');
 
 async function push(options) {
@@ -79,6 +87,28 @@ async function push(options) {
 
   log.info(`[push] Found ${filteredModules.length} module(s) to push.`);
   if (dryRun) log.info('[push] DRY RUN - no changes will be made.\n');
+
+  // First push to a course that already has content: say what push is about to
+  // take over before it does.
+  const proceed = await confirmFirstPush({
+    courseId,
+    syncData,
+    dryRun,
+    fetchCounts: async () => {
+      const [remoteModules, pages, assignments] = await Promise.all([
+        listModules(courseId),
+        listPages(courseId),
+        listAssignments(courseId),
+      ]);
+      return {
+        modules: remoteModules.length,
+        pages: pages.length,
+        assignments: assignments.length,
+        files: 0,
+      };
+    },
+  });
+  if (!proceed) return;
 
   // Ensure alert icons are uploaded to Canvas
   if (!dryRun) {
@@ -1137,6 +1167,7 @@ async function pruneDeleted(
 
   // Confirm with user (unless dry-run)
   if (!dryRun) {
+    log.info(`\n[push] ${BACKUP_HINT}`);
     const rl = readline.createInterface({
       input: process.stdin,
       output: process.stdout,

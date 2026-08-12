@@ -1,5 +1,4 @@
 const log = require('./logger');
-const { createRL, prompt } = require('./module-utils');
 const { listModules, deleteModule } = require('../lib/canvas/modules');
 const { listPages, deletePage } = require('../lib/canvas/pages');
 const {
@@ -7,30 +6,66 @@ const {
   deleteAssignment,
 } = require('../lib/canvas/assignments');
 const { listFiles, deleteFile } = require('../lib/canvas/files');
+const { BACKUP_HINT, confirm, describeContents } = require('./backup-warning');
 
-async function resetCanvas() {
+async function resetCanvas(options = {}) {
   const courseId = process.env.CANVAS_COURSE_ID;
   if (!courseId) {
     log.error('CANVAS_COURSE_ID is not set. Run "npx course init" first.');
     return;
   }
 
-  const rl = createRL();
-  const answer = await prompt(
-    rl,
-    `Are you sure you want to delete all content on the Canvas course with id ${courseId}? (y/n) `,
-  );
-  rl.close();
+  const dryRun = options.dryRun || false;
 
-  if (answer.toLowerCase() !== 'y') {
-    log.info('Aborted.');
+  // Fetch everything up front. The command used to prompt blind, so nobody
+  // could tell a scratch course from a live one before answering.
+  const [modules, pages, assignments, files] = await Promise.all([
+    listModules(courseId),
+    listPages(courseId),
+    listAssignments(courseId),
+    listFiles(courseId),
+  ]);
+
+  const summary = describeContents({
+    modules: modules.length,
+    pages: pages.length,
+    assignments: assignments.length,
+    files: files.length,
+  });
+
+  if (!summary) {
+    log.info(`[reset-canvas] Canvas course ${courseId} is already empty.`);
+    return;
+  }
+
+  log.info(
+    `[reset-canvas] Canvas course ${courseId} contains ${summary}.\n` +
+      '[reset-canvas] All of it will be deleted, including content this ' +
+      'project never created.',
+  );
+  log.info(
+    '[reset-canvas] Quizzes, discussions, announcements and grades are left ' +
+      'alone, but the modules that linked them are not.',
+  );
+
+  if (dryRun) {
+    log.info('[reset-canvas] DRY RUN - nothing was deleted.');
+    return;
+  }
+
+  log.info(`[reset-canvas] ${BACKUP_HINT}`);
+
+  const ok = await confirm(
+    `[reset-canvas] Delete all content on course ${courseId}? (y/N)`,
+  );
+  if (!ok) {
+    log.info('[reset-canvas] Aborted.');
     return;
   }
 
   const errors = [];
 
   // Delete all modules
-  const modules = await listModules(courseId);
   log.info(`[reset-canvas] Deleting ${modules.length} module(s)...`);
   for (const mod of modules) {
     try {
@@ -43,7 +78,6 @@ async function resetCanvas() {
   }
 
   // Delete all pages
-  const pages = await listPages(courseId);
   log.info(`[reset-canvas] Deleting ${pages.length} page(s)...`);
   for (const page of pages) {
     try {
@@ -56,7 +90,6 @@ async function resetCanvas() {
   }
 
   // Delete all assignments
-  const assignments = await listAssignments(courseId);
   log.info(`[reset-canvas] Deleting ${assignments.length} assignment(s)...`);
   for (const assignment of assignments) {
     try {
@@ -71,7 +104,6 @@ async function resetCanvas() {
   }
 
   // Delete all files
-  const files = await listFiles(courseId);
   log.info(`[reset-canvas] Deleting ${files.length} file(s)...`);
   for (const file of files) {
     try {

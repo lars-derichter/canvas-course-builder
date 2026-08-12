@@ -280,6 +280,7 @@ program
   .description(
     'Delete all modules, pages, assignments, and files from the Canvas course',
   )
+  .option('--dry-run', 'Show what would be deleted without deleting anything')
   .action(require('./reset-canvas'));
 
 // Parse argv explicitly rather than letting commander auto-detect the runtime.
