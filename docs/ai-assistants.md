@@ -273,84 +273,10 @@ project whitelist.
   project conventions — imperative, present tense, verb-first summaries (`Add`,
   `Fix`, `Update`), no `feat:`/`fix:` prefixes.
 
-## Creating your own skills
+## Writing your own skills
 
 The bundled skills don't cover everything, and they don't have to: a skill is a
-plain markdown file, and your AI assistant can write one for you. Say what you
-want automated and point the assistant at the conventions below. For example:
-
-> Create a new skill in `.agents/skills/announcement-draft/SKILL.md` that drafts
-> a short "what changed this week" student announcement from the git log. Follow
-> the conventions in the "Creating your own skills" section of
-> `docs/ai-assistants.md`, and look at
-> `.agents/skills/lesson-summarize/SKILL.md` for a model.
-
-The [ideas list](roadmap.md) has more candidates; most are within reach of a
-single AI-assisted session.
-
-Skills live in `.agents/skills/<name>/SKILL.md` (`.claude/skills` is a committed
-symlink to the same directory). The frontmatter, just `name` and `description`,
-is the portable [Agent Skills](https://agentskills.io) format, so the same files
-work in every tool that reads skills. `$ARGUMENTS` is substituted by Claude Code
-and Codex, and reads as an obvious placeholder anywhere else.
-
-The shipped skills follow a shared template; new ones should too, so they stay
-predictable for both the reader and the model:
-
-- **Frontmatter**: `name` (matching the folder) and a `description` that says
-  what the skill does, where it writes, and the approval gate if any, ending in
-  four to six quoted trigger phrases: two or three in English first, then the
-  same request in your course language (the shipped skills add Dutch). English
-  leads because the skill itself is written in English; the second language is
-  what makes the skill fire on how you actually ask for it.
-- **Section order**: H1 (the name with the hyphens as spaces, in sentence case),
-  a 2–4-line intro, `## Input` (only when the skill takes arguments),
-  `## Steps`, `## Rules`, and a bare `$ARGUMENTS` line at the end.
-- **Approval gates** only when a skill writes something worth reviewing first.
-  Split `## Steps` into `### Phase A — <Verb> (writes nothing)` and
-  `### Phase B — <Verb> (only after approval)`, and end Phase A with the
-  canonical sentence: "Stop. Wait for explicit approval before starting Phase
-  B."
-- **State each rule once.** A rule already carried by a step does not reappear
-  under `## Rules`; drop the Rules section if nothing is left.
-- **Defer, don't copy.** Content owned by
-  [writing-style.md](../context/writing-style.md),
-  [frontmatter.md](frontmatter.md), or
-  [course-context.md](../context/course-context.md) is referenced, never
-  inlined; copies drift. Dense reference payloads (format specs, protocol
-  details) go in a `references/` file inside the skill folder, read on demand.
-- **Course-agnostic.** No hardcoded course vocabulary, module names, or paths
-  that exist in only one course; course facts come from `course-context.md` at
-  runtime.
-- **Language-agnostic.** The skill's own instructions are English; the language
-  it writes _in_ comes from `writing-style.md` at runtime, never from the skill.
-  Say so in one `**Language.**` bullet at the top of `## Rules`, as the shipped
-  skills do, and let examples lead with English while carrying the same example
-  in your course language where that helps the model match it.
-- **Temp files** go to the session scratchpad, never `/tmp`. Build zips and
-  binaries there and copy them into the repo (cloud-synced folders can reject
-  direct writes).
-- **Naming**: `<object>-<verb>`, object first, so skills about the same thing
-  share a prefix and sort together — `/lesson` finds the whole authoring
-  pipeline, `/issue` the whole queue. The object comes first because it is what
-  you reliably know; which verb an author picked is what you would have to
-  guess, and prefix matching only keys on the first segment. The verb comes
-  last, from a small vocabulary: `design` for gated interactive authoring,
-  `build` for generation from an approved source, `init` for building a
-  configuration from ground truth — the repo, an interview, a reference document
-  — and `update` for changing a configuration already in place, whether from a
-  direct instruction (`/export-style-update`) or from decisions you settled
-  during the session (`/writing-style-update`). An `init` skill is not one-shot:
-  re-running it after the course changes is expected. `setup` is the one verb
-  outside that set, and `/course-setup` is the only skill that carries it: where
-  an `init` skill builds one configuration file, setup configures the project as
-  a whole, and the name matches the `npx course setup` command it drives. There
-  is one project to set up, so the verb stays a single case rather than a
-  pattern to follow. Read-only report skills take a result noun instead of a
-  verb (`consistency-check`, `coverage-map`, `image-todos`). Three names stay
-  bare verbs because they are single words in universal use, and because what
-  they act on is whatever you hand them rather than a course object worth
-  putting first: `/commit`, `/proofread`, and `/translate`.
-
-Contributing a skill back to the template itself? See
-[Contributing](contributing.md).
+plain markdown file, and your assistant can write one for you. See
+[Writing your own skills](writing-skills.md) for the file layout, the shared
+template, and the naming conventions, and the [ideas list](roadmap.md) for
+candidates — most are within reach of a single AI-assisted session.

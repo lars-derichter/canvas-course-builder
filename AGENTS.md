@@ -155,8 +155,8 @@ embedded files. Frontmatter fields are documented in
   than one configuration file. Read-only reports take a result noun instead
   (`consistency-check`, `coverage-map`). `/commit`, `/proofread` and
   `/translate` stay bare verbs: they act on whatever you hand them, not on a
-  course object. The full skill template is in the "Creating your own skills"
-  section of [`docs/ai-assistants.md`](docs/ai-assistants.md).
+  course object. The full skill template is in
+  [`docs/writing-skills.md`](docs/writing-skills.md).
 - "Session scratchpad" in skill instructions means a temporary working directory
   outside the repo — Claude Code's session scratchpad, or whatever temp
   directory your tool provides. Never write temp files into the repo or `/tmp`.

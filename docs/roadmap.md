@@ -6,8 +6,8 @@ would help you, there are two good routes:
 
 - Build it and open a pull request; see [Contributing](contributing.md).
 - Ask your AI assistant to build the skill for your own course. See
-  [Creating your own skills](ai-assistants.md#creating-your-own-skills) — most
-  of the skill ideas below are within reach of a single AI-assisted session.
+  [Writing your own skills](writing-skills.md) — most of the skill ideas below
+  are within reach of a single AI-assisted session.
 
 ## Skill ideas
 
@@ -15,9 +15,8 @@ All would follow the established pattern: read
 [`course-context.md`](../context/course-context.md) and
 [`writing-style.md`](../context/writing-style.md) first, design-then-write
 phases, no auto-commits, and an `<object>-<verb>` name so the skill sorts with
-its relatives (see
-[Creating your own skills](ai-assistants.md#creating-your-own-skills)). The
-names below are provisional; they firm up when someone builds one.
+its relatives (see [Writing your own skills](writing-skills.md)). The names
+below are provisional; they firm up when someone builds one.
 
 ### Course quality
 
