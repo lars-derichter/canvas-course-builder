@@ -1,16 +1,26 @@
 ---
-title: Practice assignment
+title: ❗️ Practice assignment
 canvas_type: assignment
 points_possible: 10
 submission_types:
   - online_text_entry
+unlock_at: "2026-09-01T08:00:00Z"
+due_at: "2026-09-30T21:59:00Z"
+lock_at: "2026-10-07T21:59:00Z"
 published: true
 ---
 
 # Practice assignment
 
-You have made it through the Getting Started module — well done! Now it is time
-to try things out for yourself.
+You have made it through the Getting started module. Nice work. Now try it
+yourself.
+
+> [!NOTE]
+>
+> The dates on this assignment are an example of what the frontmatter can carry:
+> `unlock_at` opens it, `due_at` marks it late, and `lock_at` closes
+> submissions. All three are pushed to Canvas. Change them, or delete them, when
+> you make this assignment your own.
 
 ## Instructions
 
@@ -43,8 +53,9 @@ to try things out for yourself.
 > [!TIP]
 >
 > Not sure about the markdown syntax? Check out the
-> [Markdown Basics](01-markdown-basics.md) and [Alerts](03-alerts.md) pages in
-> this module for a quick refresher.
+> [Markdown basics](./03-writing-your-pages/01-markdown-basics.md) and
+> [Alerts](./03-writing-your-pages/02-alerts.md) pages in this module for a
+> quick refresher.
 
 ## Submission
 

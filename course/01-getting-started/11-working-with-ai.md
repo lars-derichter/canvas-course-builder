@@ -52,7 +52,7 @@ built for course authoring. The main families:
   `/image-todos` lists the artwork you still owe.
 - **Export styling** — `/export-style-init` derives a PDF or Word style from a
   reference document, and `/export-style-update` tweaks it in plain language
-  (see [Exporting to PDF or Word](13-exporting.md)).
+  (see [Exporting to PDF or Word](08-exporting.md)).
 
 You do not have to memorise these. Type `/` in Claude Code (or ask any assistant
 what skills it sees) to get the list, or just describe what you want and let it

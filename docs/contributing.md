@@ -168,10 +168,13 @@ readability cap, front-load the point, no trailing summaries, and the same list
 of AI tells to avoid. Write for a colleague who teaches, not for a student and
 not for a compiler.
 
-The getting-started module under `course/` is the exception among the project's
-own writing. It ships as a course, it is served to whoever previews the site,
-and it doubles as the sync acceptance test, so it takes the **student-facing**
-register: warm, accessible, CEFR B2.
+The getting-started module under `course/` is a half-exception. It follows the
+same mechanical rules — UK spelling, sentence-case headings, 80 columns — but
+its voice is **student-facing**: warm, direct, second person, CEFR B2, with the
+page-title emoji and callouts that writing-style.md defines for course pages. It
+ships as a course, it is what a new user reads first, and it doubles as the
+end-to-end acceptance test for Canvas sync, so it has to keep exercising every
+supported content type.
 
 The per-course guides in `context/` govern course content. A course author is
 free to rewrite them; the project's own docs are not theirs to restyle, because

@@ -49,15 +49,15 @@ You can link to other course pages using relative paths. These links work in
 both the Docusaurus preview and Canvas — during push, they are automatically
 converted to Canvas internal URLs.
 
-- Same folder: `[Alerts](03-alerts.md)`
-- Subfolder: `[Folder layout](04-course-structure/01-folder-layout.md)`
-- With heading anchor: `[Available types](03-alerts.md#available-types)`
+- Same folder: `[Alerts](02-alerts.md)`
+- Subfolder: `[Folder layout](../04-organising-your-course/01-folder-layout.md)`
+- With heading anchor: `[Available types](02-alerts.md#available-types)`
 
 Try them here:
 
-- [Alerts](03-alerts.md)
-- [Folder layout](04-course-structure/01-folder-layout.md)
-- [Available types](03-alerts.md#available-types)
+- [Alerts](02-alerts.md)
+- [Folder layout](../04-organising-your-course/01-folder-layout.md)
+- [Available types](02-alerts.md#available-types)
 
 ## Images
 
@@ -65,12 +65,12 @@ Images use the same syntax as links, prefixed with `!`. Store image files in the
 `_files/` subdirectory of your module:
 
 ```markdown
-![Alt text](./_files/example-image.svg)
+![Alt text](../_files/example-image.svg)
 ```
 
 Here is an embedded example:
 
-![Example image](./_files/example-image.svg)
+![Example image](../_files/example-image.svg)
 
 During push, images are automatically uploaded to Canvas and their paths are
 rewritten to Canvas file URLs. During pull, they are downloaded back.
@@ -81,16 +81,16 @@ You can link to any file in `_files/` the same way — handy for handouts,
 templates, or starter files students should download:
 
 ```markdown
-[Example document](./_files/example-document.docx)
+[Example document](../_files/example-document.docx)
 ```
 
 Like images, linked files are uploaded to Canvas during push and the link is
 rewritten to the Canvas file URL. Try it:
-[example document](./_files/example-document.docx).
+[example document](../_files/example-document.docx).
 
 One special case: in the local preview, a link to an `.html` file opens that
 file in a new browser tab. Try it with this
-[starter file](./_files/download-me.html). To force a download instead, set
+[starter file](../_files/download-me.html). To force a download instead, set
 `download: true` in the frontmatter of the page; the flag applies to every
 `.html` link on that page. On Canvas the link simply points to the uploaded
 file. Internal links to course pages must always use the `.md` path, never
@@ -100,7 +100,7 @@ file. Internal links to course pages must always use the `.md` path, never
 >
 > To make a file its own entry in the module list — instead of a link inside a
 > page — use a file item. See
-> [Content types](04-course-structure/02-content-types.md).
+> [Content types](../04-organising-your-course/02-content-types.md).
 
 ## Code blocks
 

@@ -63,13 +63,20 @@ assignment, external link, or file upload).
 After the first push, `canvas_id` is written back into each file's frontmatter
 so the CLI knows which Canvas object to update on subsequent pushes.
 
+> [!WARNING]
+>
+> Every push rebuilds the item list of the modules it manages. Your pages and
+> assignments survive, but anything you added to one of those modules by hand in
+> Canvas — a quiz, a discussion, an external tool — drops out of the module. See
+> [Before you publish](./01-before-you-publish.md).
+
 ### Useful flags
 
-| Flag                          | What it does                                                            |
-| ----------------------------- | ----------------------------------------------------------------------- |
-| `--dry-run`                   | Preview what would happen without making any changes on Canvas          |
-| `--module 01-getting-started` | Push only a single module instead of the entire course                  |
-| `--prune`                     | Delete Canvas modules and individual items that no longer exist locally |
+| Flag                          | What it does                                                                                          |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `--dry-run`                   | Preview what would happen without making any changes on Canvas                                        |
+| `--module 01-getting-started` | Push only a single module instead of the entire course                                                |
+| `--prune`                     | Delete Canvas modules and individual items that no longer exist locally. It lists them and asks first |
 
 ### Example workflow
 

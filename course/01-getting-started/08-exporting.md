@@ -1,6 +1,7 @@
 ---
 title: Exporting to PDF or Word
 canvas_type: page
+export: true
 ---
 
 # Exporting to PDF or Word
@@ -11,6 +12,12 @@ any page, a whole module, or your entire course into a polished PDF or an
 editable Word document.
 
 This is optional. If you only ever publish to Canvas, you can skip it.
+
+> [!NOTE]
+>
+> This page carries `export: true` in its frontmatter, which is why
+> `npx course export --flagged` picks it up. It is a way to mark the handful of
+> pages that belong in a printed handout without listing them every time.
 
 ## What you need
 

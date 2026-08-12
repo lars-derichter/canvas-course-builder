@@ -9,8 +9,8 @@ is supported.
 Use standard relative markdown links to reference other course pages:
 
 ```md
-[Alerts](03-alerts.md)
-[Folder Layout](04-course-structure/01-folder-layout.md)
+[Alerts](02-alerts.md)
+[Folder Layout](../04-organising-your-course/01-folder-layout.md)
 [Section heading](../02-other-module/01-page.md#section)
 ```
 
