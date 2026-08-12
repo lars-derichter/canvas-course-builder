@@ -33,6 +33,9 @@ next `push` will create everything fresh on Canvas.
 **Note:** The command asks for confirmation, and touches nothing on Canvas. The
 Canvas course keeps all its content — which is the trap: push after this on a
 course that still holds the old content and you get a duplicate of everything.
+It also removes the timestamp `pull` compares against, so the next pull can no
+longer tell your own writing from Canvas's output and skips every file that
+already exists locally.
 
 ## reset-canvas
 
@@ -52,7 +55,9 @@ content this tool created:
 Deleting an assignment deletes its gradebook column and the student submissions
 on it. Canvas's `/undelete` sometimes brings an assignment back, but the
 submissions frequently do not come with it, so grades are lost for good. Export
-the gradebook first — see [Backing up a Canvas course](backups.md).
+the gradebook first — see [Backing up a Canvas course](backups.md). For which
+deletions cost grades and which cost only content, see
+[Destructive operations and student work](limitations.md#destructive-operations-and-student-work).
 
 Quizzes, discussions, announcements and rubrics survive — there is no API call
 for them here — but the modules that linked them do not.
@@ -99,10 +104,19 @@ everything.
   errors with exponential backoff (up to 3 attempts).
 - **Error recovery**: If a single module or item fails during push/pull, the
   remaining items continue and a summary of errors is shown at the end.
-- **Conflict detection**: `pull` skips files modified since the last sync rather
-  than overwriting them. It compares timestamps, not content, which has
+- **Conflict detection**: `pull` writes a file only when the write is provably
+  safe — the file does not exist yet, or it is older than the last sync and is
+  therefore Canvas's own output coming back. Everything else is skipped with the
+  reason printed: a file touched since the last sync, and a file that cannot be
+  judged at all because there is no sync state to compare it against (right
+  after `reset-sync-state`, or on a clone that has never synced). "Cannot tell"
+  is not "unmodified". It compares timestamps, not content, which has
   consequences worth knowing — see
   [Push and pull are not a merge](limitations.md#push-and-pull-are-not-a-merge).
+- **Forced overwrite**: `pull --force` writes regardless, and asks first on the
+  one combination that can wipe hand-written markdown in a single run —
+  `--force` on a `course/` tree that already holds markdown, with no sync state
+  to judge it by. A non-interactive run answers no and cancels.
 - **Stale ID recovery**: If a module, page, or assignment was deleted on Canvas
   but still has a stored ID locally, push detects the 404 and automatically
   creates a new resource.

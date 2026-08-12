@@ -75,7 +75,96 @@ Two smaller cases where a plain push deletes something real:
 - Renaming a binary in `_files/` uploads the new one and deletes the old Canvas
   file.
 - `push --prune` deletes the Canvas modules, pages, assignments and files whose
-  local counterparts you removed. It lists them and asks first.
+  local counterparts you removed. It lists them and asks first, and flags the
+  ones that hold student work — see
+  [Destructive operations and student work](#destructive-operations-and-student-work).
+
+## Destructive Operations and Student Work
+
+Three commands delete things on Canvas: an ordinary `push`, `push --prune` and
+`reset-canvas`. What separates them is not how much they delete but which kind
+of object they delete, and only one of those kinds takes student work with it.
+
+- **Deleting a module item is safe.** A module item is a link. Removing it
+  leaves the page, assignment or file it pointed at exactly where it was, with
+  its gradebook column and its submissions untouched. That is all an ordinary
+  push does to the modules it manages.
+- **Deleting an assignment is not.** `push --prune` calls `DELETE` on the
+  assignment object itself, and Canvas takes its gradebook column and every
+  submission on it. Canvas's `/undelete` sometimes brings the assignment back;
+  the submissions frequently do not come with it, so the grades are gone for
+  good.
+- **`reset-canvas` does that to every assignment in the course**, alongside
+  every module, page and file. See
+  [Advanced commands](advanced-commands.md#reset-canvas).
+
+Pages and files carry no grades, so pruning one costs you the content and
+nothing else — recoverable from git, or from a course export.
+
+### Deleting a Module Folder Is Safer Than Deleting an Assignment File
+
+The asymmetry runs the wrong way round from what you would expect:
+
+- **Delete a whole module folder**, and prune deletes the Canvas _module_. The
+  module and its item links go; the pages, assignments and files that were in it
+  stay in the course, unlinked but intact, gradebook columns and submissions
+  included. Prune looks for missing items only inside module folders that still
+  exist, so nothing inside a folder you deleted is ever considered for deletion.
+- **Delete one assignment file** from a module that still exists, and prune sees
+  an item no local file claims. That is a `DELETE` on the assignment object, and
+  the grades go with it.
+
+Removing the bigger thing is the safer move. What deleting a module folder costs
+you instead is orphans: assignments and pages no module links to any more, which
+the tool then forgets — the sync-state entry for the module goes with the module
+— and which you clean up in Canvas by hand.
+
+### Fields That Move Grades Already Given
+
+Push sends the whole assignment on every update, and three of the fields it
+sends act on work students have already handed in. Canvas applies each one
+silently: its web editor warns about them, its API does not.
+
+- **`points_possible`** — Canvas does not rescale the grades already given. The
+  raw scores stay as they are, so every percentage in that gradebook column
+  moves.
+- **`due_at`** — Canvas recomputes late status against the new date, so an
+  automatic late policy re-applies or drops its deductions on submissions that
+  are already graded.
+- **`submission_types`** — Canvas accepts this change only while the assignment
+  has no submissions. Once there are any it ignores the change, reports the push
+  as a success, and keeps the value it holds. Frontmatter and Canvas disagree
+  from then on, and nothing but the warning says so.
+
+Push names the assignment, the field and both values, and then sends the update
+anyway. Nothing is blocked: a re-weighting can be entirely deliberate, and only
+you know which one this is.
+
+### What the Warnings Tell You
+
+Before it deletes an assignment, the tool asks Canvas whether that assignment
+already holds submissions:
+
+- **`push --prune`** flags each doomed assignment in its listing
+  (`<-- HAS STUDENT SUBMISSIONS: deletes the gradebook column and every grade in it`),
+  counts them in a warning, and names them in the question itself:
+  `Delete these from Canvas, including the student submissions and grades? (y/N)`.
+- **`reset-canvas`** prints the same warning and lists the assignments by name.
+  [Advanced commands](advanced-commands.md#reset-canvas) shows the full output.
+- **`push`** prints one warning per changed field for each of the three fields
+  above, including under `--dry-run` — the only mode where the warning arrives
+  before the change rather than with it.
+
+Two limits on all of that. A check that fails is reported as unknown, never as
+safe — `SUBMISSION STATUS UNKNOWN`, or "could not determine whether 1 assignment
+being deleted has student submissions" — and silence from a failed check is not
+a clean bill of health, so treat an unknown as a yes. And the checks cover
+assignments only, because nothing else the tool deletes carries a grade.
+
+All of the above is about Canvas. The tool can also destroy local work: `pull`
+overwrites whole files, and `pull --force` overwrites them even when it cannot
+tell your writing from Canvas's output. See
+[Push and pull are not a merge](#push-and-pull-are-not-a-merge).
 
 ## The Folder Structure Is a Contract
 

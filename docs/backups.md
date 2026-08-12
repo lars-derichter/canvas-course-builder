@@ -16,8 +16,9 @@ a bad semester.
 > tool never created. `npx course push --prune` deletes the Canvas modules and
 > items you removed locally. And an ordinary `npx course push` clears the item
 > list of every module it manages, so anything you added by hand in Canvas drops
-> out of those modules. See [Limitations](limitations.md) for exactly what each
-> one touches.
+> out of those modules. Deleting an assignment is the one that reaches student
+> work: it takes the gradebook column and every submission on it. See
+> [Limitations](limitations.md) for exactly what each one touches.
 
 ## Route 1: Export the Course to a File
 
@@ -85,12 +86,37 @@ colleague wrote in the web editor, the quiz you built by hand, the discussion
 threads, or the student submissions. Pushing your markdown to GitHub protects
 your markdown. Only a Canvas export or a course copy protects the course.
 
+## What Each Command Puts at Risk
+
+The routes above protect different things, and the command you are about to run
+decides which one you need.
+
+| Command        | What it can destroy                                                                                               | What protects you                     |
+| -------------- | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------- |
+| `push`         | the item list of every module it manages                                                                          | a course export or a course copy      |
+| `push --prune` | the Canvas modules, pages, assignments and files you deleted locally — and, with each assignment, its grades      | a course export **and** the gradebook |
+| `reset-canvas` | every module, page, assignment and file in the course, including content this tool never created, and every grade | a course export **and** the gradebook |
+| `pull --force` | your local markdown, overwritten with the Canvas version                                                          | git: a commit, not a Canvas backup    |
+
+The assignment row is the one that bites. A course export carries assignments
+but not submissions or grades, so an export taken before a prune restores the
+assignment as an empty shell — the column comes back without the work in it.
+Grades live in one backup only, **Grades > Export**, and that CSV is a record
+rather than a restore: the files students uploaded are not in it, and a deleted
+assignment comes back as a new column you would paste the scores into by hand.
+
+Deleting a whole module folder is a cheaper mistake than deleting a single
+assignment file, which is the reverse of what most people assume. See
+[Destructive operations and student work](limitations.md#destructive-operations-and-student-work)
+for why, and for the warnings the commands print before they act.
+
 ## When to Take One
 
 - **Before the first push to any course that already has content.** The CLI
   warns you at this point and asks for confirmation.
 - **Before `reset-canvas` or `push --prune`**, every time. Both prompt, and both
-  point back here.
+  point back here. On a course students have submitted to, export the gradebook
+  as well: no course export or course copy carries grades.
 - **At the end of each academic year**, before you repoint the project at a new
   course.
 - **Before you try something you have not tried before**, which for a while is
