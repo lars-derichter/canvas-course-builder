@@ -40,9 +40,14 @@ bestand en deze regel staan.
 
 ## Nuttige links
 
+- [Je eerste cursus](docs/first-course.md): de stap-voor-stap handleiding voor
+  wie hier nieuw is
 - [Gebruikersgids](docs/user-guide.md): de volledige documentatie van Canvas
   Course Builder
 - [Canvas instellen](docs/canvas-setup.md): API-sleutel en course-ID
+- [Back-ups](docs/backups.md): je Canvas-cursus beveiligen voor je
+  synchroniseert
+- [Beperkingen](docs/limitations.md): wat de tool niet doet
 - [Markdown-gids](docs/markdown.md): ondersteunde syntax en alerts
 - [Frontmatter-gids](docs/frontmatter.md): metadata voor pagina's en opdrachten
 - [Aanpassen](docs/customization.md): README, taal, huisstijl en licentie

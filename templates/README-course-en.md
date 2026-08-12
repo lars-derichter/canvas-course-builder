@@ -39,8 +39,12 @@ this line in place.
 
 ## Useful links
 
+- [Your first course](docs/first-course.md): the step-by-step beginner
+  walkthrough
 - [User guide](docs/user-guide.md): full Canvas Course Builder documentation
 - [Canvas setup](docs/canvas-setup.md): API credentials and course ID
+- [Backups](docs/backups.md): protecting the Canvas course before you sync
+- [Limitations](docs/limitations.md): what the tool does not do
 - [Markdown guide](docs/markdown.md): supported syntax and alerts
 - [Frontmatter guide](docs/frontmatter.md): page and assignment metadata
 - [Customization](docs/customization.md): README, language, branding, and
