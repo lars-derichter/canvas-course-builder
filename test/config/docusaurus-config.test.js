@@ -49,6 +49,36 @@ describe('docusaurus.config.js hosting values', () => {
   });
 });
 
+describe('docusaurus.config.js remark plugins', () => {
+  /** The plugin list, with each entry reduced to its plugin function. */
+  function remarkPlugins(config) {
+    const [, options] = config.presets[0];
+    return options.docs.beforeDefaultRemarkPlugins.map((entry) =>
+      Array.isArray(entry) ? entry[0] : entry,
+    );
+  }
+
+  // Quiz and external tool pages have no body of their own; without this
+  // plugin they render as blank pages in the preview.
+  it('registers the reference-item plugin', () => {
+    const config = loadConfig();
+    const remarkReferenceItem = require('../../src/plugins/remark-reference-item');
+    assert.ok(remarkPlugins(config).includes(remarkReferenceItem));
+  });
+
+  it('passes the reference-item plugin its labels', () => {
+    const config = loadConfig();
+    const [, options] = config.presets[0];
+    const entry = options.docs.beforeDefaultRemarkPlugins.find(
+      (item) =>
+        Array.isArray(item) &&
+        item[0] === require('../../src/plugins/remark-reference-item'),
+    );
+    assert.equal(typeof entry[1].cards.quiz, 'string');
+    assert.equal(typeof entry[1].reference.notice, 'string');
+  });
+});
+
 describe('the deploy workflow', () => {
   const workflow = fs.readFileSync(WORKFLOW_PATH, 'utf-8');
 

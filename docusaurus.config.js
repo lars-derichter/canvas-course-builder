@@ -5,6 +5,7 @@ const path = require('path');
 const remarkGfmAlerts = require('./src/plugins/remark-gfm-alerts');
 const remarkExternalUrl = require('./src/plugins/remark-external-url');
 const remarkFileItem = require('./src/plugins/remark-file-item');
+const remarkReferenceItem = require('./src/plugins/remark-reference-item');
 const remarkHtmlLinks = require('./src/plugins/remark-html-links');
 const { loadCourseConfig } = require('./lib/config/course-config');
 const { loadTheme } = require('./lib/config/theme');
@@ -60,6 +61,14 @@ const config = {
             [remarkGfmAlerts, { titles: labels.alerts }],
             [remarkExternalUrl, { label: labels.cards.external_url }],
             [remarkFileItem, { siteDir: __dirname, label: labels.cards.file }],
+            [
+              remarkReferenceItem,
+              {
+                cards: labels.cards,
+                reference: labels.reference,
+                projectDir: __dirname,
+              },
+            ],
             remarkHtmlLinks,
           ],
         },

@@ -51,6 +51,12 @@ describe('getLabels', () => {
     assert.equal(labels.alerts.caution, 'Opgelet');
     assert.equal(labels.cards.external_url, 'Externe link');
     assert.equal(labels.cards.file, 'Bestand');
+    assert.equal(labels.cards.external_tool, 'Externe tool');
+    assert.equal(labels.reference.open, 'Openen in Canvas');
+    assert.match(
+      labels.reference.notice,
+      /^Dit item wordt beheerd in Canvas\./,
+    );
     assert.equal(labels.export.attachment, 'Bijlage:');
     assert.equal(labels.export.course_title, 'Cursus');
     assert.equal(labels.pull.untitled, 'Zonder titel');

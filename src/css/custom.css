@@ -584,3 +584,42 @@ article {
 .file-item-link {
   margin-bottom: 0;
 }
+
+/* ---------------------------------------------------------------------------
+   Reference item card (remark-reference-item plugin)
+
+   Quizzes and external tools are edited in Canvas, not here, so the card is
+   muted rather than accented: it announces the type without competing with
+   the content cards above.
+   --------------------------------------------------------------------------- */
+
+.reference-item-card {
+  border: 1px solid var(--ccb-border);
+  border-left: 4px solid var(--ccb-fg-muted);
+  border-radius: var(--ifm-global-radius);
+  padding: 1.5rem 2rem;
+  margin: 1rem 0;
+}
+
+.reference-item-label {
+  font-weight: 600;
+  color: var(--ccb-fg-muted);
+  margin-bottom: 0.25rem;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.reference-item-link {
+  margin-bottom: 0;
+}
+
+.reference-item-link a {
+  word-break: break-all;
+}
+
+.reference-item-notice {
+  color: var(--ccb-fg-muted);
+  font-size: 0.95rem;
+  max-width: 46rem;
+}
