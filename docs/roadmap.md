@@ -57,3 +57,72 @@ Extend `npx course new-item` with template options: lab assignment, reading
 assignment, lecture notes, quiz instructions, and so on. Templates would provide
 pre-filled frontmatter and boilerplate markdown tailored to common course item
 patterns.
+
+### Relinking Existing Canvas Objects
+
+An `npx course relink` command would adopt Canvas objects that already exist:
+match them against local files, record their ids in `.canvas-sync.json` and in
+frontmatter, and rewrite no file bodies at all. The rollover described in
+[New academic year](new-academic-year.md) wipes the new Canvas course and
+rebuilds it from local markdown, which structurally cannot carry quizzes,
+discussions or LTI links, because none of them sync. Canvas's own Course Copy
+carries all three, and it is the only way to carry a course-level LTI 1.1
+installation across at all, because the Canvas API never returns
+`shared_secret`. But Course Copy followed by `push` duplicates everything, and
+followed by `pull` overwrites the local markdown. `relink` is the missing third
+option that would make Course Copy a first-class rollover path.
+
+### Item Matching in `status --remote`
+
+`compareWithCanvas` in `cli/status.js` reports a "CANVAS-ONLY item" whenever
+`canvasItem.content_id || page_url || id` is absent from the set of local
+frontmatter `canvas_id` values. Two false positives are systematic:
+
+- **Pages.** The local `canvas_id` is the numeric `page_id`, while the module
+  item only exposes the `page_url` slug. Pull works around this by pre-fetching
+  a slug-to-id map before it starts; status does not.
+- **External URLs.** `pushExternalUrl` in `cli/push.js` deliberately writes the
+  module item id to frontmatter only on the first push and never refreshes it,
+  so from the second push onwards the stale id can never match.
+
+A report that cries wolf on every page is a report nobody reads.
+
+### More Item Types for `new-item`
+
+`VALID_TYPES` in `cli/new-item.js` lists the five things the command can
+scaffold: `page`, `assignment`, `url`, `subsection` and `file`. That list is the
+single place deciding what `new-item` creates, so any content type the tool
+learns to handle would want an entry there. One inconsistency belongs in the
+same change: `new-item -t file` copies a raw binary into the module folder
+rather than generating the markdown wrapper with `file_ref` that pull writes, so
+the wrapper form is currently pull-only or hand-written.
+
+### Automated QTI Import
+
+Canvas accepts a QTI zip through `POST /api/v1/courses/:id/content_migrations`
+with `migration_type=qti_converter`, and `settings[insert_into_module_id]` and
+`settings[insert_into_module_position]` place the result directly in a module.
+`settings[overwrite_quizzes]` addresses the duplicate-on-reimport problem that
+the [`/quiz-build`](ai-assistants.md) skill warns about. The cost is real: it
+needs a `progress_url` polling loop, and nothing in `lib/canvas/` polls anything
+today — `sleep()` in `lib/canvas/client.js` is not even exported — plus the
+`pre_attachment` upload handshake, and the migration does not hand back the new
+quiz id.
+
+### Stable Module Item IDs
+
+`pushModule` in `cli/push.js` clears every module item and recreates it on each
+run, so item ids churn and any `/courses/:id/modules/items/:id` permalink handed
+to students goes stale. `updateModuleItem` already exists in
+`lib/canvas/modules.js` and has no callers anywhere in the repo. Reconciling the
+remote item list against the local one, instead of rebuilding it, would settle
+the ids and drop a pile of wasted API calls at the same time.
+
+### Round-Trip Tests for Pull
+
+The markdown to HTML and back conversion is pinned by exactly one test, for
+tables (`test/convert/html-to-markdown.test.js`). Alerts, code fences with
+language hints, links and lists are covered in one direction only. Separately,
+turndown escapes `_`, `*`, backticks and brackets globally, so every pulled file
+comes back with backslash noise — `snake_case` returns as `snake\_case` — which
+makes a pull diff hard to read.
