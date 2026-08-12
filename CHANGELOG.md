@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- **`reset-canvas` no longer claims that grades survive it.** Both the command's
+  own warning and [`docs/advanced-commands.md`](docs/advanced-commands.md) said
+  grades were left alone, while the command deletes every assignment in the
+  course — which takes its gradebook column and the student submissions on it.
+  Quizzes, discussions, announcements and rubrics do survive, and still say so.
 - **A second push no longer cancels a Pages deployment that is halfway through
   publishing.** The deploy workflow shared GitHub's `pages` concurrency group
   but set `cancel-in-progress: true`, so two pushes in quick succession could

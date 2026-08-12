@@ -49,14 +49,21 @@ content this tool created:
 - All assignments
 - All files
 
-Quizzes, discussions, announcements, rubrics and grades survive — there is no
-API call for them here — but the modules that linked them do not.
+Deleting an assignment deletes its gradebook column and the student submissions
+on it. Canvas's `/undelete` sometimes brings an assignment back, but the
+submissions frequently do not come with it, so grades are lost for good. Export
+the gradebook first — see [Backing up a Canvas course](backups.md).
+
+Quizzes, discussions, announcements and rubrics survive — there is no API call
+for them here — but the modules that linked them do not.
 
 The command lists what the course holds, then asks:
 
 ```
 [reset-canvas] Canvas course 123 contains 4 modules, 18 pages, 2 assignments.
 [reset-canvas] All of it will be deleted, including content this project never created.
+[reset-canvas] Every assignment is deleted, and its gradebook column and its student submissions go with it.
+[reset-canvas] Quizzes, discussions and announcements are left alone, but the modules that linked them are not.
 [reset-canvas] Canvas has no undo. Back the course up first — see docs/backups.md.
 [reset-canvas] Delete all content on course 123? (y/N)
 ```

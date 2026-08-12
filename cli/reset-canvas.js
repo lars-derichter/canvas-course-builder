@@ -44,8 +44,10 @@ async function resetCanvas(options = {}) {
       'project never created.',
   );
   log.info(
-    '[reset-canvas] Quizzes, discussions, announcements and grades are left ' +
-      'alone, but the modules that linked them are not.',
+    '[reset-canvas] Every assignment is deleted, and its gradebook column and ' +
+      'its student submissions go with it.\n' +
+      '[reset-canvas] Quizzes, discussions and announcements are left alone, ' +
+      'but the modules that linked them are not.',
   );
 
   if (dryRun) {
