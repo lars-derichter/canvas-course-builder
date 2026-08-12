@@ -30,6 +30,25 @@ publishing target.
   keep pulling tooling improvements later; your course content is never
   overwritten.
 
+## What it does not do
+
+Worth knowing before you commit a semester to it:
+
+- **Only pages, assignments, external links and files sync.** Quizzes,
+  discussions and external tools do not.
+- **Quizzes are outside the sync loop.** A bundled skill generates a QTI package
+  you import into Canvas by hand, once, in one direction.
+- **A push takes over the modules it manages.** It rebuilds their item lists, so
+  anything you added to those modules by hand in Canvas drops out of them.
+- **The folder layout is a contract**: one folder per module, one level of
+  nesting, numbered prefixes.
+- **Push and pull are not a merge.** Your markdown is the source of truth; pull
+  is for importing a course once, not for a routine round trip.
+
+The full list, with what to do instead, is in
+[limitations](docs/limitations.md). Before pointing it at a course that already
+has content, read [backups](docs/backups.md).
+
 ## Who it's for
 
 Lecturers and teaching teams who maintain course material in Canvas and want the
