@@ -7,7 +7,7 @@ sidebar_position: 0
 # Write Your Course in Markdown, Publish It to Canvas
 
 **Canvas Course Builder** moves your course out of the Canvas web editor and
-into plain files on your computer — with version control, search and replace,
+into plain files on your computer, with version control, search and replace,
 offline work, a local preview, and one command to publish.
 
 This site is the proof: it is a course built with the tool, previewed with the
@@ -15,9 +15,9 @@ tool, and published straight from the repository.
 
 > [!TIP]
 >
-> New here? Head into the **Getting started** module in the sidebar. It walks
+> New here? Head into the **Getting Started** module in the sidebar. It walks
 > through writing markdown, organising a course, syncing with Canvas, and
-> working with an AI assistant — and every page of it is a working example of
+> working with an AI assistant, and every page of it is a working example of
 > something the tool can publish.
 
 ## The Problem It Solves
@@ -53,7 +53,7 @@ when you are ready.
 ## Who It Is For
 
 Lecturers and teaching teams who maintain course material in Canvas and want the
-comfort of files, folders and version control. You do not need to be technical —
+comfort of files, folders and version control. You do not need to be technical:
 the beginner walkthrough starts from a computer with nothing installed.
 
 It is also opinionated, and honest about it: four Canvas content types sync,
@@ -62,12 +62,12 @@ that now than in week six.
 
 ## Start Here
 
-- **[Your first course, step by step](https://github.com/lars-derichter/canvas-course-builder/blob/main/docs/first-course.md)**
-  — from nothing installed to a published Canvas module.
-- **[What it does not do](https://github.com/lars-derichter/canvas-course-builder/blob/main/docs/limitations.md)**
-  — read this before committing a semester to it.
-- **[The project on GitHub](https://github.com/lars-derichter/canvas-course-builder)**
-  — the code, the documentation, and the **Use this template** button.
+- **[Your First Course, Step by Step](https://github.com/lars-derichter/canvas-course-builder/blob/main/docs/first-course.md)**:
+  from nothing installed to a published Canvas module.
+- **[What It Does Not Do](https://github.com/lars-derichter/canvas-course-builder/blob/main/docs/limitations.md)**:
+  read this before committing a semester to it.
+- **[The project on GitHub](https://github.com/lars-derichter/canvas-course-builder)**:
+  the code, the documentation, and the **Use this template** button.
 
 The tooling is MIT licensed; the example course content on this site is CC
 BY-NC-SA 4.0.

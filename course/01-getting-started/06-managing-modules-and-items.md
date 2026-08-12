@@ -7,7 +7,7 @@ canvas_type: page
 
 As your course grows, you will need to add new content, reorganise things, and
 sometimes clean up. The CLI has interactive commands for all of this, and they
-handle renumbering automatically — you never have to manually rename files to
+handle renumbering automatically, so you never have to manually rename files to
 fix gaps or reorder content.
 
 ## Working With Modules
@@ -87,8 +87,8 @@ npx course movetomodule-item  # move to a different module entirely
 Both commands handle renumbering in the source and destination locations.
 `movetomodule-item` can also place the item inside a subsection of the
 destination module, and it works on subsections themselves: a subsection can
-move to another module, but always into the module root — subsections are never
-nested.
+move to another module, but always into the module root, because subsections are
+never nested.
 
 ### Renaming an Item
 
@@ -121,7 +121,8 @@ automatically.
 
 ### Splitting an Item
 
-The opposite situation — a page has grown too long and you want to break it up:
+The opposite situation, where a page has grown too long and you want to break it
+up:
 
 ```bash
 npx course split-item
@@ -140,7 +141,8 @@ original.
 ## Skipping the Prompts
 
 Every command also accepts flags, so you can skip the interactive prompts
-entirely — useful for scripts or when you already know exactly what you want:
+entirely, which is useful for scripts or when you already know exactly what you
+want:
 
 ```bash
 npx course new-item -m 01-getting-started -t page -n "My New Page"

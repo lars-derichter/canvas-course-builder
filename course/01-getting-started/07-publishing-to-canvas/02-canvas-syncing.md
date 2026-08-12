@@ -35,8 +35,8 @@ Before pushing, it is a good idea to check what has changed:
 npx course diff
 ```
 
-This shows you exactly what changed locally since the last sync — new files,
-modified content, and deleted items — so there are no surprises.
+This shows you exactly what changed locally since the last sync (new files,
+modified content, and deleted items), so there are no surprises.
 
 ## Validating Your Content
 
@@ -47,8 +47,8 @@ npx course validate
 ```
 
 This catches issues like missing frontmatter fields, broken internal links, or
-invalid assignment settings — much easier to fix locally than after pushing to
-Canvas.
+invalid assignment settings. That is much easier to fix locally than after
+pushing to Canvas.
 
 ## Pushing to Canvas
 
@@ -67,8 +67,8 @@ so the CLI knows which Canvas object to update on subsequent pushes.
 >
 > Every push rebuilds the item list of the modules it manages. Your pages and
 > assignments survive, but anything you added to one of those modules by hand in
-> Canvas — a quiz, a discussion, an external tool — drops out of the module. See
-> [Before you publish](./01-before-you-publish.md).
+> Canvas (a quiz, a discussion, an external tool) drops out of the module. See
+> [Before You Publish](./01-before-you-publish.md).
 
 ### Useful Flags
 

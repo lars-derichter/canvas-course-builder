@@ -53,7 +53,7 @@ yourself.
 > [!TIP]
 >
 > Not sure about the markdown syntax? Check out the
-> [Markdown basics](./03-writing-your-pages/01-markdown-basics.md) and
+> [Markdown Basics](./03-writing-your-pages/01-markdown-basics.md) and
 > [Alerts](./03-writing-your-pages/02-alerts.md) pages in this module for a
 > quick refresher.
 

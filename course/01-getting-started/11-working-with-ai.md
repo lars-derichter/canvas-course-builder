@@ -11,8 +11,8 @@ assistant that works inside your editor can take on much of that, and this
 project is set up to make it easy.
 
 The project works with AI coding assistants that run in your terminal or inside
-VS Code — Claude Code, OpenAI Codex, and other agentic tools. You talk to them
-in plain language, and they can read and write your files, run the `npx course`
+VS Code: Claude Code, OpenAI Codex, and other agentic tools. You talk to them in
+plain language, and they can read and write your files, run the `npx course`
 commands, and follow packaged workflows called **skills**. Project instructions
 in `AGENTS.md` give any of them full context out of the box.
 
@@ -22,8 +22,8 @@ A skill is a ready-made workflow you trigger with a short command. Instead of
 explaining a whole task from scratch, you name the skill and the assistant
 follows instructions written for exactly that job. For example:
 
-- `/proofread course/01-getting-started/03-alerts.md` checks a page against the
-  project's writing style and your spelling.
+- `/proofread course/01-getting-started/03-writing-your-pages/02-alerts.md`
+  checks a page against the project's writing style and your spelling.
 - `/lesson-module-build lesson-03` turns a finished lesson plan into a complete
   set of student pages.
 
@@ -32,25 +32,24 @@ what each one does and adjust it to fit how you work.
 
 ## What You Can Do With It
 
-Beyond everyday help — "draft a page about X", "move these three items to
-another module", "why did my push fail?" — this project ships a set of skills
-built for course authoring. The main families:
+Beyond everyday help ("draft a page about X", "move these three items to another
+module", "why did my push fail?"), this project ships a set of skills built for
+course authoring. The main families:
 
-- **Writing style** — `/writing-style-init` adapts the style guide to your
-  voice, `/writing-style-update` folds in new preferences, and `/proofread`
-  checks a page against it. `/translate` puts a page or a pasted passage into
-  another language without it sounding translated.
-- **Lessons** — `/lesson-design` helps you plan a lesson, `/lesson-summarize`
+- **Writing style**: `/writing-style-init` adapts the style guide to your voice,
+  `/writing-style-update` folds in new preferences, and `/proofread` checks a
+  page against it. `/translate` puts a page or a pasted passage into another
+  language without it sounding translated.
+- **Lessons**: `/lesson-design` helps you plan a lesson, `/lesson-summarize`
   makes a one-page class version, and `/lesson-module-build` turns the plan into
   finished student pages. After teaching, `/lesson-retro` debriefs the lesson
   and folds your notes back in.
-- **Evaluation** — `/evaluation-design` blueprints an exam, `/quiz-build` turns
-  a question list into a Canvas quiz, and `/rubric-build` writes a grading
-  rubric.
-- **Quality** — `/consistency-check` sweeps the whole course for dead links and
+- **Evaluation**: `/evaluation-design` blueprints an exam, `/quiz-build` turns a
+  question list into a Canvas quiz, and `/rubric-build` writes a grading rubric.
+- **Quality**: `/consistency-check` sweeps the whole course for dead links and
   drift, `/coverage-map` checks which learning goals are taught and tested, and
   `/image-todos` lists the artwork you still owe.
-- **Export styling** — `/export-style-init` derives a PDF or Word style from a
+- **Export styling**: `/export-style-init` derives a PDF or Word style from a
   reference document, and `/export-style-update` tweaks it in plain language
   (see [Exporting to PDF or Word](08-exporting.md)).
 
@@ -77,8 +76,8 @@ suggest the right one.
 ## Choosing a Tool
 
 You are not locked in. Claude Code and Codex read the same `AGENTS.md`
-instructions and the same skills, so you can switch tools — or work next to a
-colleague who uses a different one — without changing anything in the project.
+instructions and the same skills, so you can switch tools, or work next to a
+colleague who uses a different one, without changing anything in the project.
 The skills follow the open Agent Skills format, plain markdown files: if your
 assistant does not support skills, you can still open a skill file and paste its
 instructions, or simply describe the task yourself.

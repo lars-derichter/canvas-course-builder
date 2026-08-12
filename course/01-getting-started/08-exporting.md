@@ -23,14 +23,14 @@ This is optional. If you only ever publish to Canvas, you can skip it.
 
 Export relies on two free, open-source tools:
 
-- **pandoc** — does the markdown conversion
-- **Typst** — turns the result into a PDF (only needed for PDF, not for Word)
+- **pandoc**: does the markdown conversion
+- **Typst**: turns the result into a PDF (only needed for PDF, not for Word)
 
 Install both:
 
-- **macOS** — `brew install pandoc typst`
-- **Windows** — `winget install --id JohnMacFarlane.Pandoc --id Typst.Typst`
-- **Linux** — install pandoc with your package manager, and download Typst from
+- **macOS**: `brew install pandoc typst`
+- **Windows**: `winget install --id JohnMacFarlane.Pandoc --id Typst.Typst`
+- **Linux**: install pandoc with your package manager, and download Typst from
   its [releases page](https://github.com/typst/typst/releases)
 
 > [!TIP]
@@ -43,7 +43,7 @@ The `export` command takes whatever you point it at and writes a document to the
 `exports/` folder:
 
 ```bash
-npx course export course/01-getting-started/03-alerts.md   # one page
+npx course export course/01-getting-started/05-vs-code.md  # one page
 npx course export -m 01-getting-started                    # a whole module
 npx course export                                          # the full course
 npx course export -m 01-getting-started -f docx            # Word instead of PDF
@@ -98,7 +98,7 @@ With the Course Manager sidebar you do not have to type anything:
 
 - **Right-click a page or module** and choose **Export to PDF/DOCX**.
 - **Select several pages first** (Ctrl-click or Shift-click in the tree), then
-  right-click and export — they combine into one document.
+  right-click and export. They combine into one document.
 - **The title bar dropdown** has an **Export** option for the whole course:
   everything, only the flagged pages, or a curated table of contents.
 
@@ -123,12 +123,12 @@ Out of the box, exports use a clean, neutral style. Two settings in
 - **`export.style`** picks the layout: fonts, margins, and the cover. There is a
   second style, `thomas-more`, that shows what full institutional branding looks
   like.
-- **`theme`** picks the colours, and it does so everywhere at once — the preview
+- **`theme`** picks the colours, and it does so everywhere at once: the preview
   site, your Canvas pages, and the PDF.
 
 Two ready-made skills do the work for you:
 
-- **`/export-style-init`** builds a style from a reference — a Word document, a
+- **`/export-style-init`** builds a style from a reference: a Word document, a
   PDF, a website, or a CSS file
 - **`/export-style-update`** makes a plain-language tweak, like "headings dark
   blue" or "bigger margins"
@@ -141,7 +141,7 @@ npx course export --sample --style thomas-more
 
 > [!NOTE]
 >
-> For the full picture of how styling works — what each template file controls
-> and how to tweak the PDF with `--var` — see the export styling guide
+> For the full picture of how styling works (what each template file controls
+> and how to tweak the PDF with `--var`), see the export styling guide
 > (`docs/export-styling.md` in your project folder, also readable on GitHub),
 > and `docs/customization.md` for the colour tokens and your own branding.

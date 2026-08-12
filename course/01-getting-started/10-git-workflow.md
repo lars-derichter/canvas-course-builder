@@ -6,7 +6,7 @@ canvas_type: page
 # Git Workflow
 
 By now you have Git installed, a GitHub account, and a local copy of your course
-project. This page shows you how to use Git as part of your daily workflow —
+project. This page shows you how to use Git as part of your daily workflow:
 saving your work, backing it up to GitHub, and getting things back when you need
 to.
 
@@ -16,8 +16,8 @@ GitHub).
 
 ## Saving Your Work (Terminal)
 
-Every time you finish a piece of work — a new page, an updated assignment, a
-reorganised module — you should save it in Git. The process has three steps:
+Every time you finish a piece of work (a new page, an updated assignment, a
+reorganised module), you should save it in Git. The process has three steps:
 
 ```bash
 # 1. Stage your changes (tell Git what to include)
@@ -50,8 +50,8 @@ examples:
 - `Reorganise module 3 into subsections`
 - `Update due dates for week 5 assignments`
 
-You are writing these for your future self — make them clear enough that you can
-scan a list of commits and find what you are looking for.
+You are writing these for your future self, so make them clear enough that you
+can scan a list of commits and find what you are looking for.
 
 ## Saving Your Work (VS Code)
 
@@ -60,15 +60,15 @@ that handles everything without touching the terminal.
 
 ### Opening Source Control
 
-Click the **Source Control** icon in the left sidebar — it looks like a
-branching line with dots. You can also press **Ctrl+Shift+G** (Windows/Linux) or
+Click the **Source Control** icon in the left sidebar. It looks like a branching
+line with dots. You can also press **Ctrl+Shift+G** (Windows/Linux) or
 **Cmd+Shift+G** (macOS).
 
 The panel shows a list of all files you have changed since your last commit.
 
 ### Viewing Changes
 
-Click any file in the Source Control panel to see a **diff** — a side-by-side
+Click any file in the Source Control panel to see a **diff**: a side-by-side
 comparison showing exactly what you added, removed, or changed. Green lines are
 additions, red lines are deletions.
 
@@ -109,14 +109,14 @@ online:
 - Or click the sync icon (circular arrows) in the bottom status bar
 
 The first time you push, VS Code may ask you to sign in to GitHub. Follow the
-prompts — after that it remembers your credentials.
+prompts. After that it remembers your credentials.
 
 ### Pulling Changes
 
 If you work on multiple computers or collaborate with someone, you may need to
 pull changes that were pushed from elsewhere:
 
-- Click **Sync Changes** in the Source Control panel — this both pushes your
+- Click **Sync Changes** in the Source Control panel: this both pushes your
   local commits and pulls any new commits from GitHub
 - Or use the command palette (**Cmd+Shift+P** / **Ctrl+Shift+P**) and search for
   **Git: Pull**
@@ -132,7 +132,7 @@ The easiest way to explore your project's history is on GitHub:
 
 1. Go to your repository on GitHub (e.g.
    `github.com/YOUR-USERNAME/YOUR-COURSE-NAME`)
-2. Click on the **commits** link near the top of the page — you will see a list
+2. Click on the **commits** link near the top of the page. You will see a list
    of all your commits, newest first
 3. Click on any commit to see exactly what changed in that commit
 
@@ -180,7 +180,7 @@ and commit the change as usual.
 >
 > If you use the `evaluations/` folder to store exams, tests, or other
 > assessment materials, make sure your GitHub repository is set to **private**.
-> A public repository means anyone — including students — can see everything in
+> A public repository means anyone, including students, can see everything in
 > it.
 
 You can change your repository's visibility in GitHub under **Settings >
@@ -202,7 +202,7 @@ settings page.
 > [!WARNING]
 >
 > The published site is public, even if the repository itself is private. Only
-> `course/` is served — `evaluations/` and `sources/` are not part of the site —
+> `course/` is served (`evaluations/` and `sources/` are not part of the site),
 > but make sure you are comfortable with your course content being readable by
 > anyone before enabling this.
 
@@ -211,11 +211,11 @@ settings page.
 Want to learn more about Git and GitHub? These tutorials are designed to be
 beginner-friendly:
 
-- [GitHub Skills](https://skills.github.com/) — free interactive courses by
+- [GitHub Skills](https://skills.github.com/): free interactive courses by
   GitHub, learn by doing in real repositories
-- [Git Handbook](https://docs.github.com/en/get-started/using-git/about-git) — a
+- [Git Handbook](https://docs.github.com/en/get-started/using-git/about-git): a
   short, clear overview of Git concepts from the GitHub documentation
-- [Atlassian Git Tutorials](https://www.atlassian.com/git/tutorials) —
+- [Atlassian Git Tutorials](https://www.atlassian.com/git/tutorials):
   well-written guides covering everything from basics to advanced topics
-- [Oh My Git!](https://ohmygit.org/) — a fun, visual game that teaches Git
+- [Oh My Git!](https://ohmygit.org/): a fun, visual game that teaches Git
   concepts through puzzles

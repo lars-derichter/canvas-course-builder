@@ -90,7 +90,7 @@ course/01-module/
 This module contains three live examples: the
 [Workflow Diagram](../02-workflow-diagram.md) (SVG), the
 [Example PDF](../09-example-pdf.md), and the
-[HTML starter](../13-html-starter.md).
+[HTML Starter](../13-html-starter.md).
 
 > [!NOTE]
 >

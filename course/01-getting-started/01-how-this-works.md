@@ -9,7 +9,7 @@ You are looking at a course built with Canvas Course Builder. Every page in this
 module is a plain markdown file in a folder on a computer, previewed as this
 website, and published to Canvas with one command.
 
-This module walks you through doing that yourself. Work through it in order —
+This module walks you through doing that yourself. Work through it in order:
 each page assumes the one before it.
 
 ## The Three Places Your Course Lives
@@ -39,7 +39,8 @@ website is a publishing target for a document you wrote.
 2. Organise them into modules and subsections, and learn which file becomes
    which kind of Canvas item.
 3. Work from the VS Code sidebar instead of typing commands.
-4. Publish to Canvas — after backing it up, which matters more than it sounds.
+4. Publish to Canvas, after first backing it up (which matters more than it
+   sounds).
 5. Export a chapter to PDF or Word, save your work with git, and see what an AI
    assistant can do with all of this.
 6. Do a small practice assignment, which is itself a Canvas assignment published
@@ -56,4 +57,4 @@ website is a publishing target for a document you wrote.
 Every file and folder starts with a two-digit number: `01-`, `02-`, and so on.
 That number sets the order, in this preview and in Canvas, and it is stripped
 from the title students see. You will meet the rest of the naming rules in
-[Folder layout](./04-organising-your-course/01-folder-layout.md).
+[Folder Layout](./04-organising-your-course/01-folder-layout.md).

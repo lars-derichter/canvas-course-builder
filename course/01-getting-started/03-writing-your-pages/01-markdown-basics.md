@@ -5,7 +5,7 @@ canvas_type: page
 
 # Markdown Basics
 
-All course content is written in **Markdown** — a simple way to format text that
+All course content is written in **Markdown**, a simple way to format text that
 is easy to read and write. You do not need any technical background to use it.
 This page walks you through the most common formatting options so you can start
 writing right away.
@@ -46,18 +46,18 @@ Link to external resources with `[text](url)`:
 ### Internal Links
 
 You can link to other course pages using relative paths. These links work in
-both the Docusaurus preview and Canvas — during push, they are automatically
+both the Docusaurus preview and Canvas: during push, they are automatically
 converted to Canvas internal URLs.
 
 - Same folder: `[Alerts](02-alerts.md)`
-- Subfolder: `[Folder layout](../04-organising-your-course/01-folder-layout.md)`
-- With heading anchor: `[Available types](02-alerts.md#available-types)`
+- Subfolder: `[Folder Layout](../04-organising-your-course/01-folder-layout.md)`
+- With heading anchor: `[Available Types](02-alerts.md#available-types)`
 
 Try them here:
 
 - [Alerts](02-alerts.md)
-- [Folder layout](../04-organising-your-course/01-folder-layout.md)
-- [Available types](02-alerts.md#available-types)
+- [Folder Layout](../04-organising-your-course/01-folder-layout.md)
+- [Available Types](02-alerts.md#available-types)
 
 ## Images
 
@@ -77,7 +77,7 @@ rewritten to Canvas file URLs. During pull, they are downloaded back.
 
 ## Linking to Files
 
-You can link to any file in `_files/` the same way — handy for handouts,
+You can link to any file in `_files/` the same way, handy for handouts,
 templates, or starter files students should download:
 
 ```markdown
@@ -98,9 +98,9 @@ file. Internal links to course pages must always use the `.md` path, never
 
 > [!NOTE]
 >
-> To make a file its own entry in the module list — instead of a link inside a
-> page — use a file item. See
-> [Content types](../04-organising-your-course/02-content-types.md).
+> To make a file its own entry in the module list, instead of a link inside a
+> page, use a file item. See
+> [Content Types](../04-organising-your-course/02-content-types.md).
 
 ## Code Blocks
 
@@ -133,7 +133,7 @@ Use `>` for blockquotes:
 
 > Markdown is intended to be as easy-to-read and easy-to-write as possible.
 >
-> — John Gruber
+> _John Gruber_
 
 ## Horizontal Rules
 

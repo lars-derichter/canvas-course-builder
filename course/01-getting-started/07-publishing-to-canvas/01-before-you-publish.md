@@ -11,8 +11,8 @@ page before the page that shows you how.
 ## Canvas Has No Undo
 
 Delete a page in the Canvas web editor and it sits in the course bin for a
-while. Delete it through the API — which is what this tool uses — and it is
-gone. There is no bin, no confirmation dialog you can walk back, and no version
+while. Delete it through the API, which is what this tool uses, and it is gone.
+There is no bin, no confirmation dialog you can walk back, and no version
 history on the Canvas side.
 
 That is fine when the course is empty and yours. It matters when the course
@@ -39,8 +39,8 @@ screen.
   assignment, a link or a file, depending on its frontmatter.
 - **Push rebuilds the item list of every module it manages.** The pages and
   assignments themselves survive, but anything you added to one of those modules
-  by hand in Canvas — a quiz, a discussion, a link to an external tool — drops
-  out of the module.
+  by hand in Canvas (a quiz, a discussion, a link to an external tool) drops out
+  of the module.
 
 That last point is the one that surprises people. Treat a module this tool
 manages as generated output: if you want something in it, it belongs in your
@@ -73,4 +73,4 @@ one does not ask, because it runs every time you publish.
   frontmatter, broken internal links and invalid assignment settings while they
   are still cheap to fix.
 
-With that out of the way, on to [Canvas syncing](./02-canvas-syncing.md).
+With that out of the way, on to [Canvas Syncing](./02-canvas-syncing.md).

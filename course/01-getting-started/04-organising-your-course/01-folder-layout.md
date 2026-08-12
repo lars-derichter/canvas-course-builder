@@ -7,7 +7,7 @@ canvas_type: page
 
 All your course content lives in the `course/` folder. The way you organise
 files and folders here directly controls how content appears in both the local
-preview and on Canvas — no configuration needed.
+preview and on Canvas, with no configuration needed.
 
 ## Module Folders
 
