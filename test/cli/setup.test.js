@@ -12,6 +12,7 @@ const {
   isPristine,
   bodyOf,
   isToolingReadme,
+  isToolingIndex,
   nextSteps,
 } = require('../../cli/setup');
 
@@ -271,6 +272,20 @@ describe('the shipped context files read as pristine', () => {
 
   it('recognises the shipped README as the tooling one', () => {
     assert.equal(isToolingReadme(read('README.md')), true);
+  });
+
+  it('recognises the shipped course home as the tooling landing page', () => {
+    assert.equal(isToolingIndex(read('course/index.md')), true);
+  });
+});
+
+describe('isToolingIndex', () => {
+  it('rejects a course home page', () => {
+    assert.equal(isToolingIndex('# Welcome\n\nUse the sidebar.\n'), false);
+  });
+
+  it('treats a missing course home as replaceable', () => {
+    assert.equal(isToolingIndex(null), true);
   });
 });
 

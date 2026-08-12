@@ -41,7 +41,16 @@ const COURSE_CONTEXT_FILE = path.join(
   'context',
   'course-context.md',
 );
+const COURSE_INDEX_FILE = path.join(PROJECT_ROOT, 'course', 'index.md');
 const TUTORIAL_MODULE = path.join(PROJECT_ROOT, 'course', '01-getting-started');
+
+/**
+ * The H1 of the shipped `course/index.md`. Upstream that file is the project's
+ * own landing page — this repo publishes its `course/` to GitHub Pages — so a
+ * course that still carries it is publishing a pitch for the tooling to its
+ * students, and setup should offer to replace it.
+ */
+const TOOLING_INDEX_HEADING = 'Write your course in markdown';
 
 /** Where the tutorial module stays readable after a course deletes its copy. */
 const TUTORIAL_UPSTREAM_URL =
@@ -162,6 +171,8 @@ function templateFor(kind, variant) {
       return `README-course-${variant}.md`;
     case 'course-context':
       return `course-context-${variant}.md`;
+    case 'course-index':
+      return `course-index-${variant}.md`;
     case 'writing-style':
       return `writing-style-${variant}.md`;
     default:
@@ -227,6 +238,18 @@ function isToolingReadme(content) {
   if (content == null) return true;
   const heading = content.match(/^#\s+(.+)$/m);
   return Boolean(heading) && heading[1].trim() === TOOLING_README_TITLE;
+}
+
+/**
+ * True when course/index.md is still the tooling's own landing page rather than
+ * a course home.
+ */
+function isToolingIndex(content) {
+  if (content == null) return true;
+  const heading = content.match(/^#\s+(.+)$/m);
+  return (
+    Boolean(heading) && heading[1].trim().startsWith(TOOLING_INDEX_HEADING)
+  );
 }
 
 /**
@@ -379,6 +402,7 @@ async function setup(options = {}) {
   }
 
   const wantReadmeFlag = wantsCopy(options.readme, 'readme');
+  const wantIndexFlag = wantsCopy(options.courseHome, 'course-home');
   const wantContextFlag = wantsCopy(options.courseContext, 'course-context');
   const styleFlag =
     options.writingStyle === 'keep' ? null : options.writingStyle;
@@ -449,6 +473,33 @@ async function setup(options = {}) {
         dest: README_FILE,
         label: 'course README',
         pristine: readmePristine,
+        interactive,
+      });
+    }
+
+    // 4b. The course home page. Upstream this file sells the tooling, because
+    //     this repo publishes its own course/ as the project site. A real
+    //     course wants a course home there instead.
+    const indexContent = readIfPresent(COURSE_INDEX_FILE);
+    const indexPristine =
+      isToolingIndex(indexContent) ||
+      isPristine(indexContent, shippedVariants('course-index', ['en', 'nl']));
+    const wantIndex =
+      wantIndexFlag !== undefined
+        ? wantIndexFlag
+        : interactive
+          ? await confirm(
+              rl,
+              `\nReplace the course home page (course/index.md) with the ${language} template?`,
+              indexPristine,
+            )
+          : false;
+    if (wantIndex) {
+      await installTemplate(rl, {
+        template: templateFor('course-index', language),
+        dest: COURSE_INDEX_FILE,
+        label: 'course home',
+        pristine: indexPristine,
         interactive,
       });
     }
@@ -624,4 +675,5 @@ module.exports.templateFor = templateFor;
 module.exports.isPristine = isPristine;
 module.exports.bodyOf = bodyOf;
 module.exports.isToolingReadme = isToolingReadme;
+module.exports.isToolingIndex = isToolingIndex;
 module.exports.nextSteps = nextSteps;

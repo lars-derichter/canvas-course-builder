@@ -34,6 +34,10 @@ program
   .option('--theme <name>', 'Colour theme name or path')
   .option('--export-style <name>', 'Export style folder name or path')
   .option('--readme <copy|keep>', 'Install the course README template')
+  .option(
+    '--course-home <copy|keep>',
+    'Install the course home page template (course/index.md)',
+  )
   .option('--course-context <copy|keep>', 'Install the course-context template')
   .option(
     '--writing-style <variant>',
