@@ -43,7 +43,9 @@ to `essay_question`, and let the author choose.
 
 1. **Read** [`context/writing-style.md`](../../../context/writing-style.md) —
    question text is student-facing — and the question source; draft questions
-   now, in chat, if they must come from lessons.
+   now, in chat, if they must come from lessons. Read the Learning goals section
+   of [`context/course-context.md`](../../../context/course-context.md) too,
+   unless it is `TODO`.
 
 2. **Confirm the destination** in one sentence: `evaluations/<year>/<slug>/`,
    with the year folder the highest-numbered under `evaluations/` and the slug
@@ -53,6 +55,14 @@ to `essay_question`, and let the author choose.
    (shortened) text, the mapped `question_type`, the correct answer(s), and
    points — for multiple choice, all options with the correct one marked; the
    total; and the flag list from the type mapping above.
+
+   Add the **learning goal** each question serves, in the course's own notation,
+   as a column on that same row. Questions that arrived from an
+   `/evaluation-design` blueprint carry theirs already. Below the table, name
+   any goal in scope that no question touches, and any question serving no goal.
+   Report it and let the author decide; never drop or invent a question over it.
+   Skip the column and the paragraph when the course states no goals — say so in
+   one line rather than guessing, and offer `/course-context-init`.
 
    Stop. Wait for explicit approval before starting Phase B.
 

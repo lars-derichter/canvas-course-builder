@@ -49,8 +49,11 @@ logical lesson". Three modes, combinable:
 3. **Present the design as a chat message** with these sections:
    - **One-sentence proposal**, in the voice of the template's opening line.
    - **Learning goals (proposal)**: 3–5 bullets tied to the course's
-     learning-goal scheme in its reference notation (plain goals if the course
-     has none).
+     learning-goal scheme in its reference notation. Say how each lesson goal
+     concretises the course goal it serves — the goals are what the rest of the
+     design answers to. If the course has no scheme, write plain goals and say
+     so in one line, offering `/course-context-init` to define one; propose,
+     never insist, and never block the design on it.
    - **Place in the course**: two sentences — the concrete moment in the running
      context, and what students bring from earlier lessons.
    - **Block structure in broad strokes**: blocks with activity and time budget;

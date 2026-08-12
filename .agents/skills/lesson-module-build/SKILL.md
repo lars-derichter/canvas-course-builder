@@ -33,6 +33,10 @@ with one sentence if the source is not a `.md` under `sources/lessons/`.
    it explicitly.
 
 2. **Inventory the plan.**
+   - **Goals.** List the lesson's goals, in the course's own notation. Note for
+     each which pages will practise it — the page where a student does something
+     with it, not merely reads about it. A goal the module only explains is
+     worth naming as such.
    - **Code snippets** (courses with code only). Group into projects: snippets
      that reference each other form one project; independent snippets can share
      one archive in numbered subfolders. Layout, packaging, and exclusions
@@ -53,6 +57,12 @@ with one sentence if the source is not a `.md` under `sources/lessons/`.
    pointer back from that page, then summary, glossary (only if the course
    generates one), homework last; the code archives (name, file count, layout,
    referencing pages); the image placeholders (filename, page, TODO text).
+
+   Close the proposal with **goals against pages**: one line per lesson goal,
+   naming the pages that practise it. Flag any goal no page practises, and any
+   page that serves no goal. Report it; do not redesign the plan around it and
+   do not block on it — the author decides whether a gap matters. Skip this
+   paragraph entirely if the lesson plan states no goals.
 
    Stop. Wait for explicit approval before starting Phase B.
 
