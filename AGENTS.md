@@ -42,6 +42,14 @@ conceptual walkthroughs of push/pull/status and
 [`docs/advanced-commands.md`](docs/advanced-commands.md) for destructive
 operations (`reset-sync-state`, `reset-canvas`).
 
+**Know what the tool does not do before answering a question about it.**
+[`docs/limitations.md`](docs/limitations.md) is the accurate list: the four
+Canvas types that sync, quizzes being outside the sync loop entirely, the fact
+that a plain `push` rebuilds the item list of every module it manages, the
+one-level nesting limit (sub-subfolders are dropped silently), and why push/pull
+is not a merge. Never suggest a destructive command without pointing at
+[`docs/backups.md`](docs/backups.md).
+
 Before handing code back, run `npm run lint` (ESLint; defects only) and
 `npm run format` (Prettier; formatting). Both are checked in CI. Do not hand-
 format code or hand-wrap markdown prose — Prettier owns both.

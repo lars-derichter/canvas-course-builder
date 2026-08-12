@@ -62,14 +62,20 @@ pass can't run without creating real pages.
 
 ### "SKIPPED (locally modified since last sync)"
 
-Pull detects files changed after the last sync and skips them to avoid
-overwriting your work. Use `--force` to overwrite anyway, or push your local
+Pull skips files whose modification time is later than the last sync, rather
+than overwriting them. Use `--force` to overwrite anyway, or push your local
 changes first.
+
+A fresh `git clone` sets every file's timestamp to checkout time, so pull skips
+everything on a newly cloned project. That is the check working as designed, not
+a fault. See
+[Push and pull are not a merge](limitations.md#push-and-pull-are-not-a-merge).
 
 ### Missing content after pull
 
-- Items of type Discussion, Quiz, or ExternalTool are not supported by pull and
-  are skipped with a warning.
+- Only pages, assignments, external URLs, files and text headers sync. Quizzes,
+  discussions and external tools are skipped with a warning — see
+  [Limitations](limitations.md#only-four-canvas-types-sync).
 - Empty pages on Canvas produce empty markdown files — this is normal.
 
 ## Sync state
@@ -80,16 +86,11 @@ If the sync file becomes corrupted (e.g. partial write during a crash), delete
 it and run `npx course push` to regenerate it. Items with `canvas_id` in their
 frontmatter will be matched to existing Canvas resources.
 
-### Starting fresh
+### Starting fresh, or switching Canvas courses
 
-Run `npx course reset-sync-state` to remove all sync artifacts. The next push
-creates everything from scratch on Canvas.
-
-### Switching Canvas courses
-
-See [New academic year](new-academic-year.md) for the full workflow. In short:
-run `npx course reset-sync-state`, update `.env` with the new course ID, then
-`npx course push`.
+Both are covered by [Advanced commands](advanced-commands.md) and, for the
+yearly move to a new course, [New academic year](new-academic-year.md). Back the
+Canvas course up first: [Backups](backups.md).
 
 ## Docusaurus issues
 

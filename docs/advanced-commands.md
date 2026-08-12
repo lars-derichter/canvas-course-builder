@@ -83,9 +83,10 @@ everything.
   errors with exponential backoff (up to 3 attempts).
 - **Error recovery**: If a single module or item fails during push/pull, the
   remaining items continue and a summary of errors is shown at the end.
-- **Conflict detection**: `pull` checks if local files have been modified since
-  the last sync and skips them to avoid overwriting your work. Use `--force` to
-  override.
+- **Conflict detection**: `pull` skips files modified since the last sync rather
+  than overwriting them. It compares timestamps, not content, which has
+  consequences worth knowing — see
+  [Push and pull are not a merge](limitations.md#push-and-pull-are-not-a-merge).
 - **Stale ID recovery**: If a module, page, or assignment was deleted on Canvas
   but still has a stored ID locally, push detects the 404 and automatically
   creates a new resource.
