@@ -105,6 +105,12 @@ Grades live in one backup only, **Grades > Export**, and that CSV is a record
 rather than a restore: the files students uploaded are not in it, and a deleted
 assignment comes back as a new column you would paste the scores into by hand.
 
+One assignment neither command deletes: Canvas lists the gradebook half of a
+graded Classic Quiz among the course's assignments, and deleting it deletes the
+quiz, its questions and its submissions. `reset-canvas` skips those and names
+them; `push --prune` refuses them and says why. A course export is still the
+only thing that brings a quiz back.
+
 Deleting a whole module folder is a cheaper mistake than deleting a single
 assignment file, which is the reverse of what most people assume. See
 [Destructive operations and student work](limitations.md#destructive-operations-and-student-work)

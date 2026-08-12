@@ -49,7 +49,7 @@ content this tool created:
 
 - All modules
 - All pages
-- All assignments
+- All assignments, except the ones that are really a quiz
 - All files
 
 Deleting an assignment deletes its gradebook column and the student submissions
@@ -59,22 +59,40 @@ the gradebook first — see [Backing up a Canvas course](backups.md). For which
 deletions cost grades and which cost only content, see
 [Destructive operations and student work](limitations.md#destructive-operations-and-student-work).
 
-Quizzes, discussions, announcements and rubrics survive — there is no API call
-for them here — but the modules that linked them do not.
+Classic quizzes, discussions, announcements and rubrics survive, but the modules
+that linked them do not.
+
+Quizzes survive because the command skips them, not because it cannot reach
+them. A graded Classic Quiz is two objects in Canvas: the quiz that holds the
+questions, and an assignment that holds its column in the gradebook. That second
+object is returned by the assignments API like any other assignment — flagged
+`is_quiz_assignment: true`, carrying the quiz's id in `quiz_id` — and a `DELETE`
+on it deletes the quiz, its questions and every submission on it. `reset-canvas`
+leaves those assignments where they are, names them in its output, and keeps
+them out of the count of assignments it is about to delete. A practice quiz has
+no gradebook column and never appears in that list at all, so it was never at
+risk. A New Quiz is the exception that does get deleted: it is genuinely an
+assignment, one that launches an LTI tool, with no separate quiz object behind
+it.
 
 The command lists what the course holds, names the assignments that students
-have already submitted to, then asks:
+have already submitted to and the ones it is skipping, then asks:
 
 ```
 [reset-canvas] Canvas course 123 contains 4 modules, 18 pages, 2 assignments.
 [reset-canvas] All of it will be deleted, including content this project never created.
-[reset-canvas] Every assignment is deleted, and its gradebook column and its student submissions go with it.
-[reset-canvas] Quizzes, discussions and announcements are left alone, but the modules that linked them are not.
+[reset-canvas] Every assignment counted above is deleted, and its gradebook column and its student submissions go with it.
+[reset-canvas] Classic quizzes, discussions, announcements and rubrics are left alone, but the modules that linked them are not.
+[reset-canvas] 1 of the assignments on this course is the gradebook half of a graded quiz. It is skipped: deleting it deletes the quiz, its questions and every submission on it, and nothing here could rebuild the quiz afterwards.
+  - Test 1 (kept, with its quiz)
 [reset-canvas] WARNING: 1 assignment being deleted has student submissions. Deleting an assignment deletes its gradebook column and every submission and grade in it.
   - Exercise 2 (has student submissions)
 [reset-canvas] Canvas has no undo. Back the course up first — see docs/backups.md.
 [reset-canvas] Delete all content on course 123, including the student submissions and grades? (y/N)
 ```
+
+Canvas lists three assignments on that course; two of them are counted above,
+because the third is the quiz.
 
 The submission check costs no extra request: Canvas puts
 `has_submitted_submissions` on the assignments the command already listed. When

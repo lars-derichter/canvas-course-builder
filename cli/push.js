@@ -26,9 +26,11 @@ const {
   createAssignment,
   updateAssignment,
   deleteAssignment,
+  getAssignment,
   listAssignments,
   getSubmissionStates,
   hasStudentSubmissions,
+  isQuizBackedAssignment,
 } = require('../lib/canvas/assignments');
 const {
   createDiscussion,
@@ -1594,6 +1596,67 @@ function collectDeletedItems(syncData, localModules, allModules) {
 }
 
 /**
+ * Why prune must not delete this assignment, or null when it may.
+ *
+ * Canvas lists the gradebook half of a graded Classic Quiz among the course's
+ * assignments, and a `DELETE` on it deletes the quiz, its questions and every
+ * submission. A local file that claimed `canvas_type: assignment` for such an
+ * id is a mismatch between what the file says and what Canvas holds, and only
+ * the author can settle it — so prune stops, and stops equally when the check
+ * itself could not be made. Nothing is destroyed on a guess.
+ *
+ * A 404 is not a refusal: the assignment is already gone, and the delete that
+ * follows reports it as such.
+ *
+ * The check costs one request per doomed assignment, on a path that runs only
+ * after the user has confirmed a deletion.
+ *
+ * @param {string|number} courseId
+ * @param {object} item              - A doomed item of type `assignment`.
+ * @param {Function} [fetchOne]      - Injection point for tests.
+ * @returns {Promise<{lines: string[], error: string}|null>}
+ */
+async function refuseQuizBackedDelete(
+  courseId,
+  item,
+  fetchOne = getAssignment,
+) {
+  let assignment;
+  try {
+    assignment = await fetchOne(courseId, item.canvasId);
+  } catch (err) {
+    if (err.message.includes('404')) return null;
+    return {
+      lines: [
+        `could not check whether assignment ${item.canvasId} is really a quiz ` +
+          `(${err.message}). Canvas lists the gradebook half of a graded quiz ` +
+          'among the assignments, and deleting that deletes the quiz with it, ' +
+          'so this one is left where it is.',
+      ],
+      error:
+        `assignment ${item.canvasId} not deleted: could not check whether it ` +
+        `belongs to a quiz (${err.message})`,
+    };
+  }
+
+  if (!isQuizBackedAssignment(assignment)) return null;
+
+  const quiz =
+    assignment.quiz_id != null ? `quiz ${assignment.quiz_id}` : 'a quiz';
+  return {
+    lines: [
+      `assignment ${item.canvasId} is the gradebook half of ${quiz}, and ` +
+        'deleting it deletes the quiz, its questions and every submission on it.',
+      'The local file claimed canvas_type: assignment for a Canvas object that ' +
+        'is really a quiz. Settle that in Canvas: delete the quiz there if that ' +
+        'is what you meant, or put the file back as canvas_type: quiz if it ' +
+        'should stay. Nothing was deleted, so the next prune asks again.',
+    ],
+    error: `assignment ${item.canvasId} not deleted: it is the gradebook half of ${quiz}`,
+  };
+}
+
+/**
  * Delete a single Canvas item by type.
  * Returns true on success (including 404 = already gone), false on error.
  */
@@ -1602,6 +1665,19 @@ async function deleteCanvasItemByType(courseId, item, errors) {
     if (item.canvasType === 'page') {
       await deletePage(courseId, item.pageUrl || item.canvasId);
     } else if (item.canvasType === 'assignment') {
+      // An assignment id can name a quiz. Ask before deleting, and refuse
+      // rather than take a quiz down with the assignment that fronts it.
+      const refusal = await refuseQuizBackedDelete(courseId, item);
+      if (refusal) {
+        log.error(
+          `    [push] Refusing to delete "${item.relativePath}": ${refusal.lines[0]}`,
+        );
+        for (const line of refusal.lines.slice(1)) {
+          log.error(`    [push] ${line}`);
+        }
+        errors.push({ module: item.relativePath, error: refusal.error });
+        return false;
+      }
       await deleteAssignment(courseId, item.canvasId);
     } else if (item.canvasType === 'discussion') {
       // A discussion is authored content like a page, so prune deletes the
@@ -1868,6 +1944,7 @@ push._collectDeletedItems = collectDeletedItems;
 push._collectLocalClaims = collectLocalClaims;
 push._isItemClaimed = isItemClaimed;
 push._deleteCanvasItemByType = deleteCanvasItemByType;
+push._refuseQuizBackedDelete = refuseQuizBackedDelete;
 push._annotateSubmissions = annotateSubmissions;
 push._describeDoomedItem = describeDoomedItem;
 push._warnGradeImpact = warnGradeImpact;

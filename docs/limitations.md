@@ -32,11 +32,12 @@ are outside the tool entirely.
 
 ## Quizzes Are Outside the Sync Loop
 
-There is no quiz code in this project — no create, no update, no read, no delete
-— and `.canvas-sync.json` does not track quizzes. The
-[`/quiz-build`](ai-assistants.md) skill generates a QTI 1.2 `.zip` that you
-import through the Canvas web interface by hand. That is the whole of the quiz
-support.
+Nothing here writes to a quiz — no create, no update, no delete. The project
+reads the course's quiz list to find the one a module item points at, and
+`.canvas-sync.json` tracks that link, but the questions never cross in either
+direction. The [`/quiz-build`](ai-assistants.md) skill generates a QTI 1.2
+`.zip` that you import through the Canvas web interface by hand. That is the
+whole of the quiz support.
 
 What that means in practice:
 
@@ -95,8 +96,21 @@ of object they delete, and only one of those kinds takes student work with it.
   the submissions frequently do not come with it, so the grades are gone for
   good.
 - **`reset-canvas` does that to every assignment in the course**, alongside
-  every module, page and file. See
-  [Advanced commands](advanced-commands.md#reset-canvas).
+  every module, page and file — except the assignments that are really quizzes,
+  below. See [Advanced commands](advanced-commands.md#reset-canvas).
+- **Some assignments are quizzes.** A graded Classic Quiz is two objects: the
+  quiz that holds the questions, and an assignment that holds its gradebook
+  column. Canvas returns that assignment from the assignments API like any other
+  (`is_quiz_assignment: true`, with the quiz's id in `quiz_id`), and a `DELETE`
+  on it deletes the quiz, its questions and every submission. Neither command
+  does that any more: `reset-canvas` skips those assignments and names them, and
+  `push --prune` refuses to delete one, reports it as an error, and leaves it
+  tracked. If a local file claimed `canvas_type: assignment` for an id that
+  Canvas holds as a quiz, that mismatch is yours to settle — delete the quiz in
+  Canvas if that is what you meant. A practice quiz has no gradebook column and
+  never appears among the assignments, so it is never at risk. A New Quiz is not
+  covered by any of this: it is genuinely an assignment that launches an LTI
+  tool, and both commands delete it like one.
 
 Pages and files carry no grades, so pruning one costs you the content and
 nothing else — recoverable from git, or from a course export.

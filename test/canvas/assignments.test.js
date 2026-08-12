@@ -8,6 +8,7 @@ process.env.CANVAS_API_TOKEN = 'test-token-123';
 const {
   hasStudentSubmissions,
   getSubmissionStates,
+  isQuizBackedAssignment,
 } = require('../../lib/canvas/assignments');
 
 /**
@@ -49,6 +50,62 @@ describe('hasStudentSubmissions', () => {
   it('returns null for a missing assignment object', () => {
     assert.equal(hasStudentSubmissions(undefined), null);
     assert.equal(hasStudentSubmissions(null), null);
+  });
+});
+
+describe('isQuizBackedAssignment', () => {
+  it('recognises the shadow assignment of a graded Classic Quiz', () => {
+    assert.equal(
+      isQuizBackedAssignment({
+        id: 833216,
+        name: 'Test 1',
+        is_quiz_assignment: true,
+        quiz_id: 245808,
+        submission_types: ['online_quiz'],
+      }),
+      true,
+      'deleting this assignment deletes the quiz behind it',
+    );
+  });
+
+  it('recognises one by quiz_id alone', () => {
+    assert.equal(
+      isQuizBackedAssignment({ id: 1, quiz_id: 245808 }),
+      true,
+      'either field is enough: a quiz id on an assignment means a quiz',
+    );
+  });
+
+  it('leaves an ordinary assignment alone', () => {
+    assert.equal(
+      isQuizBackedAssignment({
+        id: 500,
+        name: 'Homework',
+        is_quiz_assignment: false,
+        quiz_id: null,
+        submission_types: ['online_upload'],
+      }),
+      false,
+    );
+  });
+
+  it('leaves a New Quiz alone: it is genuinely an assignment', () => {
+    assert.equal(
+      isQuizBackedAssignment({
+        id: 700,
+        name: 'New Quizzes test',
+        is_quiz_assignment: false,
+        is_quiz_lti_assignment: true,
+        submission_types: ['external_tool'],
+      }),
+      false,
+      'a New Quiz has no separate Quiz object for this to protect',
+    );
+  });
+
+  it('returns false for a missing assignment object', () => {
+    assert.equal(isQuizBackedAssignment(undefined), false);
+    assert.equal(isQuizBackedAssignment(null), false);
   });
 });
 

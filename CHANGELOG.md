@@ -2,6 +2,21 @@
 
 ## Unreleased
 
+- **Deleting an assignment no longer deletes a quiz.** A graded Classic Quiz is
+  two objects in Canvas — the quiz that holds the questions, and an assignment
+  that holds its gradebook column — and the second one is returned by the
+  assignments API like any other assignment. `DELETE` on it deletes the quiz,
+  its questions and every submission with it, verified against a live course. So
+  `reset-canvas` was destroying every graded quiz it found while printing
+  "Quizzes, discussions and announcements are left alone", and `push --prune`
+  would do the same to any item whose local file said `canvas_type: assignment`
+  for an id Canvas holds as a quiz. `reset-canvas` now skips those assignments,
+  names them, and keeps them out of the count of what it is about to delete;
+  `push --prune` refuses to delete one and reports the mismatch instead of
+  resolving it with a delete. A check that cannot be made is a refusal too. The
+  new `isQuizBackedAssignment` reads `is_quiz_assignment` and `quiz_id`;
+  practice quizzes never appear among the assignments, and a New Quiz is
+  genuinely an assignment, so neither is covered.
 - **`reset-canvas` no longer claims that grades survive it.** Both the command's
   own warning and [`docs/advanced-commands.md`](docs/advanced-commands.md) said
   grades were left alone, while the command deletes every assignment in the

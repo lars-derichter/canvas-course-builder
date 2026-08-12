@@ -1,6 +1,10 @@
 const { describe, it, mock, afterEach } = require('node:test');
 const assert = require('node:assert/strict');
 
+// Set required env vars before requiring anything that loads the client.
+process.env.CANVAS_API_URL = 'https://canvas.example.com';
+process.env.CANVAS_API_TOKEN = 'test-token-123';
+
 const push = require('../../cli/push');
 
 const {
@@ -10,6 +14,8 @@ const {
   _isItemClaimed: isItemClaimed,
   _annotateSubmissions: annotateSubmissions,
   _describeDoomedItem: describeDoomedItem,
+  _deleteCanvasItemByType: deleteCanvasItemByType,
+  _refuseQuizBackedDelete: refuseQuizBackedDelete,
 } = push;
 
 describe('collectDeletedModules', () => {
@@ -107,6 +113,69 @@ describe('collectLocalClaims', () => {
     assert.ok(claims.has('external_url:42'));
   });
 
+  // A quiz is claimed by the same generic path as everything else, which is
+  // what routes its prune to the branch that removes the module item only.
+  // Nothing here special-cases the type, so nothing here announces when that
+  // stops being true either.
+  it('claims a quiz item by its type and canvas_id', () => {
+    const claims = collectLocalClaims([
+      {
+        folderName: '01-intro',
+        items: [
+          {
+            relativePath: '01-intro/05-test.md',
+            canvasType: 'quiz',
+            frontmatter: {
+              canvas_id: 12,
+              quiz_ref: 'evaluations/2526/test-1/test-1-qti.zip',
+            },
+          },
+        ],
+      },
+    ]);
+
+    assert.ok(claims.has('quiz:12'));
+  });
+
+  it('claims a discussion item by its type and canvas_id', () => {
+    const claims = collectLocalClaims([
+      {
+        folderName: '01-intro',
+        items: [
+          {
+            relativePath: '01-intro/06-forum.md',
+            canvasType: 'discussion',
+            frontmatter: { canvas_id: 88 },
+          },
+        ],
+      },
+    ]);
+
+    assert.ok(claims.has('discussion:88'));
+  });
+
+  it('scopes a claim to its type, so one type never claims another', () => {
+    const claims = collectLocalClaims([
+      {
+        folderName: '01-intro',
+        items: [
+          {
+            relativePath: '01-intro/03-homework.md',
+            canvasType: 'assignment',
+            frontmatter: { canvas_id: 12 },
+          },
+        ],
+      },
+    ]);
+
+    assert.ok(claims.has('assignment:12'));
+    assert.equal(
+      claims.has('quiz:12'),
+      false,
+      'a Canvas id means nothing without its type: ids collide across types',
+    );
+  });
+
   it('claims items nested in subheaders', () => {
     const localModules = [
       {
@@ -164,6 +233,48 @@ describe('isItemClaimed', () => {
     assert.equal(
       isItemClaimed(entry, new Set(['external_url:http://example.com'])),
       true,
+    );
+  });
+
+  it('matches a quiz entry by canvas_id', () => {
+    const entry = {
+      canvas_id: 12,
+      canvas_type: 'quiz',
+      path: '01-mod/05-test.md',
+    };
+    assert.equal(isItemClaimed(entry, new Set(['quiz:12'])), true);
+  });
+
+  it('matches a discussion entry by canvas_id', () => {
+    const entry = {
+      canvas_id: 88,
+      canvas_type: 'discussion',
+      path: '01-mod/06-forum.md',
+    };
+    assert.equal(isItemClaimed(entry, new Set(['discussion:88'])), true);
+  });
+
+  it('never matches an entry across types', () => {
+    const quiz = {
+      canvas_id: 12,
+      canvas_type: 'quiz',
+      path: '01-mod/05-test.md',
+    };
+    const assignment = {
+      canvas_id: 12,
+      canvas_type: 'assignment',
+      path: '01-mod/03-homework.md',
+    };
+
+    assert.equal(
+      isItemClaimed(quiz, new Set(['assignment:12'])),
+      false,
+      'an assignment claim must not keep a quiz entry alive',
+    );
+    assert.equal(
+      isItemClaimed(assignment, new Set(['quiz:12'])),
+      false,
+      'and a quiz claim must not keep an assignment entry alive',
     );
   });
 
@@ -447,6 +558,68 @@ describe('collectDeletedItems per type', () => {
     assert.equal(items.length, 1);
     assert.equal(items[0].canvasType, 'file');
     assert.equal(items[0].canvasId, 777);
+  });
+
+  it('collects a quiz item with the module it has to be unlinked from', () => {
+    const syncData = {
+      modules: {
+        100: {
+          folder: '01-mod',
+          items: {
+            'quiz:12': {
+              path: '01-mod/05-test.md',
+              canvas_id: 12,
+              canvas_type: 'quiz',
+            },
+          },
+        },
+      },
+    };
+    const localModules = [{ folderName: '01-mod', items: [] }];
+
+    const items = collectDeletedItems(syncData, localModules);
+
+    assert.equal(items.length, 1);
+    assert.equal(items[0].canvasType, 'quiz');
+    assert.equal(items[0].canvasId, 12);
+    assert.equal(
+      items[0].moduleId,
+      100,
+      'the module id is what the quiz branch needs: it deletes the item, not the quiz',
+    );
+  });
+
+  it('leaves a quiz item alone while a local file still claims it', () => {
+    const syncData = {
+      modules: {
+        100: {
+          folder: '01-mod',
+          items: {
+            'quiz:12': {
+              path: '01-mod/05-test.md',
+              canvas_id: 12,
+              canvas_type: 'quiz',
+            },
+          },
+        },
+      },
+    };
+    const localModules = [
+      {
+        folderName: '01-mod',
+        items: [
+          {
+            // Renumbered locally: same quiz, new path.
+            relativePath: '01-mod/07-test.md',
+            title: 'Test 1',
+            canvasType: 'quiz',
+            frontmatter: { canvas_id: 12 },
+          },
+        ],
+      },
+    ];
+
+    assert.deepEqual(collectDeletedItems(syncData, localModules), []);
   });
 
   it('collects external_url items with moduleId and externalUrl for deletion', () => {
@@ -744,3 +917,298 @@ describe('collectDeletedItems with multiple modules', () => {
     assert.equal(result[0].moduleIdKey, '100');
   });
 });
+
+describe('deleteCanvasItemByType: quiz', () => {
+  afterEach(() => {
+    mock.restoreAll();
+  });
+
+  const quizItem = {
+    moduleIdKey: '9',
+    itemKey: 'quiz:12',
+    moduleId: 9,
+    relativePath: '01-mod/05-test.md',
+    canvasId: 12,
+    canvasType: 'quiz',
+  };
+
+  it('removes the module item and never touches the quiz', async () => {
+    silence();
+    const calls = mockCanvas([
+      {
+        method: 'GET',
+        path: '/modules/9/items',
+        body: [
+          { id: 76, type: 'Page', page_url: 'welcome' },
+          { id: 77, type: 'Quiz', content_id: 12 },
+        ],
+      },
+      { method: 'DELETE', path: '/modules/9/items/77', body: {} },
+    ]);
+    const errors = [];
+
+    const ok = await deleteCanvasItemByType(42, quizItem, errors);
+
+    assert.equal(ok, true);
+    assert.deepEqual(errors, []);
+    assert.deepEqual(
+      calls.map((c) => `${c.method} ${c.url}`),
+      [
+        'GET https://canvas.example.com/api/v1/courses/42/modules/9/items',
+        'DELETE https://canvas.example.com/api/v1/courses/42/modules/9/items/77',
+      ],
+    );
+    assert.ok(
+      !calls.some((c) => /\/quizzes\b/.test(c.url)),
+      'pruning a quiz item must never issue a request against the quiz object',
+    );
+  });
+
+  it('deletes nothing when the module no longer holds the quiz item', async () => {
+    silence();
+    const calls = mockCanvas([
+      { method: 'GET', path: '/modules/9/items', body: [] },
+    ]);
+    const errors = [];
+
+    const ok = await deleteCanvasItemByType(42, quizItem, errors);
+
+    assert.equal(ok, true, 'already gone counts as done, as it does elsewhere');
+    assert.deepEqual(errors, []);
+    assert.ok(
+      !calls.some((c) => c.method === 'DELETE'),
+      'nothing is deleted when the item that named the quiz is not there',
+    );
+  });
+
+  it('matches the module item by content_id, not by position', async () => {
+    silence();
+    const calls = mockCanvas([
+      {
+        method: 'GET',
+        path: '/modules/9/items',
+        body: [
+          { id: 80, type: 'Quiz', content_id: 44 },
+          { id: 81, type: 'Quiz', content_id: 12 },
+        ],
+      },
+      { method: 'DELETE', path: '/modules/9/items/81', body: {} },
+    ]);
+
+    const ok = await deleteCanvasItemByType(42, quizItem, []);
+
+    assert.equal(ok, true);
+    assert.ok(
+      calls.some(
+        (c) => c.method === 'DELETE' && c.url.endsWith('/modules/9/items/81'),
+      ),
+      'the other quiz in the module must be left where it is',
+    );
+  });
+});
+
+describe('deleteCanvasItemByType: assignment', () => {
+  afterEach(() => {
+    mock.restoreAll();
+  });
+
+  const assignmentItem = {
+    moduleIdKey: '9',
+    itemKey: 'assignment:500',
+    moduleId: 9,
+    relativePath: '01-mod/03-homework.md',
+    canvasId: 500,
+    canvasType: 'assignment',
+  };
+
+  it('deletes an ordinary assignment', async () => {
+    silence();
+    const calls = mockCanvas([
+      {
+        method: 'GET',
+        path: '/assignments/500',
+        body: { id: 500, name: 'Homework', is_quiz_assignment: false },
+      },
+      { method: 'DELETE', path: '/assignments/500', body: {} },
+    ]);
+    const errors = [];
+
+    const ok = await deleteCanvasItemByType(42, assignmentItem, errors);
+
+    assert.equal(ok, true);
+    assert.deepEqual(errors, []);
+    assert.ok(calls.some((c) => c.method === 'DELETE'));
+  });
+
+  it('refuses to delete the assignment that fronts a quiz', async () => {
+    const errored = silence().error;
+    const calls = mockCanvas([
+      {
+        method: 'GET',
+        path: '/assignments/500',
+        body: {
+          id: 500,
+          name: 'Test 1',
+          is_quiz_assignment: true,
+          quiz_id: 12,
+          submission_types: ['online_quiz'],
+        },
+      },
+    ]);
+    const errors = [];
+
+    const ok = await deleteCanvasItemByType(42, assignmentItem, errors);
+
+    assert.equal(ok, false);
+    assert.ok(
+      !calls.some((c) => c.method === 'DELETE'),
+      'deleting that assignment would delete the quiz with it',
+    );
+    assert.equal(errors.length, 1);
+    assert.equal(errors[0].module, '01-mod/03-homework.md');
+    assert.match(errors[0].error, /not deleted/);
+    assert.match(errors[0].error, /quiz 12/);
+
+    const said = errored.mock.calls.map((c) => c.arguments[0]).join('\n');
+    assert.match(said, /Refusing to delete/);
+    assert.match(said, /every submission on it/);
+    assert.match(said, /canvas_type: quiz/);
+  });
+
+  it('refuses when the check itself could not be made', async () => {
+    silence();
+    const calls = mockCanvas([
+      {
+        method: 'GET',
+        path: '/assignments/500',
+        body: { message: 'forbidden' },
+        status: 403,
+      },
+    ]);
+    const errors = [];
+
+    const ok = await deleteCanvasItemByType(42, assignmentItem, errors);
+
+    assert.equal(ok, false, 'could not tell is not permission to delete');
+    assert.ok(!calls.some((c) => c.method === 'DELETE'));
+    assert.equal(errors.length, 1);
+    assert.match(errors[0].error, /could not check/);
+  });
+
+  it('treats an assignment Canvas no longer has as already deleted', async () => {
+    silence();
+    mockCanvas([
+      {
+        method: 'GET',
+        path: '/assignments/500',
+        body: { message: 'not found' },
+        status: 404,
+      },
+      {
+        method: 'DELETE',
+        path: '/assignments/500',
+        body: { message: 'not found' },
+        status: 404,
+      },
+    ]);
+    const errors = [];
+
+    const ok = await deleteCanvasItemByType(42, assignmentItem, errors);
+
+    assert.equal(ok, true, 'a 404 is not a refusal: there is nothing left');
+    assert.deepEqual(errors, []);
+  });
+});
+
+describe('refuseQuizBackedDelete', () => {
+  const item = { canvasId: 500, relativePath: '01-mod/03-homework.md' };
+
+  it('allows an ordinary assignment through', async () => {
+    assert.equal(
+      await refuseQuizBackedDelete(42, item, async () => ({
+        id: 500,
+        is_quiz_assignment: false,
+      })),
+      null,
+    );
+  });
+
+  it('allows a New Quiz through: it is an assignment and nothing else', async () => {
+    assert.equal(
+      await refuseQuizBackedDelete(42, item, async () => ({
+        id: 500,
+        is_quiz_lti_assignment: true,
+        submission_types: ['external_tool'],
+      })),
+      null,
+    );
+  });
+
+  it('names the quiz it is protecting', async () => {
+    const refusal = await refuseQuizBackedDelete(42, item, async () => ({
+      id: 500,
+      quiz_id: 12,
+    }));
+
+    assert.match(refusal.lines[0], /gradebook half of quiz 12/);
+    assert.match(refusal.error, /quiz 12/);
+  });
+
+  it('refuses without a quiz id too', async () => {
+    const refusal = await refuseQuizBackedDelete(42, item, async () => ({
+      id: 500,
+      is_quiz_assignment: true,
+    }));
+
+    assert.match(refusal.lines[0], /gradebook half of a quiz/);
+  });
+});
+
+/** A fake Response object compatible with the fetch API. */
+function fakeResponse(body, { status = 200 } = {}) {
+  return {
+    ok: status >= 200 && status < 300,
+    status,
+    headers: { get: () => null },
+    json: async () => body,
+    text: async () => JSON.stringify(body),
+  };
+}
+
+/**
+ * Answer Canvas requests from a route table of { method, path, body, status },
+ * and record every request that was made. An unrouted request gets a 400, so a
+ * missing route fails the test instead of hanging on the client's retries.
+ */
+function mockCanvas(routes) {
+  const calls = [];
+  const remaining = routes.map((route) => ({ ...route }));
+  mock.method(global, 'fetch', async (url, opts) => {
+    calls.push({
+      url,
+      method: opts.method,
+      body: opts.body ? JSON.parse(opts.body) : null,
+    });
+    const index = remaining.findIndex(
+      (route) => route.method === opts.method && url.includes(route.path),
+    );
+    if (index === -1) {
+      return fakeResponse(
+        { message: `unrouted ${opts.method} ${url}` },
+        { status: 400 },
+      );
+    }
+    const [route] = remaining.splice(index, 1);
+    return fakeResponse(route.body, { status: route.status || 200 });
+  });
+  return calls;
+}
+
+/** Keep the command's own output out of the test report, and hand it back. */
+function silence() {
+  return {
+    log: mock.method(console, 'log', () => {}),
+    warn: mock.method(console, 'warn', () => {}),
+    error: mock.method(console, 'error', () => {}),
+  };
+}

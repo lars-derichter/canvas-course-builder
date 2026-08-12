@@ -5,6 +5,7 @@ const {
   listAssignments,
   deleteAssignment,
   hasStudentSubmissions,
+  isQuizBackedAssignment,
 } = require('../lib/canvas/assignments');
 const { listFiles, deleteFile } = require('../lib/canvas/files');
 const {
@@ -15,6 +16,48 @@ const {
   submissionRiskSuffix,
   submissionWarningLines,
 } = require('./backup-warning');
+
+/**
+ * Split the assignments Canvas lists into the ones this command deletes and the
+ * ones it must leave alone.
+ *
+ * Canvas lists the gradebook half of a graded quiz among the assignments, and a
+ * `DELETE` on it takes the quiz, its questions and its submissions with it. The
+ * command promises that quizzes survive a reset, so those are skipped rather
+ * than deleted — a promise that used to be false for every graded quiz in the
+ * course.
+ *
+ * @param {object[]} assignments - Canvas Assignment objects.
+ * @returns {{deletable: object[], quizBacked: object[]}}
+ */
+function partitionAssignments(assignments) {
+  const deletable = [];
+  const quizBacked = [];
+  for (const assignment of assignments || []) {
+    if (isQuizBackedAssignment(assignment)) quizBacked.push(assignment);
+    else deletable.push(assignment);
+  }
+  return { deletable, quizBacked };
+}
+
+/**
+ * The one sentence that explains the assignments this command is not deleting,
+ * or null when the course has none. The names are listed by the caller.
+ *
+ * @param {object[]} quizBacked
+ * @returns {string|null}
+ */
+function quizSkipNotice(quizBacked) {
+  const count = quizBacked.length;
+  if (count === 0) return null;
+  const one = count === 1;
+  return (
+    `${count} of the assignments on this course ${one ? 'is' : 'are'} the ` +
+    `gradebook half of a graded quiz. ${one ? 'It is' : 'They are'} skipped: ` +
+    `deleting ${one ? 'it' : 'one'} deletes the quiz, its questions and every ` +
+    'submission on it, and nothing here could rebuild the quiz afterwards.'
+  );
+}
 
 async function resetCanvas(options = {}) {
   const courseId = process.env.CANVAS_COURSE_ID;
@@ -34,15 +77,25 @@ async function resetCanvas(options = {}) {
     listFiles(courseId),
   ]);
 
+  // The quiz half of the list is not this command's to delete, so it is not
+  // counted among what will be deleted either.
+  const { deletable, quizBacked } = partitionAssignments(assignments);
+  const quizNotice = quizSkipNotice(quizBacked);
+
   const summary = describeContents({
     modules: modules.length,
     pages: pages.length,
-    assignments: assignments.length,
+    assignments: deletable.length,
     files: files.length,
   });
 
   if (!summary) {
-    log.info(`[reset-canvas] Canvas course ${courseId} is already empty.`);
+    log.info(
+      quizNotice
+        ? `[reset-canvas] Canvas course ${courseId} holds nothing this ` +
+            `command deletes. ${quizNotice}`
+        : `[reset-canvas] Canvas course ${courseId} is already empty.`,
+    );
     return;
   }
 
@@ -52,15 +105,23 @@ async function resetCanvas(options = {}) {
       'project never created.',
   );
   log.info(
-    '[reset-canvas] Every assignment is deleted, and its gradebook column and ' +
-      'its student submissions go with it.\n' +
-      '[reset-canvas] Quizzes, discussions and announcements are left alone, ' +
-      'but the modules that linked them are not.',
+    '[reset-canvas] Every assignment counted above is deleted, and its ' +
+      'gradebook column and its student submissions go with it.\n' +
+      '[reset-canvas] Classic quizzes, discussions, announcements and rubrics ' +
+      'are left alone, but the modules that linked them are not.',
   );
+  if (quizNotice) {
+    log.info(`[reset-canvas] ${quizNotice}`);
+    for (const assignment of quizBacked) {
+      log.info(`  - ${assignment.name} (kept, with its quiz)`);
+    }
+  }
 
   // The assignments were listed above, and a Canvas Assignment object carries
   // has_submitted_submissions, so counting the graded ones costs no extra call.
-  const submissionStates = assignments.map((assignment) => ({
+  // Only the ones about to be deleted are counted: a skipped quiz assignment
+  // puts no grades at stake here.
+  const submissionStates = deletable.map((assignment) => ({
     assignment,
     state: hasStudentSubmissions(assignment),
   }));
@@ -76,11 +137,11 @@ async function resetCanvas(options = {}) {
       log.warn(`  - ${assignment.name} (submission status unknown)`);
     }
   }
-  if (assignments.length > 0 && risk.graded === 0 && risk.unknown === 0) {
+  if (deletable.length > 0 && risk.graded === 0 && risk.unknown === 0) {
     log.info(
-      assignments.length === 1
+      deletable.length === 1
         ? '[reset-canvas] The assignment has no student submissions.'
-        : `[reset-canvas] None of the ${assignments.length} assignments has ` +
+        : `[reset-canvas] None of the ${deletable.length} assignments has ` +
             'student submissions.',
     );
   }
@@ -127,9 +188,21 @@ async function resetCanvas(options = {}) {
     }
   }
 
-  // Delete all assignments
-  log.info(`[reset-canvas] Deleting ${assignments.length} assignment(s)...`);
-  for (const assignment of assignments) {
+  // Delete the assignments, minus the ones that would take a quiz with them
+  log.info(
+    `[reset-canvas] Deleting ${deletable.length} assignment(s)` +
+      (quizBacked.length > 0
+        ? `, skipping ${quizBacked.length} that back a quiz`
+        : '') +
+      '...',
+  );
+  for (const assignment of quizBacked) {
+    log.verbose(
+      `  Skipped assignment: ${assignment.name} — deleting it would delete ` +
+        `quiz ${assignment.quiz_id ?? '(id unknown)'} with it`,
+    );
+  }
+  for (const assignment of deletable) {
     try {
       await deleteAssignment(courseId, assignment.id);
       log.verbose(`  Deleted assignment: ${assignment.name}`);
@@ -163,3 +236,6 @@ async function resetCanvas(options = {}) {
 }
 
 module.exports = resetCanvas;
+// Exported for testing
+resetCanvas._partitionAssignments = partitionAssignments;
+resetCanvas._quizSkipNotice = quizSkipNotice;
