@@ -133,7 +133,7 @@ and export commands:
 ## Command Palette
 
 Open the command palette with **Cmd+Shift+P** (macOS) or **Ctrl+Shift+P**
-(Windows/Linux) and type **"Course:"** to see all available commands:
+(Windows/Linux) and type **“Course:”** to see all available commands:
 
 | Command                                | What it does                                         |
 | -------------------------------------- | ---------------------------------------------------- |

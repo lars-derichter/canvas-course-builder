@@ -30,7 +30,7 @@ git commit -m "Add introduction page to database module"
 git push
 ```
 
-That's it. Stage, commit, push. You will do this dozens of times as you build
+That’s it. Stage, commit, push. You will do this dozens of times as you build
 your course.
 
 > [!TIP]
@@ -128,7 +128,7 @@ commit is a snapshot of your entire project that you can go back to at any time.
 
 ### Browsing History on GitHub
 
-The easiest way to explore your project's history is on GitHub:
+The easiest way to explore your project’s history is on GitHub:
 
 1. Go to your repository on GitHub (e.g.
    `github.com/YOUR-USERNAME/YOUR-COURSE-NAME`)
@@ -183,7 +183,7 @@ and commit the change as usual.
 > A public repository means anyone, including students, can see everything in
 > it.
 
-You can change your repository's visibility in GitHub under **Settings >
+You can change your repository’s visibility in GitHub under **Settings >
 General > Danger Zone > Change repository visibility**.
 
 Educators are eligible for a **free GitHub Pro account**, which includes

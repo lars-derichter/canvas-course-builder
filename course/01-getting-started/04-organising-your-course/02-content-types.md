@@ -77,7 +77,7 @@ file_ref: _files/workflow-diagram.svg
 ---
 ```
 
-Place the binary in the module's `_files/` directory and create a `.md` wrapper
+Place the binary in the module’s `_files/` directory and create a `.md` wrapper
 next to your other items:
 
 ```

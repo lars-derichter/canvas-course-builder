@@ -28,7 +28,7 @@ already has content, especially content someone else put there.
 The safest way to learn this tool is in a **sandbox course**: an empty Canvas
 course nobody is enrolled in. Push to it, break it, push again. Most
 institutions hand out sandbox courses on request. When your material looks
-right, copy it into the real course from Canvas's own **Import Course Content**
+right, copy it into the real course from Canvas’s own **Import Course Content**
 screen.
 
 ## What Push Actually Does
@@ -62,7 +62,7 @@ one does not ask, because it runs every time you publish.
 > [!WARNING]
 >
 > `reset-canvas` is for wiping a scratch course back to empty. Run it on a live
-> course and you delete your colleagues' files along with your own. It tells you
+> course and you delete your colleagues’ files along with your own. It tells you
 > what the course holds before it asks, so read that line.
 
 ## Two Habits Worth Forming

@@ -25,7 +25,7 @@ tool, and published straight from the repository.
 The Canvas editor is fine for a page or two. Maintaining a whole course in it is
 another matter: no history, no search and replace across pages, no offline work,
 no way to review a change before students see it, and no way to reuse last
-year's material without clicking through it all again.
+year’s material without clicking through it all again.
 
 Canvas Course Builder treats your markdown as the source of truth and Canvas as
 a publishing target. You write in your own editor, review every change, and push
@@ -41,7 +41,7 @@ when you are ready.
   pages, assignments and files. `pull` brings remote edits back into markdown,
   and `status` shows what would change.
 - **PDF and Word export.** Hand out a styled course text or a single chapter,
-  with your institution's branding.
+  with your institution’s branding.
 - **A VS Code extension.** Every command in the sidebar, so daily work needs no
   terminal.
 - **AI-assisted authoring.** Bundled skills help design lessons from their

@@ -23,7 +23,7 @@ explaining a whole task from scratch, you name the skill and the assistant
 follows instructions written for exactly that job. For example:
 
 - `/proofread course/01-getting-started/03-writing-your-pages/02-alerts.md`
-  checks a page against the project's writing style and your spelling.
+  checks a page against the project’s writing style and your spelling.
 - `/lesson-module-build lesson-03` turns a finished lesson plan into a complete
   set of student pages.
 
@@ -32,8 +32,8 @@ what each one does and adjust it to fit how you work.
 
 ## What You Can Do With It
 
-Beyond everyday help ("draft a page about X", "move these three items to another
-module", "why did my push fail?"), this project ships a set of skills built for
+Beyond everyday help (“draft a page about X”, “move these three items to another
+module”, “why did my push fail?”), this project ships a set of skills built for
 course authoring. The main families:
 
 - **Writing style**: `/writing-style-init` adapts the style guide to your voice,

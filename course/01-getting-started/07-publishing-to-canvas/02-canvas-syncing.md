@@ -60,7 +60,7 @@ This converts all your markdown to HTML and uploads it to Canvas. Each module
 becomes a Canvas module, and each file becomes the appropriate item type (page,
 assignment, external link, or file upload).
 
-After the first push, `canvas_id` is written back into each file's frontmatter
+After the first push, `canvas_id` is written back into each file’s frontmatter
 so the CLI knows which Canvas object to update on subsequent pushes.
 
 > [!WARNING]

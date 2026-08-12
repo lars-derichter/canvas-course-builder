@@ -30,7 +30,7 @@ website is a publishing target for a document you wrote.
 - **Search and replace** across the whole course, in seconds.
 - **Offline work.** Trains, planes, and buildings with bad wifi.
 - **Review before publishing.** You see exactly what will change, and decide.
-- **Reuse.** Next year's course starts from this year's files, not from clicking
+- **Reuse.** Next year’s course starts from this year’s files, not from clicking
   through Canvas.
 
 ## What You Will Do in This Module
@@ -50,7 +50,7 @@ website is a publishing target for a document you wrote.
 >
 > Nothing here is permanent. The whole module can be removed from your course
 > with one answer during `npx course setup`, and it stays readable on the
-> project's website afterwards.
+> project’s website afterwards.
 
 ## A Word on the Numbers
 

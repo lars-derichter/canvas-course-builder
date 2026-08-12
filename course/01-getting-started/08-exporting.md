@@ -51,7 +51,7 @@ npx course export -m 01-getting-started -f docx            # Word instead of PDF
 
 When you export more than one page, they are combined into a single document
 with a title page, a table of contents, and a page break between chapters. Items
-that are not markdown become link cards (external URLs) or short "attachment"
+that are not markdown become link cards (external URLs) or short “attachment”
 references (files).
 
 To export only a chosen set of pages, mark them with `export: true` in their
@@ -112,7 +112,7 @@ git, so your documents never end up in your repository or on Canvas.
 
 Export the whole course and the document is titled after your course, filename
 included: `programming-fundamentals.pdf`. That name comes from `title` in
-`course.config.yml`. Export a single module and the module's own name is used
+`course.config.yml`. Export a single module and the module’s own name is used
 instead, with the course name printed under it on the PDF cover.
 
 ## Changing How Exports Look
@@ -130,8 +130,8 @@ Two ready-made skills do the work for you:
 
 - **`/export-style-init`** builds a style from a reference: a Word document, a
   PDF, a website, or a CSS file
-- **`/export-style-update`** makes a plain-language tweak, like "headings dark
-  blue" or "bigger margins"
+- **`/export-style-update`** makes a plain-language tweak, like “headings dark
+  blue” or “bigger margins”
 
 To try another style for a single export, add `--style`:
 
