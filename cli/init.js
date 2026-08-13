@@ -3,10 +3,55 @@ const path = require('path');
 const readline = require('readline');
 
 const { PROJECT_ROOT } = require('./project-root');
-const { loadSyncFile, SCHEMA_VERSION } = require('./sync-utils');
+const {
+  loadSyncFile,
+  normaliseBaseUrl,
+  SCHEMA_VERSION,
+} = require('./sync-utils');
 
 const SYNC_FILE = path.join(PROJECT_ROOT, '.canvas-sync.json');
 const ENV_FILE = path.join(PROJECT_ROOT, '.env');
+
+/**
+ * Whether an existing sync state describes the course `init` is about to write.
+ *
+ * A file that claims no course — written while `CANVAS_COURSE_ID` was unset —
+ * contradicts nothing, so its mappings are kept: they were built against
+ * whatever course was configured at the time, which is the one being named now.
+ *
+ * @param {object} syncData
+ * @param {{courseId: string|number, canvasBaseUrl: string}} target
+ * @returns {boolean}
+ */
+function describesSameCourse(syncData, { courseId, canvasBaseUrl }) {
+  const fileCourse =
+    syncData.course_id != null && Number(syncData.course_id) !== 0
+      ? String(syncData.course_id)
+      : '';
+  if (fileCourse && fileCourse !== String(courseId)) return false;
+
+  const fileUrl = normaliseBaseUrl(syncData.canvas_base_url);
+  const targetUrl = normaliseBaseUrl(canvasBaseUrl);
+  if (fileUrl && targetUrl && fileUrl !== targetUrl) return false;
+
+  return true;
+}
+
+/**
+ * What an existing sync state says it describes, for the line that explains why
+ * its ids are being dropped.
+ *
+ * @param {object} syncData
+ * @returns {string}
+ */
+function describeSyncTarget(syncData) {
+  const course =
+    syncData.course_id != null && Number(syncData.course_id) !== 0
+      ? `course ${syncData.course_id}`
+      : 'another course';
+  const url = normaliseBaseUrl(syncData.canvas_base_url);
+  return url ? `${course} on ${url}` : course;
+}
 
 function prompt(rl, question, defaultValue) {
   const suffix = defaultValue ? ` (${defaultValue})` : '';
@@ -81,16 +126,28 @@ async function init() {
     last_sync: null,
   };
 
-  // Preserve existing module mappings if the file already exists
-  const existing = loadSyncFile({ allowNull: true });
-  if (existing && existing.modules) {
-    syncData.modules = existing.modules;
-  }
-  if (existing && existing.files) {
-    syncData.files = existing.files;
-  }
-  if (existing && existing.icons) {
-    syncData.icons = existing.icons;
+  // Preserve existing module mappings if the file already exists. `init` is the
+  // command that repairs a sync state disagreeing with `.env`, so it reads one
+  // that the other commands refuse — and then must not carry its contents over.
+  // Those ids belong to the course the old file describes; keeping them under a
+  // new course id would rebuild exactly the mismatch, in a file that now looks
+  // coherent. Only a re-init of the same course keeps them.
+  const existing = loadSyncFile({ allowNull: true, skipEnvCheck: true });
+  const sameCourse =
+    existing != null &&
+    describesSameCourse(existing, { courseId, canvasBaseUrl: apiUrl });
+
+  if (existing && !sameCourse) {
+    console.log(
+      `[init] The existing ${SYNC_FILE} describes ` +
+        `${describeSyncTarget(existing)}, so its module, file and icon ids are ` +
+        'left behind: they mean nothing in course ' +
+        `${courseId}. The next push creates everything fresh there.`,
+    );
+  } else if (existing) {
+    if (existing.modules) syncData.modules = existing.modules;
+    if (existing.files) syncData.files = existing.files;
+    if (existing.icons) syncData.icons = existing.icons;
   }
 
   fs.writeFileSync(SYNC_FILE, JSON.stringify(syncData, null, 2) + '\n', 'utf8');
@@ -110,3 +167,7 @@ async function init() {
 }
 
 module.exports = init;
+
+// Exported for testing
+init._describesSameCourse = describesSameCourse;
+init._describeSyncTarget = describeSyncTarget;
