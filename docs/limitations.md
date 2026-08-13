@@ -193,9 +193,17 @@ of object they delete, and only one of those kinds takes student work with it.
   tracked. If a local file claimed `canvas_type: assignment` for an id that
   Canvas holds as a quiz, that mismatch is yours to settle — delete the quiz in
   Canvas if that is what you meant. A practice quiz has no gradebook column and
-  never appears among the assignments, so it is never at risk. A New Quiz is not
-  covered by any of this: it is genuinely an assignment that launches an LTI
-  tool, and both commands delete it like one.
+  never appears among the assignments, so it is never at risk.
+- **A New Quiz is not covered by any of that**, and cannot be: it is genuinely
+  an assignment that launches an LTI tool (`is_quiz_lti_assignment: true`, no
+  `quiz_id`, no separate quiz object), so this project manages it as the
+  assignment it is and both commands delete it like one. That deletes the quiz,
+  its questions and every submission on it, and nothing in this repo could
+  rebuild the questions — a New Quiz has no markdown source here the way an
+  assignment body does. `reset-canvas` names each one it is about to delete, so
+  a count of "n assignments" cannot hide it. `push --prune` does not: it lists
+  the item as an ordinary assignment, which is the one place where the warning
+  is thinner than the loss.
 
 Pages and files carry no grades, so pruning one costs you the content and
 nothing else — recoverable from git, or from a course export.
@@ -241,28 +249,39 @@ you know which one this is.
 
 ### What the Warnings Tell You
 
-Before it deletes an assignment, the tool asks Canvas whether that assignment
-already holds submissions:
+Before it deletes anything that can hold grades, the tool asks Canvas whether
+that content already holds student work:
 
 - **`push --prune`** flags each doomed assignment in its listing
   (`<-- HAS STUDENT SUBMISSIONS: deletes the gradebook column and every grade in it`),
   counts them in a warning, and names them in the question itself:
   `Delete these from Canvas, including the student submissions and grades? (y/N)`.
-- **`reset-canvas`** prints the same warning and lists the assignments by name.
+- **A graded discussion is checked the same way.** Canvas puts an assignment
+  behind the topic and the grades live on that assignment, not on the topic, so
+  prune fetches the topic, resolves the assignment behind it and flags the item:
+  `<-- GRADED DISCUSSION WITH STUDENT WORK: deletes the topic and its 14 replies, plus the gradebook column and every grade`.
+  Once a discussion is in the count, the summary line counts "items" instead of
+  "assignments", because it is no longer counting one type.
+- **An ungraded discussion is flagged for its replies.** No grades are at stake,
+  but deleting the topic still deletes everything students wrote in it, so a
+  topic with replies in it is never listed as a bare path:
+  `<-- 14 REPLIES FROM STUDENTS: no grades at stake, and deleting the topic still deletes every one of them`.
+  An empty topic is listed plainly.
+- **`reset-canvas`** prints the same warning and lists the assignments by name,
+  plus any New Quiz among them.
   [Advanced commands](advanced-commands.md#reset-canvas) shows the full output.
 - **`push`** prints one warning per changed field for each of the three fields
   above, including under `--dry-run` — the only mode where the warning arrives
   before the change rather than with it.
 
 Two limits on all of that. A check that fails is reported as unknown, never as
-safe — `SUBMISSION STATUS UNKNOWN`, or "could not determine whether 1 assignment
-being deleted has student submissions" — and silence from a failed check is not
-a clean bill of health, so treat an unknown as a yes. And the checks cover
-`canvas_type: assignment` items only. A **graded discussion** is the gap: Canvas
-puts an assignment behind it, so it does carry grades, but prune deletes the
-topic without checking for submissions and without flagging it in the listing.
-Delete a discussion file that students have been graded on and the warnings stay
-silent. Take a course export first.
+safe — `SUBMISSION STATUS UNKNOWN`, or "could not determine whether 1 item being
+deleted has student submissions" — and silence from a failed check is not a
+clean bill of health, so treat an unknown as a yes. A topic that says it is
+graded but whose assignment Canvas does not list counts as unknown for the same
+reason. And the grade checks cover the two types that can carry a gradebook
+column, assignments and graded discussions; a **New Quiz** is the gap, because
+prune lists one as the ordinary assignment it is. Take a course export first.
 
 All of the above is about Canvas. The tool can also destroy local work: `pull`
 overwrites whole files, and `pull --force` overwrites them even when it cannot

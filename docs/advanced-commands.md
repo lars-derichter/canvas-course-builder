@@ -71,12 +71,19 @@ on it deletes the quiz, its questions and every submission on it. `reset-canvas`
 leaves those assignments where they are, names them in its output, and keeps
 them out of the count of assignments it is about to delete. A practice quiz has
 no gradebook column and never appears in that list at all, so it was never at
-risk. A New Quiz is the exception that does get deleted: it is genuinely an
+risk.
+
+A New Quiz is the exception that does get deleted: it is genuinely an
 assignment, one that launches an LTI tool, with no separate quiz object behind
-it.
+it for the guard to protect. Because the line above it promises that quizzes are
+left alone, the command says which kind is which and names every New Quiz it is
+about to delete. Deleting one takes its questions and every submission on it,
+and nothing in this project could rebuild the questions — a New Quiz has no
+markdown source here the way an assignment body does.
 
 The command lists what the course holds, names the assignments that students
-have already submitted to and the ones it is skipping, then asks:
+have already submitted to, the ones it is skipping and the New Quizzes it is
+not, then asks:
 
 ```
 [reset-canvas] Canvas course 123 contains 4 modules, 18 pages, 2 assignments.
@@ -85,6 +92,8 @@ have already submitted to and the ones it is skipping, then asks:
 [reset-canvas] Classic quizzes, discussions, announcements and rubrics are left alone, but the modules that linked them are not.
 [reset-canvas] 1 of the assignments on this course is the gradebook half of a graded quiz. It is skipped: deleting it deletes the quiz, its questions and every submission on it, and nothing here could rebuild the quiz afterwards.
   - Test 1 (kept, with its quiz)
+[reset-canvas] 1 of the assignments counted above is a New Quiz, which the line above does not cover: only Classic quizzes are left alone. A New Quiz is an assignment, so it is deleted with the rest — and that deletes the quiz, its questions and every submission on it. Nothing here could rebuild the questions afterwards.
+  - Quiz 2 (New Quiz: deleted, with its questions)
 [reset-canvas] WARNING: 1 assignment being deleted has student submissions. Deleting an assignment deletes its gradebook column and every submission and grade in it.
   - Exercise 2 (has student submissions)
 [reset-canvas] Canvas has no undo. Back the course up first — see docs/backups.md.

@@ -112,10 +112,23 @@ them; `push --prune` refuses them and says why. Quiz and LTI items are only ever
 unlinked from their module, never deleted. A course export is still the only
 thing that brings a quiz back.
 
-The discussion half of the prune row carries no such guard. Deleting the local
-file of a **graded** discussion deletes the topic, the replies and the grades
-behind it, and the submission check that flags a doomed assignment does not run
-for discussions: the listing shows it like any other item. Export first.
+A **New** Quiz is not one of those. Canvas builds it as an assignment that
+launches an LTI tool, with no separate quiz object behind it, so the guard above
+has nothing to catch and this project manages it as the assignment it is.
+`reset-canvas` deletes it — with its questions and every submission on it — and
+names it in the summary so a count of assignments cannot hide it. `push --prune`
+deletes it too, and lists it as an ordinary assignment. Nothing in this repo can
+rebuild a New Quiz's questions; a course export is the only thing that brings
+one back.
+
+Deleting the local file of a **graded** discussion deletes the topic, every
+reply in it and the grades behind it. Prune checks for that: it resolves the
+assignment Canvas keeps behind the topic, flags the item in the listing with its
+reply count, and counts it in the warning above the confirmation. An ungraded
+topic has no grades to lose, but its replies still go, so that is flagged too. A
+check it cannot complete is reported as unknown, never as safe. Export first
+anyway, and know what the export does not carry: it brings the topic back, not a
+word students wrote in it.
 
 Deleting a whole module folder is a cheaper mistake than deleting a single
 assignment file, which is the reverse of what most people assume. See
