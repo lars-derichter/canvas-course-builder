@@ -151,3 +151,20 @@ The fix is to send an explicit `null`, but it needs a decision first:
 frontmatter that never carried the key is not the same as frontmatter that just
 lost it, and clearing a due date is itself a late-policy event on an assignment
 that already has submissions.
+
+### Flagging a New Quiz in a Prune
+
+`reset-canvas` names every New Quiz it is about to delete, because that deletion
+takes questions nothing in this repository could rebuild. `push --prune` deletes
+one just as thoroughly and says nothing: an item tracked as
+`canvas_type: assignment` that Canvas holds as a New Quiz is listed as an
+ordinary assignment. The guard is not what is missing — `refuseQuizBackedDelete`
+deliberately lets a New Quiz through, and rightly, because it really is an
+assignment and this project manages it as one. The sentence is what is missing.
+
+`getSubmissionStates` in `lib/canvas/assignments.js` already fetches whole
+Assignment objects, so `is_quiz_lti_assignment` is there for nothing; the map it
+returns keeps only a boolean per id, so `annotateSubmissions` in `cli/push.js`
+would need that map to carry the object, or a second map beside it.
+`isNewQuizAssignment` and the wording in `newQuizNotice` are already there to
+reuse.
