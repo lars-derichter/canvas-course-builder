@@ -57,6 +57,23 @@
   grades were left alone, while the command deletes every assignment in the
   course — which takes its gradebook column and the student submissions on it.
   Quizzes, discussions, announcements and rubrics do survive, and still say so.
+- **A sync state describing another Canvas course is refused.** Nothing compared
+  `.canvas-sync.json`'s `course_id` against `CANVAS_COURSE_ID`, so a sync file
+  left over from a sandbox — or from a one-off run against a second course — was
+  used silently against whichever course `.env` named. Most of the damage stayed
+  inside the current course: every id is scoped to `/courses/:id/`, so an update
+  404s and push's stale-id recovery recreates the content, duplicating the whole
+  course. One id is not scoped, though. Canvas file ids are global, so
+  `DELETE /api/v1/files/:id` reaches a file in whichever course owns it, and
+  both `push --prune` and a renamed binary in `_files/` call it — a delete
+  landing in a course the run was never pointed at. Every command that reads
+  sync state now refuses while the two disagree, names both courses, and gives
+  the two ways out; the check also covers `CANVAS_API_URL`, where a matching
+  course id on a different instance is a different course. A file that claims no
+  course contradicts nothing and is stamped from the environment instead. `init`
+  is the exception that still reads such a file, because it is the repair: it
+  drops the old course's module, file and icon ids rather than filing them under
+  the new course id, which is what it used to do.
 - **`pull` no longer overwrites files it cannot judge.** With no
   `.canvas-sync.json` to compare timestamps against — right after
   `reset-sync-state`, or on a clone that has never synced — every local file
