@@ -416,7 +416,7 @@ describe('VS Code extension: open in Canvas', () => {
     // item id, so the page URL these used to fall through to was doubly wrong.
     assert.match(
       handler,
-      /canvasType === 'external_url' \|\| canvasType === 'external_tool'[\s\S]*?\/courses\/\$\{courseId\}\/modules\/items\/\$\{canvasId\}/,
+      /canvasType === 'external_url'[\s\S]*?canvasType === 'external_tool'[\s\S]*?\/courses\/\$\{courseId\}\/modules\/items\/\$\{canvasId\}/,
     );
   });
 
