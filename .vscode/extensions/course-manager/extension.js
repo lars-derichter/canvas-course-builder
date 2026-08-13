@@ -765,8 +765,17 @@ function activate(context) {
       url = `${baseUrl}/courses/${courseId}/assignments/${canvasId}`;
     } else if (canvasType === 'discussion') {
       url = `${baseUrl}/courses/${courseId}/discussion_topics/${canvasId}`;
+    } else if (canvasType === 'quiz') {
+      url = `${baseUrl}/courses/${courseId}/quizzes/${canvasId}`;
     } else if (canvasType === 'file') {
       url = `${baseUrl}/courses/${courseId}/files/${canvasId}`;
+    } else if (
+      canvasType === 'external_url' ||
+      canvasType === 'external_tool'
+    ) {
+      // A link and an LTI launch are nothing but a module item, so the item is
+      // the thing to open. canvas_id holds that item's id for both types.
+      url = `${baseUrl}/courses/${courseId}/modules/items/${canvasId}`;
     } else {
       // Pages — canvas_id is the page slug or numeric id; Canvas accepts both
       url = `${baseUrl}/courses/${courseId}/pages/${canvasId}`;

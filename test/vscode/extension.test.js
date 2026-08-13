@@ -276,6 +276,26 @@ describe('VS Code extension: drag and drop', () => {
     assert.match(providerSource, /'move-module',\s*'--module'/);
   });
 
+  it('gives every synced type its own icon', () => {
+    // An unmapped type silently borrows the page icon, so the tree showed a
+    // quiz, a discussion and an LTI link as if all three were pages.
+    const iconMap = providerSource.slice(
+      providerSource.indexOf('const ICON_MAP'),
+      providerSource.indexOf('};', providerSource.indexOf('const ICON_MAP')),
+    );
+    for (const type of [
+      'page',
+      'assignment',
+      'discussion',
+      'quiz',
+      'external_url',
+      'external_tool',
+      'file',
+    ]) {
+      assert.match(iconMap, new RegExp(`\\b${type}:`), `${type} needs an icon`);
+    }
+  });
+
   it('routes item moves through the CLI', () => {
     assert.match(providerSource, /'movetomodule-item',\s*'--path'/);
     assert.match(providerSource, /'move-item',\s*'--path'/);
@@ -379,6 +399,24 @@ describe('VS Code extension: open in Canvas', () => {
     assert.match(
       handler,
       /canvasType === 'discussion'[\s\S]*?\/courses\/\$\{courseId\}\/discussion_topics\/\$\{canvasId\}/,
+    );
+  });
+
+  it('builds a quizzes URL for a quiz', () => {
+    // Everything unmatched falls through to the page URL, which sent a quiz to
+    // /pages/<quiz id> and opened nothing.
+    assert.match(
+      handler,
+      /canvasType === 'quiz'[\s\S]*?\/courses\/\$\{courseId\}\/quizzes\/\$\{canvasId\}/,
+    );
+  });
+
+  it('opens a link and an LTI launch as the module item they are', () => {
+    // Neither has a content object of its own, and canvas_id holds the module
+    // item id, so the page URL these used to fall through to was doubly wrong.
+    assert.match(
+      handler,
+      /canvasType === 'external_url' \|\| canvasType === 'external_tool'[\s\S]*?\/courses\/\$\{courseId\}\/modules\/items\/\$\{canvasId\}/,
     );
   });
 

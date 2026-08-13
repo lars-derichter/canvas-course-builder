@@ -73,7 +73,10 @@ const ICON_MAP = {
   subheader: new vscode.ThemeIcon('symbol-folder'),
   page: new vscode.ThemeIcon('file'),
   assignment: new vscode.ThemeIcon('checklist'),
+  discussion: new vscode.ThemeIcon('comment-discussion'),
+  quiz: new vscode.ThemeIcon('question'),
   external_url: new vscode.ThemeIcon('link-external'),
+  external_tool: new vscode.ThemeIcon('plug'),
   file: new vscode.ThemeIcon('file-media'),
 };
 
