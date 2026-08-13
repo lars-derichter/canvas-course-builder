@@ -11,6 +11,8 @@ const resetCanvas = require('../../cli/reset-canvas');
 const {
   _partitionAssignments: partitionAssignments,
   _quizSkipNotice: quizSkipNotice,
+  _collectNewQuizzes: collectNewQuizzes,
+  _newQuizNotice: newQuizNotice,
 } = resetCanvas;
 
 /** A Canvas Assignment object as the course's assignment list returns it. */
@@ -32,6 +34,18 @@ function quizAssignment(overrides = {}) {
     is_quiz_assignment: true,
     quiz_id: 245808,
     submission_types: ['online_quiz'],
+    ...overrides,
+  });
+}
+
+/** A New Quiz, which Canvas returns as an LTI-backed assignment. */
+function newQuiz(overrides = {}) {
+  return assignment({
+    id: 900123,
+    name: 'Quiz 2',
+    is_quiz_assignment: false,
+    is_quiz_lti_assignment: true,
+    submission_types: ['external_tool'],
     ...overrides,
   });
 }
@@ -98,6 +112,56 @@ describe('quizSkipNotice', () => {
   });
 });
 
+describe('collectNewQuizzes', () => {
+  it('picks the New Quizzes out of the deletions', () => {
+    const found = collectNewQuizzes([
+      assignment({ id: 500 }),
+      newQuiz(),
+      assignment({ id: 501, name: 'Essay' }),
+    ]);
+
+    assert.deepEqual(
+      found.map((a) => a.id),
+      [900123],
+    );
+  });
+
+  it('does not pick up a Classic quiz assignment', () => {
+    assert.deepEqual(collectNewQuizzes([quizAssignment()]), []);
+  });
+
+  it('handles an empty or missing list', () => {
+    assert.deepEqual(collectNewQuizzes([]), []);
+    assert.deepEqual(collectNewQuizzes(undefined), []);
+  });
+});
+
+describe('newQuizNotice', () => {
+  it('says nothing when the course has no New Quizzes', () => {
+    assert.equal(newQuizNotice([]), null);
+  });
+
+  it('names the loss and denies that "Classic quizzes" covers it', () => {
+    const notice = newQuizNotice([newQuiz()]);
+
+    assert.match(notice, /^1 of the assignments counted above is a New Quiz/);
+    assert.match(
+      notice,
+      /only Classic quizzes are left alone/,
+      'the reader has just been told quizzes survive; this one does not',
+    );
+    assert.match(notice, /its questions and every submission on it/);
+    assert.match(notice, /Nothing here could rebuild the questions/);
+  });
+
+  it('agrees with more than one', () => {
+    const notice = newQuizNotice([newQuiz(), newQuiz({ id: 900124 })]);
+
+    assert.match(notice, /^2 of the assignments counted above are New Quizzes/);
+    assert.match(notice, /they are deleted with the rest/);
+  });
+});
+
 describe('resetCanvas --dry-run', () => {
   afterEach(() => {
     mock.restoreAll();
@@ -159,6 +223,43 @@ describe('resetCanvas --dry-run', () => {
       'the skipped quiz puts no submissions at risk, so nothing warns about it',
     );
     assert.match(out, /The assignment has no student submissions\./);
+  });
+
+  it('counts a New Quiz among the deletions and names what goes with it', async () => {
+    const { out, warnings } = await run([assignment(), newQuiz()]);
+
+    assert.match(
+      out,
+      /contains 1 module, 2 assignments\./,
+      'a New Quiz is an assignment here, so it stays in the count',
+    );
+    assert.match(warnings, /1 of the assignments counted above is a New Quiz/);
+    assert.match(warnings, /only Classic quizzes are left alone/);
+    assert.match(
+      warnings,
+      /- Quiz 2 \(New Quiz: deleted, with its questions\)/,
+    );
+  });
+
+  it('still says Classic quizzes survive, next to the New Quiz warning', async () => {
+    const { out, warnings } = await run([newQuiz(), quizAssignment()]);
+
+    assert.match(
+      out,
+      /Classic quizzes, discussions, announcements and rubrics are left alone/,
+    );
+    assert.match(out, /- Test 1 \(kept, with its quiz\)/);
+    assert.match(
+      warnings,
+      /- Quiz 2 \(New Quiz: deleted, with its questions\)/,
+    );
+  });
+
+  it('says nothing about New Quizzes on a course without one', async () => {
+    const { out, warnings } = await run([assignment()]);
+
+    assert.doesNotMatch(out, /New Quiz/);
+    assert.doesNotMatch(warnings, /New Quiz/);
   });
 
   it('says the course holds nothing to delete when only a quiz is left', async () => {

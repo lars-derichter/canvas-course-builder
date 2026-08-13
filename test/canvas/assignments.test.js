@@ -9,6 +9,7 @@ const {
   hasStudentSubmissions,
   getSubmissionStates,
   isQuizBackedAssignment,
+  isNewQuizAssignment,
 } = require('../../lib/canvas/assignments');
 
 /**
@@ -106,6 +107,52 @@ describe('isQuizBackedAssignment', () => {
   it('returns false for a missing assignment object', () => {
     assert.equal(isQuizBackedAssignment(undefined), false);
     assert.equal(isQuizBackedAssignment(null), false);
+  });
+});
+
+describe('isNewQuizAssignment', () => {
+  it('recognises a New Quiz by its LTI flag', () => {
+    assert.equal(
+      isNewQuizAssignment({
+        id: 700,
+        name: 'New Quizzes test',
+        is_quiz_assignment: false,
+        is_quiz_lti_assignment: true,
+        submission_types: ['external_tool'],
+      }),
+      true,
+    );
+  });
+
+  it('leaves an ordinary assignment alone', () => {
+    assert.equal(
+      isNewQuizAssignment({
+        id: 500,
+        name: 'Homework',
+        is_quiz_assignment: false,
+        submission_types: ['online_upload'],
+      }),
+      false,
+    );
+  });
+
+  it('does not mistake a Classic quiz assignment for a New Quiz', () => {
+    assert.equal(
+      isNewQuizAssignment({
+        id: 833216,
+        name: 'Test 1',
+        is_quiz_assignment: true,
+        quiz_id: 245808,
+        submission_types: ['online_quiz'],
+      }),
+      false,
+      'the two are different objects and cost different things to delete',
+    );
+  });
+
+  it('returns false for a missing assignment object', () => {
+    assert.equal(isNewQuizAssignment(undefined), false);
+    assert.equal(isNewQuizAssignment(null), false);
   });
 });
 

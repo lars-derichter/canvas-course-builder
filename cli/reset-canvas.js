@@ -6,6 +6,7 @@ const {
   deleteAssignment,
   hasStudentSubmissions,
   isQuizBackedAssignment,
+  isNewQuizAssignment,
 } = require('../lib/canvas/assignments');
 const { listFiles, deleteFile } = require('../lib/canvas/files');
 const {
@@ -59,6 +60,46 @@ function quizSkipNotice(quizBacked) {
   );
 }
 
+/**
+ * The New Quizzes among the assignments this command is about to delete, or an
+ * empty list.
+ *
+ * They are deletions, not exceptions: a New Quiz is an assignment here and goes
+ * with the rest. Naming them is the point — "n assignments" hides the fact that
+ * one of them is a quiz whose questions nothing in this project could rebuild.
+ *
+ * @param {object[]} deletable - The assignments this command will delete.
+ * @returns {object[]}
+ */
+function collectNewQuizzes(deletable) {
+  return (deletable || []).filter(isNewQuizAssignment);
+}
+
+/**
+ * The one sentence that says what a New Quiz among the deletions costs, or null
+ * when there is none. The names are listed by the caller.
+ *
+ * The line above it promises that Classic quizzes are left alone, and a reader
+ * who has just been told "quizzes are safe" will read a New Quiz as covered by
+ * that. It is not, so this says which kind is which.
+ *
+ * @param {object[]} newQuizzes
+ * @returns {string|null}
+ */
+function newQuizNotice(newQuizzes) {
+  const count = newQuizzes.length;
+  if (count === 0) return null;
+  const one = count === 1;
+  return (
+    `${count} of the assignments counted above ${one ? 'is a' : 'are'} New ` +
+    `${one ? 'Quiz' : 'Quizzes'}, which the line above does not cover: only ` +
+    `Classic quizzes are left alone. A New Quiz is an assignment, so ` +
+    `${one ? 'it is' : 'they are'} deleted with the rest — and that deletes ` +
+    `the quiz, its questions and every submission on it. Nothing here could ` +
+    `rebuild the questions afterwards.`
+  );
+}
+
 async function resetCanvas(options = {}) {
   const courseId = process.env.CANVAS_COURSE_ID;
   if (!courseId) {
@@ -81,6 +122,11 @@ async function resetCanvas(options = {}) {
   // counted among what will be deleted either.
   const { deletable, quizBacked } = partitionAssignments(assignments);
   const quizNotice = quizSkipNotice(quizBacked);
+
+  // New Quizzes stay in `deletable` — they are assignments and this command
+  // deletes them — but they are counted so the summary can name them.
+  const newQuizzes = collectNewQuizzes(deletable);
+  const newQuizzesNotice = newQuizNotice(newQuizzes);
 
   const summary = describeContents({
     modules: modules.length,
@@ -114,6 +160,14 @@ async function resetCanvas(options = {}) {
     log.info(`[reset-canvas] ${quizNotice}`);
     for (const assignment of quizBacked) {
       log.info(`  - ${assignment.name} (kept, with its quiz)`);
+    }
+  }
+  if (newQuizzesNotice) {
+    log.warn(`[reset-canvas] ${newQuizzesNotice}`);
+    for (const assignment of newQuizzes) {
+      log.warn(
+        `  - ${assignment.name} (New Quiz: deleted, with its questions)`,
+      );
     }
   }
 
@@ -239,3 +293,5 @@ module.exports = resetCanvas;
 // Exported for testing
 resetCanvas._partitionAssignments = partitionAssignments;
 resetCanvas._quizSkipNotice = quizSkipNotice;
+resetCanvas._collectNewQuizzes = collectNewQuizzes;
+resetCanvas._newQuizNotice = newQuizNotice;
