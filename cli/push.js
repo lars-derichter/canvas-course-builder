@@ -1563,6 +1563,15 @@ async function pushExternalTool(
  * point — it is the one thing that says which package this item is waiting for.
  */
 function warnQuizNotImported(title, quizRef) {
+  if (!quizRef) {
+    log.warn(
+      `  [push] WARNING: Skipping "${title}" — this course holds no quiz by that name, and this ` +
+        'file names no quiz_ref, so there is no package to import either. Create the quiz in ' +
+        `Canvas under the title "${title}", or point quiz_ref at its QTI .zip (path from the ` +
+        'repository root), then push again.',
+    );
+    return;
+  }
   log.warn(
     `  [push] WARNING: Skipping "${title}" — this course holds no quiz by that name yet. ` +
       `Import ${quizRef} by hand first; Canvas has no API for a QTI import:`,
@@ -1607,6 +1616,13 @@ function warnQuizNotImported(title, quizRef) {
  * Two quizzes under one title are ambiguous and also skipped. A guess would
  * link students to the wrong quiz, and this is exactly the state a second
  * import of the same package leaves behind, so it is a case that happens.
+ *
+ * `quiz_ref` does not gate any of that. It names the package to import when the
+ * quiz is missing, and it is what lets a rollover into a fresh course rebuild
+ * one, so `validate` warns when it is absent. But a quiz pulled from Canvas
+ * never has one, and refusing to place an item whose id resolves would drop
+ * that quiz out of its module on the next push — the loss this type exists to
+ * prevent.
  */
 async function pushQuiz(
   courseId,
@@ -1615,12 +1631,6 @@ async function pushQuiz(
   dryRun,
 ) {
   const quizRef = frontmatter.quiz_ref;
-  if (!quizRef) {
-    log.warn(
-      `  [push] WARNING: Skipping "${title}" — canvas_type is quiz but quiz_ref field is missing in frontmatter`,
-    );
-    return;
-  }
 
   log.info(`  [push] Adding quiz module item: ${title}`);
   if (dryRun) return;

@@ -853,17 +853,48 @@ describe('pushing a quiz', () => {
     );
   });
 
-  it('warns and skips when the frontmatter has no quiz_ref', async () => {
+  it('places a quiz that has no quiz_ref but whose canvas_id resolves', async () => {
+    // A quiz pulled from a Canvas-authored course carries an id and no
+    // quiz_ref, and validate deliberately keeps that state valid. Skipping it
+    // here would drop the quiz out of its module on the next push, which is
+    // the exact loss this content type exists to prevent.
     const { calls, warned } = await pushQuizItem({
-      frontmatter: { quiz_ref: null },
-      routes: [],
+      frontmatter: { quiz_ref: null, canvas_id: 12 },
+      routes: [quizListed, moduleItemCreated],
     });
 
-    assert.equal(calls.length, 0, 'nothing is looked up without a quiz_ref');
+    const moduleItem = calls.find((c) => c.url.includes('/modules/9/items'));
+    assert.ok(moduleItem, 'expected the item to be placed anyway');
+    assert.equal(moduleItem.body.module_item.content_id, 12);
+    assert.equal(warned.mock.calls.length, 0);
+  });
+
+  it('places a quiz that has no quiz_ref but matches by title', async () => {
+    const { calls, filePath } = await pushQuizItem({
+      frontmatter: { quiz_ref: null },
+      routes: [quizListed, moduleItemCreated],
+    });
+
+    const moduleItem = calls.find((c) => c.url.includes('/modules/9/items'));
+    assert.ok(moduleItem, 'expected the item to be placed anyway');
+    assert.equal(moduleItem.body.module_item.content_id, 12);
+    assert.match(fs.readFileSync(filePath, 'utf8'), /canvas_id: 12/);
+  });
+
+  it('says there is nothing to import when the quiz is missing and so is quiz_ref', async () => {
+    const { calls, warned } = await pushQuizItem({
+      frontmatter: { quiz_ref: null },
+      routes: [noQuizzes],
+    });
+
     const lines = warned.mock.calls.map((c) => c.arguments[0]);
-    assert.equal(lines.length, 1);
+    assert.equal(lines.length, 1, 'no import procedure without a package');
     assert.match(lines[0], /Skipping "Test 1"/);
-    assert.match(lines[0], /quiz_ref field is missing/);
+    assert.match(lines[0], /names no quiz_ref/);
+    assert.ok(
+      !calls.some((c) => c.url.includes('/modules/9/items')),
+      'a module item pointing at nothing is worse than no item',
+    );
   });
 
   it('makes no request at all on a dry run', async () => {
