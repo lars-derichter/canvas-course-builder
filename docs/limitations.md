@@ -142,9 +142,15 @@ The guard has three edges:
   page slug against the page id in your frontmatter needs the course's page
   list; when that request fails, push refuses rather than guess.
 - **A plain binary in a module folder claims its Canvas id through
-  `.canvas-sync.json` alone**, having no frontmatter to hold one. Rebuild that
-  state with [`reset-sync-state`](advanced-commands.md) and push reads the file
-  item as Canvas-only until you push once with `--drop-canvas-only`.
+  `.canvas-sync.json` alone**, having no frontmatter to hold one. A module push
+  can still identify while that state is missing therefore reads every binary in
+  it as Canvas-only, and refuses. That combination is not exotic: the module's
+  `canvas_module_id` lives in `_category_.json`, which is committed, while
+  `.canvas-sync.json` is gitignored — so a fresh clone of a course that has been
+  pushed is exactly it. One push with `--drop-canvas-only` re-adopts the files.
+  A full [`reset-sync-state`](advanced-commands.md) does _not_ produce this,
+  because it strips the module id too: push then finds no module to protect and
+  creates a second one alongside the first.
 
 The rule of thumb is unchanged: a module this tool manages is generated output.
 Anything you want to keep in it belongs in `course/`.
@@ -155,7 +161,8 @@ Two smaller cases where a plain push deletes something real:
   file.
 - `push --prune` deletes the Canvas modules, pages, assignments, discussions and
   files whose local counterparts you removed. It lists them and asks first, and
-  flags the assignments that hold student work; see
+  flags the items that hold student work — an assignment with submissions, a
+  graded discussion, a discussion with replies in it; see
   [Destructive operations and student work](#destructive-operations-and-student-work).
 
 ## Destructive Operations and Student Work
