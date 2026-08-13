@@ -349,7 +349,11 @@ describe('collectPushGuardClaims', () => {
     assert.equal(claims.has('file:3030'), true);
   });
 
-  it('drops a tracked file the author deleted locally', () => {
+  it('still claims a tracked file the author deleted locally', () => {
+    // Deleting the source file is how you remove an item, and --prune is what
+    // finishes the job on the Canvas object. If the guard stopped claiming it
+    // the moment the file went, it would read the item back as hand-made and
+    // refuse the module, blocking every other edit to it over one deletion.
     mock.method(fs, 'existsSync', () => false);
     const syncData = {
       modules: {
@@ -367,11 +371,11 @@ describe('collectPushGuardClaims', () => {
 
     const claims = collectPushGuardClaims(syncData, modules);
 
-    assert.equal(claims.has('file:3030'), false);
+    assert.equal(claims.has('file:3030'), true);
   });
 
-  it('ignores sync entries of other types', () => {
-    mock.method(fs, 'existsSync', () => true);
+  it('claims sync entries of every type, not just files', () => {
+    mock.method(fs, 'existsSync', () => false);
     const syncData = {
       modules: {
         580457: {
@@ -380,6 +384,13 @@ describe('collectPushGuardClaims', () => {
               path: '01-mod/09-old.md',
               canvas_id: 99,
               canvas_type: 'page',
+              page_url: 'old-page',
+            },
+            'quiz:366284': { canvas_id: 366284, canvas_type: 'quiz' },
+            'external_tool:7': {
+              canvas_id: 7,
+              canvas_type: 'external_tool',
+              external_url: 'https://app.wooclap.com/api/lti/launch',
             },
           },
         },
@@ -388,7 +399,29 @@ describe('collectPushGuardClaims', () => {
 
     const claims = collectPushGuardClaims(syncData, modules);
 
-    assert.equal(claims.has('page:99'), false);
+    assert.equal(claims.has('page:99'), true);
+    assert.equal(
+      claims.has('page:old-page'),
+      true,
+      'live items carry the slug',
+    );
+    assert.equal(claims.has('quiz:366284'), true);
+    assert.equal(
+      claims.has('external_tool:https://app.wooclap.com/api/lti/launch'),
+      true,
+      'an LTI item is matched on its launch URL, never on its module item id',
+    );
+  });
+
+  it('claims nothing for an item added by hand in Canvas', () => {
+    // The whole point of the guard: push never created it, so no sync entry
+    // names it and no frontmatter claims it.
+    mock.method(fs, 'existsSync', () => false);
+    const syncData = { modules: { 580457: { items: {} } } };
+
+    const claims = collectPushGuardClaims(syncData, modules);
+
+    assert.equal(claims.has('quiz:366284'), false);
   });
 
   it('survives an empty sync file', () => {

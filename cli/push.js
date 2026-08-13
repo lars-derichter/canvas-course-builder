@@ -550,10 +550,19 @@ function reportCanvasOnlyRefusal(mod, canvasOnly, dryRun) {
  *
  * `collectLocalClaims` reads frontmatter, which covers every type but one: a
  * raw binary dropped into a module folder is pushed as a file item and has
- * nowhere to carry a `canvas_id`. The sync entry push wrote for it is the only
- * link between that Canvas file and the local path, so a tracked file whose
- * path is still on disk claims its id here — the same rule `isItemClaimed`
- * applies on the prune side.
+ * nowhere to carry a `canvas_id`. It also only ever sees files that are still
+ * on disk, and the guard asks a wider question than "is this file here now".
+ *
+ * The sync file answers it. An entry in it means push put that item in that
+ * module, so it is this project's to rebuild however the local tree has moved
+ * on — including when the source file has been deleted, which is a deletion
+ * the author meant and which `--prune` exists to finish. Without this the
+ * guard reads its own tracked items back as hand-made ones and refuses the
+ * module, so deleting a single page would block every other edit to it.
+ *
+ * What the guard is actually looking for survives untouched: an item added by
+ * hand in Canvas was never pushed, so it is in no sync entry and claims
+ * nothing here.
  *
  * Claims are gathered from the whole tree, never from the `--module` subset,
  * so an item moved to another module still counts as local.
@@ -565,10 +574,11 @@ function collectPushGuardClaims(syncData, localModules) {
     (syncData && syncData.modules) || {},
   )) {
     for (const entry of Object.values(moduleEntry.items || {})) {
-      if (entry.canvas_type !== 'file') continue;
-      if (entry.canvas_id == null || !entry.path) continue;
-      if (!fs.existsSync(path.resolve(COURSE_DIR, entry.path))) continue;
-      claims.add(`file:${entry.canvas_id}`);
+      const type = entry.canvas_type;
+      if (!type) continue;
+      if (entry.canvas_id != null) claims.add(`${type}:${entry.canvas_id}`);
+      if (entry.page_url) claims.add(`page:${entry.page_url}`);
+      if (entry.external_url) claims.add(`${type}:${entry.external_url}`);
     }
   }
 
