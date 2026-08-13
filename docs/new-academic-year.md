@@ -4,6 +4,11 @@ How to switch your course materials to a new Canvas course at the start of a new
 academic year. Your markdown content stays the same — you just point it at the
 new course and push.
 
+Most of your course rebuilds itself. Two types need a hand, and one of them
+needs your Canvas admin: read
+[What a Rollover Does to Each Type](#what-a-rollover-does-to-each-type) before
+you start, so nothing is a surprise at the end of step 6.
+
 ## 1. Find the New Course ID
 
 Open the new Canvas course in your browser. The course ID is the number after
@@ -120,6 +125,79 @@ npx course status --remote
 Then open the new Canvas course in your browser and spot-check a few pages and
 assignments.
 
+> [!WARNING]
+>
+> Never run `npx course pull` on the new course to "check" the result. Pull
+> overwrites local files with what Canvas holds and renames folders and files to
+> match Canvas's names and numbering. On a tree that already holds your course,
+> that is a rewrite, not a check. `status --remote` answers the same question
+> and writes nothing. See
+> [Push and pull are not a merge](limitations.md#push-and-pull-are-not-a-merge).
+
+## What a Rollover Does to Each Type
+
+The wipe-and-rebuild above works because your markdown is the source of truth.
+That is true of four types and only partly true of two.
+
+**Rebuilt from the repository, nothing to do:**
+
+- **Pages, assignments and discussions.** Recreated from your markdown, body and
+  all. A discussion's replies from last year stay in last year's course, which
+  is what you want. If a discussion was graded, set its points and due date
+  again in Canvas: that grading lives on the assignment Canvas puts behind the
+  topic, and no push has ever touched it.
+- **Files.** Re-uploaded from `_files/`.
+- **Text headers.** Regenerated from your subfolders.
+- **External URLs.** Recreated as links. Check the URLs still point somewhere
+  useful (step 4).
+
+**A quiz has to be imported by hand, once per course.** The questions are not in
+this repository as markdown, and Canvas has no API for a QTI import, so:
+
+1. Import the `.zip` named in the file's `quiz_ref` through **Settings > Import
+   Course Content > QTI .zip file** in the new course.
+2. Give the quiz the same title the markdown file has, because that title is how
+   push finds it.
+3. Push. Push matches the quiz by title and writes the new `canvas_id` back into
+   the file for you.
+4. Set the availability dates and the time limit in Canvas. QTI carries neither,
+   and the quiz arrives unpublished.
+
+Until the quiz is imported, push skips that item and prints the import procedure
+with the filename in it. Nothing else in the module is affected.
+
+A quiz file with no `quiz_ref` cannot be rebuilt at all: there is no package to
+import, and no questions in the repository. That is why `npx course validate`
+warns about it. Run validate before a rollover and settle every one of those
+warnings while last year's course is still there to export the package from
+(**Settings > Export Course Content**, quiz-only export).
+
+**An external tool relinks itself only if the tool is installed at account
+level.** A course resolves an LTI launch URL by searching itself and then its
+account chain, so an account-level install is already present in the new course
+and the item works the moment push creates it. A **course-level** install is
+not: it existed in last year's course only, and Canvas never returns a tool's
+`shared_secret` from the API, so nothing in this repository can recreate it.
+Your options are to ask your Canvas admin for an account-level install (the
+durable fix, it survives every future rollover) or to seed the new course with
+Canvas's own Course Copy, which is the only path that carries a course-level
+secret across.
+
+Push checks this for you: when no installed tool claims the launch URL it warns,
+names the tools that are installed, and creates the item anyway. Canvas gives no
+error of its own here, and a student clicking an unresolved item gets "Couldn't
+find valid settings for this link".
+
+> [!TIP]
+>
+> If the new course was seeded with Course Copy rather than left empty, be
+> careful with step 3. `reset-canvas` deletes the modules, pages, assignments
+> and files it finds, but leaves discussions and quizzes alone. The copied
+> discussions then survive with no module item pointing at them, and your push
+> creates a second copy of each. Delete the copied discussions in Canvas before
+> pushing, or keep the copied ones and adopt them with `canvas_id` (see
+> [Frontmatter](frontmatter.md#adopting-an-item-you-made-by-hand-in-canvas)).
+
 ## Quick Reference
 
 The full workflow in one block:
@@ -131,13 +209,17 @@ npx course reset-canvas
 
 # 3. Update due_at / lock_at / unlock_at dates in assignment frontmatter
 # 4. Update external_url fields if needed
+# 5. Import every quiz's QTI zip by hand, under the same title as the markdown file
 
-# 5. Reset local sync state
+# 6. Reset local sync state
 npx course reset-sync-state
 
-# 6. Push to the new course
+# 7. Push to the new course
 npx course push
 
-# 7. Verify
+# 8. Verify
 npx course status --remote
 ```
+
+Check the quiz and LTI items in Canvas afterwards: those are the two the push
+cannot guarantee on its own.
