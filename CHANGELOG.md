@@ -73,6 +73,32 @@
   read `has_submitted_submissions`, flag the assignments that hold student work,
   and name those grades in the confirmation question itself. A check that fails
   reports "could not determine" and never passes for "no submissions".
+- **Deleting a discussion now says what goes with it.** Discussions became a
+  synced type in this release, and prune treated one as content with nothing
+  behind it. Canvas grades a discussion by putting an Assignment behind the
+  topic and keeping the grades there, so `push --prune` was deleting a gradebook
+  column, every grade in it and every reply in the topic while the listing
+  showed the file as an ordinary path. Prune now resolves the assignment behind
+  each doomed topic, flags the item, counts it in the warning above the
+  confirmation, and — because deleting a topic deletes the replies whatever its
+  grading — names the reply count of an ungraded topic as well, saying outright
+  that no grades are at stake in that one. A topic it cannot read counts as
+  unknown rather than safe, and so does one that says it is graded but whose
+  assignment Canvas does not list. The whole check still costs one submission
+  lookup per run, and none at all when every doomed discussion turns out
+  ungraded. The summary line counts "items" once a discussion is in it, because
+  it is no longer counting assignments.
+- **`reset-canvas` names the New Quizzes it deletes.** A New Quiz is an
+  LTI-backed assignment with no separate quiz object behind it, so the guard
+  that spares a Classic quiz's shadow assignment does not catch it — and should
+  not, because this project manages a New Quiz as the assignment it is. It is
+  deleted with the rest, which takes its questions and every submission on it,
+  and nothing in the repository could rebuild the questions, while the line
+  above the count promised that quizzes are left alone. Nothing changes about
+  what gets deleted: the summary now names each New Quiz and says which kind of
+  quiz that promise covers. `push --prune` still lists one as the ordinary
+  assignment it is, which is written down in
+  [`docs/roadmap.md`](docs/roadmap.md).
 - **`push` now warns when it changes a field that moves grades already given.**
   `points_possible` leaves the raw scores untouched, so a new denominator shifts
   every percentage in the column; `due_at` re-runs the late policy over graded
