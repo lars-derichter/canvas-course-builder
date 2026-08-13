@@ -36,6 +36,9 @@ const {
   createDiscussion,
   updateDiscussion,
   deleteDiscussion,
+  getDiscussion,
+  isGradedDiscussion,
+  discussionAssignmentId,
   gradedDiscussionWarning,
 } = require('../lib/canvas/discussions');
 const {
@@ -2081,29 +2084,73 @@ async function deleteCanvasItemByType(courseId, item, errors) {
 }
 
 /**
- * Annotate the doomed assignments with whether Canvas already holds student
- * submissions for them, as `hasSubmissions`: true, false, or null when the
- * lookup failed.
+ * Annotate the doomed assignments and discussions with whether Canvas already
+ * holds student submissions for them, as `hasSubmissions`: true, false, or null
+ * when the lookup failed.
  *
  * Prune works from sync state, so all it has is Canvas ids. One list call for
  * the whole course is cheaper than one fetch per doomed assignment, and the
  * Assignment objects a list returns carry the flag already. Items of other
- * types cost nothing: with no assignment in the list, no call is made.
+ * types cost nothing: with no assignment and no discussion in the list, no call
+ * is made.
+ *
+ * A discussion needs one more step. A graded discussion has an Assignment
+ * behind it, and that is where its submissions and grades live, but the item's
+ * own id is the DiscussionTopic id, which is keyed by nothing in the
+ * assignments list. So each doomed topic — and only the doomed ones — is
+ * fetched to find out whether it is graded and, if it is, which assignment id
+ * to look up in the states already fetched. An ungraded topic has no gradebook
+ * column and no submissions, which is a real "no".
  *
  * A failed lookup leaves null behind, which the listing and the prompt report
- * as "could not determine" — never as "safe".
+ * as "could not determine" — never as "safe". That holds for a topic fetch that
+ * fails too: an unreadable topic may well be a graded one.
  *
  * @param {string|number} courseId
  * @param {object[]} items          - Doomed items; annotated in place.
  * @param {Function} [fetchStates]  - Injection point for tests.
+ * @param {Function} [fetchTopic]   - Injection point for tests.
  */
 async function annotateSubmissions(
   courseId,
   items,
   fetchStates = getSubmissionStates,
+  fetchTopic = getDiscussion,
 ) {
   const assignments = items.filter((item) => item.canvasType === 'assignment');
-  if (assignments.length === 0) return items;
+  const discussions = items.filter((item) => item.canvasType === 'discussion');
+  if (assignments.length === 0 && discussions.length === 0) return items;
+
+  // Resolve the doomed topics first, so a prune that only drops ungraded
+  // discussions settles the question without listing the course's assignments.
+  const gradedDiscussions = new Map();
+  for (const item of discussions) {
+    let topic;
+    try {
+      topic = await fetchTopic(courseId, item.canvasId);
+    } catch (err) {
+      log.warn(
+        `[push] Could not check discussion ${item.canvasId} ` +
+          `(${item.relativePath}) for grades: ${err.message}`,
+      );
+      item.hasSubmissions = null;
+      continue;
+    }
+    if (!isGradedDiscussion(topic)) {
+      // No gradebook column, so no submissions and no grades: a real "no".
+      item.hasSubmissions = false;
+      continue;
+    }
+    const assignmentId = discussionAssignmentId(topic);
+    if (assignmentId == null) {
+      // Graded, but Canvas named no assignment to look the grades up under.
+      item.hasSubmissions = null;
+      continue;
+    }
+    gradedDiscussions.set(item, String(assignmentId));
+  }
+
+  if (assignments.length === 0 && gradedDiscussions.size === 0) return items;
 
   let states;
   try {
@@ -2113,24 +2160,44 @@ async function annotateSubmissions(
       `[push] Could not check the assignments for student submissions: ${err.message}`,
     );
     for (const item of assignments) item.hasSubmissions = null;
+    for (const item of gradedDiscussions.keys()) item.hasSubmissions = null;
     return items;
   }
 
+  // An id Canvas no longer lists is already gone, so there is no student work
+  // left to lose: that is a real "no", not an unknown.
   for (const item of assignments) {
     const key = String(item.canvasId);
-    // An id Canvas no longer lists is already gone, so there is no student
-    // work left to lose: that is a real "no", not an unknown.
     item.hasSubmissions = states.has(key) ? states.get(key) : false;
+  }
+  // That reasoning does not carry over to a discussion. The item being deleted
+  // is the topic, and the topic was just fetched, so it plainly exists and
+  // plainly says it is graded; an assignment id that resolves to nothing is an
+  // inconsistency in Canvas's own answer, not evidence that the topic is safe.
+  // Unknown, therefore — the same as a graded topic that named no id at all.
+  for (const [item, key] of gradedDiscussions) {
+    item.hasSubmissions = states.has(key) ? states.get(key) : null;
   }
   return items;
 }
 
 /**
- * The listing line for one doomed item. An assignment with grades behind it
- * must not scan like a stray page, so it carries the reason on the same line.
+ * The listing line for one doomed item. An assignment or discussion with grades
+ * behind it must not scan like a stray page, so it carries the reason on the
+ * same line.
+ *
+ * A graded discussion loses more than a gradebook column: the topic goes with
+ * it, and every reply students wrote in it, so its line says so.
  */
 function describeDoomedItem(item) {
   const line = `  - ${item.relativePath} (${item.canvasType})`;
+  if (item.canvasType === 'discussion') {
+    if (item.hasSubmissions === true)
+      return `${line}  <-- GRADED DISCUSSION WITH STUDENT WORK: deletes the topic and every student reply in it, plus the gradebook column and every grade`;
+    if (item.hasSubmissions === null)
+      return `${line}  <-- SUBMISSION STATUS UNKNOWN: could not be checked, assume it is graded and that replies and grades will be lost`;
+    return line;
+  }
   if (item.canvasType !== 'assignment') return line;
   if (item.hasSubmissions === true)
     return `${line}  <-- HAS STUDENT SUBMISSIONS: deletes the gradebook column and every grade in it`;
@@ -2178,12 +2245,17 @@ async function pruneDeleted(
     }
   }
 
-  // Ask Canvas which of the doomed assignments carry student work before
-  // listing them, so the listing can say so item by item.
+  // Ask Canvas which of the doomed items carry student work before listing
+  // them, so the listing can say so item by item. Both types that can hold
+  // grades are counted: an assignment, and the discussion a graded topic hangs
+  // its assignment off.
   await annotateSubmissions(courseId, itemsToDelete);
   const risk = countSubmissionRisk(
     itemsToDelete
-      .filter((item) => item.canvasType === 'assignment')
+      .filter(
+        (item) =>
+          item.canvasType === 'assignment' || item.canvasType === 'discussion',
+      )
       .map((item) => item.hasSubmissions),
   );
 

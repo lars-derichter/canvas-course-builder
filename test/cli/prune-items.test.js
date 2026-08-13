@@ -769,6 +769,246 @@ describe('annotateSubmissions', () => {
   });
 });
 
+describe('annotateSubmissions: discussions', () => {
+  afterEach(() => {
+    mock.restoreAll();
+  });
+
+  // 500 is the assignment behind the graded topic 88; 501 the one behind 89.
+  const states = new Map([
+    ['500', true],
+    ['501', false],
+  ]);
+
+  /** A doomed discussion item as prune collects it: canvasId is the topic id. */
+  function discussion(canvasId, name = 'forum') {
+    return {
+      relativePath: `01-mod/${name}.md`,
+      canvasType: 'discussion',
+      canvasId,
+    };
+  }
+
+  /** Answer topic fetches from a table keyed by topic id. */
+  function topics(table) {
+    return async (courseId, id) => {
+      const topic = table[String(id)];
+      if (!topic) throw new Error(`404 Not Found: topic ${id}`);
+      return topic;
+    };
+  }
+
+  it('flags a graded discussion whose assignment has student submissions', async () => {
+    const items = [discussion(88)];
+
+    await annotateSubmissions(
+      42,
+      items,
+      async () => states,
+      topics({ 88: { id: 88, title: 'Week 1', assignment_id: 500 } }),
+    );
+
+    assert.equal(
+      items[0].hasSubmissions,
+      true,
+      'the grades hang off the assignment behind the topic, not off the topic id',
+    );
+  });
+
+  it('resolves the assignment through a nested assignment object too', async () => {
+    const items = [discussion(88)];
+
+    await annotateSubmissions(
+      42,
+      items,
+      async () => states,
+      topics({ 88: { id: 88, assignment: { id: 500, name: 'Week 1' } } }),
+    );
+
+    assert.equal(items[0].hasSubmissions, true);
+  });
+
+  it('does not flag a graded discussion without submissions', async () => {
+    const items = [discussion(89)];
+
+    await annotateSubmissions(
+      42,
+      items,
+      async () => states,
+      topics({ 89: { id: 89, assignment_id: 501 } }),
+    );
+
+    assert.equal(items[0].hasSubmissions, false);
+  });
+
+  it('reads an ungraded discussion as a real no, not an unknown', async () => {
+    const items = [discussion(90)];
+
+    await annotateSubmissions(
+      42,
+      items,
+      async () => states,
+      topics({ 90: { id: 90, title: 'Chat', assignment_id: null } }),
+    );
+
+    assert.equal(
+      items[0].hasSubmissions,
+      false,
+      'an ungraded topic has no gradebook column, so there is nothing to warn about',
+    );
+  });
+
+  it('never looks up an assignment when only ungraded topics are doomed', async () => {
+    const items = [discussion(90)];
+
+    await annotateSubmissions(
+      42,
+      items,
+      async () => {
+        throw new Error('the submission lookup should not have run');
+      },
+      topics({ 90: { id: 90, assignment_id: null } }),
+    );
+
+    assert.equal(items[0].hasSubmissions, false);
+  });
+
+  it('marks the state unknown when the topic fetch fails', async () => {
+    mock.method(console, 'warn', () => {});
+    const items = [discussion(88)];
+
+    await annotateSubmissions(
+      42,
+      items,
+      async () => states,
+      async () => {
+        throw new Error('403 Forbidden');
+      },
+    );
+
+    assert.equal(
+      items[0].hasSubmissions,
+      null,
+      'a topic that could not be read may well be a graded one',
+    );
+  });
+
+  it('marks the state unknown when the assignment lookup fails', async () => {
+    mock.method(console, 'warn', () => {});
+    const items = [discussion(88)];
+
+    await annotateSubmissions(
+      42,
+      items,
+      async () => {
+        throw new Error('403 Forbidden');
+      },
+      topics({ 88: { id: 88, assignment_id: 500 } }),
+    );
+
+    assert.equal(items[0].hasSubmissions, null);
+  });
+
+  it('marks the state unknown when a graded topic names no assignment', async () => {
+    const items = [discussion(88)];
+
+    await annotateSubmissions(
+      42,
+      items,
+      async () => states,
+      topics({ 88: { id: 88, assignment: { name: 'no id here' } } }),
+    );
+
+    assert.equal(items[0].hasSubmissions, null);
+  });
+
+  it('marks the state unknown when the named assignment is not listed', async () => {
+    const items = [discussion(88)];
+
+    await annotateSubmissions(
+      42,
+      items,
+      async () => states,
+      topics({ 88: { id: 88, assignment_id: 999 } }),
+    );
+
+    assert.equal(
+      items[0].hasSubmissions,
+      null,
+      'the topic exists and says it is graded, so an unresolvable assignment id ' +
+        'is an unanswered question, not a clean bill of health',
+    );
+  });
+
+  it('looks the whole course up once for assignments and discussions together', async () => {
+    let stateCalls = 0;
+    const fetched = [];
+    const items = [
+      {
+        relativePath: '01-mod/01-hw.md',
+        canvasType: 'assignment',
+        canvasId: 500,
+      },
+      discussion(88, 'forum-a'),
+      discussion(89, 'forum-b'),
+      {
+        relativePath: '01-mod/01-page.md',
+        canvasType: 'page',
+        canvasId: 'slug',
+      },
+    ];
+
+    await annotateSubmissions(
+      42,
+      items,
+      async () => {
+        stateCalls++;
+        return states;
+      },
+      async (courseId, id) => {
+        fetched.push(id);
+        return { id, assignment_id: id === 88 ? 500 : 501 };
+      },
+    );
+
+    assert.equal(stateCalls, 1, 'one list request answers it for every item');
+    assert.deepEqual(
+      fetched,
+      [88, 89],
+      'only the doomed topics are fetched, one request each',
+    );
+    assert.deepEqual(
+      items.map((item) => item.hasSubmissions),
+      [true, true, false, undefined],
+    );
+  });
+
+  it('fetches no topic that is not slated for deletion', async () => {
+    const items = [
+      {
+        relativePath: '01-mod/01-page.md',
+        canvasType: 'page',
+        canvasId: 'slug',
+      },
+      { relativePath: '01-mod/doc.pdf', canvasType: 'file', canvasId: 400 },
+    ];
+
+    await annotateSubmissions(
+      42,
+      items,
+      async () => {
+        throw new Error('the submission lookup should not have run');
+      },
+      async () => {
+        throw new Error('no topic should have been fetched');
+      },
+    );
+
+    assert.equal(items[0].hasSubmissions, undefined);
+    assert.equal(items[1].hasSubmissions, undefined);
+  });
+});
+
 describe('describeDoomedItem', () => {
   it('names the grades on an assignment that has submissions', () => {
     const line = describeDoomedItem({
@@ -811,6 +1051,45 @@ describe('describeDoomedItem', () => {
       }),
       '  - 01-mod/01-page.md (page)',
     );
+  });
+
+  it('names the replies as well as the grades on a graded discussion', () => {
+    const line = describeDoomedItem({
+      relativePath: '01-mod/06-forum.md',
+      canvasType: 'discussion',
+      hasSubmissions: true,
+    });
+
+    assert.match(line, /GRADED DISCUSSION WITH STUDENT WORK/);
+    assert.match(
+      line,
+      /every student reply/,
+      'deleting the topic costs more than a gradebook column',
+    );
+    assert.match(line, /every grade/);
+    assert.match(line, /01-mod\/06-forum\.md/);
+  });
+
+  it('leaves a discussion without student work unmarked', () => {
+    assert.equal(
+      describeDoomedItem({
+        relativePath: '01-mod/07-forum.md',
+        canvasType: 'discussion',
+        hasSubmissions: false,
+      }),
+      '  - 01-mod/07-forum.md (discussion)',
+    );
+  });
+
+  it('says so when a discussion could not be checked', () => {
+    const line = describeDoomedItem({
+      relativePath: '01-mod/08-forum.md',
+      canvasType: 'discussion',
+      hasSubmissions: null,
+    });
+
+    assert.match(line, /SUBMISSION STATUS UNKNOWN/);
+    assert.match(line, /assume it is graded/);
   });
 });
 

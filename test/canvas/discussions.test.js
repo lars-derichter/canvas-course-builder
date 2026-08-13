@@ -12,6 +12,7 @@ const {
   updateDiscussion,
   deleteDiscussion,
   isGradedDiscussion,
+  discussionAssignmentId,
   gradedDiscussionWarning,
 } = require('../../lib/canvas/discussions');
 
@@ -178,6 +179,52 @@ describe('isGradedDiscussion', () => {
   it('handles a missing topic object', () => {
     assert.equal(isGradedDiscussion(undefined), false);
     assert.equal(isGradedDiscussion(null), false);
+  });
+});
+
+describe('discussionAssignmentId', () => {
+  it('returns the assignment id a graded topic names', () => {
+    assert.equal(
+      discussionAssignmentId({ id: 77, assignment_id: 900 }),
+      900,
+      'the grades of a graded discussion hang off this id, not off the topic id',
+    );
+  });
+
+  it('reads the id off a nested assignment object', () => {
+    assert.equal(
+      discussionAssignmentId({ id: 77, assignment: { id: 900 } }),
+      900,
+    );
+  });
+
+  it('prefers the top-level id when both are present', () => {
+    assert.equal(
+      discussionAssignmentId({
+        id: 77,
+        assignment_id: 900,
+        assignment: { id: 900 },
+      }),
+      900,
+    );
+  });
+
+  it('returns null for an ungraded topic', () => {
+    assert.equal(discussionAssignmentId({ id: 77, assignment_id: null }), null);
+    assert.equal(discussionAssignmentId({ id: 77 }), null);
+  });
+
+  it('returns null when a graded topic names no id', () => {
+    assert.equal(
+      discussionAssignmentId({ id: 77, assignment: { points_possible: 10 } }),
+      null,
+      'graded but unresolvable is not the same as ungraded',
+    );
+  });
+
+  it('handles a missing topic object', () => {
+    assert.equal(discussionAssignmentId(undefined), null);
+    assert.equal(discussionAssignmentId(null), null);
   });
 });
 
