@@ -38,8 +38,9 @@ Worth knowing before you commit a semester to it:
   discussions and external tools do not.
 - **Quizzes are outside the sync loop.** A bundled skill generates a QTI package
   you import into Canvas by hand, once, in one direction.
-- **A push takes over the modules it manages.** It rebuilds their item lists, so
-  anything you added to those modules by hand in Canvas drops out of them.
+- **A push takes over the modules it manages.** It rebuilds their item lists. It
+  refuses to rebuild a module holding items you added by hand in Canvas, and
+  names them, rather than dropping them.
 - **The folder layout is a contract**: one folder per module, one level of
   nesting, numbered prefixes.
 - **Push and pull are not a merge.** Your markdown is the source of truth; pull

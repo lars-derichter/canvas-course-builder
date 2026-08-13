@@ -118,18 +118,20 @@ never as "no submissions".
 2. Ensure alert icons are uploaded (icons.js)
 3. Build link map from sync state (link-resolver.js)
 4. For each module:
-   a. Create or update the Canvas module
-   b. Clear existing module items (prevents duplicates on re-push;
+   a. Read what Canvas holds in the module, and skip the module when any
+      of it has no local counterpart (unless --drop-canvas-only)
+   b. Create or update the Canvas module
+   c. Clear existing module items (prevents duplicates on re-push;
       module items are links — deleting them keeps the content)
-   c. Upload embedded files from _files/ directories
-   d. For each item:
+   d. Upload embedded files from _files/ directories
+   e. For each item:
       - Convert markdown to HTML (markdown-to-html.js)
       - Resolve internal .md links to Canvas URLs
       - Resolve file references to Canvas file URLs
       - Create or update the Canvas page/assignment
       - Write canvas_id back to frontmatter
       - Track items with unresolved links
-   e. Save sync state after each module
+   f. Save sync state after each module
 5. Second pass: re-push items with unresolved links
    (now resolvable because referenced pages exist)
 6. Prune: delete Canvas modules and items removed locally (if --prune)
@@ -139,6 +141,34 @@ never as "no submissions".
 The two-pass approach handles circular or forward references. On the first pass,
 links to not-yet-created pages are left unresolved. After all pages exist, a
 second pass updates their HTML with correct links.
+
+### The Canvas-Only Guard
+
+Step 4a is what keeps the rebuild from eating content. It reuses the identity
+claims prune works from (`collectLocalClaims`, `isItemClaimed`), which are
+type-scoped: an `assignment:12` claim never answers for a `Quiz` item on id 12.
+Claims are gathered over the whole course, so an item moved to another module —
+even one outside a `--module` filter — is still local. Four types need more than
+an id comparison:
+
+- **Pages.** A module item names its page by slug, while the local file holds
+  the numeric `page_id`, so the slug is resolved through the course's page list
+  (`buildPageUrlToPageId` in `cli/sync-utils.js`, shared with pull's rename
+  detection). One request answers it for the whole run; a run with no pages to
+  resolve makes none. When the lookup fails, the module is refused rather than
+  guessed at.
+- **External URLs and LTI links.** These exist only as a module item, whose id
+  Canvas reissues on every push, so the launch URL is the identity. The stored
+  id is still tried: Canvas never reuses one, so a match can only be the first
+  push's own item.
+- **Files.** A raw binary carries no frontmatter, so its claim comes from the
+  sync entry push wrote for it, counted only while the local path still exists.
+- **Text headers.** Regenerated from the folder structure on every push, so they
+  are skipped entirely — otherwise every module with a subfolder would refuse
+  forever.
+
+A refusal records an error like any other push failure: the run continues with
+the remaining modules and ends with a non-zero exit status.
 
 ## Pull Algorithm
 

@@ -54,6 +54,7 @@ const {
 } = require('../lib/convert/link-resolver');
 const {
   SYNC_FILE,
+  buildPageUrlToPageId,
   loadSyncFile,
   saveSyncFile,
   itemKey,
@@ -87,6 +88,7 @@ async function push(options) {
   const dryRun = options.dryRun || false;
   const moduleFilter = options.module || null;
   const prune = options.prune || false;
+  const dropCanvasOnly = options.dropCanvasOnly || false;
 
   const syncData = loadSyncFile();
   const modules = scanCourse(COURSE_DIR);
@@ -170,6 +172,16 @@ async function push(options) {
   // Build link map from sync state for resolving internal links
   let { relativeToCanvas } = buildLinkMap(syncData);
 
+  // What every module about to be rebuilt is measured against: a module whose
+  // Canvas items are not all accounted for here is left alone rather than
+  // cleared. Claims come from the whole tree, so an item moved into another
+  // module is never mistaken for one added by hand in Canvas.
+  const guard = {
+    dropCanvasOnly,
+    claims: collectPushGuardClaims(syncData, modules),
+    resolvePageIds: makePageIdResolver(courseId),
+  };
+
   // Track items that had unresolved internal links for a second pass
   const unresolvedItems = [];
 
@@ -189,6 +201,7 @@ async function push(options) {
         relativeToCanvas,
         unresolvedItems,
         errors,
+        guard,
       );
     } catch (err) {
       log.error(
@@ -362,6 +375,249 @@ function registerItem(
   return key;
 }
 
+/**
+ * How a live module item's `type` reads in the local `canvas_type` vocabulary.
+ * `SubHeader` is deliberately absent: it is handled before this map is reached.
+ */
+const LIVE_ITEM_TYPES = {
+  Page: 'page',
+  Assignment: 'assignment',
+  Discussion: 'discussion',
+  Quiz: 'quiz',
+  ExternalUrl: 'external_url',
+  ExternalTool: 'external_tool',
+  File: 'file',
+};
+
+/**
+ * Whether a module item Canvas holds is one push itself put there.
+ *
+ * The claim set comes from `collectLocalClaims`, so it speaks in
+ * `canvas_type:identity` pairs and is type-scoped: an `assignment:12` claim
+ * never answers for a `Quiz` item on id 12. Three types need more than a
+ * straight id comparison:
+ *
+ * - A **page** item names its page by slug, while the local file claims the
+ *   numeric page id, so the slug is resolved through the course's page list
+ *   first. The slug is still tried directly, because a page created before
+ *   Canvas returned a `page_id` has the slug in its frontmatter.
+ * - **External URLs and LTI links** exist only as a module item, whose id
+ *   Canvas reissues on every push. Push writes that id to frontmatter once and
+ *   never refreshes it, so from the second push on the stored id is stale by
+ *   design and the launch URL is the identity. The id is still worth trying:
+ *   Canvas never reuses one, so a match can only be the first push's own item.
+ * - A **file** item can come from a raw binary that carries no frontmatter at
+ *   all; the claim for those is added from sync state (see
+ *   `collectPushGuardClaims`).
+ *
+ * @param {object} item              - A Canvas module item.
+ * @param {Set<string>} claims       - Identities claimed by local files.
+ * @param {Map<string, number>|null} pageIds - Page slug -> page id.
+ */
+function isLiveItemLocal(item, claims, pageIds) {
+  // Text headers carry no content id of any kind: push regenerates them from
+  // the folder structure on every run, so there is nothing to recognise and
+  // nothing a hand-added one could destroy.
+  if (item.type === 'SubHeader') return true;
+
+  const type = LIVE_ITEM_TYPES[item.type];
+  // A type push cannot produce is by definition not push's own.
+  if (!type) return false;
+
+  if (type === 'page') {
+    if (!item.page_url) return false;
+    if (claims.has(`page:${item.page_url}`)) return true;
+    const pageId = pageIds && pageIds.get(item.page_url);
+    return pageId != null && claims.has(`page:${pageId}`);
+  }
+
+  if (type === 'external_url' || type === 'external_tool') {
+    if (item.external_url && claims.has(`${type}:${item.external_url}`))
+      return true;
+    return item.id != null && claims.has(`${type}:${item.id}`);
+  }
+
+  return item.content_id != null && claims.has(`${type}:${item.content_id}`);
+}
+
+/**
+ * Split a module's live Canvas items into the ones a local file accounts for
+ * and the ones nothing local claims.
+ *
+ * The page lookup is asked for only when the module actually holds a page, and
+ * `resolvePageIds` answers it once for the whole run. When that lookup fails,
+ * no page item can be told apart from a hand-added one, so the whole module
+ * counts as unchecked rather than as clean: the caller refuses it instead of
+ * guessing.
+ *
+ * @param {object[]} liveItems         - What `listModuleItems` returned.
+ * @param {Set<string>} claims         - Identities claimed by local files.
+ * @param {Function} resolvePageIds    - Async, returns the slug -> id map.
+ * @returns {Promise<{canvasOnly: object[], error: string|null}>}
+ */
+async function inspectCanvasOnlyItems(liveItems, claims, resolvePageIds) {
+  const canvasOnly = [];
+  let pageIds = null;
+
+  for (const item of liveItems || []) {
+    if (item.type === 'SubHeader') continue;
+    if (item.type === 'Page' && pageIds === null) {
+      try {
+        pageIds = await resolvePageIds();
+      } catch (err) {
+        return {
+          canvasOnly: [],
+          error:
+            `could not list the pages of this Canvas course (${err.message}), ` +
+            'and a module item names a page by a slug that only that list ' +
+            'resolves to the id its local file holds',
+        };
+      }
+    }
+    if (isLiveItemLocal(item, claims, pageIds)) continue;
+    canvasOnly.push(item);
+  }
+
+  return { canvasOnly, error: null };
+}
+
+/** One live Canvas item, named as someone has to find it back in Canvas. */
+function describeCanvasOnlyItem(item) {
+  const title = item.title || '(untitled)';
+  const where = item.position != null ? `, position ${item.position}` : '';
+  const link = item.html_url ? ` — ${item.html_url}` : '';
+  return `  - "${title}" (${item.type}${where})${link}`;
+}
+
+/**
+ * Report a module left untouched because Canvas holds items in it that no
+ * local file accounts for, and return the line the run's error summary gets.
+ *
+ * Everything goes to stderr: this is the one outcome a `--quiet` run must
+ * still see, because the alternative to reading it is losing the items.
+ *
+ * @param {object} mod              - The local module descriptor.
+ * @param {object[]} canvasOnly     - The unclaimed live items.
+ * @param {boolean} dryRun
+ * @returns {string} The error message, for the caller to record.
+ */
+function reportCanvasOnlyRefusal(mod, canvasOnly, dryRun) {
+  const count = canvasOnly.length;
+  const them = count === 1 ? 'it' : 'them';
+  const items = count === 1 ? 'item' : 'items';
+
+  log.error(
+    `\n[push] ${dryRun ? 'DRY RUN: would refuse to push' : 'Refusing to push'} ` +
+      `module "${mod.moduleName}": ${count} ${items} in this Canvas module ` +
+      `${count === 1 ? 'has' : 'have'} no source file in course/${mod.folderName}/.`,
+  );
+  for (const item of canvasOnly) log.error(describeCanvasOnlyItem(item));
+  log.error(
+    `[push] Push rebuilds a module's item list from course/, so pushing this ` +
+      `module would have removed ${count === 1 ? 'that item' : 'those items'} from it. ` +
+      'Nothing was written: the module keeps its items, its name and its ' +
+      'position, and the rest of this run carries on.',
+  );
+  log.error('[push] Three ways forward:');
+  log.error(
+    `[push]   1. Keep ${them}: add a file under course/${mod.folderName}/ for ` +
+      'each one, carrying the matching canvas_type and canvas_id in its ' +
+      'frontmatter (see docs/frontmatter.md), then push again.',
+  );
+  log.error(
+    `[push]   2. Move ${them} in Canvas into a module this project does not manage.`,
+  );
+  log.error(
+    `[push]   3. Let ${them} go: push again with --drop-canvas-only, which ` +
+      'clears this module and rebuilds it from course/. A page, assignment, ' +
+      'discussion, quiz or file behind an item stays in the course — a module ' +
+      'item is only a link to it — but an external URL or an LTI link is ' +
+      'nothing but a module item, so that one is gone.',
+  );
+
+  const named = canvasOnly
+    .map((item) => `"${item.title || '(untitled)'}"`)
+    .join(', ');
+  return (
+    `${count} ${items} in this Canvas module ${count === 1 ? 'has' : 'have'} ` +
+    `no local source file (${named}); the module was left untouched`
+  );
+}
+
+/**
+ * Every Canvas identity the local tree claims, for the guard that decides
+ * whether a module is safe to rebuild.
+ *
+ * `collectLocalClaims` reads frontmatter, which covers every type but one: a
+ * raw binary dropped into a module folder is pushed as a file item and has
+ * nowhere to carry a `canvas_id`. The sync entry push wrote for it is the only
+ * link between that Canvas file and the local path, so a tracked file whose
+ * path is still on disk claims its id here — the same rule `isItemClaimed`
+ * applies on the prune side.
+ *
+ * Claims are gathered from the whole tree, never from the `--module` subset,
+ * so an item moved to another module still counts as local.
+ */
+function collectPushGuardClaims(syncData, localModules) {
+  const claims = collectLocalClaims(localModules);
+
+  for (const moduleEntry of Object.values(
+    (syncData && syncData.modules) || {},
+  )) {
+    for (const entry of Object.values(moduleEntry.items || {})) {
+      if (entry.canvas_type !== 'file') continue;
+      if (entry.canvas_id == null || !entry.path) continue;
+      if (!fs.existsSync(path.resolve(COURSE_DIR, entry.path))) continue;
+      claims.add(`file:${entry.canvas_id}`);
+    }
+  }
+
+  return claims;
+}
+
+/**
+ * The items Canvas holds in a module, or null when there is nothing to protect.
+ *
+ * A 404 means the module is gone from Canvas and push is about to create it
+ * again, so there is nothing in it to lose. Any other failure leaves push
+ * unable to tell its own items from hand-added ones: a real push refuses the
+ * module rather than clear a list it could not read, while a dry run — which
+ * writes nothing either way — says the check could not be made and carries on.
+ */
+async function readLiveItems(courseId, existingModuleId, dryRun) {
+  if (!existingModuleId) return null;
+  try {
+    return await listModuleItems(courseId, existingModuleId);
+  } catch (err) {
+    if (err.message.includes('404')) return null;
+    if (dryRun) {
+      log.warn(
+        `[push] Could not list the items Canvas holds in this module ` +
+          `(${err.message}); this dry run cannot say whether it holds items ` +
+          'with no local source.',
+      );
+      return null;
+    }
+    throw new Error(
+      `could not list the items Canvas holds in this module (${err.message}). ` +
+        "Push clears a module's item list before rebuilding it, so it refuses " +
+        'to touch a module it could not read.',
+    );
+  }
+}
+
+/**
+ * A slug -> page id lookup that costs at most one request per run, and none at
+ * all when no module holds a page that needs resolving.
+ */
+function makePageIdResolver(courseId, fetchPages) {
+  let pending = null;
+  return () => {
+    if (!pending) pending = buildPageUrlToPageId(courseId, fetchPages);
+    return pending;
+  };
+}
+
 async function pushModule(
   courseId,
   mod,
@@ -371,6 +627,7 @@ async function pushModule(
   relativeToCanvas,
   unresolvedItems,
   errors,
+  guard,
 ) {
   const moduleDir = path.join(COURSE_DIR, mod.folderName);
   // The id in _category_.json is authoritative even when the sync file was
@@ -379,6 +636,49 @@ async function pushModule(
   const resolved = resolveModuleEntry(syncData, mod.folderName);
   const existingModuleId =
     catId != null ? Number(catId) : resolved ? Number(resolved[0]) : null;
+
+  // What Canvas holds in this module right now, read before the first write:
+  // a module holding items no local file accounts for is left exactly as it
+  // is, and that decision cannot be made after the module has been touched.
+  const liveItems = await readLiveItems(courseId, existingModuleId, dryRun);
+  if (liveItems) {
+    const { canvasOnly, error } = await inspectCanvasOnlyItems(
+      liveItems,
+      guard.claims,
+      guard.resolvePageIds,
+    );
+
+    if (guard.dropCanvasOnly) {
+      // The user asked for the old behaviour, so the wipe goes ahead — but it
+      // still says what it is about to take out of the module.
+      if (error) {
+        log.warn(
+          `[push] WARNING: ${error}. --drop-canvas-only clears the module ` +
+            'anyway, so this run cannot say what it removed.',
+        );
+      } else if (canvasOnly.length > 0) {
+        log.warn(
+          `\n[push] WARNING: --drop-canvas-only: removing ${canvasOnly.length} ` +
+            `item(s) from "${mod.moduleName}" that have no source file in course/:`,
+        );
+        for (const item of canvasOnly) log.warn(describeCanvasOnlyItem(item));
+      }
+    } else if (error) {
+      log.error(
+        `\n[push] Refusing to push module "${mod.moduleName}": ${error}. ` +
+          "Push clears a module's item list before rebuilding it, so a module " +
+          'it cannot check is left untouched.',
+      );
+      errors.push({ module: mod.folderName, error });
+      return;
+    } else if (canvasOnly.length > 0) {
+      errors.push({
+        module: mod.folderName,
+        error: reportCanvasOnlyRefusal(mod, canvasOnly, dryRun),
+      });
+      return;
+    }
+  }
 
   let moduleId;
 
@@ -435,11 +735,12 @@ async function pushModule(
 
   // Clear existing module items to prevent duplicates on re-push.
   // Module items are links within a module — deleting them does not delete
-  // the underlying pages, assignments, or files.
+  // the underlying pages, assignments, or files. Everything still here was
+  // either put there by a previous push or explicitly released with
+  // --drop-canvas-only: the guard above returned otherwise.
   if (!dryRun && existingModuleId && existingModuleId === moduleId) {
     log.verbose('Clearing existing module items before re-push');
-    const existingItems = await listModuleItems(courseId, moduleId);
-    for (const mi of existingItems) {
+    for (const mi of liveItems || []) {
       await deleteModuleItem(courseId, moduleId, mi.id);
     }
   }
@@ -1939,6 +2240,14 @@ async function pruneDeleted(
 
 module.exports = push;
 // Exported for testing
+push._isLiveItemLocal = isLiveItemLocal;
+push._inspectCanvasOnlyItems = inspectCanvasOnlyItems;
+push._describeCanvasOnlyItem = describeCanvasOnlyItem;
+push._reportCanvasOnlyRefusal = reportCanvasOnlyRefusal;
+push._collectPushGuardClaims = collectPushGuardClaims;
+push._makePageIdResolver = makePageIdResolver;
+push._readLiveItems = readLiveItems;
+push._pushModule = pushModule;
 push._collectDeletedModules = collectDeletedModules;
 push._collectDeletedItems = collectDeletedItems;
 push._collectLocalClaims = collectLocalClaims;

@@ -1,6 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const { PROJECT_ROOT } = require('./project-root');
+const { listPages } = require('../lib/canvas/pages');
 
 const SYNC_FILE = path.join(PROJECT_ROOT, '.canvas-sync.json');
 const SCHEMA_VERSION = 3;
@@ -43,6 +44,32 @@ function itemKey(canvasType, { canvasId, externalUrl } = {}) {
     return `${canvasType}:${externalUrl}`;
   }
   return `${canvasType}:${canvasId}`;
+}
+
+/**
+ * Map every page slug in a Canvas course to its numeric page id.
+ *
+ * A module item names a page by its slug (`page_url`) and never by its id,
+ * while everything local — frontmatter `canvas_id`, sync state — holds the
+ * numeric id, because that is the half of the pair a rename does not change.
+ * The course's page list is the only place the two meet, so both commands that
+ * have to recognise a page across that gap build this map first: pull to spot a
+ * renamed page, push to tell an item it made from one it did not.
+ *
+ * One request answers it for a whole run. Failure is the caller's to handle —
+ * a pull without the map only loses its rename detection, while a push without
+ * it cannot tell which items are its own.
+ *
+ * @param {string|number} courseId
+ * @param {Function} [fetchPages] - Injection point for tests.
+ * @returns {Promise<Map<string, number>>}
+ */
+async function buildPageUrlToPageId(courseId, fetchPages = listPages) {
+  const map = new Map();
+  for (const page of (await fetchPages(courseId)) || []) {
+    if (page.url && page.page_id) map.set(page.url, page.page_id);
+  }
+  return map;
 }
 
 /**
@@ -137,6 +164,7 @@ function removeItemFromOtherModules(syncData, key, currentModuleId) {
 module.exports = {
   SYNC_FILE,
   SCHEMA_VERSION,
+  buildPageUrlToPageId,
   loadSyncFile,
   saveSyncFile,
   itemKey,

@@ -3,7 +3,7 @@ const path = require('path');
 const crypto = require('crypto');
 
 const { listModules, listModuleItems } = require('../lib/canvas/modules');
-const { listPages, getPage } = require('../lib/canvas/pages');
+const { getPage } = require('../lib/canvas/pages');
 const { getAssignment } = require('../lib/canvas/assignments');
 const {
   getDiscussion,
@@ -23,6 +23,7 @@ const {
 const { downloadFile } = require('../lib/canvas/files');
 const {
   SYNC_FILE,
+  buildPageUrlToPageId,
   loadSyncFile,
   saveSyncFile,
   itemKey,
@@ -97,16 +98,13 @@ async function pull(options) {
   // Build reverse file map for resolving Canvas file URLs back to local paths
   const { canvasToLocal } = buildFileMap(syncData);
 
-  // Fetch all pages to resolve page_url -> page_id for rename detection.
-  // Canvas module items for Pages only include page_url (slug), not the numeric
-  // page_id. When a page is renamed, the slug changes but the page_id (stored
-  // as canvas_id in sync state) stays stable. This map lets us match renamed pages.
-  const pageUrlToPageId = new Map();
+  // Resolve page_url -> page_id so a page renamed on Canvas is recognised by
+  // the id its sync entry holds rather than by the slug that just changed.
+  // Losing the map costs the rename detection and nothing else, so a failure
+  // is a warning.
+  let pageUrlToPageId = new Map();
   try {
-    const allPages = await listPages(courseId);
-    for (const p of allPages) {
-      if (p.url && p.page_id) pageUrlToPageId.set(p.url, p.page_id);
-    }
+    pageUrlToPageId = await buildPageUrlToPageId(courseId);
   } catch (err) {
     log.warn(
       `[pull] Could not fetch pages for rename detection: ${err.message}`,

@@ -53,7 +53,7 @@ What that means in practice:
 If your course leans heavily on Canvas quizzes, this tool will not carry that
 weight.
 
-## A Plain Push Clears the Module's Item List
+## A Plain Push Rebuilds the Module's Item List
 
 This one surprises people, so it is worth stating plainly.
 
@@ -61,15 +61,44 @@ Every `npx course push` deletes and recreates all module items in the modules it
 manages. The underlying pages, assignments and files survive — a module item is
 a link, not the content — but the consequences are real:
 
-- **Anything you added by hand in Canvas drops out of that module.** A quiz you
-  placed in the module, a discussion, an LTI link, a page that is not in your
-  repository: the content object survives elsewhere in the course, but it is no
-  longer in the module.
 - **Module item ids change on every push**, so direct links of the form
   `/courses/123/modules/items/456` go stale. Link to pages, not to module items.
+- **Anything you add by hand in Canvas stops the push of that module.** Before
+  it clears a module, push compares what Canvas holds in it against what
+  `course/` accounts for. A quiz you placed there, a discussion, an LTI link, a
+  page that is not in your repository: push names them, leaves the module
+  exactly as it is, carries on with the other modules, and ends the run with a
+  non-zero exit status. Nothing is dropped silently.
 
-The rule of thumb: a module this tool manages is generated output. Anything you
-want to keep in it belongs in `course/`.
+Three ways out of a refusal, all in the message push prints:
+
+1. **Keep the items.** Add a file under the module's folder for each one,
+   carrying the matching `canvas_type` and `canvas_id` in its frontmatter (see
+   [frontmatter](frontmatter.md)), and push again. From then on they are yours
+   to edit like any other item.
+2. **Move them in Canvas** into a module this project does not manage.
+3. **Let them go.** `npx course push --drop-canvas-only` rebuilds the module
+   regardless, listing what it removes as it goes. A page, assignment,
+   discussion, quiz or file behind an item stays in the course; an external URL
+   or an LTI link is nothing but a module item, so that one is gone.
+
+`--dry-run` reports the same refusal without touching Canvas, and exits non-zero
+too.
+
+The guard has three edges:
+
+- **Text headers are exempt.** Push regenerates them from your subfolders, so
+  one added by hand in Canvas is replaced without warning.
+- **A page list it cannot read refuses the module.** Matching a module item's
+  page slug against the page id in your frontmatter needs the course's page
+  list; when that request fails, push refuses rather than guess.
+- **A plain binary in a module folder claims its Canvas id through
+  `.canvas-sync.json` alone**, having no frontmatter to hold one. Rebuild that
+  state with [`reset-sync-state`](advanced-commands.md) and push reads the file
+  item as Canvas-only until you push once with `--drop-canvas-only`.
+
+The rule of thumb is unchanged: a module this tool manages is generated output.
+Anything you want to keep in it belongs in `course/`.
 
 Two smaller cases where a plain push deletes something real:
 

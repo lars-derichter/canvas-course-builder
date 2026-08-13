@@ -65,6 +65,11 @@ program
     '--prune',
     'Delete Canvas modules and items that no longer exist locally',
   )
+  .option(
+    '--drop-canvas-only',
+    'Rebuild a module even when it holds items added by hand in Canvas, ' +
+      'removing those items from it',
+  )
   .action(require('./push'));
 
 program

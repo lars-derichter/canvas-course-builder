@@ -269,6 +269,7 @@ npx course push                  # push all modules to Canvas
 npx course push --dry-run        # preview without making changes
 npx course push -m 01-intro      # push a single module
 npx course push --prune          # also delete Canvas modules and items removed locally
+npx course push --drop-canvas-only  # rebuild a module even if it holds items added in Canvas
 npx course pull                  # import existing Canvas course
 npx course pull --force          # overwrite local files pull would otherwise skip
 npx course status                # compare local vs Canvas state
