@@ -2207,6 +2207,28 @@ function describeDoomedItem(item) {
 }
 
 /**
+ * What the submission count in a prune warning is counting, singular.
+ *
+ * Two types can hold grades, so the aggregate line can only call itself
+ * "assignments" while assignments are all it holds. One doomed graded
+ * discussion makes "1 assignment being deleted has student submissions" a false
+ * sentence over a listing whose only flagged entry is a discussion, so the count
+ * switches to the type both of them are.
+ *
+ * The type is what decides it, not the risk: a doomed discussion that turned out
+ * ungraded is still a discussion in the count, and reading "items" over a
+ * listing that holds one costs nothing.
+ *
+ * @param {object[]} items - The doomed items whose states were counted.
+ * @returns {string}
+ */
+function submissionRiskNoun(items) {
+  return (items || []).some((item) => item.canvasType === 'discussion')
+    ? 'item'
+    : 'assignment';
+}
+
+/**
  * Unified prune: detect and delete Canvas modules and items that no longer exist locally.
  */
 async function pruneDeleted(
@@ -2250,14 +2272,12 @@ async function pruneDeleted(
   // grades are counted: an assignment, and the discussion a graded topic hangs
   // its assignment off.
   await annotateSubmissions(courseId, itemsToDelete);
-  const risk = countSubmissionRisk(
-    itemsToDelete
-      .filter(
-        (item) =>
-          item.canvasType === 'assignment' || item.canvasType === 'discussion',
-      )
-      .map((item) => item.hasSubmissions),
+  const gradable = itemsToDelete.filter(
+    (item) =>
+      item.canvasType === 'assignment' || item.canvasType === 'discussion',
   );
+  const risk = countSubmissionRisk(gradable.map((item) => item.hasSubmissions));
+  const riskNoun = submissionRiskNoun(gradable);
 
   if (itemsToDelete.length > 0) {
     log.info(
@@ -2268,7 +2288,7 @@ async function pruneDeleted(
     }
   }
 
-  for (const line of submissionWarningLines(risk)) {
+  for (const line of submissionWarningLines(risk, riskNoun)) {
     log.warn(`\n[push] ${line}`);
   }
 
@@ -2348,6 +2368,7 @@ push._deleteCanvasItemByType = deleteCanvasItemByType;
 push._refuseQuizBackedDelete = refuseQuizBackedDelete;
 push._annotateSubmissions = annotateSubmissions;
 push._describeDoomedItem = describeDoomedItem;
+push._submissionRiskNoun = submissionRiskNoun;
 push._warnGradeImpact = warnGradeImpact;
 push._gradeImpactWarnings = gradeImpactWarnings;
 push._collectUpdatedAssignments = collectUpdatedAssignments;

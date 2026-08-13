@@ -81,6 +81,22 @@ describe('submissionWarningLines', () => {
     assert.deepEqual(submissionWarningLines({ graded: 0, unknown: 0 }), []);
     assert.deepEqual(submissionWarningLines(), []);
   });
+
+  it('counts whatever noun the caller is counting', () => {
+    const [line] = submissionWarningLines({ graded: 2, unknown: 0 }, 'item');
+    assert.match(
+      line,
+      /2 items being deleted have student submissions/,
+      'a prune counts graded discussions too, so it cannot say "assignments"',
+    );
+    assert.match(line, /Deleting an item deletes its gradebook column/);
+  });
+
+  it('keeps the article right on a single item', () => {
+    const [line] = submissionWarningLines({ graded: 0, unknown: 1 }, 'item');
+    assert.match(line, /could not determine whether 1 item being deleted has/);
+    assert.match(line, /deleting an item takes its gradebook column/);
+  });
 });
 
 describe('submissionRiskSuffix', () => {

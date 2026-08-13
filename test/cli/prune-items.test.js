@@ -14,6 +14,7 @@ const {
   _isItemClaimed: isItemClaimed,
   _annotateSubmissions: annotateSubmissions,
   _describeDoomedItem: describeDoomedItem,
+  _submissionRiskNoun: submissionRiskNoun,
   _deleteCanvasItemByType: deleteCanvasItemByType,
   _refuseQuizBackedDelete: refuseQuizBackedDelete,
 } = push;
@@ -1090,6 +1091,45 @@ describe('describeDoomedItem', () => {
 
     assert.match(line, /SUBMISSION STATUS UNKNOWN/);
     assert.match(line, /assume it is graded/);
+  });
+});
+
+describe('submissionRiskNoun', () => {
+  it('says "assignment" when only assignments are counted', () => {
+    assert.equal(
+      submissionRiskNoun([
+        { canvasType: 'assignment' },
+        { canvasType: 'assignment' },
+      ]),
+      'assignment',
+    );
+  });
+
+  it('says "item" as soon as a discussion is counted', () => {
+    assert.equal(
+      submissionRiskNoun([
+        { canvasType: 'assignment' },
+        { canvasType: 'discussion' },
+      ]),
+      'item',
+      'the count covers both, so naming one of them would be a false line',
+    );
+  });
+
+  it('says "item" for discussions alone', () => {
+    assert.equal(submissionRiskNoun([{ canvasType: 'discussion' }]), 'item');
+  });
+
+  it('does not care whether the discussion turned out graded', () => {
+    assert.equal(
+      submissionRiskNoun([{ canvasType: 'discussion', hasSubmissions: false }]),
+      'item',
+    );
+  });
+
+  it('handles an empty or missing list', () => {
+    assert.equal(submissionRiskNoun([]), 'assignment');
+    assert.equal(submissionRiskNoun(undefined), 'assignment');
   });
 });
 

@@ -59,33 +59,44 @@ function countSubmissionRisk(states) {
 }
 
 /**
- * The warning lines that precede a confirmation when assignments are about to
- * be deleted. Deleting an assignment is the one irreversible step that takes
+ * The warning lines that precede a confirmation when content holding grades is
+ * about to be deleted. That deletion is the one irreversible step that takes
  * student work with it, so both commands say so in the same words.
+ *
+ * `noun` is what the count is counting. `reset-canvas` only ever deletes
+ * assignments, so it keeps the default and stays specific. A prune counts two
+ * types — an assignment, and the assignment behind a graded discussion — and
+ * passes "item", because a line reading "1 assignment being deleted" over a
+ * listing whose only flagged entry is a discussion is a wrong line, not a
+ * loose one. Both readings take the article "an".
  *
  * Returns an empty array when nothing being deleted carries that risk; the
  * caller prefixes each line with its own command tag.
  *
  * @param {{graded: number, unknown: number}} risk
+ * @param {string} [noun] - What is being counted, singular.
  * @returns {string[]}
  */
-function submissionWarningLines({ graded = 0, unknown = 0 } = {}) {
+function submissionWarningLines(
+  { graded = 0, unknown = 0 } = {},
+  noun = 'assignment',
+) {
   const lines = [];
   if (graded > 0) {
     lines.push(
-      `WARNING: ${graded} assignment${graded === 1 ? '' : 's'} being deleted ` +
+      `WARNING: ${graded} ${noun}${graded === 1 ? '' : 's'} being deleted ` +
         `${graded === 1 ? 'has' : 'have'} student submissions. Deleting an ` +
-        'assignment deletes its gradebook column and every submission and ' +
+        `${noun} deletes its gradebook column and every submission and ` +
         'grade in it.',
     );
   }
   if (unknown > 0) {
     lines.push(
-      `WARNING: could not determine whether ${unknown} assignment` +
+      `WARNING: could not determine whether ${unknown} ${noun}` +
         `${unknown === 1 ? '' : 's'} being deleted ` +
         `${unknown === 1 ? 'has' : 'have'} student submissions. Treat ` +
         `${unknown === 1 ? 'it' : 'them'} as if ` +
-        `${unknown === 1 ? 'it does' : 'they do'}: deleting an assignment ` +
+        `${unknown === 1 ? 'it does' : 'they do'}: deleting an ${noun} ` +
         'takes its gradebook column, submissions and grades with it.',
     );
   }
