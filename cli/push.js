@@ -2102,12 +2102,18 @@ async function deleteCanvasItemByType(courseId, item, errors) {
  * to look up in the states already fetched. An ungraded topic has no gradebook
  * column and no submissions, which is a real "no".
  *
+ * That fetch also answers a question no grade check covers: deleting a topic
+ * deletes every reply in it, graded or not. The count rides along on the topic,
+ * so it is kept as `replyCount` for the listing to name.
+ *
  * A failed lookup leaves null behind, which the listing and the prompt report
  * as "could not determine" — never as "safe". That holds for a topic fetch that
  * fails too: an unreadable topic may well be a graded one.
  *
  * @param {string|number} courseId
- * @param {object[]} items          - Doomed items; annotated in place.
+ * @param {object[]} items          - Doomed items; annotated in place with
+ *                                    `hasSubmissions` and, for a readable
+ *                                    discussion, `replyCount`.
  * @param {Function} [fetchStates]  - Injection point for tests.
  * @param {Function} [fetchTopic]   - Injection point for tests.
  */
@@ -2136,6 +2142,11 @@ async function annotateSubmissions(
       item.hasSubmissions = null;
       continue;
     }
+    // Deleting a topic deletes the replies in it whatever its grading, so the
+    // count is worth keeping off every topic that was readable, not just the
+    // graded ones. Canvas puts it on the topic, so it costs no extra call.
+    if (typeof topic.discussion_subentry_count === 'number')
+      item.replyCount = topic.discussion_subentry_count;
     if (!isGradedDiscussion(topic)) {
       // No gradebook column, so no submissions and no grades: a real "no".
       item.hasSubmissions = false;
@@ -2182,20 +2193,50 @@ async function annotateSubmissions(
 }
 
 /**
+ * How many replies a doomed discussion takes with it, as "14 replies", or null
+ * when Canvas gave no count or the topic is empty.
+ *
+ * @param {object} item
+ * @returns {string|null}
+ */
+function replyCountPhrase(item) {
+  const count = item.replyCount;
+  if (typeof count !== 'number' || !Number.isFinite(count) || count <= 0)
+    return null;
+  return `${count} ${count === 1 ? 'reply' : 'replies'}`;
+}
+
+/**
  * The listing line for one doomed item. An assignment or discussion with grades
  * behind it must not scan like a stray page, so it carries the reason on the
  * same line.
  *
- * A graded discussion loses more than a gradebook column: the topic goes with
- * it, and every reply students wrote in it, so its line says so.
+ * A discussion loses more than a gradebook column: the topic goes with it, and
+ * every reply students wrote in it. That is true of an ungraded topic too —
+ * there are no grades to lose, but a term of student writing still goes — so a
+ * discussion with replies in it is never a bare line, graded or not.
  */
 function describeDoomedItem(item) {
   const line = `  - ${item.relativePath} (${item.canvasType})`;
   if (item.canvasType === 'discussion') {
+    const replies = replyCountPhrase(item);
     if (item.hasSubmissions === true)
-      return `${line}  <-- GRADED DISCUSSION WITH STUDENT WORK: deletes the topic and every student reply in it, plus the gradebook column and every grade`;
+      return (
+        `${line}  <-- GRADED DISCUSSION WITH STUDENT WORK: deletes the topic ` +
+        `and ${replies ? `its ${replies}` : 'every student reply in it'}, plus ` +
+        'the gradebook column and every grade'
+      );
     if (item.hasSubmissions === null)
-      return `${line}  <-- SUBMISSION STATUS UNKNOWN: could not be checked, assume it is graded and that replies and grades will be lost`;
+      return (
+        `${line}  <-- SUBMISSION STATUS UNKNOWN: could not be checked, assume ` +
+        `it is graded and that ${replies ? `its ${replies} and the grades` : 'replies and grades'} ` +
+        'will be lost'
+      );
+    if (replies)
+      return (
+        `${line}  <-- ${replies.toUpperCase()} FROM STUDENTS: no grades at ` +
+        'stake, and deleting the topic still deletes every one of them'
+      );
     return line;
   }
   if (item.canvasType !== 'assignment') return line;

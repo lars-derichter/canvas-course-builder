@@ -984,6 +984,64 @@ describe('annotateSubmissions: discussions', () => {
     );
   });
 
+  it('keeps the reply count off the topic it already fetched', async () => {
+    const items = [discussion(90)];
+
+    await annotateSubmissions(
+      42,
+      items,
+      async () => states,
+      topics({
+        90: { id: 90, assignment_id: null, discussion_subentry_count: 14 },
+      }),
+    );
+
+    assert.equal(
+      items[0].replyCount,
+      14,
+      'an ungraded topic loses no grades but still loses every reply',
+    );
+  });
+
+  it('keeps the reply count for a graded topic too', async () => {
+    const items = [discussion(88)];
+
+    await annotateSubmissions(
+      42,
+      items,
+      async () => states,
+      topics({
+        88: { id: 88, assignment_id: 500, discussion_subentry_count: 3 },
+      }),
+    );
+
+    assert.equal(items[0].hasSubmissions, true);
+    assert.equal(items[0].replyCount, 3);
+  });
+
+  it('leaves the reply count unset when Canvas omits it', async () => {
+    const items = [discussion(90)];
+
+    await annotateSubmissions(
+      42,
+      items,
+      async () => states,
+      topics({ 90: { id: 90, assignment_id: null } }),
+    );
+
+    assert.equal(items[0].replyCount, undefined);
+  });
+
+  it('leaves the reply count unset when the topic could not be read', async () => {
+    mock.method(console, 'warn', () => {});
+    const items = [discussion(91)];
+
+    await annotateSubmissions(42, items, async () => states, topics({}));
+
+    assert.equal(items[0].hasSubmissions, null);
+    assert.equal(items[0].replyCount, undefined);
+  });
+
   it('fetches no topic that is not slated for deletion', async () => {
     const items = [
       {
@@ -1071,7 +1129,32 @@ describe('describeDoomedItem', () => {
     assert.match(line, /01-mod\/06-forum\.md/);
   });
 
-  it('leaves a discussion without student work unmarked', () => {
+  it('counts the replies when Canvas gave a count', () => {
+    const line = describeDoomedItem({
+      relativePath: '01-mod/06-forum.md',
+      canvasType: 'discussion',
+      hasSubmissions: true,
+      replyCount: 14,
+    });
+
+    assert.match(line, /deletes the topic and its 14 replies/);
+    assert.match(line, /the gradebook column and every grade/);
+  });
+
+  it('leaves an empty discussion unmarked', () => {
+    assert.equal(
+      describeDoomedItem({
+        relativePath: '01-mod/07-forum.md',
+        canvasType: 'discussion',
+        hasSubmissions: false,
+        replyCount: 0,
+      }),
+      '  - 01-mod/07-forum.md (discussion)',
+      'no grades and nothing written in it: there is nothing to warn about',
+    );
+  });
+
+  it('leaves an unmeasured discussion unmarked', () => {
     assert.equal(
       describeDoomedItem({
         relativePath: '01-mod/07-forum.md',
@@ -1080,6 +1163,34 @@ describe('describeDoomedItem', () => {
       }),
       '  - 01-mod/07-forum.md (discussion)',
     );
+  });
+
+  it('names the replies an ungraded discussion still takes with it', () => {
+    const line = describeDoomedItem({
+      relativePath: '01-mod/07-forum.md',
+      canvasType: 'discussion',
+      hasSubmissions: false,
+      replyCount: 14,
+    });
+
+    assert.match(line, /14 REPLIES FROM STUDENTS/);
+    assert.match(
+      line,
+      /no grades at stake/,
+      'the reader must not read this as a grade warning',
+    );
+    assert.match(line, /deleting the topic still deletes every one of them/);
+  });
+
+  it('agrees with a single reply', () => {
+    const line = describeDoomedItem({
+      relativePath: '01-mod/07-forum.md',
+      canvasType: 'discussion',
+      hasSubmissions: false,
+      replyCount: 1,
+    });
+
+    assert.match(line, /1 REPLY FROM STUDENTS/);
   });
 
   it('says so when a discussion could not be checked', () => {
@@ -1091,6 +1202,19 @@ describe('describeDoomedItem', () => {
 
     assert.match(line, /SUBMISSION STATUS UNKNOWN/);
     assert.match(line, /assume it is graded/);
+    assert.match(line, /replies and grades will be lost/);
+  });
+
+  it('still counts the replies when only the grade check failed', () => {
+    const line = describeDoomedItem({
+      relativePath: '01-mod/08-forum.md',
+      canvasType: 'discussion',
+      hasSubmissions: null,
+      replyCount: 14,
+    });
+
+    assert.match(line, /SUBMISSION STATUS UNKNOWN/);
+    assert.match(line, /its 14 replies and the grades will be lost/);
   });
 });
 
