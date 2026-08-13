@@ -60,7 +60,7 @@ program
   .command('push')
   .description('Push local course content to Canvas')
   .option('-m, --module <name>', 'Only push a specific module folder name')
-  .option('--dry-run', 'Show what would happen without making API calls')
+  .option('--dry-run', 'Show what would happen without writing to Canvas')
   .option(
     '--prune',
     'Delete Canvas modules and items that no longer exist locally',
