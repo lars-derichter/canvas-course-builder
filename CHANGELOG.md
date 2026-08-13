@@ -2,6 +2,41 @@
 
 ## Unreleased
 
+- **Discussions, quizzes and external tools sync.** Every type of item a Canvas
+  module can hold now crosses in both directions, but not all of them the same
+  way. A discussion is content like a page: the markdown body is the message,
+  push writes it, pull reads it back, and a rollover into a fresh course
+  recreates it from the repository. A quiz and an LTI link are references — the
+  file says which Canvas object belongs at that position and holds nothing else,
+  because a quiz's questions and submissions are not things this project could
+  rebuild. Push never creates, updates or deletes either one. Which quiz an item
+  means is resolved from `canvas_id` while the course still lists it and by
+  title otherwise, writing the id it found back to the file, so the manual QTI
+  import that a new academic year needs has to happen once and push picks it up
+  from there. Two quizzes sharing a title is ambiguous and skipped rather than
+  guessed.
+- **`push` refuses to rebuild a module holding items it did not put there.** It
+  compares what Canvas holds in a module against what `course/` accounts for,
+  and when anything is unaccounted for it names those items with their Canvas
+  links, leaves the module exactly as it is, carries on with the other modules
+  and ends with a non-zero exit status. `--drop-canvas-only` restores the old
+  rebuild for a module you have finished with. The claim in the README that a
+  push silently drops hand-added items was accurate, and this is the fix for it
+  rather than a note about it.
+- **An external tool is checked before it is created.** Canvas resolves an LTI
+  module item by its launch URL, and when no installed tool claims that URL it
+  substitutes a placeholder with id 0, returns 200 and hands back an item that
+  looks ordinary and fails only when a student clicks it. Push now probes the
+  URL first, and on no match warns, names the tools that are installed, and
+  creates the item anyway, because a broken item with an explanation beats
+  content that disappears. A course-level LTI 1.1 install still cannot be
+  rebuilt from the repository — Canvas never returns a tool's `shared_secret` —
+  and the rollover guide now says so and points at the account-level install
+  that does survive.
+- **Quiz and external-tool items render as themselves.** Both have empty bodies
+  and used to come out blank. The preview site and the PDF and DOCX exports now
+  give each one a type card and a line saying the item is managed in Canvas, in
+  whichever language `course.config.yml` sets.
 - **Deleting an assignment no longer deletes a quiz.** A graded Classic Quiz is
   two objects in Canvas — the quiz that holds the questions, and an assignment
   that holds its gradebook column — and the second one is returned by the
@@ -68,13 +103,12 @@
   preserve extra frontmatter (now it does, see below), `reset-sync-state` does
   prompt, and `lock_at`/`unlock_at` never reached Canvas (now they do).
 - **A plain `push` rebuilds the item list of every module it manages, and that
-  is now written down.** The pages and assignments survive, but a quiz, a
-  discussion or an external tool that you placed in one of those modules by hand
-  in Canvas drops out of it on the next push, and nothing said so anywhere. Also
-  new: `push` warns and asks before its first push to a Canvas course that
-  already holds content, `reset-canvas` lists what the course contains before
-  asking rather than prompting blind and gained a `--dry-run`, and the `--prune`
-  prompt points at the backup guide.
+  is now written down.** The pages and assignments survive, but the module item
+  ids change on every push, so a direct link to one goes stale. Also new: `push`
+  warns and asks before its first push to a Canvas course that already holds
+  content, `reset-canvas` lists what the course contains before asking rather
+  than prompting blind and gained a `--dry-run`, and the `--prune` prompt points
+  at the backup guide.
 - **Assignment `lock_at` and `unlock_at` are pushed.** Both were documented in
   three places and written back by `pull`, but neither string appeared in the
   push path, so the dates round-tripped locally and never reached Canvas.
