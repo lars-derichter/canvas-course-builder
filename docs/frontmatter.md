@@ -3,12 +3,19 @@
 Every markdown file in `course/` uses YAML frontmatter to define its Canvas type
 and metadata.
 
+Four types hold their content here: a page, an assignment and a discussion are
+written in the markdown body, and a file item wraps a binary. Three do not: a
+quiz and an external tool are references to something that lives in Canvas, and
+an external URL is a link. `npx course new-item` creates pages, assignments,
+external URLs, subsections and file items; for a discussion, a quiz or an
+external tool, write the file yourself with the frontmatter below.
+
 ## Common Fields
 
 | Field         | Type          | Description                                                                                                                               |
 | ------------- | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
 | `title`       | string        | Display title on Canvas. Auto-generated from filename if omitted.                                                                         |
-| `canvas_type` | string        | One of `page`, `assignment`, `external_url`, `file`. Defaults to `page`.                                                                  |
+| `canvas_type` | string        | One of `page`, `assignment`, `discussion`, `quiz`, `external_url`, `external_tool`, `file`. Defaults to `page`.                           |
 | `canvas_id`   | string/number | Canvas resource ID. Written automatically after first push — do not set manually.                                                         |
 | `export`      | boolean       | Set `true` to include this item in `npx course export --flagged`. See [Exporting to PDF or DOCX](user-guide.md#exporting-to-pdf-or-docx). |
 
@@ -51,6 +58,80 @@ published: true
 | `unlock_at`        | string   | —       | Date when the assignment becomes available. ISO 8601.                                                                                 |
 | `published`        | boolean  | —       | Whether the assignment is visible to students.                                                                                        |
 
+## Discussion
+
+```yaml
+---
+title: Week 3 Reading Discussion
+canvas_type: discussion
+discussion_type: threaded
+require_initial_post: true
+published: true
+---
+
+Post your answer to the two questions below before Friday.
+```
+
+The markdown body is the discussion's opening message, exactly as a page's body
+is the page. Push creates and updates the topic; pull brings the message back
+into markdown. Replies stay in Canvas and never appear here.
+
+| Field                  | Type    | Default | Description                                                                                       |
+| ---------------------- | ------- | ------- | ------------------------------------------------------------------------------------------------- |
+| `discussion_type`      | string  | —       | `threaded` (replies to replies), `not_threaded`, or `side_comment`. Canvas decides when left out. |
+| `require_initial_post` | boolean | —       | Students must post before they can read other replies.                                            |
+| `delayed_post_at`      | string  | —       | When the topic becomes visible. ISO 8601.                                                         |
+| `lock_at`              | string  | —       | When the topic closes for new posts. ISO 8601.                                                    |
+| `published`            | boolean | —       | Whether the topic is visible to students.                                                         |
+
+> [!WARNING]
+>
+> A **graded** discussion keeps its grading in Canvas. Points, due date, grading
+> type and group set belong to the assignment Canvas puts behind the topic, and
+> nothing here reads or writes it: those keys have no effect in this file. Push
+> and pull both warn when the topic they touched is graded. Note also that
+> `push --prune` deletes a discussion whose local file you deleted, replies and
+> grades included, without the submission check it gives assignments.
+
+## Quiz
+
+```yaml
+---
+title: "Test 1: Loops and Conditions"
+canvas_type: quiz
+quiz_ref: evaluations/2526/test-1/test-1.zip
+canvas_id: 45678
+---
+```
+
+A quiz file is a reference. It says which quiz belongs at this position in the
+module; it holds no questions and never will. Push places the module item and
+leaves the quiz object alone: no create, no update, no delete. The quiz holds
+questions and submissions that nothing here could rebuild.
+
+| Field      | Type   | Description                                                                                                                  |
+| ---------- | ------ | ---------------------------------------------------------------------------------------------------------------------------- |
+| `quiz_ref` | string | Path to the QTI `.zip` the quiz was built from, **resolved from the repository root** (the package lives outside `course/`). |
+
+Two things about this file are load-bearing:
+
+- **The title is the matching key.** When the `canvas_id` is missing or names a
+  quiz the course no longer holds, push looks for a course quiz with exactly
+  this title and writes the id it found back into the file. Rename the quiz in
+  Canvas and the match breaks. Two quizzes sharing the title is ambiguous: push
+  warns, names both ids, and skips the item rather than guess.
+- **`quiz_ref` is the rollover insurance, not a push requirement.** An item
+  whose `canvas_id` still resolves in this course is placed whatever `quiz_ref`
+  says. The path matters when the quiz is not in the course yet: it names the
+  package to import by hand, and push prints the import procedure with that
+  filename in it. `npx course validate` warns about a quiz with no `quiz_ref` (a
+  quiz pulled from Canvas has none, which is valid but not rebuildable) and
+  errors on a `quiz_ref` pointing at a file that is not there.
+
+The [`/quiz-build`](ai-assistants.md) skill produces the `.zip` under
+`evaluations/`. Canvas has no API for a QTI import, so that step stays manual:
+**Settings > Import Course Content > QTI .zip file**.
+
 ## External URL
 
 ```yaml
@@ -58,15 +139,51 @@ published: true
 title: Canvas Documentation
 canvas_type: external_url
 external_url: https://canvas.instructure.com/doc/api/
+new_tab: true
 ---
 ```
 
-| Field          | Type   | Description                                                     |
-| -------------- | ------ | --------------------------------------------------------------- |
-| `external_url` | string | **Required.** The URL to link to. Must be a valid absolute URL. |
+| Field          | Type    | Default | Description                                                                         |
+| -------------- | ------- | ------- | ----------------------------------------------------------------------------------- |
+| `external_url` | string  | —       | **Required.** The URL to link to. Must be a valid absolute URL.                     |
+| `new_tab`      | boolean | `true`  | Open the link in a new browser tab. Set `false` to open it inside the Canvas frame. |
 
 External URL items appear in the Canvas module as clickable links. They have no
 markdown body.
+
+## External Tool (LTI)
+
+```yaml
+---
+title: Coding Exercises
+canvas_type: external_tool
+external_url: https://tool.example.com/lti/launch?course=pf
+new_tab: false
+---
+```
+
+An LTI item launches a tool installed in Canvas: a coding platform, a video
+service, a plagiarism checker. Like an external URL it is nothing but a module
+item, with no markdown body.
+
+| Field          | Type    | Default        | Description                                                                                                                             |
+| -------------- | ------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `external_url` | string  | —              | **Required.** The tool's launch URL. This, not a tool id, is what Canvas resolves the tool from.                                        |
+| `new_tab`      | boolean | Canvas decides | Launch in a new browser tab. Left out, the field is not sent and Canvas's own default applies (the tool opens inside the Canvas frame). |
+
+Before it creates the item, push asks Canvas whether any installed tool claims
+that launch URL, because the failure is otherwise invisible: Canvas accepts the
+item, returns no error, and the student gets "Couldn't find valid settings for
+this link" on the first click. When nothing matches, push warns, names the tools
+that _are_ installed, and creates the item anyway.
+
+> [!IMPORTANT]
+>
+> A **course-level** LTI 1.1 install cannot be recreated from this repository:
+> Canvas never returns a tool's `shared_secret` from the API. An
+> **account-level** install is inherited by every course you will be given, so
+> the launch URL keeps working after a rollover. See
+> [Limitations](limitations.md#an-lti-install-cannot-be-rebuilt-from-this-repository).
 
 ## File Item
 
@@ -97,13 +214,45 @@ no frontmatter, so they cannot use the `export` flag; to include one in an
 export, list it by path or add it to a TOC file — see
 [Exporting to PDF or DOCX](user-guide.md#exporting-to-pdf-or-docx).
 
+## Adopting an Item You Made by Hand in Canvas
+
+Push rebuilds the item list of every module it manages, so it refuses to push a
+module that holds items no local file accounts for, names them, and leaves that
+module untouched. One way out of the refusal is to adopt the items: give each
+one a markdown file in the module's folder, carrying the `canvas_type` that
+matches what Canvas calls it and the `canvas_id` that names it. From the next
+push on, they are items like any other, placed where the file's number says.
+
+| What Canvas shows | `canvas_type`   | `canvas_id` holds                                                    |
+| ----------------- | --------------- | -------------------------------------------------------------------- |
+| Page              | `page`          | the numeric page id, or the page's URL slug                          |
+| Assignment        | `assignment`    | the assignment id                                                    |
+| Discussion        | `discussion`    | the topic id                                                         |
+| Quiz              | `quiz`          | the quiz id (or leave it out and let the title match)                |
+| File              | `file`          | not needed: add the binary and a `file_ref` wrapper                  |
+| External URL      | `external_url`  | not needed: the `external_url` value is what push matches on         |
+| External tool     | `external_tool` | not needed: the launch URL in `external_url` is what push matches on |
+
+The ids are in the Canvas URL of the item: `/courses/123/assignments/456` gives
+`456`, `/courses/123/discussion_topics/789` gives `789`. For a page, the slug at
+the end of `/courses/123/pages/getting-started` works as well as the numeric id.
+
+Adopting a page, an assignment or a discussion means the local file becomes the
+source of truth for its body: the next push overwrites what Canvas holds with
+what the file says. Either copy the Canvas text into the file first, or run
+`npx course pull` and let it write the file for you. For a quiz or an external
+tool nothing is overwritten, because the file is only a reference.
+
 ## Notes
 
 - `canvas_id` is managed by the CLI. Editing it manually may cause sync issues.
+  The one time to write it yourself is when adopting an item that already exists
+  in Canvas, as above.
 - Fields not recognised by Canvas are silently ignored during push. Only the
   fields listed above reach Canvas — see
-  [Limitations](limitations.md#assignment-fields-that-reach-canvas) for what
-  that leaves out.
+  [Limitations](limitations.md#which-fields-reach-canvas) for what that leaves
+  out.
 - Pull takes the fields above from Canvas, including clearing one that Canvas no
   longer has, and carries over every other key you added — `export`, `lesson`,
-  anything of your own.
+  anything of your own. `quiz_ref` is one of those: Canvas has never heard of
+  the QTI package, so a pull leaves the path exactly as you wrote it.

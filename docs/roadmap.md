@@ -62,15 +62,22 @@ patterns.
 
 An `npx course relink` command would adopt Canvas objects that already exist:
 match them against local files, record their ids in `.canvas-sync.json` and in
-frontmatter, and rewrite no file bodies at all. The rollover described in
-[New academic year](new-academic-year.md) wipes the new Canvas course and
-rebuilds it from local markdown, which structurally cannot carry quizzes,
-discussions or LTI links, because none of them sync. Canvas's own Course Copy
-carries all three, and it is the only way to carry a course-level LTI 1.1
-installation across at all, because the Canvas API never returns
-`shared_secret`. But Course Copy followed by `push` duplicates everything, and
-followed by `pull` overwrites the local markdown. `relink` is the missing third
-option that would make Course Copy a first-class rollover path.
+frontmatter, and rewrite no file bodies at all. Push does a narrow version of
+this already, for one type: a quiz item resolves by title when its id is stale,
+and the id it finds is written back. Nothing does it for a page, an assignment
+or a discussion, and adopting one of those is a hand-edit of `canvas_id` per
+file (see
+[Frontmatter](frontmatter.md#adopting-an-item-you-made-by-hand-in-canvas)).
+
+The rollover in [New academic year](new-academic-year.md) wipes the new Canvas
+course and rebuilds it from local markdown, which carries pages, assignments,
+discussions and files but not a quiz's questions and not an LTI installation.
+Canvas's own Course Copy carries both, and it is the only way to carry a
+course-level LTI 1.1 installation across at all, because the Canvas API never
+returns `shared_secret`. But Course Copy followed by `push` duplicates
+everything, and followed by `pull` overwrites the local markdown. `relink` is
+the missing third option that would make Course Copy a first-class rollover
+path.
 
 ### Item Matching in `status --remote`
 
@@ -91,11 +98,12 @@ A report that cries wolf on every page is a report nobody reads.
 
 `VALID_TYPES` in `cli/new-item.js` lists the five things the command can
 scaffold: `page`, `assignment`, `url`, `subsection` and `file`. That list is the
-single place deciding what `new-item` creates, so any content type the tool
-learns to handle would want an entry there. One inconsistency belongs in the
-same change: `new-item -t file` copies a raw binary into the module folder
-rather than generating the markdown wrapper with `file_ref` that pull writes, so
-the wrapper form is currently pull-only or hand-written.
+single place deciding what `new-item` creates, and it is three types behind what
+push and pull handle: a `discussion`, a `quiz` reference and an `external_tool`
+have to be written by hand today. One inconsistency belongs in the same change:
+`new-item -t file` copies a raw binary into the module folder rather than
+generating the markdown wrapper with `file_ref` that pull writes, so the wrapper
+form is currently pull-only or hand-written.
 
 ### Automated QTI Import
 

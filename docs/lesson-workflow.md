@@ -160,8 +160,9 @@ skills form a pipeline — `/evaluation-design` produces the approved blueprint,
 - `/rubric-build` — a grading rubric for an assignment, every criterion traced
   to the assignment text or a learning goal.
 - `/quiz-build` — a QTI package Canvas imports as a quiz, from a question list
-  or straight from your lessons. Canvas quizzes are import-only; see
-  [Limitations](limitations.md#quizzes-are-outside-the-sync-loop).
+  or straight from your lessons. The questions are import-only, by hand: what
+  syncs is a reference file holding the quiz's place in a module. See
+  [Limitations](limitations.md#quiz-questions-never-sync).
 - `/coverage-map` — the whole-course picture: which goals are taught, practised,
   and assessed, and where the gaps are. This is the alignment check; run it
   before you write an exam, not after.

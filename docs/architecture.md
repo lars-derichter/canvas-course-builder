@@ -111,6 +111,48 @@ assignment with submissions is flagged in the listing and named in the
 confirmation question; a lookup that fails is reported as "could not determine",
 never as "no submissions".
 
+## Content Types
+
+`canvas_type` in a file's frontmatter decides which of two contracts the file is
+under. `VALID_CANVAS_TYPES` in `cli/validate.js` is the authoritative set.
+
+**Authored content**: `page`, `assignment`, `discussion`, `file`. The local file
+is the source of truth. Push creates or updates the Canvas object and overwrites
+what it held; prune deletes the object. The three markdown types share one code
+path (`pushContentItem`) parameterised by a strategy object (`pageStrategy`,
+`assignmentStrategy`, `discussionStrategy` in `cli/push.js`), which supplies the
+create and update calls, the fields to send, and how to read the id back out of
+the response.
+
+**References**: `quiz`, `external_tool`, and `external_url`. The file records
+which Canvas object belongs at this position; the object itself is out of scope.
+Push creates the module item and nothing else. Prune and `reset-canvas` remove
+the module item and never the object behind it.
+
+- `quiz` resolves through `canvas_id` first, falling back to an exact title
+  match against `listQuizzes` and writing the found id back to frontmatter. A
+  quiz that matches nothing is skipped with the QTI import procedure printed;
+  two quizzes under one title are skipped as ambiguous. `lib/canvas/quizzes.js`
+  deliberately exposes a read call only, so no code path can write to a quiz.
+- `external_tool` is identified by its launch URL, not by `content_id`. Canvas
+  resolves the tool through `Lti::ToolFinder.from_url` on every launch, and
+  substitutes a dummy tool with `id = 0` when nothing matches, saving the item
+  with a 200 and no error. `findToolForUrl` in `lib/canvas/external-tools.js`
+  runs the same finder ahead of time through the sessionless-launch endpoint,
+  and reports `resolves`, `no-match`, or `unknown`. A failed probe is never read
+  as a match or as a miss.
+- `external_url` is a plain link, matched on the URL for the same reason: a
+  module item's id is reissued on every push.
+
+Pull writes both kinds. For authored content it converts the Canvas HTML body;
+for a reference it writes frontmatter only, with no API fetch at all.
+`CANVAS_OWNED_KEYS` in `lib/convert/html-to-markdown.js` lists, per type, the
+keys Canvas is authoritative for: those are taken from the Canvas item every
+time, including when Canvas has no value (so a cleared due date clears locally),
+while every other key in the local file is preserved verbatim. `quiz_ref` is the
+clearest case: Canvas has never heard of the QTI package, so the key belongs to
+the author and has to survive every pull.
+
 ## Push Algorithm
 
 ```
@@ -124,13 +166,23 @@ never as "no submissions".
    c. Clear existing module items (prevents duplicates on re-push;
       module items are links — deleting them keeps the content)
    d. Upload embedded files from _files/ directories
-   e. For each item:
-      - Convert markdown to HTML (markdown-to-html.js)
-      - Resolve internal .md links to Canvas URLs
-      - Resolve file references to Canvas file URLs
-      - Create or update the Canvas page/assignment
-      - Write canvas_id back to frontmatter
-      - Track items with unresolved links
+   e. For each item, by canvas_type:
+      - page / assignment / discussion (authored content):
+        · Convert markdown to HTML (markdown-to-html.js)
+        · Resolve internal .md links to Canvas URLs
+        · Resolve file references to Canvas file URLs
+        · Create or update the Canvas object, then add the module item
+        · Write canvas_id back to frontmatter
+        · Track items with unresolved links
+      - file: upload the binary, then add the module item
+      - external_url: add the module item (the link is the whole item)
+      - external_tool: probe sessionless_launch for the launch URL,
+        warn when no installed tool claims it, add the item either way
+      - quiz (reference only, never created or updated):
+        · Resolve the quiz from canvas_id, else by exact title match
+        · Write the id found back to frontmatter
+        · Skip with the QTI import procedure when nothing matches,
+          or with an ambiguity warning when two quizzes share the title
    f. Save sync state after each module
 5. Second pass: re-push items with unresolved links
    (now resolvable because referenced pages exist)
@@ -185,7 +237,8 @@ the remaining modules and ends with a non-zero exit status.
       - Walk Canvas items to assign local positions
         (separate counters for module-level and subfolder items)
       - Determine target filenames/folders for each item
-        (all types: pages, assignments, external URLs, files)
+        (every module item type: pages, assignments, discussions,
+         quizzes, external URLs, external tools, files)
       - File items preserve their original extension
    d. Phase 2 — Reconcile existing files:
       - Clean up leftover temp files from previous failed runs
@@ -199,10 +252,12 @@ the remaining modules and ends with a non-zero exit status.
    e. Phase 3 — Write content:
       - Skip existing files that may hold local work
         (mtime > last_sync, or no last_sync to compare against)
-      - Pages/assignments: fetch HTML, convert to markdown,
-        resolve Canvas URLs back to relative paths,
-        download embedded files to _files/
-      - External URLs: write frontmatter-only markdown
+      - Pages/assignments/discussions: fetch HTML (body, description,
+        message), convert to markdown, resolve Canvas URLs back to
+        relative paths, download embedded files to _files/
+      - External URLs, external tools, quizzes: write frontmatter-only
+        markdown, with no API fetch at all (nothing to fetch: a link
+        carries its own URL, a quiz's questions are not ours to hold)
       - File items: download binary file from Canvas
       - SubHeaders: create subfolder with _category_.json
    f. Save sync state after each module

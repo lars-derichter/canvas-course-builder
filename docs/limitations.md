@@ -1,57 +1,106 @@
 # What Canvas Course Builder Does Not Do
 
-Canvas Course Builder is opinionated. It syncs four kinds of content, expects
-one folder layout, and treats your markdown as the source of truth. That is what
-makes it small enough to trust — but it means the tool is a poor fit for some
-courses, and you should find that out now rather than in week six.
+Canvas Course Builder is opinionated. It expects one folder layout, treats your
+markdown as the source of truth, and holds the full content of only some of the
+things a Canvas module can hold. That is what makes it small enough to trust,
+but it also makes it a poor fit for some courses, and you should find that out
+now rather than in week six.
 
 Read this before you commit a semester to it. Everything below is a description
 of how the tool works today, not a list of bugs.
 
-## Only Four Canvas Types Sync
+## Which Canvas Types Sync, and How Much of Them
 
-| Canvas type               | Push | Pull |
-| ------------------------- | ---- | ---- |
-| Page                      | yes  | yes  |
-| Assignment                | yes  | yes  |
-| External URL              | yes  | yes  |
-| File                      | yes  | yes  |
-| Text header (`SubHeader`) | yes  | yes  |
-| Quiz                      | no   | no   |
-| Discussion                | no   | no   |
-| External tool (LTI)       | no   | no   |
-| Anything else             | no   | no   |
+Every type of item a Canvas module can hold now crosses in both directions. What
+differs is how much of it crosses.
+
+| Canvas type               | Push | Pull | What crosses                                    |
+| ------------------------- | ---- | ---- | ----------------------------------------------- |
+| Page                      | yes  | yes  | the whole thing: title and body                 |
+| Assignment                | yes  | yes  | title, body, and the fields listed below        |
+| Discussion                | yes  | yes  | title, message body, and its posting settings   |
+| File                      | yes  | yes  | the binary itself                               |
+| External URL              | yes  | yes  | the link and its place in the module            |
+| Quiz                      | yes  | yes  | a reference: which quiz sits where in a module  |
+| External tool (LTI)       | yes  | yes  | a reference: the launch URL and its place       |
+| Text header (`SubHeader`) | yes  | yes  | the heading, generated from your subfolder name |
+
+Two of those rows are the ones to read twice. **A quiz and an LTI link are
+references, not content.** The markdown file says which Canvas object goes where
+in a module; it does not hold the object. Push never creates, updates or deletes
+a quiz or an LTI tool, and pull writes a frontmatter-only file for either. A
+page, an assignment and a discussion are the opposite: the markdown file _is_
+the content, and pushing it rewrites what Canvas holds.
 
 Push skips an unknown `canvas_type` with a warning; `npx course validate`
-rejects one before you get that far. Pull skips unsupported item types with a
-warning, so pulling a Canvas-authored course silently leaves its quizzes,
-discussions and LTI links out of your local copy.
+rejects one before you get that far.
 
 Announcements, rubrics, outcomes, groups, the syllabus page and course settings
-are outside the tool entirely.
+are outside the tool entirely: none of them is a module item, and modules are
+what this tool reads and writes.
 
-## Quizzes Are Outside the Sync Loop
+## Quiz Questions Never Sync
 
-Nothing here writes to a quiz — no create, no update, no delete. The project
-reads the course's quiz list to find the one a module item points at, and
-`.canvas-sync.json` tracks that link, but the questions never cross in either
-direction. The [`/quiz-build`](ai-assistants.md) skill generates a QTI 1.2
-`.zip` that you import through the Canvas web interface by hand. That is the
-whole of the quiz support.
+The quiz's place in a module syncs. Its questions do not, in either direction.
 
-What that means in practice:
+Nothing here writes to a quiz: no create, no update, no delete. Push reads the
+course's quiz list to find the one a module item points at, places the item, and
+stops. The [`/quiz-build`](ai-assistants.md) skill generates a QTI 1.2 `.zip`
+that you import through the Canvas web interface by hand, and Canvas has no API
+for that import, which is why it stays a manual step.
 
-- **Import is manual and one-way.** Nothing pulls a quiz back into markdown.
+How push decides which quiz an item means:
+
+1. The `canvas_id` in the frontmatter, if that quiz is still in the course.
+2. Otherwise a quiz in the course whose **title** matches the item's title. Push
+   writes the id it found back to the frontmatter, so it only has to look once.
+3. Otherwise the item is skipped, and push prints the QTI import procedure,
+   naming the `.zip` in `quiz_ref`.
+
+Two quizzes sharing a title is ambiguous: push warns, names both ids, and skips
+the item rather than guess which one your students should get.
+
+What that leaves you with:
+
+- **Import is manual and one-way.** Nothing pulls a quiz back into markdown. A
+  quiz pulled from Canvas becomes a reference file with no `quiz_ref`, and
+  `validate` warns about exactly that, because a quiz with no local package is
+  the one a rollover cannot rebuild.
 - **Re-importing duplicates.** A second import creates a second quiz; delete the
-  old one yourself.
+  old one yourself, or push cannot tell them apart by title.
 - **Six question types.** Multiple choice, multiple answers, true/false, short
   answer, numerical, and essay. Matching, ordering and hotspot questions have to
   be rephrased or downgraded.
 - **QTI carries no dates or time limit.** Set availability and the time limit in
   Canvas after importing.
 
-If your course leans heavily on Canvas quizzes, this tool will not carry that
-weight.
+If your course leans heavily on Canvas quizzes, this tool carries their place in
+the course and nothing else.
+
+## An LTI Install Cannot Be Rebuilt From This Repository
+
+An `external_tool` item is a launch URL in a module. Canvas resolves which
+installed tool answers that URL every time a student clicks it, which is why the
+item survives a rollover while a stored tool id would not: the URL still means
+something in next year's course.
+
+What does not survive is the installation itself. Canvas never returns an
+external tool's `shared_secret` from the API, so a **course-level** LTI 1.1
+install cannot be recreated from anything in this repository. Two ways round it:
+
+- **Ask your Canvas admin to install the tool at account level.** A course
+  resolves a tool by searching itself and then its account chain, so an
+  account-level install is present in every course you will ever be given. This
+  is the durable fix.
+- **Seed the new course with Canvas's own Course Copy**, which carries the tool
+  installation across. It is the only path that carries a course-level secret.
+
+Canvas fails silently when a launch URL matches nothing: it accepts the item,
+returns a 200, shows a normal-looking module item, and produces "Couldn't find
+valid settings for this link" the first time a student clicks it. So push asks
+Canvas first whether any installed tool claims the URL. When none does, push
+warns, names the tools that _are_ installed, and creates the item anyway. A
+visible broken item you can fix beats content dropped on the floor.
 
 ## A Plain Push Rebuilds the Module's Item List
 
@@ -104,9 +153,9 @@ Two smaller cases where a plain push deletes something real:
 
 - Renaming a binary in `_files/` uploads the new one and deletes the old Canvas
   file.
-- `push --prune` deletes the Canvas modules, pages, assignments and files whose
-  local counterparts you removed. It lists them and asks first, and flags the
-  ones that hold student work — see
+- `push --prune` deletes the Canvas modules, pages, assignments, discussions and
+  files whose local counterparts you removed. It lists them and asks first, and
+  flags the assignments that hold student work; see
   [Destructive operations and student work](#destructive-operations-and-student-work).
 
 ## Destructive Operations and Student Work
@@ -119,6 +168,13 @@ of object they delete, and only one of those kinds takes student work with it.
   leaves the page, assignment or file it pointed at exactly where it was, with
   its gradebook column and its submissions untouched. That is all an ordinary
   push does to the modules it manages.
+- **A quiz and an LTI link are only ever unlinked.** `push --prune` and
+  `reset-canvas` remove the module item for either one and stop there: the quiz,
+  its questions and every submission on it stay in Canvas, and so does the tool
+  installation that other courses launch. Neither is this project's to delete.
+- **A discussion is deleted like a page.** It is authored content here, so
+  `push --prune` deletes the topic itself when you delete its local file, and
+  the replies go with it. `reset-canvas` leaves discussions alone.
 - **Deleting an assignment is not.** `push --prune` calls `DELETE` on the
   assignment object itself, and Canvas takes its gradebook column and every
   submission on it. Canvas's `/undelete` sometimes brings the assignment back;
@@ -202,7 +258,11 @@ Two limits on all of that. A check that fails is reported as unknown, never as
 safe — `SUBMISSION STATUS UNKNOWN`, or "could not determine whether 1 assignment
 being deleted has student submissions" — and silence from a failed check is not
 a clean bill of health, so treat an unknown as a yes. And the checks cover
-assignments only, because nothing else the tool deletes carries a grade.
+`canvas_type: assignment` items only. A **graded discussion** is the gap: Canvas
+puts an assignment behind it, so it does carry grades, but prune deletes the
+topic without checking for submissions and without flagging it in the listing.
+Delete a discussion file that students have been graded on and the warnings stay
+silent. Take a course export first.
 
 All of the above is about Canvas. The tool can also destroy local work: `pull`
 overwrites whole files, and `pull --force` overwrites them even when it cannot
@@ -265,7 +325,7 @@ The workflow the tool is built for is one-directional: write locally, push to
 Canvas. Pull is for importing an existing course once, or for recovering edits a
 colleague made in the web editor — not for a routine round trip.
 
-## Assignment Fields That Reach Canvas
+## Which Fields Reach Canvas
 
 Push sends `points_possible`, `submission_types`, `due_at`, `unlock_at`,
 `lock_at` and `published`. Everything else in an assignment's frontmatter is
@@ -276,6 +336,14 @@ Canvas.
 Pages take only their title and body. A `published:` key on a page is ignored:
 push never sends it, so Canvas decides, and you publish pages in Canvas or by
 publishing the module.
+
+Discussions take their title, their message body, `discussion_type`,
+`require_initial_post`, `delayed_post_at`, `lock_at` and `published`. **A graded
+discussion keeps its grading in Canvas only.** Points, due date, grading type
+and group set belong to the assignment Canvas puts behind the topic, which this
+tool never touches: they appear nowhere in the markdown, and changing them
+locally changes nothing. Push and pull both say so when they meet a graded
+topic. Set them in Canvas.
 
 See [Frontmatter reference](frontmatter.md) for the fields each type accepts.
 
@@ -288,9 +356,9 @@ owns which module the way you would sort out who owns which file.
 
 ## What to Do Instead
 
-- **Quiz-heavy course?** Build quizzes in Canvas and keep the rest here. Push
-  does not touch the Canvas quiz objects, only the module links to them, so keep
-  the quizzes in a module this tool does not manage.
+- **Quiz-heavy course?** Build the quizzes in Canvas, by hand or from a QTI
+  package, and keep a one-file reference here for each so they hold their place
+  in the module. Everything about the questions stays a Canvas job, every year.
 - **Course that lives in Canvas already, edited by several people in the web
   editor?** This tool will fight you. It wants to be the source of truth.
 - **Just want version control for your handouts?** Use the repository and the

@@ -69,9 +69,11 @@ course/
       report.pdf
     01-page-name.md          # Canvas Page
     02-assignment-name.md    # Canvas Assignment
-    03-link-name.md          # Canvas ExternalUrl
-    04-report.md            # Canvas File (wrapper, points to _files/)
-    05-subfolder-name/       # Canvas Text Header
+    03-discussion-name.md    # Canvas Discussion
+    04-link-name.md          # Canvas ExternalUrl
+    05-test-1.md             # Canvas Quiz (reference to a quiz in Canvas)
+    06-report.md             # Canvas File (wrapper, points to _files/)
+    07-subfolder-name/       # Canvas Text Header
       01-nested-page.md      # Indented module item
 ```
 
@@ -81,7 +83,14 @@ course/
 - Canvas item type is set via `canvas_type` in frontmatter (default: `page`)
 - Assignment frontmatter supports: `points_possible`, `submission_types`,
   `due_at`
-- External URL frontmatter requires: `external_url`
+- Discussion frontmatter supports: `discussion_type`, `require_initial_post`,
+  `delayed_post_at`, `lock_at`, `published`. The markdown body is the opening
+  message
+- External URL frontmatter requires: `external_url`; an LTI item
+  (`canvas_type: external_tool`) uses the same field for the tool's launch URL
+- Quiz frontmatter is a reference, not content: the file names a quiz that
+  already exists in Canvas, and `quiz_ref` points at the QTI zip it was imported
+  from (path from the repository root). The questions never sync
 - File item frontmatter requires: `file_ref` pointing to the binary in `_files/`
   (e.g. `file_ref: _files/report.pdf`). The binary is uploaded to Canvas as a
   module item. In Docusaurus, a styled file card with a download link is shown

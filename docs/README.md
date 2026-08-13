@@ -20,7 +20,8 @@ computer to a published Canvas module.
 ## Writing Your Course
 
 - [Markdown guide](markdown.md): supported syntax, links, and alerts
-- [Frontmatter reference](frontmatter.md): page, assignment, and file metadata
+- [Frontmatter reference](frontmatter.md): the metadata for every Canvas type,
+  from pages and assignments to discussions, quizzes and LTI links
 - [Lesson workflow](lesson-workflow.md): from lesson plan to student module with
   the bundled skills
 - [The sources folder](sources.md): where lesson plans, notes, and issues live

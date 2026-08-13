@@ -23,10 +23,12 @@ icon on the left). It shows a tree view of all modules and items in the
 - **Modules** — shown as folders, labelled from `_category_.json` or derived
   from the folder name. The numeric prefix is shown as a description.
 - **Subheaders** — subfolders within a module, shown as collapsible groups.
-- **Items** — course pages, assignments, external URLs, and files. Each type has
-  a distinct icon. Labels come from the frontmatter `title` (the same name
-  Canvas and Docusaurus show); the filename is shown in the tooltip. Clicking an
-  item opens the file in the editor.
+- **Items** — course pages, assignments, discussions, quizzes, external URLs,
+  LTI links, and files. Pages, assignments, external URLs and files each have a
+  distinct icon; the newer types fall back to the page icon for now. Labels come
+  from the frontmatter `title` (the same name Canvas and Docusaurus show); the
+  filename is shown in the tooltip. Clicking an item opens the file in the
+  editor.
 
 ### Inline Actions
 
@@ -39,8 +41,14 @@ Hover over a tree item to see inline action buttons:
 
 "Open in Canvas" requires the item to have been pushed at least once. It reads
 the `canvas_id` from the file's frontmatter and the Canvas URL from `.env`.
-Pages and assignments open their Canvas page, file items open the Canvas file
-view, and external URL items open the URL itself.
+Pages, assignments and discussions open their Canvas page, file items open the
+Canvas file view, and external URL items open the URL itself. A quiz or an LTI
+link opens the Canvas page URL for its id, which is not where either of them
+lives; open those from the module in Canvas instead.
+
+The sidebar's **New Item** creates pages, assignments, external URLs,
+subsections and file items. A discussion, a quiz or an LTI link is a file you
+write yourself: see [Frontmatter](frontmatter.md).
 
 ### Context Menu
 

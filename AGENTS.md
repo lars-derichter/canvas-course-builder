@@ -43,11 +43,14 @@ conceptual walkthroughs of push/pull/status and
 operations (`reset-sync-state`, `reset-canvas`).
 
 **Know what the tool does not do before answering a question about it.**
-[`docs/limitations.md`](docs/limitations.md) is the accurate list: the four
-Canvas types that sync, quizzes being outside the sync loop entirely, the fact
-that a plain `push` rebuilds the item list of every module it manages, the
-one-level nesting limit (sub-subfolders are dropped silently), and why push/pull
-is not a merge. Never suggest a destructive command without pointing at
+[`docs/limitations.md`](docs/limitations.md) is the accurate list: which Canvas
+types sync as content (page, assignment, discussion, file) against the two that
+sync only as a reference to a Canvas object (quiz, external tool), quiz
+questions never crossing in either direction, an LTI install that cannot be
+rebuilt from this repo because Canvas withholds `shared_secret`, the fact that a
+plain `push` rebuilds the item list of every module it manages, the one-level
+nesting limit (sub-subfolders are dropped silently), and why push/pull is not a
+merge. Never suggest a destructive command without pointing at
 [`docs/backups.md`](docs/backups.md).
 
 Before handing code back, run `npm run lint` (ESLint; defects only) and

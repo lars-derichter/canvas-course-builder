@@ -86,9 +86,13 @@ see [Backing up a Canvas course](backups.md).
 
 ### Missing Content After Pull
 
-- Only pages, assignments, external URLs, files and text headers sync. Quizzes,
-  discussions and external tools are skipped with a warning — see
-  [Limitations](limitations.md#only-four-canvas-types-sync).
+- Every module item type comes down: pages, assignments, discussions, files,
+  external URLs, quizzes, LTI links and text headers. A quiz and an LTI link
+  arrive as a frontmatter-only reference file, because neither has a body this
+  project could hold. A quiz's questions are not pulled and never will be. See
+  [Limitations](limitations.md#which-canvas-types-sync-and-how-much-of-them).
+- Announcements, rubrics, outcomes and the syllabus page are not module items,
+  so pull does not see them at all.
 - Empty pages on Canvas produce empty markdown files — this is normal.
 
 ## Sync State

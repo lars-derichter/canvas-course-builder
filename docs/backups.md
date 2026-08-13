@@ -91,12 +91,12 @@ your markdown. Only a Canvas export or a course copy protects the course.
 The routes above protect different things, and the command you are about to run
 decides which one you need.
 
-| Command        | What it can destroy                                                                                               | What protects you                     |
-| -------------- | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------- |
-| `push`         | the item list of every module it manages                                                                          | a course export or a course copy      |
-| `push --prune` | the Canvas modules, pages, assignments and files you deleted locally — and, with each assignment, its grades      | a course export **and** the gradebook |
-| `reset-canvas` | every module, page, assignment and file in the course, including content this tool never created, and every grade | a course export **and** the gradebook |
-| `pull --force` | your local markdown, overwritten with the Canvas version                                                          | git: a commit, not a Canvas backup    |
+| Command        | What it can destroy                                                                                                                            | What protects you                     |
+| -------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------- |
+| `push`         | the item list of every module it manages                                                                                                       | a course export or a course copy      |
+| `push --prune` | the Canvas modules, pages, assignments, discussions and files you deleted locally — and, with each assignment or graded discussion, its grades | a course export **and** the gradebook |
+| `reset-canvas` | every module, page, assignment and file in the course, including content this tool never created, and every grade                              | a course export **and** the gradebook |
+| `pull --force` | your local markdown, overwritten with the Canvas version                                                                                       | git: a commit, not a Canvas backup    |
 
 The assignment row is the one that bites. A course export carries assignments
 but not submissions or grades, so an export taken before a prune restores the
@@ -108,8 +108,14 @@ assignment comes back as a new column you would paste the scores into by hand.
 One assignment neither command deletes: Canvas lists the gradebook half of a
 graded Classic Quiz among the course's assignments, and deleting it deletes the
 quiz, its questions and its submissions. `reset-canvas` skips those and names
-them; `push --prune` refuses them and says why. A course export is still the
-only thing that brings a quiz back.
+them; `push --prune` refuses them and says why. Quiz and LTI items are only ever
+unlinked from their module, never deleted. A course export is still the only
+thing that brings a quiz back.
+
+The discussion half of the prune row carries no such guard. Deleting the local
+file of a **graded** discussion deletes the topic, the replies and the grades
+behind it, and the submission check that flags a doomed assignment does not run
+for discussions: the listing shows it like any other item. Export first.
 
 Deleting a whole module folder is a cheaper mistake than deleting a single
 assignment file, which is the reverse of what most people assume. See

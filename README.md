@@ -16,7 +16,7 @@ publishing target.
 - **Instant preview.** A local website ([Docusaurus](https://docusaurus.io/))
   shows your course as you write, in the same structure students will see.
 - **One-command Canvas sync.** `npx course push` creates and updates modules,
-  pages, assignments and files in
+  pages, assignments, discussions and files in
   [Canvas LMS](https://www.instructure.com/canvas). `pull` brings remote edits
   back into markdown, and `status` shows what would change.
 - **PDF and DOCX export.** Hand out a styled course text or a single chapter,
@@ -34,10 +34,12 @@ publishing target.
 
 Worth knowing before you commit a semester to it:
 
-- **Only pages, assignments, external links and files sync.** Quizzes,
-  discussions and external tools do not.
-- **Quizzes are outside the sync loop.** A bundled skill generates a QTI package
-  you import into Canvas by hand, once, in one direction.
+- **Not every type syncs as content.** Pages, assignments, discussions and files
+  live in your markdown and are rebuilt from it. A quiz and an external tool
+  (LTI) sync as references: the file says which Canvas object goes where in a
+  module, and push never creates or changes the object itself.
+- **Quiz questions never sync.** A bundled skill generates a QTI package you
+  import into Canvas by hand, once, in one direction.
 - **A push takes over the modules it manages.** It rebuilds their item lists. It
   refuses to rebuild a module holding items you added by hand in Canvas, and
   names them, rather than dropping them.
