@@ -39,6 +39,18 @@ npx course init
 > The API URL and token usually stay the same between years — only the course ID
 > changes.
 
+From here until step 5, `.env` names the new course while `.canvas-sync.json`
+still describes last year's, so any command that reads sync state — `status`,
+`diff`, `pull`, the item commands — refuses to run and names both courses. That
+is the guard against pushing last year's ids at this year's course, not a
+problem with your setup; step 5 clears it. `reset-canvas`, `validate` and
+`reset-sync-state` itself read no sync state and work throughout. Running
+`npx course init` at this step instead of editing `.env` by hand lifts the
+refusal straight away, because init rewrites the sync state too and leaves last
+year's module ids behind rather than filing them under the new course — but it
+does not touch the `canvas_id` fields in your markdown, so step 5 is still the
+step that strips those.
+
 ## 3. Clean the Remote Course (If Needed)
 
 If the new Canvas course already contains content — imported materials, starter

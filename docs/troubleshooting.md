@@ -103,6 +103,40 @@ If the sync file becomes corrupted (e.g. partial write during a crash), delete
 it and run `npx course push` to regenerate it. Items with `canvas_id` in their
 frontmatter will be matched to existing Canvas resources.
 
+A module holding a binary in `_files/` is the exception, because a file has no
+frontmatter to carry its id: with the sync state gone, push cannot tell its own
+upload from something added in Canvas, so it refuses that module. One
+`npx course push --drop-canvas-only` re-adopts them. See
+[a plain push rebuilds the module's item list](limitations.md#a-plain-push-rebuilds-the-modules-item-list).
+
+### ".canvas-sync.json describes course N"
+
+`.env` names one Canvas course and the sync state was built against another, so
+every command stops until the two agree. The ids in that file only mean
+something in the course they came from, and one of them is not scoped to a
+course at all: a Canvas file id is global, so `push --prune` — or renaming a
+binary in `_files/`, which deletes the file it replaces — would delete a file
+belonging to the other course.
+
+Two ways out, and which one is right depends on what you meant:
+
+- **You did not mean to switch.** Put the original course id back in `.env`.
+  This is the usual case: a `CANVAS_COURSE_ID=` you edited to try something, or
+  a one-off override that wrote the sync file.
+- **You did mean to switch.** Run `npx course reset-sync-state`, then push. The
+  new course gets everything fresh, so check that it does not already hold a
+  copy — push cannot recognise content it has no ids for, and you would end up
+  with two of each. If the new course was seeded with Canvas's own Course Copy,
+  its ids are new too, so the reset is required either way.
+
+`npx course init` also settles it, and it is the one command that reads the
+mismatched file: point it at the new course and it drops the old course's
+mappings rather than filing them under the new course id.
+
+The same error names a base URL instead of a course when `CANVAS_API_URL` moved
+to a different Canvas instance, where even a matching course id means a
+different course.
+
 ### Starting Fresh, or Switching Canvas Courses
 
 Both are covered by [Advanced commands](advanced-commands.md) and, for the

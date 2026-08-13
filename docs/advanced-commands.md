@@ -26,7 +26,11 @@ next `push` will create everything fresh on Canvas.
 
 **When to use:**
 
-- Switching to a different Canvas instance or course.
+- Switching to a different Canvas instance or course. This is not optional: the
+  sync state records which course it describes, and every command refuses to run
+  against a different one, because the ids in it mean nothing there and a Canvas
+  file id is not even scoped to a course. Either this command or
+  `npx course init` clears it.
 - Preparing the repo for sharing (strip instance-specific IDs).
 - Testing the full sync flow from scratch.
 
